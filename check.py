@@ -114,7 +114,9 @@ for path in list(ROOT.glob("*.html")) + tool_pages():
     for href in re.findall(r'href="([^"#?:]+\.(?:html|css|js))(?:\?[^"]*)?"', text):
         if not (path.parent / href).resolve().exists():
             fail("%s links to %s which does not exist" % (path.name, href))
-    for src in re.findall(r'src="([^"#?:]+\.js)"', text):
+    # The (?:\?...)? lets a cache-busting ?v=2 through while still checking
+    # that the real file exists.
+    for src in re.findall(r'src="([^"#?:]+\.js)(?:\?[^"]*)?"', text):
         if not (path.parent / src).resolve().exists():
             fail("%s loads %s which does not exist" % (path.name, src))
 

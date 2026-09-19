@@ -60,6 +60,21 @@ Full step-by-step instructions: see **DEPLOY.md**.
 
 Never skip step 7. That file is the spine of the whole site.
 
+## After you change css/ or js/
+
+Every page links its assets with a version stamp:
+
+    <link rel="stylesheet" href="css/style.css?v=2">
+
+GitHub Pages sends `Cache-Control: max-age=600`, so without this a returning
+visitor keeps the old stylesheet after you deploy and swears nothing changed.
+A new `?v=` is a new URL, so the browser has nothing cached for it and must
+fetch. **Bump the number in every page whenever you edit css/ or js/.**
+
+Find and replace `?v=2` with `?v=3` across all pages, or re-run the small
+script that did it the first time. `check.py` understands the stamp and still
+verifies the real file exists.
+
 ## Files
 
     index.html        Homepage
