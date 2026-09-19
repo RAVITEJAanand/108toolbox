@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 15 of a planned 108 tools are built, tested and live.
+**Where it stands:** 20 of a planned 108 tools are built, tested and live.
 
 ---
 
@@ -35,7 +35,7 @@ Every page links its assets like this:
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed — this
 already happened once, with the redesign. Find-and-replace `?v=2` → `?v=3`
-across all 22 pages. `check.py` understands the stamp.
+across all 27 pages. `check.py` understands the stamp.
 
 ### 3. `check.py` passing does NOT mean the tool works
 
@@ -118,26 +118,44 @@ Domain  108toolbox.in — GoDaddy DNS, 4 A records to GitHub + www CNAME
 Push to `main` and it deploys in under a minute. Before pushing: run
 `check.py`, and open the changed pages in a browser.
 
-**Open item:** the HTTPS certificate was still `pending` at last check, so the
-site is `http://` only and **Enforce HTTPS** in the repo's Pages settings has
-not been ticked yet. Check with:
+**Open item — HTTPS is broken, not merely slow.** Checked 19 Sep 2026: the
+server still answers with GitHub's generic `CN=*.github.io` certificate, so no
+certificate has ever been issued for `108toolbox.in` and `https://` does not
+work. DNS is correct, and this has not moved in hours — a stalled request, not
+a slow one. The fix is to remove the custom domain in the repo's Pages settings
+and add it straight back, which re-triggers the request (~30 seconds of
+downtime). **Enforce HTTPS** can only be ticked afterwards.
+
+Check what the server actually serves — no `gh` login needed, and it reports
+reality rather than GitHub's own status field:
 
 ```bash
-gh api repos/RAVITEJAanand/108toolbox/pages --jq '.https_certificate.state'
+echo | openssl s_client -servername 108toolbox.in -connect 108toolbox.in:443 \
+  2>/dev/null | openssl x509 -noout -subject
 ```
+
+`CN=*.github.io` means still broken. `CN=108toolbox.in` means fixed.
+(The `gh api .../pages --jq '.https_certificate.state'` route also works, but
+`gh` stores its login in the Windows keyring and some terminals cannot reach
+it, reporting "not logged in" when you are.)
 
 ---
 
 ## What is built, and what is next
 
-**Live (15):** word-counter, case-converter, lorem-ipsum-generator,
+**Live (20):** word-counter, case-converter, lorem-ipsum-generator,
 image-compressor, image-converter, percentage-calculator, age-calculator,
 emi-calculator, password-generator, json-formatter, remove-duplicate-lines,
-find-and-replace, sort-text-lines, remove-line-breaks, whitespace-remover.
+find-and-replace, sort-text-lines, remove-line-breaks, whitespace-remover,
+reverse-text, text-repeater, add-line-numbers, slug-generator,
+character-frequency-counter.
 
-**Next batch (Phase 2, tools 16–20):** `reverse-text`, `text-repeater`,
-`add-line-numbers`, `slug-generator`, `character-frequency-counter` — all easy,
-all from the template, no libraries. Full plan in `ROADMAP.md`.
+**Next batch (Phase 2, tools 21–25):** the easy calculators —
+`bmi-calculator`, `discount-calculator`, `tip-calculator`,
+`average-calculator`, `ratio-calculator`. Text is now 13 of its 16, and the
+three left (`readability-score`, `text-diff-checker`, `text-to-speech`) are all
+medium, so this is the moment to switch category rather than push through.
+Full plan in `ROADMAP.md`.
 
 **Categories expand from 4 to 8 at the 30-tool mark.** `ROADMAP.md` names the
 exact three files that change.

@@ -95,6 +95,51 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "reverse-text",
+    name: "Reverse Text",
+    desc: "Flip text backwards, or reverse the order of the words and lines.",
+    category: "Text",
+    icon: "\u{23EA}",
+    keywords: ["reverse text", "backwards text", "flip text", "reverse words", "mirror text", "reverse string"],
+    popular: false
+  },
+  {
+    slug: "text-repeater",
+    name: "Text Repeater",
+    desc: "Repeat any word, line or block of text as many times as you want.",
+    category: "Text",
+    icon: "\u{1F501}",
+    keywords: ["text repeater", "repeat text", "copy text multiple times", "duplicate text", "repeat word"],
+    popular: false
+  },
+  {
+    slug: "add-line-numbers",
+    name: "Add Line Numbers",
+    desc: "Number every line, with your own start, step, separator and padding.",
+    category: "Text",
+    icon: "\u{1F522}",
+    keywords: ["add line numbers", "number lines", "line numbering", "numbered list", "renumber lines"],
+    popular: false
+  },
+  {
+    slug: "slug-generator",
+    name: "URL Slug Generator",
+    desc: "Turn a title into a clean lowercase URL slug, one per line.",
+    category: "Text",
+    icon: "\u{1F517}",
+    keywords: ["slug generator", "url slug", "permalink generator", "seo friendly url", "slugify"],
+    popular: false
+  },
+  {
+    slug: "character-frequency-counter",
+    name: "Character Frequency Counter",
+    desc: "See how often each character or word appears, ranked with percentages.",
+    category: "Text",
+    icon: "\u{1F520}",
+    keywords: ["character frequency", "letter frequency", "count letters", "word frequency", "letter counter"],
+    popular: false
+  },
+  {
     slug: "image-compressor",
     name: "Image Compressor",
     desc: "Reduce JPG and PNG file size in your browser. Nothing is uploaded.",

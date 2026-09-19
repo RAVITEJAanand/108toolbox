@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Slug Generator — Clean URL Slugs from Any Title</title>
+  <meta name="description" content="Turn any title into a clean lowercase URL slug. Strips accents, punctuation and stop words, and converts a whole list of titles at once. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/slug-generator.html">
+
+  <meta property="og:title" content="Slug Generator — Clean URL Slugs from Any Title">
+  <meta property="og:description" content="Turn any title into a clean lowercase URL slug. Strips accents, punctuation and stop words, and converts a whole list of titles at once. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=3">
+  <link rel="stylesheet" href="../css/tool.css?v=3">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a URL slug?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The readable part at the end of a web address — the slug-generator in this page address. A good slug is lowercase, uses hyphens instead of spaces, contains no punctuation and still reads like the title it came from."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use hyphens or underscores?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Hyphens. Google has said for years that it treats a hyphen as a word separator and an underscore as a joiner, so red_shoes can be read as one word while red-shoes is read as two. Underscores are here for file names and database keys, not for public URLs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why are words like the and of being removed?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Only if you tick Remove common words. Short slugs are easier to read and to share, and stop words carry no ranking weight. Leave it off whenever dropping a word would change the meaning — the difference between state of the art and state art is worth keeping."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The slugs are built in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
+        <span>Slug Generator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Slug Generator</h1>
+        <p>Turn a headline into the clean, lowercase, hyphenated part of a web
+           address. Paste one title or a hundred — you get one slug per line.
+           Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Your titles, one per line</label>
+          <textarea id="input" placeholder="10 Best Caf&eacute;s in Hyderabad (2026 Guide)"></textarea>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="sep">Separator</label>
+            <select id="sep">
+              <option value="-">Hyphen &mdash; the one to use for web pages</option>
+              <option value="_">Underscore &mdash; for file names and keys</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="maxLen">Maximum length (0 means no limit)</label>
+            <input type="number" id="maxLen" value="0" min="0" max="300" step="1">
+            <p class="hint">Cuts at a whole word, never in the middle of one.</p>
+          </div>
+
+          <div class="check"><input type="checkbox" id="optLower" checked><label for="optLower">Make everything lowercase</label></div>
+          <div class="check"><input type="checkbox" id="optAccents" checked><label for="optAccents">Convert accented letters (caf&eacute; &rarr; cafe)</label></div>
+          <div class="check"><input type="checkbox" id="optStop"><label for="optStop">Remove common words (a, the, of, and&hellip;)</label></div>
+          <div class="check"><input type="checkbox" id="optNumbers" checked><label for="optNumbers">Keep numbers</label></div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Slugs</span>
+
+          <div class="stats" aria-live="polite">
+            <div class="stat"><span class="stat__num" id="cSlugs">0</span><span class="stat__label">Slugs</span></div>
+            <div class="stat"><span class="stat__num" id="cLongest">0</span><span class="stat__label">Longest</span></div>
+          </div>
+
+          <pre class="out mono" id="output" style="margin-top:var(--s4)"></pre>
+          <p class="msg" id="msg"></p>
+
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
+            <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Paste your title on the left. A whole list works too — one title per
+              line gives you one slug per line, in the same order.</li>
+          <li>Leave the defaults alone for a normal web page slug.</li>
+          <li>The slugs appear as you type. Press <strong>Copy result</strong>, or
+              download them as a <code>.txt</code> file.</li>
+        </ol>
+
+        <h2>What makes a good slug</h2>
+        <p>The slug is the readable tail of a web address — the
+          <code>slug-generator</code> in the address of this page. It is one of the
+          few parts of a URL a human actually reads, and it turns up in search
+          results, in a shared link and in someone typing your address from memory.
+          Short, lowercase, hyphenated and recognisable beats clever every time.</p>
+
+        <p>Three rules cover almost everything. Use hyphens, not underscores: search
+          engines treat a hyphen as a space between words and an underscore as glue,
+          so <code>red-shoes</code> is two words while <code>red_shoes</code> may be
+          read as one. Keep it lowercase, because some web servers treat
+          <code>/About</code> and <code>/about</code> as two different pages. And
+          decide the slug once — changing it later breaks every link anyone has
+          already shared.</p>
+
+        <h2>Accents, and the reason this is not one line of code</h2>
+        <p>Turning <code>café</code> into <code>cafe</code> looks trivial and is not.
+          Behind the scenes, an accented letter can be stored as one character or as
+          two — a plain letter followed by a separate accent mark — and the two look
+          identical on screen. This tool first splits every accented letter into its
+          parts, then deletes the accent marks, so both spellings come out the same.
+          A handful of letters that no accent rule covers are mapped by hand, which
+          is how the German <code>ß</code> becomes <code>ss</code> rather than
+          disappearing.</p>
+
+        <p>Anything left that is not a letter or a number becomes a separator, runs
+          of separators collapse into one, and stray separators at the ends are
+          trimmed. That is why <code>10 Best Cafés in Hyderabad (2026 Guide)</code>
+          comes out as <code>10-best-cafes-in-hyderabad-2026-guide</code> rather than
+          with a trailing hyphen where the bracket used to be.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>What is a URL slug?</h3>
+          <p>The readable part at the end of a web address — the <code>slug-generator</code> in this page address. A good slug is lowercase, uses hyphens instead of spaces, contains no punctuation and still reads like the title it came from.</p>
+        </div>
+        <div class="faq">
+          <h3>Should I use hyphens or underscores?</h3>
+          <p>Hyphens. Google has said for years that it treats a hyphen as a word separator and an underscore as a joiner, so <code>red_shoes</code> can be read as one word while <code>red-shoes</code> is read as two. Underscores are here for file names and database keys, not for public URLs.</p>
+        </div>
+        <div class="faq">
+          <h3>Why are words like the and of being removed?</h3>
+          <p>Only if you tick <strong>Remove common words</strong>. Short slugs are easier to read and to share, and stop words carry no ranking weight. Leave it off whenever dropping a word would change the meaning — the difference between <code>state-of-the-art</code> and <code>state-art</code> is worth keeping.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. The slugs are built in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=3"></script>
+  <script src="../js/tool-helpers.js?v=3"></script>
+  <script>window.CURRENT_TOOL = "slug-generator";</script>
+  <script src="../js/main.js?v=3"></script>
+
+  <!-- ===== This tool has its own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input      = document.getElementById("input");
+    var output     = document.getElementById("output");
+    var sep        = document.getElementById("sep");
+    var maxLen     = document.getElementById("maxLen");
+    var optLower   = document.getElementById("optLower");
+    var optAccents = document.getElementById("optAccents");
+    var optStop    = document.getElementById("optStop");
+    var optNumbers = document.getElementById("optNumbers");
+    var msg        = document.getElementById("msg");
+
+    var cSlugs   = document.getElementById("cSlugs");
+    var cLongest = document.getElementById("cLongest");
+
+    /* The words a short slug can usually lose without losing its meaning */
+    var STOP_WORDS = ["a", "an", "the", "and", "or", "but", "of", "in", "on",
+                      "at", "to", "for", "with", "by", "from", "is", "are",
+                      "was", "were", "be", "as", "it", "its", "that", "this"];
+
+    /* Combining accent marks live in U+0300 to U+036F. Built from code points
+       rather than typed into a regex literal - see the note in
+       whitespace-remover.html for the character that breaks a script outright.
+       Keeping every tool honest about this is cheaper than debugging one. */
+    function rangeClass(from, to) {
+      function esc(code) { return "\\u" + ("000" + code.toString(16)).slice(-4); }
+      return new RegExp("[" + esc(from) + "-" + esc(to) + "]", "g");
+    }
+    var ACCENT_MARKS = rangeClass(0x0300, 0x036F);
+
+    /* Letters that no accent rule covers: splitting them produces nothing to
+       strip, so without this map they would simply vanish from the slug.
+       Built from code points to keep this file pure ASCII. The "i" flag
+       catches the capital forms as well. */
+    var SPECIAL = [
+      [0x00DF, "ss"],   /* sharp s   */
+      [0x00E6, "ae"],   /* ae        */
+      [0x0153, "oe"],   /* oe        */
+      [0x00F8, "o"],    /* o slash   */
+      [0x0111, "d"],    /* d stroke  */
+      [0x0142, "l"],    /* l stroke  */
+      [0x00FE, "th"],   /* thorn     */
+      [0x0131, "i"]     /* dotless i */
+    ];
+
+    function stripAccents(text) {
+      SPECIAL.forEach(function (pair) {
+        text = text.replace(new RegExp(String.fromCharCode(pair[0]), "gi"), pair[1]);
+      });
+      /* NFD splits "e with acute" into "e" + the acute mark, and then the
+         mark can be deleted on its own. Without the split there is nothing
+         to delete: the accented letter is a single indivisible character. */
+      return text.normalize("NFD").replace(ACCENT_MARKS, "");
+    }
+
+    function slugify(title) {
+      var separator = sep.value;
+      var text = title;
+
+      if (optAccents.checked) text = stripAccents(text);
+      if (optLower.checked)   text = text.toLowerCase();
+
+      /* Apostrophes close up rather than becoming a separator, so "India's"
+         reads as "indias" and not as "india-s". Both the straight and the
+         curly one, because word processors quietly swap them. */
+      text = text.replace(new RegExp("['" + String.fromCharCode(0x2019) + "]", "g"), "");
+
+      var allowed = optNumbers.checked ? /[^a-zA-Z0-9]+/g : /[^a-zA-Z]+/g;
+      text = text.replace(allowed, separator);
+
+      var words = text.split(separator).filter(function (w) { return w !== ""; });
+
+      if (optStop.checked) {
+        var kept = words.filter(function (w) {
+          return STOP_WORDS.indexOf(w.toLowerCase()) === -1;
+        });
+        /* Never return an empty slug: a title made entirely of stop words
+           keeps its words rather than disappearing. */
+        if (kept.length > 0) words = kept;
+      }
+
+      var limit = parseInt(maxLen.value, 10);
+      if (!isNaN(limit) && limit > 0) {
+        var trimmed = [];
+        var length = 0;
+        for (var i = 0; i < words.length; i++) {
+          var added = (trimmed.length === 0 ? 0 : separator.length) + words[i].length;
+          if (length + added > limit) break;
+          trimmed.push(words[i]);
+          length += added;
+        }
+        /* If the very first word is already longer than the limit, cutting it
+           mid-word is better than handing back nothing. */
+        if (trimmed.length === 0 && words.length > 0) {
+          trimmed = [words[0].slice(0, limit)];
+        }
+        words = trimmed;
+      }
+
+      return words.join(separator);
+    }
+
+    function run() {
+      var text  = input.value.replace(/\r\n?/g, "\n");
+      var lines = text.split("\n").filter(function (l) { return l.trim() !== ""; });
+      var slugs = lines.map(slugify);
+
+      output.textContent = slugs.join("\n");
+
+      var longest = 0;
+      var duplicates = {};
+      var repeated = 0;
+      slugs.forEach(function (s) {
+        if (s.length > longest) longest = s.length;
+        if (s === "") return;
+        if (duplicates[s]) repeated++; else duplicates[s] = true;
+      });
+
+      cSlugs.textContent   = formatNumber(slugs.length);
+      cLongest.textContent = formatNumber(longest);
+
+      /* Two identical slugs mean two pages fighting for one address - worth
+         saying out loud, because it is invisible in a long list. */
+      if (repeated > 0) {
+        msg.textContent = repeated === 1
+          ? "Two of these slugs are identical. Two pages cannot share one address."
+          : repeated + " slugs are repeated. Each page needs an address of its own.";
+        msg.className = "msg msg--bad";
+      } else {
+        msg.textContent = "";
+        msg.className = "msg";
+      }
+    }
+
+    input.addEventListener("input", run);
+    maxLen.addEventListener("input", run);
+    [sep, optLower, optAccents, optStop, optNumbers].forEach(function (el) {
+      el.addEventListener("change", run);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      copyText(output.textContent);
+    });
+
+    document.getElementById("dlBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to download"); return; }
+      downloadText(output.textContent, "slugs.txt");
+    });
+
+    run();   /* run once so the panel is correct on load */
+  })();
+  </script>
+</body>
+</html>

@@ -58,7 +58,7 @@ Difficulty is honest: **easy** = one afternoon, **medium** = a weekend,
 | Phase | Tools | Why these next | Target |
 |---|---|---|---|
 | 1 ✅ | 1–10 | Proof the system works | done |
-| 2 | 11–30 | Highest search volume, all easy, no libraries | **5 of 20 done** |
+| 2 | 11–30 | Highest search volume, all easy, no libraries | **10 of 20 done** |
 | 3 | 31–60 | Converters and date/time. Still no libraries | month 4–6 |
 | 4 | 61–90 | PDF and files. First real libraries | month 7–9 |
 | 5 | 91–108 | The long tail and the India-specific calculators | month 10–12 |
@@ -102,13 +102,13 @@ Do it all at once, re-run `check.py`, done.
 |---|---|---|
 | Calculator | 20 | 3 |
 | Developer | 18 | 2 |
-| Text | 16 | 8 |
+| Text | 16 | 13 |
 | Image | 14 | 2 |
 | Converter | 14 | 0 |
 | PDF | 10 | 0 |
 | Date & Time | 8 | 0 |
 | Random | 8 | 0 |
-| **Total** | **108** | **15** |
+| **Total** | **108** | **20** |
 
 ---
 
@@ -129,11 +129,11 @@ matches, so do not rename them later. ✅ = already live.
 | 6 | `sort-text-lines` ✅ | easy |
 | 7 | `remove-line-breaks` ✅ | easy |
 | 8 | `whitespace-remover` ✅ | easy |
-| 9 | `reverse-text` | easy |
-| 10 | `text-repeater` | easy |
-| 11 | `add-line-numbers` | easy |
-| 12 | `slug-generator` | easy |
-| 13 | `character-frequency-counter` | easy |
+| 9 | `reverse-text` ✅ | easy |
+| 10 | `text-repeater` ✅ | easy |
+| 11 | `add-line-numbers` ✅ | easy |
+| 12 | `slug-generator` ✅ | easy |
+| 13 | `character-frequency-counter` ✅ | easy |
 | 14 | `readability-score` | medium — Flesch formula, explain the number |
 | 15 | `text-diff-checker` | medium — line diff, colour the changes |
 | 16 | `text-to-speech` | medium — browser `speechSynthesis`, no API, no cost |

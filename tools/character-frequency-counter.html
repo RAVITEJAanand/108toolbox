@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Character Frequency Counter — Count Letters in Text</title>
+  <meta name="description" content="See how often every letter, character or word appears in your text, sorted by count with percentages. Ignore case, spaces and punctuation. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/character-frequency-counter.html">
+
+  <meta property="og:title" content="Character Frequency Counter — Count Letters in Text">
+  <meta property="og:description" content="See how often every letter, character or word appears in your text, sorted by count with percentages. Ignore case, spaces and punctuation. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=3">
+  <link rel="stylesheet" href="../css/tool.css?v=3">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does it count spaces and line breaks?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It can. Untick Ignore spaces and line breaks and they appear in the table as (space), (tab) and (line break), labelled so you can actually see them. They are left out by default because in ordinary prose the space is always the winner and it tells you nothing."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it count words instead of characters?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Switch Count to Words and the same table shows which words you repeat most, with their share of the total. It is the fastest way to catch a word you have leaned on four times in one paragraph."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does E come top of almost every English text?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because that is how English is built. Across ordinary English writing the order runs roughly E, T, A, O, I, N, and any long passage lands close to it. A text that departs sharply from that order is usually a list, code, or writing in another language."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The counting happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
+        <span>Character Frequency Counter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Character Frequency Counter</h1>
+        <p>Count how often every character — or every word — appears in your text,
+           ranked from most to least common with its share of the total.
+           Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Your text</label>
+          <textarea id="input" placeholder="Paste your text here&hellip;"></textarea>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="mode">Count</label>
+            <select id="mode">
+              <option value="chars">Characters</option>
+              <option value="words">Words</option>
+            </select>
+          </div>
+
+          <div class="check"><input type="checkbox" id="optCase" checked><label for="optCase">Ignore case (A and a are the same)</label></div>
+          <div class="check"><input type="checkbox" id="optSpaces" checked><label for="optSpaces">Ignore spaces and line breaks</label></div>
+          <div class="check"><input type="checkbox" id="optPunct"><label for="optPunct">Ignore punctuation</label></div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Frequency</span>
+
+          <div class="stats stats--3" aria-live="polite">
+            <div class="stat"><span class="stat__num" id="cTotal">0</span><span class="stat__label">Counted</span></div>
+            <div class="stat"><span class="stat__num" id="cUnique">0</span><span class="stat__label">Different</span></div>
+            <div class="stat"><span class="stat__num" id="cTop">&mdash;</span><span class="stat__label">Most common</span></div>
+          </div>
+
+          <!-- min-height matches the .out boxes on the other tools, so the two
+               panels stay the same height before anything is typed -->
+          <div class="table-wrap" style="margin-top:var(--s4); min-height:240px; max-height:420px; overflow-y:auto">
+            <table class="data">
+              <thead>
+                <tr><th>Item</th><th>Count</th><th>Share</th></tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+          <p class="msg" id="msg"></p>
+
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--primary" type="button" id="copyBtn">Copy as CSV</button>
+            <button class="btn btn--ghost"   type="button" id="dlBtn">Download .csv</button>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Paste your text into the box on the left.</li>
+          <li>The table fills in as you type, most common first.</li>
+          <li>Switch <strong>Count</strong> to <strong>Words</strong> to see repeated
+              words instead of repeated letters.</li>
+          <li>Press <strong>Copy as CSV</strong> to take the table into a spreadsheet.</li>
+        </ol>
+
+        <h2>What the three options actually change</h2>
+        <p><strong>Ignore case</strong> folds <code>A</code> and <code>a</code> into a
+          single row. Leave it on for normal reading, and turn it off when the
+          capitals themselves are the point — checking a password, a key, or how
+          often a sentence starts with the same letter.</p>
+
+        <p><strong>Ignore spaces and line breaks</strong> is on by default for a
+          simple reason: in ordinary prose the space always wins, by a distance, and
+          learning that tells you nothing. Turn it off and spaces, tabs and line
+          breaks appear in the table with readable labels, which is genuinely useful
+          when you are inspecting a file rather than reading a paragraph.
+          <strong>Ignore punctuation</strong> does the same for full stops, commas
+          and brackets, leaving letters and numbers alone.</p>
+
+        <h2>Where letter frequency is actually used</h2>
+        <p>The classic use is puzzles. A substitution cipher hides which letter is
+          which but cannot hide how often each one appears, so the most common symbol
+          in an English message is almost always <code>E</code>, and the pattern from
+          there runs roughly T, A, O, I, N. That single fact is enough to break a
+          simple cipher by hand, and it is the foundation of every cryptogram solver.</p>
+
+        <p>The everyday uses are quieter. Word mode catches the word you have leaned
+          on four times in one paragraph, which is the fastest edit you can make to
+          your own writing. Character mode shows a stray character that should not be
+          there at all — a smart quote in a code block, a non-breaking space in a
+          spreadsheet column — long before it breaks something. If that is what you
+          are chasing, the <a href="whitespace-remover.html">whitespace remover</a>
+          takes them out once you know they are there.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Does it count spaces and line breaks?</h3>
+          <p>It can. Untick <strong>Ignore spaces and line breaks</strong> and they appear in the table as <code>(space)</code>, <code>(tab)</code> and <code>(line break)</code>, labelled so you can actually see them. They are left out by default because in ordinary prose the space is always the winner and it tells you nothing.</p>
+        </div>
+        <div class="faq">
+          <h3>Can it count words instead of characters?</h3>
+          <p>Yes. Switch <strong>Count</strong> to <strong>Words</strong> and the same table shows which words you repeat most, with their share of the total. It is the fastest way to catch a word you have leaned on four times in one paragraph.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does E come top of almost every English text?</h3>
+          <p>Because that is how English is built. Across ordinary English writing the order runs roughly E, T, A, O, I, N, and any long passage lands close to it. A text that departs sharply from that order is usually a list, code, or writing in another language.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. The counting happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=3"></script>
+  <script src="../js/tool-helpers.js?v=3"></script>
+  <script>window.CURRENT_TOOL = "character-frequency-counter";</script>
+  <script src="../js/main.js?v=3"></script>
+
+  <!-- ===== This tool has its own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input  = document.getElementById("input");
+    var rows   = document.getElementById("rows");
+    var mode   = document.getElementById("mode");
+    var msg    = document.getElementById("msg");
+
+    var optCase   = document.getElementById("optCase");
+    var optSpaces = document.getElementById("optSpaces");
+    var optPunct  = document.getElementById("optPunct");
+
+    var cTotal  = document.getElementById("cTotal");
+    var cUnique = document.getElementById("cUnique");
+    var cTop    = document.getElementById("cTop");
+
+    /* Drawing thousands of rows is what makes a page feel broken. The counts
+       above the table are always complete; only the visible list is capped. */
+    var MAX_ROWS = 300;
+
+    /* Whitespace that has no shape of its own needs a name, or the table
+       shows an empty cell and the number next to it makes no sense.
+       The invisible ones are keyed by code point rather than typed as an
+       escape - see the warning at the top of whitespace-remover.html.
+
+       Object.create(null) matters here for the same reason it does in
+       tally() below: a plain object inherits every name on
+       Object.prototype, so looking up the word "constructor" would find a
+       built-in function and the table would print that instead. */
+    var LABELS = Object.create(null);
+    LABELS[" "]  = "(space)";
+    LABELS["\t"] = "(tab)";
+    LABELS["\n"] = "(line break)";
+    LABELS[String.fromCharCode(0x00A0)] = "(non-breaking space)";
+    LABELS[String.fromCharCode(0x200B)] = "(zero-width space)";
+    LABELS[String.fromCharCode(0xFEFF)] = "(byte-order mark)";
+
+    var EM_DASH = String.fromCharCode(0x2014);
+
+    function label(item) {
+      if (LABELS[item]) return LABELS[item];
+      return item;
+    }
+
+    function isPunctuation(ch) {
+      /* Anything that is not a letter, a number or whitespace. Kept as a test
+         rather than a list, so it works for text in any language. */
+      return !/[a-zA-Z0-9]/.test(ch) && !/\s/.test(ch) && ch !== "";
+    }
+
+    /* Count once, return a sorted array of [item, count] pairs */
+    function tally(items) {
+      /* Object.create(null) has no inherited properties, so a text containing
+         the word "constructor" cannot collide with a built-in name. */
+      var counts = Object.create(null);
+      items.forEach(function (item) {
+        counts[item] = (counts[item] || 0) + 1;
+      });
+
+      return Object.keys(counts).map(function (key) {
+        return [key, counts[key]];
+      }).sort(function (a, b) {
+        /* Most common first; ties settled alphabetically so the order is
+           stable and two runs of the same text always look identical. */
+        return b[1] - a[1] || a[0].localeCompare(b[0]);
+      });
+    }
+
+    function collect(text) {
+      if (mode.value === "words") {
+        var words = text.split(/\s+/).filter(function (w) { return w !== ""; });
+        if (optPunct.checked) {
+          /* Strip punctuation from the EDGES only: "don't" stays one word,
+             but "word," and "(word)" join the same row as "word". */
+          words = words.map(function (w) {
+            return w.replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, "");
+          }).filter(function (w) { return w !== ""; });
+        }
+        if (optCase.checked) {
+          words = words.map(function (w) { return w.toLowerCase(); });
+        }
+        return words;
+      }
+
+      /* Array.from walks whole characters, so an emoji counts as one item
+         rather than as two broken halves. */
+      var chars = Array.from(text);
+      if (optSpaces.checked) {
+        chars = chars.filter(function (c) { return !/\s/.test(c); });
+      }
+      if (optPunct.checked) {
+        chars = chars.filter(function (c) { return !isPunctuation(c); });
+      }
+      if (optCase.checked) {
+        chars = chars.map(function (c) { return c.toLowerCase(); });
+      }
+      return chars;
+    }
+
+    function draw(pairs, total) {
+      /* Build the rows off-screen and attach them once: one reflow instead
+         of one per row, which is the difference on a long table. */
+      var fragment = document.createDocumentFragment();
+
+      pairs.slice(0, MAX_ROWS).forEach(function (pair) {
+        var share = total === 0 ? 0 : (pair[1] / total) * 100;
+        var tr = document.createElement("tr");
+
+        var item = document.createElement("td");
+        /* textContent, never innerHTML: the text belongs to the visitor and
+           must never be treated as markup. */
+        item.textContent = label(pair[0]);
+
+        var count = document.createElement("td");
+        count.textContent = formatNumber(pair[1]);
+
+        var pct = document.createElement("td");
+        pct.textContent = formatNumber(share, share < 1 ? 2 : 1) + "%";
+
+        tr.appendChild(item);
+        tr.appendChild(count);
+        tr.appendChild(pct);
+        fragment.appendChild(tr);
+      });
+
+      rows.textContent = "";
+      rows.appendChild(fragment);
+    }
+
+    /* Keep the latest table around so the CSV buttons do not recount */
+    var current = { pairs: [], total: 0 };
+
+    function toCSV() {
+      var header = (mode.value === "words" ? "Word" : "Character") + ",Count,Share\n";
+      return header + current.pairs.map(function (pair) {
+        var share = current.total === 0 ? 0 : (pair[1] / current.total) * 100;
+        /* Quote the item and double any quote inside it - the CSV rule that
+           keeps a comma in the text from becoming a new column. */
+        var item = label(pair[0]).replace(/"/g, '""');
+        return '"' + item + '",' + pair[1] + "," + share.toFixed(2);
+      }).join("\n");
+    }
+
+    function run() {
+      var text = input.value.replace(/\r\n?/g, "\n");
+      var items = collect(text);
+      var pairs = tally(items);
+
+      current.pairs = pairs;
+      current.total = items.length;
+
+      draw(pairs, items.length);
+
+      cTotal.textContent  = formatNumber(items.length);
+      cUnique.textContent = formatNumber(pairs.length);
+      cTop.textContent    = pairs.length ? label(pairs[0][0]) : EM_DASH;
+
+      if (pairs.length > MAX_ROWS) {
+        msg.textContent = "Showing the top " + MAX_ROWS + " of " +
+                          formatNumber(pairs.length) +
+                          ". The CSV contains every row.";
+        msg.className = "msg";
+      } else {
+        msg.textContent = "";
+        msg.className = "msg";
+      }
+    }
+
+    input.addEventListener("input", run);
+    [mode, optCase, optSpaces, optPunct].forEach(function (el) {
+      el.addEventListener("change", run);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!current.pairs.length) { showToast("Nothing to copy"); return; }
+      copyText(toCSV());
+    });
+
+    document.getElementById("dlBtn").addEventListener("click", function () {
+      if (!current.pairs.length) { showToast("Nothing to download"); return; }
+      downloadText(toCSV(), "character-frequency.csv", "text/csv");
+    });
+
+    run();   /* run once so the panel is correct on load */
+  })();
+  </script>
+</body>
+</html>

@@ -27,6 +27,21 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://108toolbox.in/terms.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/disclaimer.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/copyright.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://108toolbox.in/tools/word-counter.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -98,6 +113,31 @@
   </url>
   <url>
     <loc>https://108toolbox.in/tools/whitespace-remover.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/reverse-text.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/text-repeater.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/add-line-numbers.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/slug-generator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/character-frequency-counter.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
