@@ -71,9 +71,14 @@ if slugs and not missing_from_sitemap:
     ok("sitemap.xml covers every tool")
 
 # ---- 4. Per-page SEO basics ------------------------------------------------
-for path in tool_pages():
+# Root pages get the same treatment as tool pages. They used to be skipped,
+# and four of them quietly shipped with a meta description less than half the
+# length Google wants — about.html was 75 characters. A page nobody validates
+# is a page that drifts.
+for path in tool_pages() + sorted(ROOT.glob("*.html")):
     text = path.read_text(encoding="utf-8")
     name = path.name
+    is_tool = path.parent.name == "tools"
 
     # Measure what a READER sees, not the raw markup: "&amp;" is one
     # character on the results page, not five.
@@ -99,14 +104,17 @@ for path in tool_pages():
     if 'rel="canonical"' not in text:
         fail("%s has no canonical tag" % name)
 
-    ld = re.search(r'<script type="application/ld\+json">(.*?)</script>', text, re.S)
-    if not ld:
-        fail("%s has no FAQ structured data" % name)
-    else:
-        try:
-            json.loads(ld.group(1))
-        except Exception as e:
-            fail("%s has invalid JSON-LD: %s" % (name, e))
+    # Only tool pages carry FAQ structured data. Asking about.html for an FAQ
+    # it was never meant to have would be noise, not a finding.
+    if is_tool:
+        ld = re.search(r'<script type="application/ld\+json">(.*?)</script>', text, re.S)
+        if not ld:
+            fail("%s has no FAQ structured data" % name)
+        else:
+            try:
+                json.loads(ld.group(1))
+            except Exception as e:
+                fail("%s has invalid JSON-LD: %s" % (name, e))
 
 # ---- 5. No dead internal links --------------------------------------------
 for path in list(ROOT.glob("*.html")) + tool_pages():
