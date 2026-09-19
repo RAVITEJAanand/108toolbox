@@ -181,6 +181,38 @@
           <li>Press <strong>Download compressed</strong> to save the smaller file.</li>
         </ol>
 
+        <h2>Why the same photograph can be 4 MB or 400 KB</h2>
+        <p>Two things decide the size of a photograph, and most people only think
+          about one of them.</p>
+
+        <p><strong>Dimensions</strong> come first. A modern phone takes pictures
+          around 4000 pixels wide. A full-width image on a web page is rarely more
+          than 1600, and a thumbnail is 300. Sending a 4000-pixel image to a space
+          400 pixels wide wastes about 99 percent of the data, and no amount of
+          compression afterwards recovers that.</p>
+
+        <p><strong>Quality</strong> comes second. JPEG throws away detail your eye is
+          least likely to miss, and the quality setting decides how much. This is
+          where the surprise lives: going from 100 to 85 typically cuts the file by
+          half or more while looking essentially identical, because the last stretch
+          of quality is extraordinarily expensive in bytes.</p>
+
+        <h2>Choosing a quality setting</h2>
+        <ul>
+          <li><strong>90 and above</strong> &mdash; archival, or an image that will be
+              edited again later.</li>
+          <li><strong>80 to 85</strong> &mdash; the sweet spot for almost anything on
+              the web. Start here.</li>
+          <li><strong>60 to 75</strong> &mdash; fine for thumbnails and backgrounds
+              where nobody is inspecting detail.</li>
+          <li><strong>Below 50</strong> &mdash; visible blocking around edges and
+              text. Worth it only when size matters more than looks.</li>
+        </ul>
+
+        <p>Compression here is <em>lossy</em> and it cannot be undone. Always keep
+          your original file and compress a copy. Compressing an already compressed
+          image repeatedly degrades it a little each time.</p>
+
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Is my image uploaded to a server?</h3>

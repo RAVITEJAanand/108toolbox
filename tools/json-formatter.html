@@ -191,6 +191,37 @@
           <li>Copy the result, or download it as a .json file.</li>
         </ol>
 
+        <h2>The four mistakes that break almost every JSON file</h2>
+        <p>JSON is strict in ways that trip up anyone used to writing JavaScript by
+          hand. Nearly every invalid file is one of these four:</p>
+        <ul>
+          <li><strong>A trailing comma.</strong> <code>{"a": 1, "b": 2,}</code> is
+              valid JavaScript and invalid JSON. This is the most common one by a
+              wide margin.</li>
+          <li><strong>Single quotes.</strong> JSON strings must use double quotes.
+              <code>{'a': 1}</code> is not JSON.</li>
+          <li><strong>Unquoted keys.</strong> <code>{a: 1}</code> is a JavaScript
+              object, not JSON. Every key needs double quotes.</li>
+          <li><strong>Comments.</strong> JSON has none. No <code>//</code> and no
+              <code>/* */</code>, however reasonable that seems in a config file.</li>
+        </ul>
+
+        <p>Two smaller ones worth knowing: <code>NaN</code> and <code>Infinity</code>
+          are not valid JSON numbers, and a stray byte-order mark at the very start
+          of a file &mdash; invisible in every editor &mdash; will fail to parse with
+          an error that makes no sense.</p>
+
+        <h2>Beautify or minify, and when each is right</h2>
+        <p><strong>Beautify</strong> when a human has to read it: debugging an API
+          response, reviewing a config file, or trying to see the shape of data
+          somebody sent you. Indentation is the whole point.</p>
+
+        <p><strong>Minify</strong> when a machine has to move it. Stripping the
+          spaces and line breaks often removes a fifth of the file size, which
+          matters for anything sent over a network repeatedly. Neither operation
+          changes your data by a single character &mdash; only the whitespace between
+          it.</p>
+
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Why does it say my JSON is invalid when it looks fine?</h3>
