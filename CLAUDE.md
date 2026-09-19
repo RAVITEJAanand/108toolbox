@@ -133,26 +133,39 @@ Domain  108toolbox.in — GoDaddy DNS, 4 A records to GitHub + www CNAME
 Push to `main` and it deploys in under a minute. Before pushing: run
 `check.py`, and open the changed pages in a browser.
 
-**Open item — HTTPS is broken, not merely slow.** Checked 19 Sep 2026: the
-server still answers with GitHub's generic `CN=*.github.io` certificate, so no
-certificate has ever been issued for `108toolbox.in` and `https://` does not
-work. DNS is correct, and this has not moved in hours — a stalled request, not
-a slow one. The fix is to remove the custom domain in the repo's Pages settings
-and add it straight back, which re-triggers the request (~30 seconds of
-downtime). **Enforce HTTPS** can only be ticked afterwards.
+**HTTPS is live and enforced.** Resolved 19 Sep 2026. The certificate covers
+`108toolbox.in` and `www.108toolbox.in`, and **Enforce HTTPS** is on, so
+`http://` returns a 301 to `https://`.
 
-Check what the server actually serves — no `gh` login needed, and it reports
-reality rather than GitHub's own status field:
+A note for next time, because the diagnosis here was wrong twice.
+
+The certificate was issued at **12:09 UTC** on 19 Sep 2026 with nothing done
+to trigger it. For hours before that, the server answered with the generic
+`CN=*.github.io`, which is indistinguishable from a failed request, and this
+file said the request had stalled and that the custom domain had to be removed
+and re-added.
+
+The domain was in fact removed and re-added later that day, at 18:35 UTC -
+the `Delete CNAME` and `Create CNAME` commits in the history. It made no
+difference to the certificate: the one being served now still carries the
+12:09 issue time, so no new certificate was ever requested.
+
+**The lesson is to wait.** GitHub can take most of a day, and what the server
+serves lags behind what GitHub has already issued.
+
+Two ways to check, and they disagree during that waiting period:
 
 ```bash
-echo | openssl s_client -servername 108toolbox.in -connect 108toolbox.in:443 \
-  2>/dev/null | openssl x509 -noout -subject
+# What the server is actually serving right now
+echo | openssl s_client -servername 108toolbox.in -connect 108toolbox.in:443 2>/dev/null | openssl x509 -noout -subject
+
+# What GitHub thinks, which turns green first
+gh api repos/RAVITEJAanand/108toolbox/pages --jq '.https_certificate.state, .https_enforced'
 ```
 
-`CN=*.github.io` means still broken. `CN=108toolbox.in` means fixed.
-(The `gh api .../pages --jq '.https_certificate.state'` route also works, but
-`gh` stores its login in the Windows keyring and some terminals cannot reach
-it, reporting "not logged in" when you are.)
+`gh` keeps its login in the Windows keyring, and a terminal that cannot reach
+the keyring reports "not logged in" when you are. Running `gh auth login` once
+in that terminal fixes it.
 
 ---
 
