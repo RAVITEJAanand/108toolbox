@@ -23,7 +23,11 @@ const BASE = AT_ROOT ? "" : "../";
    -------------------------------------------------------------------------- */
 function cardHTML(tool) {
   return (
-    '<a class="card" href="' + BASE + 'tools/' + tool.slug + '.html">' +
+    /* data-cat is what gives the card its category colour. style.css maps
+       each category to an accent; without this attribute the card falls
+       back to the brand indigo, which still looks fine. */
+    '<a class="card" data-cat="' + tool.category + '"' +
+       ' href="' + BASE + 'tools/' + tool.slug + '.html">' +
       '<span class="card__icon" aria-hidden="true">' + tool.icon + '</span>' +
       '<h3 class="card__title">' + tool.name + '</h3>' +
       '<p class="card__desc">' + tool.desc + '</p>' +

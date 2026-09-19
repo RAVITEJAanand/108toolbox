@@ -1,28 +1,47 @@
 /* ==========================================================================
    108 Tools — tool.css
-   ONLY loaded on tool pages (/tools/*.html).
-   Holds the two-panel layout and the controls tools need.
+   Loaded ONLY by the pages in /tools/. style.css loads first and owns the
+   tokens; this file never invents a colour of its own.
+
+   Design rule for every tool page: the page is calm. The homepage is allowed
+   to be loud, a tool is not. Someone landed here to do one job, so the
+   workspace stays quiet and the only strong colour is the primary button.
    ========================================================================== */
 
-/* Breadcrumb: Home > Text > Word Counter */
+/* ---- Breadcrumb --------------------------------------------------------- */
 .crumbs {
-  font-size: .8125rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s1);
+  font-size: .875rem;
   color: var(--text-soft);
+  margin-bottom: var(--s5);
+}
+.crumbs a { color: var(--text-soft); font-weight: 500; }
+.crumbs a:hover { color: var(--primary); }
+.crumbs span { margin: 0 var(--s1); opacity: .6; }
+
+/* ---- Tool heading ------------------------------------------------------- */
+.tool-head { margin-bottom: var(--s6); }
+.tool-head h1 {
+  font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+  letter-spacing: -.03em;
   margin-bottom: var(--s3);
 }
-.crumbs a { color: var(--text-soft); }
-.crumbs a:hover { color: var(--primary); }
-.crumbs span { margin: 0 var(--s1); }
+.tool-head p {
+  color: var(--text-soft);
+  font-size: 1.0625rem;
+  margin: 0;
+  max-width: 44rem;
+}
 
-.tool-head { margin-bottom: var(--s5); }
-.tool-head p { color: var(--text-soft); margin: 0; max-width: 42rem; }
-
-/* ---- The two-panel workspace ------------------------------------------- */
+/* ---- The two-panel workspace -------------------------------------------- */
 .workspace {
   display: grid;
-  grid-template-columns: 1fr;   /* mobile: input on top, output below */
+  grid-template-columns: 1fr;     /* mobile: stacked */
   gap: var(--s4);
-  margin-bottom: var(--s7);
+  margin-bottom: var(--s8);
 }
 @media (min-width: 900px) {
   .workspace--split { grid-template-columns: 1fr 1fr; }
@@ -33,14 +52,15 @@
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
-  padding: var(--s4);
+  box-shadow: var(--sh1);
+  padding: var(--s5);
 }
 .panel__label {
   display: block;
   font-size: .75rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .5px;
+  letter-spacing: .09em;
   color: var(--text-soft);
   margin-bottom: var(--s3);
 }
@@ -50,11 +70,11 @@
 .field:last-child { margin-bottom: 0; }
 .field label {
   display: block;
-  font-size: .875rem;
-  font-weight: 500;
+  font-size: .9375rem;
+  font-weight: 600;
   margin-bottom: var(--s2);
 }
-.hint { font-size: .8125rem; color: var(--text-soft); margin: var(--s1) 0 0; }
+.hint { font-size: .8125rem; color: var(--text-soft); margin: var(--s2) 0 0; }
 
 textarea,
 input[type="text"], input[type="number"], input[type="date"], select {
@@ -62,22 +82,23 @@ input[type="text"], input[type="number"], input[type="date"], select {
   font: inherit;
   color: var(--text);
   background: var(--bg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: var(--r-sm);
   padding: var(--s3);
-  min-height: 44px;
+  min-height: 46px;
+  transition: border-color .15s, box-shadow .15s;
 }
 textarea {
-  min-height: 220px;
+  min-height: 240px;
   resize: vertical;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 textarea.mono, .out.mono { font-family: var(--font-mono); font-size: .875rem; }
 
 textarea:focus, input:focus, select:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-soft);
+  box-shadow: 0 0 0 4px var(--primary-soft);
 }
 
 /* Range slider */
@@ -91,11 +112,14 @@ input[type="range"] {
 .check {
   display: flex;
   align-items: center;
-  gap: var(--s2);
-  min-height: 40px;
+  gap: var(--s3);
+  min-height: 42px;
   font-size: .9375rem;
 }
-.check input { width: 18px; height: 18px; accent-color: var(--primary); margin: 0; }
+.check input { width: 18px; height: 18px; accent-color: var(--primary); margin: 0; flex: none; }
+.check label { cursor: pointer; }
+/* A disabled option must LOOK disabled, or people keep clicking it */
+.check input:disabled + label { opacity: .45; cursor: not-allowed; }
 
 /* ---- Stat tiles (the output of counters/calculators) -------------------- */
 .stats {
@@ -105,7 +129,6 @@ input[type="range"] {
 }
 .stats--3 { grid-template-columns: repeat(3, 1fr); }
 .stat {
-  min-width: 0;                 /* lets a long number shrink instead of widening the grid */
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
@@ -114,56 +137,58 @@ input[type="range"] {
 }
 .stat__num {
   display: block;
-  overflow-wrap: anywhere;
-  /* Shrinks on narrow phones so "10,00,000" cannot push the page sideways */
-  font-size: clamp(1rem, 4.2vw, 1.375rem);
-  font-weight: 700;
-  color: var(--primary);
-  font-variant-numeric: tabular-nums;   /* digits stop jittering as they change */
-  line-height: 1.2;
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -.03em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
 }
 .stat__label {
   display: block;
   font-size: .75rem;
   color: var(--text-soft);
-  margin-top: var(--s1);
+  margin-top: 2px;
 }
 
-/* A single big result line, e.g. EMI = 12,345 */
+/* The single big answer, for calculators that have exactly one */
 .result {
-  min-width: 0;
-  background: var(--primary-soft);
-  border-radius: var(--r-sm);
-  padding: var(--s4);
+  background: linear-gradient(135deg, var(--primary-soft), transparent 70%);
+  border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
+  border-radius: var(--r-md);
+  padding: var(--s5);
   text-align: center;
   margin-bottom: var(--s4);
 }
 .result__num {
   display: block;
-  font-size: clamp(1.375rem, 6.5vw, 1.75rem);
-  overflow-wrap: anywhere;
-  font-weight: 700;
-  color: var(--primary-hover);
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.1;
   font-variant-numeric: tabular-nums;
+  color: var(--primary);
 }
-.result__label { font-size: .8125rem; color: var(--text-soft); }
+.result__label { font-size: .875rem; color: var(--text-soft); }
 
 /* Read-only output box */
 .out {
-  min-height: 220px;
+  min-height: 240px;
   max-height: 480px;
   overflow: auto;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
-  padding: var(--s3);
+  padding: var(--s4);
   margin: 0;
+  font-size: .9375rem;
+  line-height: 1.65;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 /* Status messages */
-.msg { font-size: .875rem; margin-top: var(--s3); }
+.msg { font-size: .9375rem; font-weight: 500; margin-top: var(--s3); }
 .msg--ok   { color: var(--success); }
 .msg--bad  { color: var(--danger); }
 
@@ -174,48 +199,80 @@ input[type="range"] {
    collides with the panel heading above. */
 .drop {
   display: block;
-  border: 2px dashed var(--border);
+  border: 2px dashed var(--border-strong);
   border-radius: var(--r-md);
   background: var(--surface);
-  padding: var(--s7) var(--s4);
+  padding: var(--s8) var(--s4);
   text-align: center;
   cursor: pointer;
-  transition: border-color .15s, background .15s;
+  transition: border-color .18s, background .18s, transform .18s;
 }
-.drop:hover, .drop.is-over { border-color: var(--primary); background: var(--primary-soft); }
-.drop__big { display: block; font-size: 2rem; line-height: 1; margin-bottom: var(--s3); }
-.drop p { margin: 0; color: var(--text-soft); font-size: .875rem; }
+.drop:hover, .drop.is-over {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  transform: translateY(-2px);
+}
+.drop__big { display: block; font-size: 2.5rem; line-height: 1; margin-bottom: var(--s3); }
+.drop p { margin: 0; color: var(--text-soft); font-size: .9375rem; }
 .drop input[type="file"] { display: none; }
 
 .preview img {
-  max-height: 260px;
+  max-height: 280px;
   width: auto;
-  margin: 0 auto var(--s3);
+  margin: 0 auto var(--s4);
   border-radius: var(--r-sm);
   border: 1px solid var(--border);
+  box-shadow: var(--sh1);
 }
 
 /* ---- Small data table (amortisation, key/value output) ----------------- */
-.table-wrap { overflow-x: auto; }
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
 table.data {
   width: 100%;
   border-collapse: collapse;
   font-size: .875rem;
 }
 table.data th, table.data td {
-  padding: var(--s2) var(--s3);
+  padding: var(--s3) var(--s4);
   border-bottom: 1px solid var(--border);
   text-align: right;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-table.data th { text-align: right; color: var(--text-soft); font-weight: 600; background: var(--surface); }
+table.data tr:last-child td { border-bottom: 0; }
+table.data th {
+  text-align: right;
+  color: var(--text-soft);
+  font-weight: 700;
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+}
 table.data th:first-child, table.data td:first-child { text-align: left; }
+table.data tbody tr:hover td { background: var(--surface); }
 
 /* ---- SEO content below the tool ---------------------------------------- */
-.tool-info { border-top: 1px solid var(--border); padding-top: var(--s6); }
-.tool-info h2 { margin-top: var(--s5); }
+.tool-info {
+  border-top: 1px solid var(--border);
+  padding-top: var(--s7);
+}
+.tool-info h2 { margin-top: var(--s7); }
 .tool-info h2:first-child { margin-top: 0; }
-.faq { margin-bottom: var(--s4); }
-.faq h3 { margin-bottom: var(--s1); }
+.tool-info p { color: var(--text-soft); }
+
+.faq {
+  border-left: 3px solid var(--border);
+  padding-left: var(--s4);
+  margin-bottom: var(--s5);
+  transition: border-color .15s;
+}
+.faq:hover { border-left-color: var(--primary); }
+.faq h3 { margin-bottom: var(--s2); color: var(--text); }
 .faq p  { color: var(--text-soft); margin: 0; }
