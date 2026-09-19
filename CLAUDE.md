@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 20 of a planned 108 tools are built, tested and live.
+**Where it stands:** 25 of a planned 108 tools are built, tested and live.
 
 ---
 
@@ -24,7 +24,22 @@ no build step, and it stays that way.
 tools. **If you find yourself editing `main.js` to add a tool, stop** — you
 have gone off the path. (Editing it for a site-wide design change is fine.)
 
-### 2. Bump `?v=` whenever you touch `css/` or `js/`
+### 2. Never type a tool count into a page
+
+`25 tools live` is not typed anywhere. Any element with `data-tool-count` is
+filled in by `main.js` straight from the registry:
+
+```html
+<span data-tool-count="live">25</span> tools live
+<span data-tool-count="remaining">83</span> on the way
+```
+
+This used to be hand-typed in `index.html`, `tools.html` and `about.html`, and
+it went stale on the live site **twice** — the page said "15 tools live" while
+the grid underneath it showed 20. The number left in the HTML is only a
+fallback for the moment before JavaScript runs.
+
+### 3. Bump `?v=` whenever you touch `css/` or `js/`
 
 Every page links its assets like this:
 
@@ -35,15 +50,15 @@ Every page links its assets like this:
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed — this
 already happened once, with the redesign. Find-and-replace `?v=2` → `?v=3`
-across all 27 pages. `check.py` understands the stamp.
+across all 35 pages (currently `?v=4`). `check.py` understands the stamp.
 
-### 3. `check.py` passing does NOT mean the tool works
+### 4. `check.py` passing does NOT mean the tool works
 
 It validates markup, titles, meta lengths, canonicals, JSON-LD, the registry
 and internal links. **It never runs your JavaScript.** Always open the page in
 a browser and actually use the tool before deploying.
 
-### 4. Never type a `\uXXXX` escape into a tool's `<script>`
+### 5. Never type a `\uXXXX` escape into a tool's `<script>`
 
 It can land in the file as the literal character. U+2028 and U+2029 are
 JavaScript line terminators, so a regex literal containing one does not parse —
@@ -51,7 +66,7 @@ the file looks perfect in an editor and the entire tool silently does nothing.
 Build the pattern from code points instead; `tools/whitespace-remover.html`
 shows the pattern.
 
-### 5. Nothing is ever uploaded
+### 6. Nothing is ever uploaded
 
 Every tool runs client-side — canvas, Web Crypto, `pdf-lib`. The homepage
 promises "nothing is uploaded, nothing is stored" and that promise must stay
@@ -59,7 +74,7 @@ literally true. It is the site's only real differentiator. See the
 "Tools to never build" section of `ROADMAP.md` before adding anything that
 touches a server, a third-party API, or someone else's content.
 
-### 6. Do not add Google Analytics
+### 7. Do not add Google Analytics
 
 The homepage says "no tracking". If analytics are ever wanted, use Plausible,
 Umami or Cloudflare Web Analytics — or drop the claim. Not both.
@@ -143,22 +158,25 @@ it, reporting "not logged in" when you are.)
 
 ## What is built, and what is next
 
-**Live (20):** word-counter, case-converter, lorem-ipsum-generator,
+**Live (25):** word-counter, case-converter, lorem-ipsum-generator,
 image-compressor, image-converter, percentage-calculator, age-calculator,
 emi-calculator, password-generator, json-formatter, remove-duplicate-lines,
 find-and-replace, sort-text-lines, remove-line-breaks, whitespace-remover,
 reverse-text, text-repeater, add-line-numbers, slug-generator,
-character-frequency-counter.
+character-frequency-counter, bmi-calculator, discount-calculator,
+tip-calculator, average-calculator, ratio-calculator.
 
-**Next batch (Phase 2, tools 21–25):** the easy calculators —
-`bmi-calculator`, `discount-calculator`, `tip-calculator`,
-`average-calculator`, `ratio-calculator`. Text is now 13 of its 16, and the
-three left (`readability-score`, `text-diff-checker`, `text-to-speech`) are all
-medium, so this is the moment to switch category rather than push through.
-Full plan in `ROADMAP.md`.
+**Next batch (Phase 2, tools 26–30):** `gst-calculator`,
+`simple-interest-calculator`, `compound-interest-calculator`,
+`fraction-calculator`, `margin-markup-calculator`. Lead with `gst-calculator` —
+it is the India angle below, it is still easy, and it is the strongest search
+term left in Phase 2. That finishes Phase 2 and triggers the 4 → 8 category
+expansion. Full plan in `ROADMAP.md`.
 
-**Categories expand from 4 to 8 at the 30-tool mark.** `ROADMAP.md` names the
-exact three files that change.
+**Categories expand from 4 to 8 at the 30-tool mark — that is the very next
+batch.** `ROADMAP.md` names the exact three files that change. Calculator is
+already 8 of its 20 and Text is 13 of 16, so the dumping-ground problem the
+expansion solves is close.
 
 **The India angle is the real SEO edge.** `gst-calculator`, `sip-calculator`,
 `salary-calculator`, `area-converter` and `number-to-words` (lakh/crore) have

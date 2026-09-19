@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Average Calculator — Mean, Median, Mode and Range</title>
+  <meta name="description" content="Paste any list of numbers and get the mean, median, mode, range, total and standard deviation at once. Commas, spaces or new lines all work. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/average-calculator.html">
+
+  <meta property="og:title" content="Average Calculator — Mean, Median, Mode and Range">
+  <meta property="og:description" content="Paste any list of numbers and get the mean, median, mode, range, total and standard deviation at once. Commas, spaces or new lines all work. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=4">
+  <link rel="stylesheet" href="../css/tool.css?v=4">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the difference between mean, median and mode?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The mean is the total divided by how many numbers there are. The median is the middle number once they are sorted. The mode is the number that appears most often. They answer different questions, and when a list has a few very large or very small values they can be far apart."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "When should I use the median instead of the mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Whenever a few extreme values would drag the mean away from what is typical. Salaries are the classic case: one very large salary lifts the mean above what almost everyone earns, while the median stays with the middle person. If the mean and median on this page are far apart, that is your signal."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How should I separate my numbers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "However you like. Commas, spaces, new lines, tabs or semicolons all work, and you can mix them. Negative numbers and decimals are fine. Anything that is not a number is ignored and counted separately so you know it was skipped."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my data sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
+        <span>Average Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Average Calculator</h1>
+        <p>Paste a list of numbers and get the mean, the median, the mode and the
+           rest at once. Separate them however you like. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Your numbers</label>
+          <textarea id="input" placeholder="12, 7, 19, 3, 7&#10;or one per line&hellip;">12, 7, 19, 3, 7, 22, 15</textarea>
+          <p class="hint">Commas, spaces, new lines, tabs or semicolons &mdash;
+             all work, and you can mix them.</p>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="places">Decimal places in the results</label>
+            <select id="places">
+              <option value="2">2</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Results</span>
+
+          <div class="result">
+            <span class="result__num" id="mean">&mdash;</span>
+            <span class="result__label" id="meanFormula">the mean, or ordinary average</span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="median">&mdash;</span><span class="stat__label">Median</span></div>
+            <div class="stat"><span class="stat__num" id="mode">&mdash;</span><span class="stat__label">Mode</span></div>
+            <div class="stat"><span class="stat__num" id="range">&mdash;</span><span class="stat__label">Range</span></div>
+          </div>
+
+          <div class="stats stats--3" style="margin-top:var(--s2)">
+            <div class="stat"><span class="stat__num" id="count">0</span><span class="stat__label">How many</span></div>
+            <div class="stat"><span class="stat__num" id="sum">&mdash;</span><span class="stat__label">Total</span></div>
+            <div class="stat"><span class="stat__num" id="sd">&mdash;</span><span class="stat__label">Std deviation</span></div>
+          </div>
+
+          <div class="stats" style="margin-top:var(--s2)">
+            <div class="stat"><span class="stat__num" id="min">&mdash;</span><span class="stat__label">Smallest</span></div>
+            <div class="stat"><span class="stat__num" id="max">&mdash;</span><span class="stat__label">Largest</span></div>
+          </div>
+
+          <p class="msg" id="msg"></p>
+
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--primary" type="button" id="copyBtn">Copy results</button>
+            <button class="btn btn--ghost" type="button" id="sortBtn">Show sorted</button>
+          </div>
+
+          <pre class="out mono" id="sorted" hidden style="margin-top:var(--s3);min-height:0"></pre>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Paste or type your numbers on the left.</li>
+          <li>Separate them with commas, spaces or new lines &mdash; whatever your
+              data already uses.</li>
+          <li>Every result updates as you type. Press <strong>Copy results</strong>
+              to take them all with you.</li>
+        </ol>
+
+        <h2>Mean, median and mode are three different questions</h2>
+        <p>People say &ldquo;average&rdquo; and almost always mean the
+          <strong>mean</strong>: add everything up, divide by how many there are.
+          It is the right tool most of the time, and it has one weakness that
+          matters.</p>
+
+        <p>The mean is dragged around by extreme values. Nine people earning
+          30,000 and one earning 5,00,000 have a mean salary of 77,000 &mdash; a
+          number that describes nobody in the room. The <strong>median</strong>,
+          the middle value once the list is sorted, stays at 30,000 and tells the
+          honest story.</p>
+
+        <p>The <strong>mode</strong> is the value that appears most often. It is
+          the only one of the three that works on things you cannot add up, like
+          shirt sizes or survey answers, and it is the right question when you want
+          to know what is most common rather than what is typical.</p>
+
+        <p>A quick rule: <strong>if the mean and the median on this page are far
+          apart, your list has outliers</strong>, and the median is probably the
+          number you should quote.</p>
+
+        <h2>Range and standard deviation</h2>
+        <p><strong>Range</strong> is simply the largest number minus the smallest.
+          It tells you how spread out the list is, using only two values, which
+          makes it quick but fragile &mdash; one freak number changes it entirely.</p>
+
+        <p><strong>Standard deviation</strong> answers the same question more
+          carefully: on average, how far is each number from the mean? A small
+          standard deviation means the values huddle close together; a large one
+          means they are scattered. This page reports the population standard
+          deviation, which treats your list as the whole group rather than as a
+          sample drawn from a larger one.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>What is the difference between mean, median and mode?</h3>
+          <p>The mean is the total divided by how many numbers there are. The median is the middle number once they are sorted. The mode is the number that appears most often. They answer different questions, and when a list has a few very large or very small values they can be far apart.</p>
+        </div>
+        <div class="faq">
+          <h3>When should I use the median instead of the mean?</h3>
+          <p>Whenever a few extreme values would drag the mean away from what is typical. Salaries are the classic case: one very large salary lifts the mean above what almost everyone earns, while the median stays with the middle person. If the mean and median on this page are far apart, that is your signal.</p>
+        </div>
+        <div class="faq">
+          <h3>How should I separate my numbers?</h3>
+          <p>However you like. Commas, spaces, new lines, tabs or semicolons all work, and you can mix them. Negative numbers and decimals are fine. Anything that is not a number is ignored and counted separately so you know it was skipped.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my data sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved &mdash; close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=4"></script>
+  <script src="../js/tool-helpers.js?v=4"></script>
+  <script>window.CURRENT_TOOL = "average-calculator";</script>
+  <script src="../js/main.js?v=4"></script>
+
+  <!-- ===== This tool has its own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input  = document.getElementById("input");
+    var places = document.getElementById("places");
+    var sorted = document.getElementById("sorted");
+    var msg    = document.getElementById("msg");
+    var sortBtn = document.getElementById("sortBtn");
+
+    var EM_DASH = String.fromCharCode(0x2014);
+    var MINUS   = String.fromCharCode(0x2212);
+
+    function out(id) { return document.getElementById(id); }
+
+    var current = { values: [] };
+
+    /* Split on anything that is not part of a number. Keeping the minus sign
+       and the decimal point means "-3.5" survives, while "kg" does not. */
+    function parseNumbers(text) {
+      var pieces = text.split(/[^0-9.eE+-]+/);
+      var values = [];
+      var skipped = 0;
+
+      pieces.forEach(function (piece) {
+        if (piece === "") return;
+        var n = parseFloat(piece);
+        /* isFinite rejects NaN and Infinity together, which is what we want:
+           a stray "." or "1e999" should not poison every later result. */
+        if (isFinite(n)) values.push(n); else skipped++;
+      });
+
+      return { values: values, skipped: skipped };
+    }
+
+    /* The setting is a CEILING on decimals, not a demand for them. Forcing the
+       count would print a sum of whole numbers as "85.00" and a mode of 7 as
+       "7.00", which is noise: the mode is a value lifted straight out of the
+       list and should look the way it was typed. maximumFractionDigits on its
+       own rounds when needed and stays quiet when it is not. */
+    function round(value) {
+      var dp = parseInt(places.value, 10);
+      if (!isFinite(value)) return EM_DASH;
+      return value.toLocaleString(undefined, { maximumFractionDigits: dp });
+    }
+
+    function median(values) {
+      var copy = values.slice().sort(function (a, b) { return a - b; });
+      var mid = Math.floor(copy.length / 2);
+      /* An even count has no single middle, so take the two either side */
+      return copy.length % 2 ? copy[mid] : (copy[mid - 1] + copy[mid]) / 2;
+    }
+
+    /* A list can have several modes, or none worth reporting when every
+       value appears exactly once. */
+    function mode(values) {
+      var counts = Object.create(null);
+      var best = 0;
+      values.forEach(function (v) {
+        counts[v] = (counts[v] || 0) + 1;
+        if (counts[v] > best) best = counts[v];
+      });
+
+      if (best < 2) return { list: [], times: 1 };
+
+      var winners = Object.keys(counts)
+        .filter(function (k) { return counts[k] === best; })
+        .map(parseFloat)
+        .sort(function (a, b) { return a - b; });
+
+      return { list: winners, times: best };
+    }
+
+    function stdDev(values, mean) {
+      if (values.length === 0) return 0;
+      var total = values.reduce(function (acc, v) {
+        var d = v - mean;
+        return acc + d * d;
+      }, 0);
+      return Math.sqrt(total / values.length);
+    }
+
+    function blank() {
+      ["mean","median","mode","range","sum","sd","min","max"].forEach(function (id) {
+        out(id).textContent = EM_DASH;
+      });
+      out("count").textContent = "0";
+      out("meanFormula").textContent = "the mean, or ordinary average";
+      sorted.textContent = "";
+    }
+
+    function run() {
+      var parsed = parseNumbers(input.value);
+      var values = parsed.values;
+      current.values = values;
+
+      if (values.length === 0) {
+        blank();
+        msg.textContent = parsed.skipped > 0
+          ? "Nothing here looks like a number."
+          : "";
+        msg.className = "msg";
+        return;
+      }
+
+      var sum = values.reduce(function (a, b) { return a + b; }, 0);
+      var mean = sum / values.length;
+      var min = Math.min.apply(null, values);
+      var max = Math.max.apply(null, values);
+      var m = mode(values);
+
+      out("mean").textContent   = round(mean);
+      out("median").textContent = round(median(values));
+      out("range").textContent  = round(max - min);
+      out("count").textContent  = formatNumber(values.length);
+      out("sum").textContent    = round(sum);
+      out("sd").textContent     = round(stdDev(values, mean));
+      out("min").textContent    = round(min);
+      out("max").textContent    = round(max);
+
+      if (m.list.length === 0) {
+        out("mode").textContent = "none";
+      } else if (m.list.length > 3) {
+        out("mode").textContent = m.list.length + " tie";
+      } else {
+        out("mode").textContent = m.list.map(round).join(", ");
+      }
+
+      out("meanFormula").textContent =
+        round(sum) + " " + String.fromCharCode(0x00F7) + " " + values.length +
+        " = " + round(mean);
+
+      sorted.textContent = values.slice()
+        .sort(function (a, b) { return a - b; })
+        .join(", ");
+
+      /* Two things worth saying out loud, because neither is visible */
+      var notes = [];
+      if (parsed.skipped > 0) {
+        notes.push(parsed.skipped +
+          (parsed.skipped === 1 ? " entry was" : " entries were") +
+          " not a number and got skipped");
+      }
+      if (m.list.length > 0 && m.times > 1) {
+        notes.push("the mode appears " + m.times + " times");
+      }
+
+      msg.textContent = notes.length ? notes.join("; ") + "." : "";
+      msg.className = "msg";
+    }
+
+    input.addEventListener("input", run);
+    places.addEventListener("change", run);
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+
+    sortBtn.addEventListener("click", function () {
+      sorted.hidden = !sorted.hidden;
+      sortBtn.textContent = sorted.hidden ? "Show sorted" : "Hide sorted";
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (current.values.length === 0) { showToast("Nothing to copy"); return; }
+      var lines = [
+        "Count: "    + out("count").textContent,
+        "Sum: "      + out("sum").textContent,
+        "Mean: "     + out("mean").textContent,
+        "Median: "   + out("median").textContent,
+        "Mode: "     + out("mode").textContent,
+        "Range: "    + out("range").textContent,
+        "Smallest: " + out("min").textContent,
+        "Largest: "  + out("max").textContent,
+        "Std deviation: " + out("sd").textContent
+      ];
+      copyText(lines.join("\n"));
+    });
+
+    run();   /* run once so the panel is correct on load */
+  })();
+  </script>
+</body>
+</html>

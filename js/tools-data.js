@@ -185,6 +185,51 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "bmi-calculator",
+    name: "BMI Calculator",
+    desc: "Body Mass Index from your height and weight, with the healthy range.",
+    category: "Calculator",
+    icon: "\u{2696}\u{FE0F}",
+    keywords: ["bmi calculator", "body mass index", "healthy weight", "bmi chart", "ideal weight"],
+    popular: false
+  },
+  {
+    slug: "discount-calculator",
+    name: "Discount Calculator",
+    desc: "Sale price, what you save, and what stacked offers really come to.",
+    category: "Calculator",
+    icon: "\u{1F3F7}\u{FE0F}",
+    keywords: ["discount calculator", "sale price", "percent off", "how much do i save", "original price"],
+    popular: false
+  },
+  {
+    slug: "tip-calculator",
+    name: "Tip Calculator",
+    desc: "Work out the tip and split the bill between any number of people.",
+    category: "Calculator",
+    icon: "\u{1F37D}\u{FE0F}",
+    keywords: ["tip calculator", "split the bill", "how much to tip", "service charge", "bill split"],
+    popular: false
+  },
+  {
+    slug: "average-calculator",
+    name: "Average Calculator",
+    desc: "Mean, median, mode, range and standard deviation from any list.",
+    category: "Calculator",
+    icon: "\u{1F4C8}",
+    keywords: ["average calculator", "mean median mode", "find the average", "standard deviation", "range"],
+    popular: false
+  },
+  {
+    slug: "ratio-calculator",
+    name: "Ratio Calculator",
+    desc: "Simplify a ratio, solve a proportion, or split an amount by ratio.",
+    category: "Calculator",
+    icon: "\u{2797}",
+    keywords: ["ratio calculator", "simplify ratio", "proportion", "aspect ratio", "divide in ratio"],
+    popular: false
+  },
+  {
     slug: "password-generator",
     name: "Password Generator",
     desc: "Create strong random passwords with a live strength meter.",

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Tip Calculator — Split the Bill and Work Out the Tip</title>
+  <meta name="description" content="Work out the tip and split any bill between friends. Choose a percentage, round the total, and see exactly what each person owes. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/tip-calculator.html">
+
+  <meta property="og:title" content="Tip Calculator — Split the Bill and Work Out the Tip">
+  <meta property="og:description" content="Work out the tip and split any bill between friends. Choose a percentage, round the total, and see exactly what each person owes. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=4">
+  <link rel="stylesheet" href="../css/tool.css?v=4">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How much should I tip in India?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Around 5 to 10 percent is normal and welcome at a restaurant, and tipping is not expected at all in most other places. This is very different from the United States, where 15 to 20 percent is the working assumption. Tipping anywhere is a courtesy, never an obligation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "My bill already has a service charge. Should I still tip?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "That is your choice, and worth knowing: in India a service charge is not a government tax and is not mandatory. Under guidelines issued by the Central Consumer Protection Authority in 2022, restaurants cannot add it automatically, and you can ask for it to be removed. If you have paid one, an extra tip is entirely optional."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should the tip be worked out before or after tax?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tipping on the amount before tax is the more common convention, because tax is not part of what the service was worth. Tick the option on this page to exclude tax, enter the tax amount, and the tip is taken from the food and drink alone."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
+        <span>Tip Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Tip Calculator</h1>
+        <p>The tip, the total, and what each person owes when you split it.
+           Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">The bill</span>
+
+          <div class="field">
+            <label for="bill">Bill amount</label>
+            <input type="number" id="bill" value="1200" min="0" step="1">
+          </div>
+
+          <div class="field">
+            <label for="tip">Tip: <span id="tipVal">10</span>%</label>
+            <input type="range" id="tip" min="0" max="30" value="10" step="1">
+            <div class="btn-row" style="margin-top:var(--s3)">
+              <button class="btn btn--ghost" type="button" data-tip="5">5%</button>
+              <button class="btn btn--ghost" type="button" data-tip="10">10%</button>
+              <button class="btn btn--ghost" type="button" data-tip="15">15%</button>
+              <button class="btn btn--ghost" type="button" data-tip="20">20%</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="people">Split between: <span id="peopleVal">1</span></label>
+            <input type="range" id="people" min="1" max="20" value="1" step="1">
+          </div>
+
+          <div class="check">
+            <input type="checkbox" id="optNoTax">
+            <label for="optNoTax">Tip on the amount before tax</label>
+          </div>
+
+          <div class="field" id="taxWrap" hidden style="margin-top:var(--s3)">
+            <label for="tax">Tax included in the bill</label>
+            <input type="number" id="tax" value="0" min="0" step="1">
+            <p class="hint">The tip is taken from the bill minus this amount.</p>
+          </div>
+
+          <div class="check">
+            <input type="checkbox" id="optRound">
+            <label for="optRound">Round the total up to a whole number</label>
+          </div>
+
+          <p class="hint" style="margin-top:var(--s4)">In India 5&ndash;10% is
+             normal at a restaurant, and a service charge is never compulsory.
+             There is more on that below.</p>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">What to pay</span>
+
+          <div class="result">
+            <span class="result__num" id="total">&mdash;</span>
+            <span class="result__label" id="formula">bill plus tip</span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="tipAmount">&mdash;</span><span class="stat__label">Tip</span></div>
+            <div class="stat"><span class="stat__num" id="perPerson">&mdash;</span><span class="stat__label">Each person</span></div>
+            <div class="stat"><span class="stat__num" id="tipEach">&mdash;</span><span class="stat__label">Tip each</span></div>
+          </div>
+
+          <p class="msg" id="msg"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Enter the bill amount.</li>
+          <li>Drag the tip slider, or press one of the quick buttons.</li>
+          <li>If you are sharing, drag <strong>Split between</strong> to the number
+              of people.</li>
+          <li>Everything updates as you go. No currency symbol is shown, because
+              the arithmetic is the same everywhere.</li>
+        </ol>
+
+        <h2>How much to tip in India</h2>
+        <p>Roughly <strong>5 to 10 percent</strong> at a sit-down restaurant is
+          normal, appreciated, and plenty. Rounding up a small bill is perfectly
+          acceptable. In most other situations &mdash; a shop, a taxi, a delivery
+          &mdash; a tip is not expected, though it is always welcome.</p>
+
+        <p>If you have read American advice, ignore the numbers in it. Fifteen to
+          twenty percent is the working assumption there because tipped staff are
+          often paid a lower base wage that the tip is expected to make up. That
+          arrangement does not exist in India, so the percentage does not transfer.</p>
+
+        <h2>Service charge is not a tax, and not compulsory</h2>
+        <p>This is worth knowing before you add anything on top. A
+          <strong>service charge</strong> printed on an Indian restaurant bill is
+          money the restaurant has decided to add. It is not a government tax, and
+          it is not the same thing as GST.</p>
+
+        <p>Under guidelines issued by the Central Consumer Protection Authority in
+          2022, restaurants in India may not add a service charge automatically,
+          and you may ask for it to be removed from your bill. If you have paid
+          one, any further tip is entirely your choice.</p>
+
+        <p>Tax is a separate matter. GST is a genuine tax and is payable. If you
+          would rather not tip on top of the tax, tick <strong>Tip on the amount
+          before tax</strong>, enter the tax figure from your bill, and the tip is
+          calculated from the food and drink alone.</p>
+
+        <h2>Splitting without the awkward paise</h2>
+        <p>Divide 1,200 between seven people and you get 171.43 each, which nobody
+          is going to hand over. Tick <strong>Round the total up</strong> and the
+          bill is raised to the next whole number before it is divided, so the
+          shares come out clean and the restaurant keeps the difference as a
+          slightly larger tip.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How much should I tip in India?</h3>
+          <p>Around 5 to 10 percent is normal and welcome at a restaurant, and tipping is not expected at all in most other places. This is very different from the United States, where 15 to 20 percent is the working assumption. Tipping anywhere is a courtesy, never an obligation.</p>
+        </div>
+        <div class="faq">
+          <h3>My bill already has a service charge. Should I still tip?</h3>
+          <p>That is your choice, and worth knowing: in India a service charge is not a government tax and is not mandatory. Under guidelines issued by the Central Consumer Protection Authority in 2022, restaurants cannot add it automatically, and you can ask for it to be removed. If you have paid one, an extra tip is entirely optional.</p>
+        </div>
+        <div class="faq">
+          <h3>Should the tip be worked out before or after tax?</h3>
+          <p>Tipping on the amount before tax is the more common convention, because tax is not part of what the service was worth. Tick the option on this page to exclude tax, enter the tax amount, and the tip is taken from the food and drink alone.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved &mdash; close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=4"></script>
+  <script src="../js/tool-helpers.js?v=4"></script>
+  <script>window.CURRENT_TOOL = "tip-calculator";</script>
+  <script src="../js/main.js?v=4"></script>
+
+  <!-- ===== This tool has its own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var bill    = document.getElementById("bill");
+    var tip     = document.getElementById("tip");
+    var people  = document.getElementById("people");
+    var tax     = document.getElementById("tax");
+    var taxWrap = document.getElementById("taxWrap");
+    var optNoTax = document.getElementById("optNoTax");
+    var optRound = document.getElementById("optRound");
+
+    var tipVal    = document.getElementById("tipVal");
+    var peopleVal = document.getElementById("peopleVal");
+    var totalOut  = document.getElementById("total");
+    var formula   = document.getElementById("formula");
+    var tipAmount = document.getElementById("tipAmount");
+    var perPerson = document.getElementById("perPerson");
+    var tipEach   = document.getElementById("tipEach");
+    var msg       = document.getElementById("msg");
+
+    var TIMES = String.fromCharCode(0x00D7);
+    var PLUS  = "+";
+
+    function num(el) {
+      var n = parseFloat(el.value);
+      return isNaN(n) ? 0 : n;
+    }
+
+    /* Money rounds to 2 decimals; a trailing .00 is noise, so hide it */
+    function money(value) {
+      var rounded = Math.round(value * 100) / 100;
+      return formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
+    }
+
+    function run() {
+      taxWrap.hidden = !optNoTax.checked;
+
+      var amount  = num(bill);
+      var percent = num(tip);
+      var heads   = Math.max(1, Math.round(num(people)));
+
+      tipVal.textContent    = percent;
+      peopleVal.textContent = heads === 1 ? "just me" : heads + " people";
+
+      /* The tip is taken from the bill minus tax when that box is ticked.
+         Tax larger than the bill is a typo, so fall back to the whole bill
+         rather than producing a negative tip. */
+      var taxable = amount;
+      if (optNoTax.checked) {
+        var taxAmount = num(tax);
+        taxable = taxAmount > 0 && taxAmount < amount ? amount - taxAmount : amount;
+      }
+
+      var tipValue = taxable * (percent / 100);
+      var total    = amount + tipValue;
+
+      if (optRound.checked) {
+        var roundedTotal = Math.ceil(total);
+        tipValue += roundedTotal - total;   /* the rounding goes to the tip */
+        total = roundedTotal;
+      }
+
+      totalOut.textContent  = money(total);
+      tipAmount.textContent = money(tipValue);
+      perPerson.textContent = money(total / heads);
+      tipEach.textContent   = money(tipValue / heads);
+
+      formula.textContent = money(amount) + " " + PLUS + " " + money(tipValue) +
+        " tip" + (heads > 1 ? ", split " + heads + " ways" : "");
+
+      if (optNoTax.checked && taxable !== amount) {
+        msg.textContent = "Tip calculated on " + money(taxable) +
+                          ", the bill without tax (" + percent + "% " + TIMES +
+                          " " + money(taxable) + ").";
+        msg.className = "msg";
+      } else if (heads > 1) {
+        msg.textContent = "Each person pays " + money(total / heads) + ".";
+        msg.className = "msg msg--ok";
+      } else {
+        msg.textContent = "";
+        msg.className = "msg";
+      }
+    }
+
+    [bill, tip, people, tax].forEach(function (el) {
+      el.addEventListener("input", run);
+    });
+    [optNoTax, optRound].forEach(function (el) {
+      el.addEventListener("change", run);
+    });
+
+    /* The quick-percentage buttons just move the slider and rerun */
+    Array.prototype.forEach.call(
+      document.querySelectorAll("[data-tip]"),
+      function (button) {
+        button.addEventListener("click", function () {
+          tip.value = button.getAttribute("data-tip");
+          run();
+        });
+      });
+
+    run();   /* run once so the panel is correct on load */
+  })();
+  </script>
+</body>
+</html>

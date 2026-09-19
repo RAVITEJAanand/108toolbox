@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Ratio Calculator — Simplify, Solve and Split by Ratio</title>
+  <meta name="description" content="Simplify a ratio, solve A to B equals C to what, and divide any amount in a given ratio. Three ratio calculators on one page. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/ratio-calculator.html">
+
+  <meta property="og:title" content="Ratio Calculator — Simplify, Solve and Split by Ratio">
+  <meta property="og:description" content="Simplify a ratio, solve A to B equals C to what, and divide any amount in a given ratio. Three ratio calculators on one page. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=4">
+  <link rel="stylesheet" href="../css/tool.css?v=4">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I simplify a ratio?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Divide both sides by the largest number that goes into each of them exactly, which is called the highest common factor. For 1920 to 1080 that number is 120, giving 16 to 9. The first calculator on this page does it for you and shows which factor it used."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it handle decimals in a ratio?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Decimals are scaled up to whole numbers before being simplified, so 2.5 to 1 becomes 5 to 2. Very long decimals are rounded sensibly rather than producing an absurdly large pair of whole numbers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I split an amount in a ratio?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Add the parts of the ratio together, divide the amount by that total to find the value of one part, then multiply by each side. The third calculator does this, and it takes as many parts as you need, not only two."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
+        <span>Ratio Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Ratio Calculator</h1>
+        <p>Simplify a ratio, find the missing number in a proportion, or split an
+           amount between any number of shares. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace">
+
+        <!-- ---------- A: simplify ---------- -->
+        <div class="panel">
+          <span class="panel__label">Simplify a ratio</span>
+          <div class="btn-row" style="align-items:center;gap:var(--s2)">
+            <input type="number" id="a1" value="1920" step="any" style="max-width:130px">
+            <span>:</span>
+            <input type="number" id="a2" value="1080" step="any" style="max-width:130px">
+          </div>
+          <div class="result" style="margin-top:var(--s4)">
+            <span class="result__num" id="aOut">16 : 9</span>
+            <span class="result__label" id="aFormula"></span>
+          </div>
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="aDecimal">1.78</span><span class="stat__label">As a decimal</span></div>
+            <div class="stat"><span class="stat__num" id="aPercent">64%</span><span class="stat__label">First as a share</span></div>
+            <div class="stat"><span class="stat__num" id="aHcf">120</span><span class="stat__label">Divided by</span></div>
+          </div>
+        </div>
+
+        <!-- ---------- B: solve the proportion ---------- -->
+        <div class="panel">
+          <span class="panel__label">Find the missing number</span>
+          <div class="btn-row" style="align-items:center;gap:var(--s2)">
+            <input type="number" id="b1" value="3" step="any" style="max-width:100px">
+            <span>:</span>
+            <input type="number" id="b2" value="4" step="any" style="max-width:100px">
+            <span>=</span>
+            <input type="number" id="b3" value="15" step="any" style="max-width:100px">
+            <span>:</span>
+            <span class="result__num" id="bOut" style="font-size:1.75rem">20</span>
+          </div>
+          <p class="hint" id="bFormula" style="margin-top:var(--s3)"></p>
+        </div>
+
+        <!-- ---------- C: split an amount ---------- -->
+        <div class="panel">
+          <span class="panel__label">Split an amount in a ratio</span>
+          <div class="btn-row" style="align-items:center;gap:var(--s2)">
+            <span>Divide</span>
+            <input type="number" id="c1" value="5000" step="any" style="max-width:140px">
+            <span>in the ratio</span>
+            <input type="text" id="c2" value="2:3" style="max-width:160px">
+          </div>
+          <p class="hint">Use any number of parts, separated by colons &mdash;
+             for example <code>2:3</code> or <code>1:1:2</code>.</p>
+
+          <div class="table-wrap" style="margin-top:var(--s4)">
+            <table class="data">
+              <thead>
+                <tr><th>Share</th><th>Parts</th><th>Amount</th><th>Percent</th></tr>
+              </thead>
+              <tbody id="splitRows"></tbody>
+            </table>
+          </div>
+          <p class="msg" id="cMsg"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>The <strong>first</strong> box reduces a ratio to its simplest form.
+              Screen sizes, map scales and recipes all live here.</li>
+          <li>The <strong>second</strong> fills in the missing fourth number when
+              you are scaling something up or down.</li>
+          <li>The <strong>third</strong> divides money, land or ingredients between
+              any number of shares.</li>
+        </ol>
+
+        <h2>What simplifying really does</h2>
+        <p>A ratio compares two quantities, and the same relationship can be
+          written many ways. <code>1920:1080</code>, <code>1280:720</code> and
+          <code>16:9</code> all describe exactly the same shape of screen. The
+          simplest form is the one where no whole number divides both sides any
+          further.</p>
+
+        <p>To get there you divide both sides by their highest common factor. For
+          1920 and 1080 that factor is 120, which is why the answer is 16:9. This
+          page shows you the factor it used, so the arithmetic is not a mystery.</p>
+
+        <h2>Solving a proportion</h2>
+        <p>The second calculator answers questions of the form &ldquo;3 is to 4 as
+          15 is to what?&rdquo; You cross-multiply: multiply 4 by 15, divide by 3,
+          and the answer is 20.</p>
+
+        <p>This is the single most useful piece of ratio arithmetic in ordinary
+          life. A recipe for four people scaled to seven, a map scale converted to
+          real distance, a photograph resized without stretching &mdash; all the
+          same sum.</p>
+
+        <h2>Splitting an amount</h2>
+        <p>To divide 5,000 in the ratio 2:3, add the parts to get 5, divide 5,000
+          by 5 to find that one part is worth 1,000, then multiply out: 2,000 and
+          3,000.</p>
+
+        <p>The third calculator accepts as many parts as you need, so
+          <code>1:1:2</code> splits three ways, and it shows each share as a
+          percentage as well. Where the division does not come out exactly, the
+          amounts are rounded to two decimal places and the tool tells you when the
+          rounded shares no longer add back to the original total &mdash; which
+          matters when the thing being split is money.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How do I simplify a ratio?</h3>
+          <p>Divide both sides by the largest number that goes into each of them exactly, which is called the highest common factor. For 1920 to 1080 that number is 120, giving 16 to 9. The first calculator on this page does it for you and shows which factor it used.</p>
+        </div>
+        <div class="faq">
+          <h3>Can it handle decimals in a ratio?</h3>
+          <p>Yes. Decimals are scaled up to whole numbers before being simplified, so 2.5 to 1 becomes 5 to 2. Very long decimals are rounded sensibly rather than producing an absurdly large pair of whole numbers.</p>
+        </div>
+        <div class="faq">
+          <h3>How do I split an amount in a ratio?</h3>
+          <p>Add the parts of the ratio together, divide the amount by that total to find the value of one part, then multiply by each side. The third calculator does this, and it takes as many parts as you need, not only two.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved &mdash; close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=4"></script>
+  <script src="../js/tool-helpers.js?v=4"></script>
+  <script>window.CURRENT_TOOL = "ratio-calculator";</script>
+  <script src="../js/main.js?v=4"></script>
+
+  <!-- ===== This tool has its own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var EM_DASH = String.fromCharCode(0x2014);
+    var TIMES   = String.fromCharCode(0x00D7);
+    var DIVIDE  = String.fromCharCode(0x00F7);
+
+    function el(id) { return document.getElementById(id); }
+
+    function num(id) {
+      var n = parseFloat(el(id).value);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function money(value) {
+      var rounded = Math.round(value * 100) / 100;
+      return formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
+    }
+
+    /* Euclid, iteratively. Recursion would be prettier and would also blow the
+       stack on a pathological pair. */
+    function hcf(a, b) {
+      a = Math.abs(a);
+      b = Math.abs(b);
+      while (b > 0.0000001) {
+        var t = b;
+        b = a % b;
+        a = t;
+      }
+      return a;
+    }
+
+    /* Decimals have to become whole numbers before an HCF means anything.
+       Multiplying by a power of ten is capped so that 1.123456789 does not
+       turn into a ratio of billions. */
+    function toWhole(a, b) {
+      var factor = 1;
+      var guard = 0;
+      while ((a * factor) % 1 !== 0 || (b * factor) % 1 !== 0) {
+        factor *= 10;
+        guard++;
+        if (guard > 6) break;        /* 6 decimal places is plenty */
+      }
+      return [Math.round(a * factor), Math.round(b * factor)];
+    }
+
+    /* ---- A: simplify ---- */
+    function runA() {
+      var a = num("a1");
+      var b = num("a2");
+
+      if (a === 0 || b === 0) {
+        el("aOut").textContent = EM_DASH;
+        el("aFormula").textContent = "both sides need to be more than zero";
+        el("aDecimal").textContent = EM_DASH;
+        el("aPercent").textContent = EM_DASH;
+        el("aHcf").textContent = EM_DASH;
+        return;
+      }
+
+      var whole = toWhole(a, b);
+      var divisor = hcf(whole[0], whole[1]) || 1;
+      var left  = whole[0] / divisor;
+      var right = whole[1] / divisor;
+
+      el("aOut").textContent = formatNumber(left) + " : " + formatNumber(right);
+      el("aFormula").textContent =
+        formatNumber(whole[0]) + " " + DIVIDE + " " + formatNumber(divisor) +
+        "  and  " + formatNumber(whole[1]) + " " + DIVIDE + " " +
+        formatNumber(divisor);
+      el("aDecimal").textContent = formatNumber(a / b, 2);
+      el("aPercent").textContent = formatNumber((a / (a + b)) * 100, 1) + "%";
+      el("aHcf").textContent = formatNumber(divisor);
+    }
+
+    /* ---- B: solve A:B = C:? ---- */
+    function runB() {
+      var a = num("b1");
+      var b = num("b2");
+      var c = num("b3");
+
+      if (a === 0) {
+        el("bOut").textContent = EM_DASH;
+        el("bFormula").textContent = "the first number cannot be zero";
+        return;
+      }
+
+      var d = (b * c) / a;
+      el("bOut").textContent = formatNumber(Math.round(d * 10000) / 10000,
+                                            d % 1 === 0 ? 0 : 2);
+      el("bFormula").textContent =
+        "cross-multiply: " + formatNumber(b) + " " + TIMES + " " +
+        formatNumber(c) + " " + DIVIDE + " " + formatNumber(a) + " = " +
+        formatNumber(Math.round(d * 10000) / 10000, d % 1 === 0 ? 0 : 2);
+    }
+
+    /* ---- C: split an amount ---- */
+    function runC() {
+      var amount = num("c1");
+      var rows = el("splitRows");
+      var msg = el("cMsg");
+
+      var parts = el("c2").value.split(":").map(function (piece) {
+        var n = parseFloat(piece);
+        return isNaN(n) ? 0 : Math.abs(n);
+      }).filter(function (n) { return n > 0; });
+
+      rows.textContent = "";
+      msg.textContent = "";
+      msg.className = "msg";
+
+      if (parts.length < 2) {
+        msg.textContent = "Enter at least two parts, such as 2:3.";
+        msg.className = "msg msg--bad";
+        return;
+      }
+
+      var total = parts.reduce(function (a, b) { return a + b; }, 0);
+      var fragment = document.createDocumentFragment();
+      var paidOut = 0;
+
+      parts.forEach(function (part, i) {
+        var share = (amount * part) / total;
+        paidOut += Math.round(share * 100) / 100;
+
+        var tr = document.createElement("tr");
+        [
+          "Share " + (i + 1),
+          formatNumber(part),
+          money(share),
+          formatNumber((part / total) * 100, 1) + "%"
+        ].forEach(function (text) {
+          var td = document.createElement("td");
+          /* textContent, never innerHTML: the ratio comes from the visitor */
+          td.textContent = text;
+          tr.appendChild(td);
+        });
+        fragment.appendChild(tr);
+      });
+
+      rows.appendChild(fragment);
+
+      /* Rounding money can leave the shares not adding back to the total */
+      var drift = Math.round((amount - paidOut) * 100) / 100;
+      if (drift !== 0) {
+        msg.textContent = "Rounded to 2 decimals the shares come to " +
+          money(paidOut) + ", which is " + money(Math.abs(drift)) +
+          (drift > 0 ? " short of " : " more than ") + money(amount) + ".";
+        msg.className = "msg msg--bad";
+      } else {
+        msg.textContent = "One part is worth " + money(amount / total) + ".";
+        msg.className = "msg msg--ok";
+      }
+    }
+
+    function run() { runA(); runB(); runC(); }
+
+    ["a1","a2","b1","b2","b3","c1","c2"].forEach(function (id) {
+      el(id).addEventListener("input", run);
+    });
+
+    run();   /* run once so the page is correct on load */
+  })();
+  </script>
+</body>
+</html>

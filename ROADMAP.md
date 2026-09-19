@@ -58,7 +58,7 @@ Difficulty is honest: **easy** = one afternoon, **medium** = a weekend,
 | Phase | Tools | Why these next | Target |
 |---|---|---|---|
 | 1 ✅ | 1–10 | Proof the system works | done |
-| 2 | 11–30 | Highest search volume, all easy, no libraries | **10 of 20 done** |
+| 2 | 11–30 | Highest search volume, all easy, no libraries | **15 of 20 done** |
 | 3 | 31–60 | Converters and date/time. Still no libraries | month 4–6 |
 | 4 | 61–90 | PDF and files. First real libraries | month 7–9 |
 | 5 | 91–108 | The long tail and the India-specific calculators | month 10–12 |
@@ -100,7 +100,7 @@ Do it all at once, re-run `check.py`, done.
 
 | Category | Tools | Built |
 |---|---|---|
-| Calculator | 20 | 3 |
+| Calculator | 20 | 8 |
 | Developer | 18 | 2 |
 | Text | 16 | 13 |
 | Image | 14 | 2 |
@@ -108,7 +108,7 @@ Do it all at once, re-run `check.py`, done.
 | PDF | 10 | 0 |
 | Date & Time | 8 | 0 |
 | Random | 8 | 0 |
-| **Total** | **108** | **20** |
+| **Total** | **108** | **25** |
 
 ---
 
@@ -164,11 +164,11 @@ matches, so do not rename them later. ✅ = already live.
 | 1 | `percentage-calculator` ✅ | easy |
 | 2 | `age-calculator` ✅ | easy |
 | 3 | `emi-calculator` ✅ | medium |
-| 4 | `bmi-calculator` | easy |
-| 5 | `discount-calculator` | easy |
-| 6 | `tip-calculator` | easy |
-| 7 | `average-calculator` | easy |
-| 8 | `ratio-calculator` | easy |
+| 4 | `bmi-calculator` ✅ | easy |
+| 5 | `discount-calculator` ✅ | easy |
+| 6 | `tip-calculator` ✅ | easy |
+| 7 | `average-calculator` ✅ | easy |
+| 8 | `ratio-calculator` ✅ | easy |
 | 9 | `fraction-calculator` | easy |
 | 10 | `simple-interest-calculator` | easy |
 | 11 | `compound-interest-calculator` | easy |

@@ -191,11 +191,37 @@ function renderRelated(containerId, currentSlug) {
 }
 
 /* --------------------------------------------------------------------------
+   Tool counts
+
+   "15 tools live" used to be typed by hand into three separate pages, and it
+   went stale every single time a batch shipped - twice it was wrong on the
+   live site while the grid below it showed the real number. The registry is
+   the source of truth for everything else on this site, so it is the source
+   of truth for the count as well.
+
+   Any element carrying data-tool-count is filled in automatically:
+     data-tool-count="live"       how many tools exist right now
+     data-tool-count="remaining"  how many of the 108 are still to come
+   -------------------------------------------------------------------------- */
+const TOOL_TARGET = 108;
+
+function renderCounts() {
+  const nodes = document.querySelectorAll("[data-tool-count]");
+  Array.prototype.forEach.call(nodes, function (el) {
+    const which = el.getAttribute("data-tool-count");
+    el.textContent = which === "remaining"
+      ? TOOL_TARGET - TOOLS.length
+      : TOOLS.length;
+  });
+}
+
+/* --------------------------------------------------------------------------
    Go
    -------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
   wireThemeToggle();
   wireBurger();
+  renderCounts();
 
   /* Homepage: only the popular tools */
   if (document.getElementById("popularGrid")) {
