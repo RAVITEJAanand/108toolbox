@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Image Converter — PNG to JPG, JPG to PNG, WebP Free</title>
+  <meta name="description" content="Convert images between PNG, JPG and WebP for free in your browser. Optional resize, no upload, no watermark, no sign-up.">
+  <link rel="canonical" href="https://108toolbox.in/tools/image-converter.html">
+
+  <meta property="og:title" content="Image Converter — PNG to JPG, JPG to PNG, WebP Free">
+  <meta property="og:description" content="Convert images between PNG, JPG and WebP for free in your browser. Optional resize, no upload, no watermark, no sign-up.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tool.css">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Which format should I pick?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "JPG for photographs. PNG when you need a transparent background or crisp text and lines. WebP when you control the website and want the smallest file — every current browser supports it."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why did my transparent PNG get a white background?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "JPG cannot store transparency at all. The tool fills transparent areas with white rather than black, which is almost always what you want. Convert to PNG or WebP to keep transparency."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I convert several images at once?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not yet — this version handles one file at a time. Batch conversion is on the roadmap."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does converting lose quality?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Converting to PNG does not. Converting to JPG or WebP re-encodes the image, so each round trip loses a little. Always convert from your original file rather than from an earlier conversion."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <!-- Theme toggle. Both icons are in the HTML; CSS shows the right one,
+             so no JavaScript is needed just to swap the picture. -->
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <!-- Slides down on phones. main.js toggles the .is-open class. -->
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <!-- Breadcrumb: helps visitors AND shows as a path in Google results -->
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
+        <span>Image Format Converter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Image Format Converter</h1>
+        <p>Convert between PNG, JPG and WebP in your browser. Optionally resize at the same time.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">1. Choose an image</span>
+
+          <label class="drop" id="drop" for="file">
+            <span class="drop__big" aria-hidden="true">&#128260;</span>
+            <p><strong>Click to choose</strong> or drag an image here</p>
+            <p style="margin-top:var(--s1)">PNG, JPG, WebP, GIF or BMP</p>
+            <input type="file" id="file" accept="image/*">
+          </label>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="format">2. Convert to</label>
+            <select id="format">
+              <option value="image/png">PNG &mdash; lossless, supports transparency</option>
+              <option value="image/jpeg">JPG &mdash; smallest for photos</option>
+              <option value="image/webp">WebP &mdash; modern, smallest overall</option>
+            </select>
+          </div>
+
+          <div class="field" id="qualityField">
+            <label for="quality">Quality: <span id="qVal">85</span>%</label>
+            <input type="range" id="quality" min="10" max="100" value="85" step="5">
+            <p class="hint">Only applies to JPG and WebP. PNG is always lossless.</p>
+          </div>
+
+          <div class="field">
+            <label for="width">Resize width (optional)</label>
+            <input type="number" id="width" placeholder="Leave blank to keep original" min="1" max="10000">
+            <p class="hint">Height is worked out automatically to keep the proportions.</p>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Download</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+          <div class="preview" id="preview"></div>
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sBefore">&mdash;</span><span class="stat__label">Original</span></div>
+            <div class="stat"><span class="stat__num" id="sAfter">&mdash;</span><span class="stat__label">Converted</span></div>
+            <div class="stat"><span class="stat__num" id="sDims">&mdash;</span><span class="stat__label">Size</span></div>
+          </div>
+          <p class="msg" id="msg"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Pick or drag in your image.</li>
+          <li>Choose the format you want. Set a width if you also need it resized.</li>
+          <li>Press <strong>Download</strong> — the file is built on your device and saved straight to your downloads.</li>
+        </ol>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Which format should I pick?</h3>
+          <p><strong>JPG</strong> for photographs. <strong>PNG</strong> when you need a transparent background or crisp text and lines. <strong>WebP</strong> when you control the website and want the smallest file — every current browser supports it.</p>
+        </div>
+        <div class="faq">
+          <h3>Why did my transparent PNG get a white background?</h3>
+          <p>JPG cannot store transparency at all. The tool fills transparent areas with white rather than black, which is almost always what you want. Convert to PNG or WebP to keep transparency.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I convert several images at once?</h3>
+          <p>Not yet — this version handles one file at a time. Batch conversion is on the roadmap.</p>
+        </div>
+        <div class="faq">
+          <h3>Does converting lose quality?</h3>
+          <p>Converting to PNG does not. Converting to JPG or WebP re-encodes the image, so each round trip loses a little. Always convert from your original file rather than from an earlier conversion.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js"></script>
+  <script src="../js/tool-helpers.js"></script>
+  <script>window.CURRENT_TOOL = "image-converter";</script>
+  <script src="../js/main.js"></script>
+
+  <!-- ===== This tool's own logic. The only part that differs per tool. =====
+       Wrapped in (function(){ ... })() so its variables cannot clash with
+       anything else on the page. -->
+  <script data-tool>
+  (function () {
+    "use strict";
+  var fileInput = document.getElementById("file");
+  var drop    = document.getElementById("drop");
+  var format  = document.getElementById("format");
+  var quality = document.getElementById("quality");
+  var widthIn = document.getElementById("width");
+  var preview = document.getElementById("preview");
+  var dlBtn   = document.getElementById("dlBtn");
+  var msg     = document.getElementById("msg");
+
+  var loadedImage = null;
+  var originalName = "image";
+  var originalSize = 0;
+  var resultBlob = null;
+
+  var EXTENSION = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" };
+
+  function setMessage(text, kind) {
+    msg.textContent = text || "";
+    msg.className = "msg" + (kind ? " msg--" + kind : "");
+  }
+
+  function loadFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { setMessage("That is not an image file.", "bad"); return; }
+
+    originalName = file.name.replace(/\.[^.]+$/, "");
+    originalSize = file.size;
+
+    var reader = new FileReader();
+    reader.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        loadedImage = img;
+        document.getElementById("sBefore").textContent = formatBytes(originalSize);
+        widthIn.placeholder = "Original: " + img.naturalWidth + "px";
+        convert();
+      };
+      img.onerror = function () { setMessage("That image could not be read.", "bad"); };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function convert() {
+    if (!loadedImage) return;
+
+    var type = format.value;
+
+    /* Work out the output size */
+    var targetWidth = parseInt(widthIn.value, 10);
+    var scale = 1;
+    if (targetWidth > 0 && targetWidth <= 10000) {
+      scale = targetWidth / loadedImage.naturalWidth;
+    }
+    var w = Math.max(1, Math.round(loadedImage.naturalWidth  * scale));
+    var h = Math.max(1, Math.round(loadedImage.naturalHeight * scale));
+
+    var canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    var ctx = canvas.getContext("2d");
+
+    /* JPG has no transparency, so fill white first — otherwise transparent
+       areas come out black. This is the classic PNG-to-JPG gotcha. */
+    if (type === "image/jpeg") {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, w, h);
+    }
+    ctx.drawImage(loadedImage, 0, 0, w, h);
+
+    canvas.toBlob(function (blob) {
+      if (!blob) { setMessage("Your browser cannot write that format.", "bad"); return; }
+      resultBlob = blob;
+
+      preview.innerHTML = "";
+      var img = new Image();
+      img.src = URL.createObjectURL(blob);
+      img.alt = "Converted preview";
+      preview.appendChild(img);
+
+      document.getElementById("sAfter").textContent = formatBytes(blob.size);
+      document.getElementById("sDims").textContent  = w + "\u00d7" + h;
+      dlBtn.disabled = false;
+      setMessage("Ready to download as " + EXTENSION[type].toUpperCase() + ".", "ok");
+
+    }, type, quality.value / 100);
+  }
+
+  /* Hide the quality slider when PNG is picked — it does nothing there */
+  function syncQualityVisibility() {
+    document.getElementById("qualityField").style.display =
+      format.value === "image/png" ? "none" : "block";
+  }
+
+  format.addEventListener("change", function () { syncQualityVisibility(); convert(); });
+  quality.addEventListener("input", function () { document.getElementById("qVal").textContent = quality.value; convert(); });
+  widthIn.addEventListener("input", convert);
+  fileInput.addEventListener("change", function () { loadFile(fileInput.files[0]); });
+
+  ["dragenter", "dragover"].forEach(function (t) {
+    drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add("is-over"); });
+  });
+  ["dragleave", "drop"].forEach(function (t) {
+    drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove("is-over"); });
+  });
+  drop.addEventListener("drop", function (e) { loadFile(e.dataTransfer.files[0]); });
+
+  dlBtn.addEventListener("click", function () {
+    if (resultBlob) downloadBlob(resultBlob, originalName + "." + EXTENSION[format.value]);
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    loadedImage = null; resultBlob = null;
+    fileInput.value = ""; widthIn.value = "";
+    preview.innerHTML = "";
+    ["sBefore", "sAfter", "sDims"].forEach(function (id) {
+      document.getElementById(id).textContent = "\u2014";
+    });
+    dlBtn.disabled = true;
+    setMessage("");
+  });
+
+  syncQualityVisibility();
+  })();
+  </script>
+</body>
+</html>

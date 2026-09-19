@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- This one line is what makes the site mobile-friendly. Never remove it. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO: the three tags Google actually shows ===== -->
+  <title>Page not found — 108 ToolBox</title>
+  <meta name="description" content="That page does not exist. Browse all tools instead.">
+  <link rel="canonical" href="https://108toolbox.in/404.html">
+
+  <!-- Social preview -->
+  <meta property="og:title" content="Page not found — 108 ToolBox">
+  <meta property="og:description" content="That page does not exist. Browse all tools instead.">
+  <meta property="og:type" content="website">
+
+  <!-- Emoji favicon: no image file to download -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="tools.html">All Tools</a>
+        <a href="about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <!-- Theme toggle. Both icons are in the HTML; CSS shows the right one,
+             so no JavaScript is needed just to swap the picture. -->
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <!-- Slides down on phones. main.js toggles the .is-open class. -->
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="index.html">Home</a>
+      <a href="tools.html">All Tools</a>
+      <a href="about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section" style="text-align:center">
+    <div class="container">
+      <p style="font-size:3rem;margin:0">&#129301;</p>
+      <h1>That page does not exist</h1>
+      <p style="color:var(--text-soft);max-width:28rem;margin:0 auto var(--s5)">
+        The link may be old, or the tool may not be built yet.</p>
+      <div class="btn-row" style="justify-content:center">
+        <a class="btn btn--primary" href="tools.html">Browse all tools</a>
+        <a class="btn btn--ghost" href="index.html">Go home</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="tools.html?q=text">Text tools</a></li>
+            <li><a href="tools.html?q=image">Image tools</a></li>
+            <li><a href="tools.html?q=calculator">Calculators</a></li>
+            <li><a href="tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="tools/word-counter.html">Word Counter</a></li>
+            <li><a href="tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/tools-data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

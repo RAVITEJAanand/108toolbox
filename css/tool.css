@@ -1,0 +1,221 @@
+/* ==========================================================================
+   108 Tools — tool.css
+   ONLY loaded on tool pages (/tools/*.html).
+   Holds the two-panel layout and the controls tools need.
+   ========================================================================== */
+
+/* Breadcrumb: Home > Text > Word Counter */
+.crumbs {
+  font-size: .8125rem;
+  color: var(--text-soft);
+  margin-bottom: var(--s3);
+}
+.crumbs a { color: var(--text-soft); }
+.crumbs a:hover { color: var(--primary); }
+.crumbs span { margin: 0 var(--s1); }
+
+.tool-head { margin-bottom: var(--s5); }
+.tool-head p { color: var(--text-soft); margin: 0; max-width: 42rem; }
+
+/* ---- The two-panel workspace ------------------------------------------- */
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr;   /* mobile: input on top, output below */
+  gap: var(--s4);
+  margin-bottom: var(--s7);
+}
+@media (min-width: 900px) {
+  .workspace--split { grid-template-columns: 1fr 1fr; }
+  .workspace--wide  { grid-template-columns: 1.4fr 1fr; }
+}
+
+.panel {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--s4);
+}
+.panel__label {
+  display: block;
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text-soft);
+  margin-bottom: var(--s3);
+}
+
+/* ---- Form controls ------------------------------------------------------ */
+.field { margin-bottom: var(--s4); }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block;
+  font-size: .875rem;
+  font-weight: 500;
+  margin-bottom: var(--s2);
+}
+.hint { font-size: .8125rem; color: var(--text-soft); margin: var(--s1) 0 0; }
+
+textarea,
+input[type="text"], input[type="number"], input[type="date"], select {
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: var(--s3);
+  min-height: 44px;
+}
+textarea {
+  min-height: 220px;
+  resize: vertical;
+  line-height: 1.6;
+}
+textarea.mono, .out.mono { font-family: var(--font-mono); font-size: .875rem; }
+
+textarea:focus, input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+/* Range slider */
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary);   /* one line = styled slider in all modern browsers */
+  height: 44px;
+}
+
+/* Checkbox rows */
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 40px;
+  font-size: .9375rem;
+}
+.check input { width: 18px; height: 18px; accent-color: var(--primary); margin: 0; }
+
+/* ---- Stat tiles (the output of counters/calculators) -------------------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s2);
+}
+.stats--3 { grid-template-columns: repeat(3, 1fr); }
+.stat {
+  min-width: 0;                 /* lets a long number shrink instead of widening the grid */
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: var(--s3);
+  text-align: center;
+}
+.stat__num {
+  display: block;
+  overflow-wrap: anywhere;
+  /* Shrinks on narrow phones so "10,00,000" cannot push the page sideways */
+  font-size: clamp(1rem, 4.2vw, 1.375rem);
+  font-weight: 700;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;   /* digits stop jittering as they change */
+  line-height: 1.2;
+}
+.stat__label {
+  display: block;
+  font-size: .75rem;
+  color: var(--text-soft);
+  margin-top: var(--s1);
+}
+
+/* A single big result line, e.g. EMI = 12,345 */
+.result {
+  min-width: 0;
+  background: var(--primary-soft);
+  border-radius: var(--r-sm);
+  padding: var(--s4);
+  text-align: center;
+  margin-bottom: var(--s4);
+}
+.result__num {
+  display: block;
+  font-size: clamp(1.375rem, 6.5vw, 1.75rem);
+  overflow-wrap: anywhere;
+  font-weight: 700;
+  color: var(--primary-hover);
+  font-variant-numeric: tabular-nums;
+}
+.result__label { font-size: .8125rem; color: var(--text-soft); }
+
+/* Read-only output box */
+.out {
+  min-height: 220px;
+  max-height: 480px;
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: var(--s3);
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Status messages */
+.msg { font-size: .875rem; margin-top: var(--s3); }
+.msg--ok   { color: var(--success); }
+.msg--bad  { color: var(--danger); }
+
+/* ---- File drop zone (image tools) -------------------------------------- */
+/* display:block is NOT optional here. A <label> is display:inline by default,
+   so without it the dashed border breaks into fragments around the inline
+   boxes, the block-level <p> children escape the box, and the whole thing
+   collides with the panel heading above. */
+.drop {
+  display: block;
+  border: 2px dashed var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  padding: var(--s7) var(--s4);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.drop:hover, .drop.is-over { border-color: var(--primary); background: var(--primary-soft); }
+.drop__big { display: block; font-size: 2rem; line-height: 1; margin-bottom: var(--s3); }
+.drop p { margin: 0; color: var(--text-soft); font-size: .875rem; }
+.drop input[type="file"] { display: none; }
+
+.preview img {
+  max-height: 260px;
+  width: auto;
+  margin: 0 auto var(--s3);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+}
+
+/* ---- Small data table (amortisation, key/value output) ----------------- */
+.table-wrap { overflow-x: auto; }
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .875rem;
+}
+table.data th, table.data td {
+  padding: var(--s2) var(--s3);
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+table.data th { text-align: right; color: var(--text-soft); font-weight: 600; background: var(--surface); }
+table.data th:first-child, table.data td:first-child { text-align: left; }
+
+/* ---- SEO content below the tool ---------------------------------------- */
+.tool-info { border-top: 1px solid var(--border); padding-top: var(--s6); }
+.tool-info h2 { margin-top: var(--s5); }
+.tool-info h2:first-child { margin-top: 0; }
+.faq { margin-bottom: var(--s4); }
+.faq h3 { margin-bottom: var(--s1); }
+.faq p  { color: var(--text-soft); margin: 0; }

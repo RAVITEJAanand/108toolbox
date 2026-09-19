@@ -1,0 +1,6 @@
+# Allow every crawler to index everything.
+User-agent: *
+Allow: /
+
+# Point crawlers at the sitemap. Change the domain when you buy one.
+Sitemap: https://108toolbox.in/sitemap.xml

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Sort Text Lines Online — Alphabetical &amp; Numeric Sort</title>
+  <meta name="description" content="Sort any list of lines alphabetically, by number, by length or in reverse. Ignore case and remove duplicates as you sort. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/sort-text-lines.html">
+
+  <meta property="og:title" content="Sort Text Lines Online — Alphabetical &amp; Numeric Sort">
+  <meta property="og:description" content="Sort any list of lines alphabetically, by number, by length or in reverse. Ignore case and remove duplicates as you sort. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tool.css">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why does item 10 come before item 2 in some sorters?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because a plain alphabetical sort compares one character at a time, and the character 1 comes before 2. This tool uses natural sorting, so item2 correctly lands before item10 without you doing anything."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it sort numbers properly, including decimals and minus signs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Choose one of the Number options. It reads the first number it finds on each line, so 12.5 kg and -3 degrees both sort correctly. Lines with no number at all are pushed to the bottom."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does sorting change my capitalisation or spelling?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Lines are only reordered, never rewritten. Ignore case changes how lines are compared while sorting, not what comes out."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The sorting happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
+        <span>Sort Text Lines</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Sort Text Lines</h1>
+        <p>Put any list in order — A to Z, by number, by length or reversed — and
+           strip the duplicates while you are there. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Your list</label>
+          <textarea id="input" placeholder="Paste one item per line&hellip;"></textarea>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="order">Sort by</label>
+            <select id="order">
+              <option value="az">A to Z</option>
+              <option value="za">Z to A</option>
+              <option value="num-asc">Number, low to high</option>
+              <option value="num-desc">Number, high to low</option>
+              <option value="len-asc">Length, short to long</option>
+              <option value="len-desc">Length, long to short</option>
+              <option value="reverse">Just reverse the current order</option>
+            </select>
+          </div>
+
+          <div class="check"><input type="checkbox" id="optCase" checked><label for="optCase">Ignore case</label></div>
+          <div class="check"><input type="checkbox" id="optTrim" checked><label for="optTrim">Trim spaces from each line</label></div>
+          <div class="check"><input type="checkbox" id="optEmpty" checked><label for="optEmpty">Remove empty lines</label></div>
+          <div class="check"><input type="checkbox" id="optDupes"><label for="optDupes">Remove duplicates too</label></div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Sorted</span>
+
+          <div class="stats stats--3" aria-live="polite">
+            <div class="stat"><span class="stat__num" id="cIn">0</span><span class="stat__label">Lines in</span></div>
+            <div class="stat"><span class="stat__num" id="cOut">0</span><span class="stat__label">Lines out</span></div>
+            <div class="stat"><span class="stat__num" id="cDupes">0</span><span class="stat__label">Duplicates</span></div>
+          </div>
+
+          <pre class="out" id="output" style="margin-top:var(--s4)"></pre>
+
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
+            <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Paste your list into the box on the left, one item per line.</li>
+          <li>Pick how to sort it. <strong>A to Z</strong> covers most lists.</li>
+          <li>The sorted list appears instantly — there is no button to press.</li>
+          <li>Press <strong>Copy result</strong>, or download it as a <code>.txt</code> file.</li>
+        </ol>
+
+        <h2>Natural sorting, and why it matters</h2>
+        <p>Most sorters compare text one character at a time, which is why they put
+          <code>item10</code> before <code>item2</code> — the character <code>1</code>
+          comes before <code>2</code>, and the sorter never notices that these are
+          numbers. This tool uses your browser's natural sort, so numbered lists,
+          version strings and file names come out in the order a human expects.</p>
+
+        <p>If your lines are actual measurements — prices, weights, scores — choose
+          one of the <strong>Number</strong> options instead. That reads the first
+          number on each line and sorts by its value, so <code>9 kg</code> lands
+          before <code>80 kg</code>, and negative numbers and decimals are handled
+          properly. Lines with no number in them are pushed to the bottom rather
+          than scattered through the middle.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Why does item 10 come before item 2 in some sorters?</h3>
+          <p>Because a plain alphabetical sort compares one character at a time, and the character <code>1</code> comes before <code>2</code>. This tool uses natural sorting, so <code>item2</code> correctly lands before <code>item10</code> without you doing anything.</p>
+        </div>
+        <div class="faq">
+          <h3>Can it sort numbers properly, including decimals and minus signs?</h3>
+          <p>Yes. Choose one of the <strong>Number</strong> options. It reads the first number it finds on each line, so <code>12.5 kg</code> and <code>-3 degrees</code> both sort correctly. Lines with no number at all are pushed to the bottom.</p>
+        </div>
+        <div class="faq">
+          <h3>Does sorting change my capitalisation or spelling?</h3>
+          <p>No. Lines are only reordered, never rewritten. <strong>Ignore case</strong> changes how lines are compared while sorting, not what comes out.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. The sorting happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js"></script>
+  <script src="../js/tool-helpers.js"></script>
+  <script>window.CURRENT_TOOL = "sort-text-lines";</script>
+  <script src="../js/main.js"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input  = document.getElementById("input");
+    var output = document.getElementById("output");
+    var order  = document.getElementById("order");
+    var optCase  = document.getElementById("optCase");
+    var optTrim  = document.getElementById("optTrim");
+    var optEmpty = document.getElementById("optEmpty");
+    var optDupes = document.getElementById("optDupes");
+
+    var cIn    = document.getElementById("cIn");
+    var cOut   = document.getElementById("cOut");
+    var cDupes = document.getElementById("cDupes");
+
+    /* Intl.Collator is the browser's own language-aware sorter.
+       numeric:true is what makes "item2" come before "item10". */
+    function collator() {
+      return new Intl.Collator(undefined, {
+        numeric: true,
+        sensitivity: optCase.checked ? "base" : "variant"
+      });
+    }
+
+    /* Read the first number on a line: "12.5 kg" -> 12.5, "-3 C" -> -3.
+       A line with no number returns NaN and gets pushed to the bottom. */
+    function firstNumber(line) {
+      var found = line.match(/-?\d+(\.\d+)?/);
+      return found ? parseFloat(found[0]) : NaN;
+    }
+
+    function byNumber(a, b, descending) {
+      var na = firstNumber(a);
+      var nb = firstNumber(b);
+      /* Lines without a number always sink, whichever direction we sort */
+      if (isNaN(na) && isNaN(nb)) return 0;
+      if (isNaN(na)) return 1;
+      if (isNaN(nb)) return -1;
+      return descending ? nb - na : na - nb;
+    }
+
+    function sortLines(lines) {
+      var compare = collator().compare;
+      var copy = lines.slice();          /* never sort the caller's array */
+
+      switch (order.value) {
+        case "az":       return copy.sort(compare);
+        case "za":       return copy.sort(compare).reverse();
+        case "num-asc":  return copy.sort(function (a, b) { return byNumber(a, b, false); });
+        case "num-desc": return copy.sort(function (a, b) { return byNumber(a, b, true); });
+        case "len-asc":  return copy.sort(function (a, b) { return a.length - b.length || compare(a, b); });
+        case "len-desc": return copy.sort(function (a, b) { return b.length - a.length || compare(a, b); });
+        case "reverse":  return copy.reverse();
+        default:         return copy;
+      }
+    }
+
+    function run() {
+      /* Windows line endings first, or every line keeps an invisible \r */
+      var text = input.value.replace(/\r\n?/g, "\n");
+      var lines = text === "" ? [] : text.split("\n");
+
+      if (optTrim.checked) {
+        lines = lines.map(function (l) { return l.trim(); });
+      }
+      if (optEmpty.checked) {
+        lines = lines.filter(function (l) { return l.trim() !== ""; });
+      }
+
+      var countIn = lines.length;
+
+      /* Count duplicates whether or not we are removing them — it is useful
+         information on its own. */
+      var seen = {};
+      var duplicates = 0;
+      lines.forEach(function (line) {
+        var key = optCase.checked ? line.toLowerCase() : line;
+        if (seen[key]) duplicates++; else seen[key] = true;
+      });
+
+      if (optDupes.checked) {
+        var kept = {};
+        lines = lines.filter(function (line) {
+          var key = optCase.checked ? line.toLowerCase() : line;
+          if (kept[key]) return false;
+          kept[key] = true;
+          return true;
+        });
+      }
+
+      var sorted = sortLines(lines);
+
+      output.textContent = sorted.join("\n");
+      cIn.textContent    = formatNumber(countIn);
+      cOut.textContent   = formatNumber(sorted.length);
+      cDupes.textContent = formatNumber(duplicates);
+    }
+
+    input.addEventListener("input", run);
+
+    [order, optCase, optTrim, optEmpty, optDupes].forEach(function (el) {
+      el.addEventListener("change", run);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      copyText(output.textContent);
+    });
+
+    document.getElementById("dlBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to download"); return; }
+      downloadText(output.textContent, "sorted.txt");
+    });
+
+    run();
+  })();
+  </script>
+</body>
+</html>

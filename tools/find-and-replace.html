@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Find and Replace Text Online — Bulk Replace, Free</title>
+  <meta name="description" content="Find and replace text online in bulk. Match case, whole words only or a regular expression, and see how many replacements were made. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/find-and-replace.html">
+
+  <meta property="og:title" content="Find and Replace Text Online — Bulk Replace, Free">
+  <meta property="og:description" content="Find and replace text online in bulk. Match case, whole words only or a regular expression, and see how many replacements were made. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tool.css">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I replace a line break?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tick Use a regular expression and search for \\n. You can also use \\t for a tab and \\s for any space. To join every line instead, the Remove Line Breaks tool is simpler."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does whole words only do?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It stops a search for cat from matching the cat inside category or concatenate. It only matches when the text has a word boundary on both sides."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I delete text instead of replacing it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Leave the Replace with box empty. Every match is removed and the counter still tells you how many were found."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The replacing happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
+        <span>Find and Replace</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Find and Replace Text</h1>
+        <p>Swap one word for another everywhere at once, across thousands of lines.
+           Match case, whole words only, or use a regular expression — nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Your text</label>
+          <textarea id="input" placeholder="Paste your text here&hellip;"></textarea>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="findBox">Find</label>
+            <input type="text" id="findBox" placeholder="What to look for" autocomplete="off" spellcheck="false">
+          </div>
+
+          <div class="field">
+            <label for="replaceBox">Replace with</label>
+            <input type="text" id="replaceBox" placeholder="Leave empty to delete the matches" autocomplete="off" spellcheck="false">
+          </div>
+
+          <div class="check"><input type="checkbox" id="optCase"><label for="optCase">Match case</label></div>
+          <div class="check"><input type="checkbox" id="optWord"><label for="optWord">Whole words only</label></div>
+          <div class="check"><input type="checkbox" id="optRegex"><label for="optRegex">Use a regular expression</label></div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+          <pre class="out" id="output"></pre>
+
+          <p class="msg" id="status" aria-live="polite">Type something to find.</p>
+
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
+            <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Paste your text into the box on the left.</li>
+          <li>Type what you are looking for in <strong>Find</strong>, and what should take its place in <strong>Replace with</strong>.</li>
+          <li>Every match is swapped as you type, and the line under the result tells you how many were changed.</li>
+          <li>Press <strong>Copy result</strong> when it looks right.</li>
+        </ol>
+
+        <h2>The three options, in plain language</h2>
+        <p><strong>Match case</strong> is off by default, so searching for
+          <code>london</code> also finds <code>London</code> and <code>LONDON</code>.
+          Turn it on when capitalisation is the whole point — renaming a variable
+          in code, for instance, where <code>Total</code> and <code>total</code> are
+          two different things.</p>
+
+        <p><strong>Whole words only</strong> is the option that saves you from the
+          classic mistake. Replacing <code>cat</code> with <code>dog</code> without
+          it will quietly turn <em>category</em> into <em>dogegory</em>. With it on,
+          only the standalone word is matched.</p>
+
+        <p><strong>Use a regular expression</strong> is for patterns rather than
+          fixed text. <code>\d+</code> finds any run of digits, <code>\s+</code> any
+          run of spaces, and <code>\n</code> a line break. In the replacement box,
+          <code>$1</code> puts back whatever the first bracketed group captured, so
+          finding <code>(\w+)@(\w+)</code> and replacing with <code>$2</code> keeps
+          only the part after the @ sign. If the pattern is not valid, the tool
+          tells you instead of silently doing nothing.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How do I replace a line break?</h3>
+          <p>Tick <strong>Use a regular expression</strong> and search for <code>\n</code>. You can also use <code>\t</code> for a tab and <code>\s</code> for any space. To join every line instead, the <a href="../tools/remove-line-breaks.html">Remove Line Breaks</a> tool is simpler.</p>
+        </div>
+        <div class="faq">
+          <h3>What does whole words only do?</h3>
+          <p>It stops a search for <code>cat</code> from matching the <code>cat</code> inside <em>category</em> or <em>concatenate</em>. It only matches when the text has a word boundary on both sides.</p>
+        </div>
+        <div class="faq">
+          <h3>How do I delete text instead of replacing it?</h3>
+          <p>Leave the <strong>Replace with</strong> box empty. Every match is removed and the counter still tells you how many were found.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. The replacing happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js"></script>
+  <script src="../js/tool-helpers.js"></script>
+  <script>window.CURRENT_TOOL = "find-and-replace";</script>
+  <script src="../js/main.js"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input   = document.getElementById("input");
+    var output  = document.getElementById("output");
+    var status  = document.getElementById("status");
+    var findBox = document.getElementById("findBox");
+    var replaceBox = document.getElementById("replaceBox");
+    var optCase  = document.getElementById("optCase");
+    var optWord  = document.getElementById("optWord");
+    var optRegex = document.getElementById("optRegex");
+
+    /* Turn plain text into a pattern that matches itself literally.
+       Without this, searching for "1+1" or "(a)" would be read as regex
+       syntax and either match the wrong thing or throw. */
+    function escapeRegex(text) {
+      return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    /* In a replacement string "$" is special ($1, $&, $$). Someone typing a
+       price like "$5" means a literal dollar sign, so double it. */
+    function escapeReplacement(text) {
+      return text.replace(/\$/g, "$$$$");
+    }
+
+    function buildPattern(needle) {
+      var source = optRegex.checked ? needle : escapeRegex(needle);
+      if (optWord.checked) source = "\\b(?:" + source + ")\\b";
+      /* g = every match, not just the first. i = ignore case. */
+      return new RegExp(source, optCase.checked ? "g" : "gi");
+    }
+
+    function setStatus(text, kind) {
+      status.textContent = text;
+      status.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+
+    function run() {
+      var text = input.value;
+      var needle = findBox.value;
+
+      /* Nothing to look for: show the text unchanged rather than an error */
+      if (needle === "") {
+        output.textContent = text;
+        setStatus("Type something to find.", "");
+        return;
+      }
+
+      var pattern;
+      try {
+        pattern = buildPattern(needle);
+      } catch (e) {
+        /* Only reachable in regex mode — an unfinished pattern like "[a" */
+        output.textContent = text;
+        setStatus("That is not a valid regular expression: " + e.message, "bad");
+        return;
+      }
+
+      /* In regex mode the replacement keeps its powers ($1 = first captured
+         group). In plain mode a typed "$" must stay a dollar sign. */
+      var replacement = optRegex.checked
+        ? replaceBox.value
+        : escapeReplacement(replaceBox.value);
+
+      /* Count first, then replace. Both use the same pattern, and String
+         does the capture-group substitution for us — no callback needed. */
+      var hits = (text.match(pattern) || []).length;
+      output.textContent = text.replace(pattern, replacement);
+
+      if (hits === 0) {
+        setStatus("No matches found.", "bad");
+      } else {
+        setStatus(formatNumber(hits) + (hits === 1 ? " replacement made." : " replacements made."), "ok");
+      }
+    }
+
+    input.addEventListener("input", run);
+    findBox.addEventListener("input", run);
+    replaceBox.addEventListener("input", run);
+
+    [optCase, optWord, optRegex].forEach(function (el) {
+      el.addEventListener("change", run);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      copyText(output.textContent);
+    });
+
+    document.getElementById("dlBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to download"); return; }
+      downloadText(output.textContent, "replaced.txt");
+    });
+
+    run();
+  })();
+  </script>
+</body>
+</html>

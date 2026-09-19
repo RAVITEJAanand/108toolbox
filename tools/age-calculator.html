@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Age Calculator — Find Your Exact Age in Years, Months, Days</title>
+  <meta name="description" content="Free age calculator. Enter your date of birth to get your exact age in years, months and days, total days lived, and a countdown to your next birthday.">
+  <link rel="canonical" href="https://108toolbox.in/tools/age-calculator.html">
+
+  <meta property="og:title" content="Age Calculator — Find Your Exact Age in Years, Months, Days">
+  <meta property="og:description" content="Free age calculator. Enter your date of birth to get your exact age in years, months and days, total days lived, and a countdown to your next birthday.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tool.css">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How is the years, months and days figure worked out?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The same way you would do it on paper: subtract the day, borrowing from the previous month if it goes negative, then the month, borrowing from the year. That is why it is calendar-correct rather than an approximation from total days."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does the total months figure not match years times 12?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Total months counts whole completed months and ignores the leftover days. Someone who is 30 years and 29 days old has completed 360 months, not 361."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens if I was born on 29 February?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A leap-day birthday falls on 1 March in non-leap years in this calculation, which is the convention most countries use for legal age."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my date of birth stored anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The date never leaves your browser, and nothing is saved when you close the tab."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <!-- Theme toggle. Both icons are in the HTML; CSS shows the right one,
+             so no JavaScript is needed just to swap the picture. -->
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <!-- Slides down on phones. main.js toggles the .is-open class. -->
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <!-- Breadcrumb: helps visitors AND shows as a path in Google results -->
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
+        <span>Age Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Age Calculator</h1>
+        <p>Your exact age in years, months and days — plus total days lived and how long until your next birthday.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Dates</span>
+
+          <div class="field">
+            <label for="dob">Date of birth</label>
+            <input type="date" id="dob">
+          </div>
+
+          <div class="field">
+            <label for="asOf">Age as of</label>
+            <input type="date" id="asOf">
+            <p class="hint">Defaults to today. Change it to work out an age on any date.</p>
+          </div>
+
+          <p class="msg" id="msg"></p>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Your age</span>
+
+          <div class="result">
+            <span class="result__num" id="mainAge">&mdash;</span>
+            <span class="result__label">years, months and days</span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="tDays">&mdash;</span><span class="stat__label">Total days</span></div>
+            <div class="stat"><span class="stat__num" id="tWeeks">&mdash;</span><span class="stat__label">Total weeks</span></div>
+            <div class="stat"><span class="stat__num" id="tMonths">&mdash;</span><span class="stat__label">Total months</span></div>
+          </div>
+
+          <div class="stats" style="margin-top:var(--s2)">
+            <div class="stat"><span class="stat__num" id="bDay">&mdash;</span><span class="stat__label">Born on a</span></div>
+            <div class="stat"><span class="stat__num" id="nextB">&mdash;</span><span class="stat__label">Next birthday in</span></div>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Enter your date of birth.</li>
+          <li>Leave the second date as today, or change it to work out your age on any past or future date.</li>
+          <li>Everything updates instantly — no button to press.</li>
+        </ol>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How is the years, months and days figure worked out?</h3>
+          <p>The same way you would do it on paper: subtract the day, borrowing from the previous month if it goes negative, then the month, borrowing from the year. That is why it is calendar-correct rather than an approximation from total days.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does the total months figure not match years times 12?</h3>
+          <p>Total months counts whole completed months and ignores the leftover days. Someone who is 30 years and 29 days old has completed 360 months, not 361.</p>
+        </div>
+        <div class="faq">
+          <h3>What happens if I was born on 29 February?</h3>
+          <p>A leap-day birthday falls on 1 March in non-leap years in this calculation, which is the convention most countries use for legal age.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my date of birth stored anywhere?</h3>
+          <p>No. The date never leaves your browser, and nothing is saved when you close the tab.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js"></script>
+  <script src="../js/tool-helpers.js"></script>
+  <script>window.CURRENT_TOOL = "age-calculator";</script>
+  <script src="../js/main.js"></script>
+
+  <!-- ===== This tool's own logic. The only part that differs per tool. =====
+       Wrapped in (function(){ ... })() so its variables cannot clash with
+       anything else on the page. -->
+  <script data-tool>
+  (function () {
+    "use strict";
+  var dobIn  = document.getElementById("dob");
+  var asOfIn = document.getElementById("asOf");
+  var msg    = document.getElementById("msg");
+
+  /* Turn a Date into the YYYY-MM-DD string a date input expects */
+  function toInputValue(date) {
+    var m = String(date.getMonth() + 1).padStart(2, "0");
+    var d = String(date.getDate()).padStart(2, "0");
+    return date.getFullYear() + "-" + m + "-" + d;
+  }
+
+  var today = new Date();
+  asOfIn.value = toInputValue(today);
+  asOfIn.max   = toInputValue(new Date(today.getFullYear() + 100, 0, 1));
+  dobIn.max    = toInputValue(today);
+
+  function setMessage(text, kind) {
+    msg.textContent = text || "";
+    msg.className = "msg" + (kind ? " msg--" + kind : "");
+  }
+
+  function blank() {
+    ["mainAge", "tDays", "tWeeks", "tMonths", "bDay", "nextB"].forEach(function (id) {
+      document.getElementById(id).textContent = "\u2014";
+    });
+  }
+
+  /* Add whole months to a date, clamping to the end of a short month.
+     31 January + 1 month = 28 or 29 February, which is the convention every
+     calendar library and every legal definition of age uses. */
+  function addMonthsClamped(date, totalMonths) {
+    var moved = new Date(date.getFullYear(), date.getMonth() + totalMonths, 1);
+    var lastDay = new Date(moved.getFullYear(), moved.getMonth() + 1, 0).getDate();
+    moved.setDate(Math.min(date.getDate(), lastDay));
+    return moved;
+  }
+
+  /* Calendar-correct age.
+
+     1. Guess the number of whole years and months from the year/month numbers.
+     2. Move the birth date forward by that much (clamping short months).
+     3. If we landed PAST the target date we guessed one month too many, so
+        step back one month and move again.
+     4. Whatever is left over is the day count.
+
+     Doing it this way handles every awkward case: 31 Jan to 1 Mar, leap-day
+     birthdays, and month ends generally. */
+  function exactAge(from, to) {
+    var years  = to.getFullYear() - from.getFullYear();
+    var months = to.getMonth() - from.getMonth();
+    if (months < 0) { years--; months += 12; }
+
+    var anchor = addMonthsClamped(from, years * 12 + months);
+
+    if (anchor > to) {                 /* overshot by one month */
+      months--;
+      if (months < 0) { years--; months += 12; }
+      anchor = addMonthsClamped(from, years * 12 + months);
+    }
+
+    var days = Math.round((to - anchor) / 86400000);
+    return { years: years, months: months, days: days };
+  }
+
+  function calculate() {
+    if (!dobIn.value) { blank(); setMessage("Enter your date of birth to begin."); return; }
+    if (!asOfIn.value) { blank(); setMessage("Enter the date to measure against."); return; }
+
+    /* Adding T00:00 keeps the browser from shifting the date by timezone */
+    var dob  = new Date(dobIn.value  + "T00:00:00");
+    var asOf = new Date(asOfIn.value + "T00:00:00");
+
+    if (isNaN(dob) || isNaN(asOf)) { blank(); setMessage("That date is not valid.", "bad"); return; }
+    if (dob > asOf) { blank(); setMessage("The date of birth is after the comparison date.", "bad"); return; }
+
+    var age = exactAge(dob, asOf);
+    document.getElementById("mainAge").textContent =
+      age.years + "y " + age.months + "m " + age.days + "d";
+
+    /* 86,400,000 = milliseconds in a day */
+    var totalDays = Math.floor((asOf - dob) / 86400000);
+    document.getElementById("tDays").textContent   = formatNumber(totalDays);
+    document.getElementById("tWeeks").textContent  = formatNumber(Math.floor(totalDays / 7));
+    document.getElementById("tMonths").textContent = formatNumber(age.years * 12 + age.months);
+
+    document.getElementById("bDay").textContent =
+      dob.toLocaleDateString(undefined, { weekday: "short" });
+
+    /* Next birthday: this year's, or next year's if it has already gone */
+    var next = new Date(asOf.getFullYear(), dob.getMonth(), dob.getDate());
+    if (next < asOf) next.setFullYear(next.getFullYear() + 1);
+    var daysToGo = Math.ceil((next - asOf) / 86400000);
+    document.getElementById("nextB").textContent =
+      daysToGo === 0 ? "Today!" : daysToGo + "d";
+
+    setMessage("");
+  }
+
+  dobIn.addEventListener("input", calculate);
+  asOfIn.addEventListener("input", calculate);
+  calculate();
+  })();
+  </script>
+</body>
+</html>

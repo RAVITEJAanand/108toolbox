@@ -1,0 +1,558 @@
+/* ==========================================================================
+   108 Tools — style.css
+   The shared design system. EVERY page loads this file.
+
+   How to read this file:
+     1. TOKENS      — the only colours/sizes allowed anywhere on the site
+     2. RESET       — a few sane defaults
+     3. LAYOUT      — container, section spacing
+     4. NAVBAR      — sticky top bar + mobile hamburger
+     5. HERO        — homepage top section + search bar
+     6. CHIPS       — category filter buttons
+     7. CARDS       — the tool card and the grid it sits in
+     8. BUTTONS     — primary / secondary / danger
+     9. FOOTER
+    10. HELPERS     — toast, visually-hidden, etc.
+
+   RULE: if you need a new colour or size, add it to TOKENS first.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. TOKENS  —  change the site's whole look from right here
+   -------------------------------------------------------------------------- */
+:root {
+  /* Colour */
+  --primary:        #1a73e8;   /* the only "you can click this" colour */
+  --primary-hover:  #1557b0;
+  --primary-soft:   #e8f0fe;   /* pale blue background for tiles/chips */
+  --bg:             #ffffff;
+  --surface:        #f8f9fa;   /* cards, hero band, inputs */
+  --border:         #dadce0;
+  --text:           #202124;
+  --text-soft:      #5f6368;
+  --success:        #188038;
+  --danger:         #d93025;
+  --danger-soft:    #fce8e6;   /* danger button hover */
+
+  /* Colours that must flip with the theme but are not part of the palette */
+  --on-primary:     #ffffff;   /* text ON a blue button / the logo square */
+  --nav-bg:         rgba(255,255,255,.92);
+  --toast-bg:       #202124;
+  --toast-text:     #ffffff;
+
+  /* Type */
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Spacing scale — 4px steps. Use ONLY these. */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+
+  /* Shape */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-pill: 999px;
+
+  /* Elevation */
+  --sh1: 0 1px 2px rgba(60,64,67,.10);
+  --sh2: 0 2px 8px rgba(60,64,67,.15);
+
+  /* Layout */
+  --max: 1100px;
+  --nav-h: 64px;
+
+  /* Tells the browser we handle dark ourselves, so it does NOT
+     auto-invert the page and mangle it. */
+  color-scheme: light dark;
+}
+
+/* ==========================================================================
+   DARK THEME
+   Only the tokens are redefined — no component rule is repeated. Google's own
+   dark palette, so it stays the same visual family as the light version.
+
+   Two blocks, because the viewer's theme arrives two ways:
+     1. the OS/browser preference (prefers-color-scheme)
+     2. an explicit choice stamped on the root element
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --primary:       #8ab4f8;   /* lighter blue — #1a73e8 fails contrast on dark */
+    --primary-hover: #aecbfa;
+    --primary-soft:  #1f3040;
+    --bg:            #202124;
+    --surface:       #303134;
+    --border:        #3c4043;
+    --text:          #e8eaed;
+    --text-soft:     #9aa0a6;
+    --success:       #81c995;
+    --danger:        #f28b82;
+    --danger-soft:   #3d2b29;
+
+    --on-primary:    #202124;   /* dark text on the light-blue button */
+    --nav-bg:        rgba(32,33,36,.92);
+    --toast-bg:      #e8eaed;
+    --toast-text:    #202124;
+  }
+}
+
+:root[data-theme="dark"] {
+  --primary:       #8ab4f8;
+  --primary-hover: #aecbfa;
+  --primary-soft:  #1f3040;
+  --bg:            #202124;
+  --surface:       #303134;
+  --border:        #3c4043;
+  --text:          #e8eaed;
+  --text-soft:     #9aa0a6;
+  --success:       #81c995;
+  --danger:        #f28b82;
+  --danger-soft:   #3d2b29;
+
+  --on-primary:    #202124;
+  --nav-bg:        rgba(32,33,36,.92);
+  --toast-bg:      #e8eaed;
+  --toast-text:    #202124;
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+h1, h2, h3 { line-height: 1.25; margin: 0 0 var(--s3); }
+h1 { font-size: clamp(1.5rem, 4vw, 1.875rem); font-weight: 700; }
+h2 { font-size: 1.25rem; font-weight: 600; }
+h3 { font-size: 1rem;    font-weight: 600; }
+p  { margin: 0 0 var(--s4); }
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+img { max-width: 100%; height: auto; display: block; }
+
+/* Accessibility: every focusable thing shows a ring. Do not remove. */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* --------------------------------------------------------------------------
+   3. LAYOUT
+   -------------------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--s4);
+}
+
+.section { padding: var(--s7) 0; }
+.section--tight { padding: var(--s6) 0; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+  margin-bottom: var(--s5);
+}
+.section-head h2 { margin: 0; }
+.section-head a  { font-size: .875rem; }
+
+/* --------------------------------------------------------------------------
+   4. NAVBAR
+   -------------------------------------------------------------------------- */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--nav-h);
+  background: var(--nav-bg);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.nav__inner {
+  height: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--s4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo is pure CSS — no image file to download */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: var(--text);
+}
+.logo:hover { text-decoration: none; }
+.logo__mark {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  background: var(--primary);
+  color: var(--on-primary);
+  border-radius: var(--r-sm);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: -.5px;
+}
+
+.nav__links {
+  display: none;              /* mobile-first: hidden until 1024px */
+  gap: var(--s5);
+  align-items: center;
+}
+.nav__links a {
+  color: var(--text-soft);
+  font-size: .9375rem;
+  padding: var(--s2) 0;
+}
+.nav__links a:hover,
+.nav__links a[aria-current="page"] { color: var(--primary); text-decoration: none; }
+
+/* Theme toggle + hamburger sit together on the right */
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s1);
+}
+
+.theme-toggle {
+  width: 44px; height: 44px;        /* 44px = thumb-sized tap target */
+  display: grid; place-items: center;
+  background: none; border: 0;
+  border-radius: var(--r-sm);
+  color: var(--text-soft);
+  cursor: pointer;
+}
+.theme-toggle:hover { background: var(--surface); color: var(--text); }
+.theme-toggle svg { width: 20px; height: 20px; }
+
+/* Which icon shows is decided entirely in CSS.
+   Light theme -> moon (click me for dark).  Dark theme -> sun.
+   The :not([data-theme="light"]) guard means an explicit LIGHT choice still
+   wins on a machine whose OS is set to dark. */
+.icon-sun  { display: none; }
+.icon-moon { display: block; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .icon-sun  { display: block; }
+  :root:not([data-theme="light"]) .icon-moon { display: none; }
+}
+:root[data-theme="dark"]  .icon-sun  { display: block; }
+:root[data-theme="dark"]  .icon-moon { display: none; }
+:root[data-theme="light"] .icon-sun  { display: none; }
+:root[data-theme="light"] .icon-moon { display: block; }
+
+.nav__burger {
+  width: 44px; height: 44px;        /* 44px = thumb-sized tap target */
+  display: grid; place-items: center;
+  background: none; border: 0;
+  border-radius: var(--r-sm);
+  font-size: 1.375rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.nav__burger:hover { background: var(--surface); }
+
+/* The panel that slides down on mobile */
+.nav__mobile {
+  display: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  padding: var(--s2) 0 var(--s4);
+}
+.nav__mobile.is-open { display: block; }
+.nav__mobile a {
+  display: block;
+  padding: var(--s3) var(--s4);
+  color: var(--text);
+  border-radius: var(--r-sm);
+}
+.nav__mobile a:hover { background: var(--surface); text-decoration: none; }
+
+@media (min-width: 1024px) {
+  .nav__links  { display: flex; }
+  .nav__burger { display: none; }   /* the theme toggle stays visible at all widths */
+  .nav__mobile { display: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   5. HERO + SEARCH
+   -------------------------------------------------------------------------- */
+.hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: var(--s7) 0;
+  text-align: center;
+}
+.hero h1 {
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  letter-spacing: -.5px;
+  margin-bottom: var(--s3);
+}
+.hero p {
+  color: var(--text-soft);
+  max-width: 34rem;
+  margin: 0 auto var(--s5);
+}
+
+.search {
+  position: relative;
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+/* The magnifier sits INSIDE the input, so the input needs left padding wide
+   enough to clear it. Icon spans 24px -> 44px; text starts at 64px. */
+.search__icon {
+  position: absolute;
+  left: var(--s5);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: var(--text-soft);
+  pointer-events: none;   /* clicks fall through to the input behind it */
+}
+
+/* SPECIFICITY NOTE — do not simplify this to `.search input`.
+   css/tool.css has a generic `input[type="text"] { padding: var(--s3) }` rule.
+   `.search input` and `input[type="text"]` have the SAME specificity (0,1,1),
+   so whichever file loads last wins — and tool.css loads last. That silently
+   removed the left padding and the placeholder ran underneath the icon.
+   Naming the attribute here makes this (0,2,1), so it wins whatever the order. */
+.search input[type="text"] {
+  width: 100%;
+  height: 52px;
+  padding: 0 var(--s5) 0 var(--s8);
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  box-shadow: var(--sh1);
+  -webkit-appearance: none;   /* stops iOS adding its own inner padding */
+  appearance: none;
+}
+.search input[type="text"]::placeholder { color: var(--text-soft); opacity: 1; }
+
+.search input[type="text"]:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+/* Tint the icon blue while the box is focused */
+.search:focus-within .search__icon { color: var(--primary); }
+
+.trust {
+  margin: var(--s4) 0 0;
+  font-size: .8125rem;
+  color: var(--text-soft);
+}
+
+/* --------------------------------------------------------------------------
+   6. CATEGORY CHIPS
+   -------------------------------------------------------------------------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-bottom: var(--s5);
+}
+.chip {
+  padding: var(--s2) var(--s4);
+  min-height: 40px;
+  font: inherit;
+  font-size: .875rem;
+  color: var(--text-soft);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  cursor: pointer;
+}
+.chip:hover { background: var(--surface); }
+.chip.is-active {
+  color: var(--primary);
+  background: var(--primary-soft);
+  border-color: var(--primary-soft);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   7. TOOL CARDS + GRID
+   -------------------------------------------------------------------------- */
+.grid {
+  display: grid;
+  /* One line handles every screen size. No media query needed. */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--s4);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s4);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh1);
+  color: var(--text);
+  transition: box-shadow .15s, border-color .15s, transform .15s;
+}
+.card:hover {
+  text-decoration: none;
+  border-color: var(--primary);
+  box-shadow: var(--sh2);
+  transform: translateY(-2px);
+}
+.card__icon {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  background: var(--primary-soft);
+  border-radius: var(--r-sm);
+  font-size: 1.25rem;
+}
+.card__title { font-size: 1rem; font-weight: 600; margin: 0; }
+.card__desc  { font-size: .875rem; color: var(--text-soft); margin: 0; flex: 1; }
+
+.badge {
+  align-self: flex-start;
+  font-size: .75rem;
+  font-weight: 500;
+  color: var(--text-soft);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 2px var(--s2);
+}
+
+.empty {
+  text-align: center;
+  color: var(--text-soft);
+  padding: var(--s7) var(--s4);
+}
+
+/* --------------------------------------------------------------------------
+   8. BUTTONS
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: 44px;
+  padding: var(--s2) var(--s5);
+  font: inherit;
+  font-size: .9375rem;
+  font-weight: 500;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn:hover { text-decoration: none; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.btn--primary { background: var(--primary); color: var(--on-primary); }
+.btn--primary:hover { background: var(--primary-hover); }
+
+.btn--ghost { background: var(--bg); color: var(--text); border-color: var(--border); }
+.btn--ghost:hover { background: var(--surface); }
+
+.btn--danger { background: var(--bg); color: var(--danger); border-color: var(--border); }
+.btn--danger:hover { background: var(--danger-soft); }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--s2); }
+
+/* --------------------------------------------------------------------------
+   9. FOOTER
+   -------------------------------------------------------------------------- */
+.footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: var(--s7) 0 var(--s5);
+  font-size: .875rem;
+  color: var(--text-soft);
+}
+.footer__cols {
+  display: grid;
+  grid-template-columns: 1fr;          /* mobile: stacked */
+  gap: var(--s5);
+  margin-bottom: var(--s5);
+}
+.footer h3 {
+  font-size: .8125rem;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text);
+  margin-bottom: var(--s3);
+}
+.footer ul { list-style: none; margin: 0; padding: 0; }
+.footer li { margin-bottom: var(--s2); }
+.footer a  { color: var(--text-soft); }
+.footer a:hover { color: var(--primary); }
+.footer__bottom {
+  border-top: 1px solid var(--border);
+  padding-top: var(--s4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s4);
+  justify-content: space-between;
+}
+@media (min-width: 640px) {
+  .footer__cols { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .footer__cols { grid-template-columns: 1.5fr 1fr 1fr 1fr; }
+}
+
+/* --------------------------------------------------------------------------
+   10. HELPERS
+   -------------------------------------------------------------------------- */
+/* Small "Copied!" popup, shown by showToast() in tool-helpers.js */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--s5);
+  transform: translateX(-50%) translateY(12px);
+  background: var(--toast-bg);
+  color: var(--toast-text);
+  font-size: .875rem;
+  padding: var(--s3) var(--s5);
+  border-radius: var(--r-pill);
+  box-shadow: var(--sh2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, transform .2s;
+  z-index: 100;
+}
+.toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.prose { max-width: 42rem; }
+.prose ul, .prose ol { padding-left: var(--s5); }
+.prose li { margin-bottom: var(--s2); }

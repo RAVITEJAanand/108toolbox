@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Word Counter — Count Words &amp; Characters Online Free</title>
+  <meta name="description" content="Free online word counter. Count words, characters with and without spaces, sentences, paragraphs and reading time as you type. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/word-counter.html">
+
+  <meta property="og:title" content="Word Counter — Count Words &amp; Characters Online Free">
+  <meta property="og:description" content="Free online word counter. Count words, characters with and without spaces, sentences, paragraphs and reading time as you type. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tool.css">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does this count characters with or without spaces?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Both. Characters includes every space and line break, which is what Twitter, SMS and most form limits count. No spaces is what some academic word limits use."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The counting happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is reading time worked out?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Words divided by 225, which is the average adult silent reading speed. Read-aloud speed is closer to 150 words a minute, so speeches take about 50% longer."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my sentence count different from Word?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "This tool treats every full stop, question mark, exclamation mark and line break as a sentence end. Abbreviations like “Dr.” will therefore add one."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <!-- Theme toggle. Both icons are in the HTML; CSS shows the right one,
+             so no JavaScript is needed just to swap the picture. -->
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <!-- Slides down on phones. main.js toggles the .is-open class. -->
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <!-- Breadcrumb: helps visitors AND shows as a path in Google results -->
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
+        <span>Word &amp; Character Counter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Word &amp; Character Counter</h1>
+        <p>Paste or type your text. Words, characters, sentences and reading time update instantly — nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Your text</label>
+          <textarea id="input" placeholder="Start typing or paste your text here&hellip;"
+                    aria-describedby="liveCount"></textarea>
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--ghost"  type="button" id="copyBtn">Copy text</button>
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Counts</span>
+          <div class="stats" id="liveCount" aria-live="polite">
+            <div class="stat"><span class="stat__num" id="cWords">0</span><span class="stat__label">Words</span></div>
+            <div class="stat"><span class="stat__num" id="cChars">0</span><span class="stat__label">Characters</span></div>
+            <div class="stat"><span class="stat__num" id="cNoSpace">0</span><span class="stat__label">No spaces</span></div>
+            <div class="stat"><span class="stat__num" id="cSentences">0</span><span class="stat__label">Sentences</span></div>
+            <div class="stat"><span class="stat__num" id="cParas">0</span><span class="stat__label">Paragraphs</span></div>
+            <div class="stat"><span class="stat__num" id="cRead">0m</span><span class="stat__label">Reading time</span></div>
+          </div>
+
+          <h3 style="margin:var(--s5) 0 var(--s2);font-size:.875rem">Most used words</h3>
+          <div id="density" class="hint">Type something to see the top five.</div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Type your text into the box, or paste it in with Ctrl+V (Cmd+V on a Mac).</li>
+          <li>The counts on the right update on every keystroke — there is no button to press.</li>
+          <li>Use <strong>Copy text</strong> to take your text back out, or <strong>Clear</strong> to start again.</li>
+        </ol>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Does this count characters with or without spaces?</h3>
+          <p>Both. <strong>Characters</strong> includes every space and line break, which is what Twitter, SMS and most form limits count. <strong>No spaces</strong> is what some academic word limits use.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. The counting happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone.</p>
+        </div>
+        <div class="faq">
+          <h3>How is reading time worked out?</h3>
+          <p>Words divided by 225, which is the average adult silent reading speed. Read-aloud speed is closer to 150 words a minute, so speeches take about 50% longer.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is my sentence count different from Word?</h3>
+          <p>This tool treats every full stop, question mark, exclamation mark and line break as a sentence end. Abbreviations like “Dr.” will therefore add one.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js"></script>
+  <script src="../js/tool-helpers.js"></script>
+  <script>window.CURRENT_TOOL = "word-counter";</script>
+  <script src="../js/main.js"></script>
+
+  <!-- ===== This tool's own logic. The only part that differs per tool. =====
+       Wrapped in (function(){ ... })() so its variables cannot clash with
+       anything else on the page. -->
+  <script data-tool>
+  (function () {
+    "use strict";
+  /* Grab the elements once, not on every keystroke */
+  var input  = document.getElementById("input");
+  var out = {
+    words:     document.getElementById("cWords"),
+    chars:     document.getElementById("cChars"),
+    noSpace:   document.getElementById("cNoSpace"),
+    sentences: document.getElementById("cSentences"),
+    paras:     document.getElementById("cParas"),
+    read:      document.getElementById("cRead")
+  };
+  var density = document.getElementById("density");
+
+  /* Average adult reads about 225 words per minute */
+  var WPM = 225;
+
+  function countWords(text) {
+    var trimmed = text.trim();
+    if (trimmed === "") return 0;
+    /* Split on any run of whitespace */
+    return trimmed.split(/\s+/).length;
+  }
+
+  function countSentences(text) {
+    /* A sentence ends at . ! ? or a line break. Empty pieces do not count. */
+    var pieces = text.split(/[.!?]+|\n+/);
+    var total = 0;
+    for (var i = 0; i < pieces.length; i++) {
+      if (pieces[i].trim() !== "") total++;
+    }
+    return total;
+  }
+
+  function countParagraphs(text) {
+    if (text.trim() === "") return 0;
+    /* A blank line separates paragraphs */
+    return text.split(/\n\s*\n/).filter(function (p) { return p.trim() !== ""; }).length;
+  }
+
+  function topWords(text, howMany) {
+    var words = text.toLowerCase().match(/[a-z0-9']+/g);
+    if (!words) return [];
+
+    /* Skip the tiny connecting words; they are always the top five otherwise */
+    var skip = "the a an and or but if of to in on at for with is are was were be been it this that as by from".split(" ");
+    var tally = {};
+    words.forEach(function (w) {
+      if (w.length < 3 || skip.indexOf(w) !== -1) return;
+      tally[w] = (tally[w] || 0) + 1;
+    });
+
+    return Object.keys(tally)
+      .sort(function (a, b) { return tally[b] - tally[a]; })
+      .slice(0, howMany)
+      .map(function (w) { return { word: w, count: tally[w] }; });
+  }
+
+  function update() {
+    var text = input.value;
+    var words = countWords(text);
+
+    out.words.textContent     = formatNumber(words);
+    out.chars.textContent     = formatNumber(text.length);
+    out.noSpace.textContent   = formatNumber(text.replace(/\s/g, "").length);
+    out.sentences.textContent = formatNumber(countSentences(text));
+    out.paras.textContent     = formatNumber(countParagraphs(text));
+
+    var minutes = words / WPM;
+    out.read.textContent = words === 0 ? "0m"
+      : minutes < 1 ? "<1m" : Math.round(minutes) + "m";
+
+    var top = topWords(text, 5);
+    density.innerHTML = top.length === 0
+      ? "Type something to see the top five."
+      : top.map(function (t) {
+          return '<span class="badge" style="margin:0 var(--s1) var(--s1) 0">' +
+                 t.word + " &times;" + t.count + "</span>";
+        }).join("");
+  }
+
+  /* "input" fires for typing, pasting, cutting and undo — one listener covers all */
+  input.addEventListener("input", update);
+
+  document.getElementById("copyBtn").addEventListener("click", function () {
+    copyText(input.value);
+  });
+  document.getElementById("clearBtn").addEventListener("click", function () {
+    input.value = "";
+    update();
+    input.focus();
+  });
+
+  update();   /* run once so the zeros are correct on load */
+  })();
+  </script>
+</body>
+</html>
