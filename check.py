@@ -40,7 +40,16 @@ def tool_pages():
 
 
 # ---- 1. No placeholders left ----------------------------------------------
-PLACEHOLDERS = ["example.com", "hello@example.com"]
+PLACEHOLDERS = [
+    "example.com",
+    "hello@example.com",
+    # Instructional text written for whoever is building the site, not for a
+    # visitor. "(replace this with your real address)" sat on the live contact
+    # page next to the email for weeks, because nothing was looking for it.
+    "replace this with your real",
+    "your-email-here",
+    "TODO-slug",
+]
 for path in list(ROOT.glob("*.html")) + tool_pages() \
         + [ROOT / "robots.txt", ROOT / "sitemap.xml"]:
     if not path.exists():

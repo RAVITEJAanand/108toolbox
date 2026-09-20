@@ -26,20 +26,30 @@ Do not skip this.
 
 ---
 
-## Step 1 — Set up your email address
+## Step 1 — Your email address ✅
 
-Your contact page says **hello@108toolbox.in**. Make it real before you
-promote the site:
+Done. The contact, privacy, terms, disclaimer and copyright pages all show
+**konduriplaystudio@gmail.com**, set on 20 Sep 2026. It replaced the
+placeholder `hello@108toolbox.in`, which was never a working mailbox.
 
-- **GoDaddy Email Forwarding** — in your domain's **Products** tab. Often
-  included free with a `.in` registration. Forwards hello@108toolbox.in to
-  your Gmail.
-- **Cloudflare Email Routing** — free, unlimited addresses, but you'd have to
-  move your DNS to Cloudflare. Worth it later, not now.
+A real address has to be reachable, because the privacy policy and the terms
+both invite people to write to it, and AdSense checks that a contact route
+exists.
 
-If you'd rather use a different address, run `python setup.py` again and
-change it — the script detects the current values, so it's safe to re-run any
-time.
+**Worth doing later, not now:** a forwarding address on your own domain, so
+the public pages read `hello@108toolbox.in` while the mail still lands in the
+same inbox. It looks more professional, it keeps your personal address off a
+public page where scrapers will find it, and you can change where it forwards
+without editing five files again.
+
+- **GoDaddy Email Forwarding** — in the domain's **Products** tab, often
+  included free with a `.in` registration.
+- **Cloudflare Email Routing** — free and unlimited, but the DNS has to move
+  to Cloudflare first, which is not worth disturbing a working setup for.
+
+To change the address, run `python setup.py` and give it the new one. The
+script reads the current value out of `contact.html` rather than assuming a
+default, so it is safe to re-run at any time.
 
 ---
 
