@@ -167,6 +167,35 @@ gh api repos/RAVITEJAanand/108toolbox/pages --jq '.https_certificate.state, .htt
 the keyring reports "not logged in" when you are. Running `gh auth login` once
 in that terminal fixes it.
 
+**Google Search Console is set up.** Verified 20 Sep 2026 as a **Domain
+property** (`sc-domain:108toolbox.in`), which covers the apex, `www`, `http`
+and `https` in one go. Google added the verifying TXT record itself through
+GoDaddy's official integration, so no DNS was edited by hand:
+
+```
+TXT  108toolbox.in  google-site-verification=odYOhro-hY_X3jyvTVuZRURPhaFkmY0zzpLcW6Upxtg
+```
+
+**Never delete that TXT record** - the property un-verifies the moment it goes.
+The four A records and the `www` CNAME were untouched by the process; that was
+checked afterwards, and the site stayed up throughout.
+
+One trap, which cost a round trip here. A Domain property **rejects
+`sitemap.xml`** in the Sitemaps box with "Invalid sitemap address". A Domain
+property spans four protocol-and-host combinations, so it cannot guess which
+one is meant. Give it the whole URL:
+
+```
+https://108toolbox.in/sitemap.xml
+```
+
+A URL-prefix property would have accepted the bare filename. The sitemap holds
+33 URLs while the site has 34 pages, and that is correct: `404.html` is
+deliberately left out, because an error page must never be offered to an index.
+
+"Discovered pages: 0" straight after submitting is normal - Google has only
+accepted the sitemap, not yet read it.
+
 ---
 
 ## What is built, and what is next
