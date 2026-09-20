@@ -62,6 +62,25 @@ for orphan in sorted(files - slugs):
 if slugs and slugs == files:
     ok("%d tools, all registered" % len(slugs))
 
+# ---- 2b. Every tool sits in a category that actually exists ----------------
+# A typo here is invisible: the tool still renders on the grid, but no chip
+# ever matches it, so the only way to reach it is search. CATEGORIES is
+# allowed to run ahead of the build, so an empty category is a note, not a
+# failure - main.js simply does not draw a chip for one.
+cat_block = re.search(r"const CATEGORIES = \[(.*?)\];", registry, re.S)
+if not cat_block:
+    fail("tools-data.js has no CATEGORIES array")
+else:
+    allowed = re.findall(r'"([^"]+)"', cat_block.group(1))
+    used = re.findall(r'category: "([^"]+)"', registry)
+    for bad in sorted(set(used) - set(allowed)):
+        fail("category '%s' is not in CATEGORIES — no chip will ever match it" % bad)
+    if set(used) <= set(allowed):
+        ok("%d categories, every tool in a real one" % len(allowed))
+    empty = [c for c in allowed if c not in used]
+    if empty:
+        ok("no tools yet in: %s (planned, so no chip is drawn)" % ", ".join(empty))
+
 # ---- 3. Sitemap covers every tool -----------------------------------------
 sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
 missing_from_sitemap = [s for s in sorted(slugs) if "tools/%s.html" % s not in sitemap]

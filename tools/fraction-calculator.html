@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Fraction Calculator — Add, Subtract, Multiply, Divide</title>
+  <meta name="description" content="Add, subtract, multiply or divide two fractions and get the answer in lowest terms, as a mixed number and as a decimal, with the working shown. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/fraction-calculator.html">
+
+  <meta property="og:title" content="Fraction Calculator — Add, Subtract, Multiply, Divide">
+  <meta property="og:description" content="Add, subtract, multiply or divide two fractions and get the answer in lowest terms, as a mixed number and as a decimal, with the working shown. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=5">
+  <link rel="stylesheet" href="../css/tool.css?v=5">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do you add fractions with different denominators?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Give them the same denominator first. The quickest way is to multiply each fraction by the other one's denominator, so three quarters plus one sixth becomes eighteen twenty-fourths plus four twenty-fourths, which is twenty-two twenty-fourths, and that simplifies to eleven twelfths. The working box on this page shows each of those steps."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does simplifying to lowest terms mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It means dividing the top and the bottom by the largest number that goes into both, which is called the greatest common divisor. Twenty-two twenty-fourths has a greatest common divisor of two, so it becomes eleven twelfths. The fraction is worth exactly the same, it is just written with smaller numbers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it handle mixed numbers and negative fractions?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes to both. Put the whole part in the first box of each fraction, and the calculator converts it to an improper fraction before doing anything else. A minus sign on the whole number makes the entire fraction negative, which is how a mixed number is normally read."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
+        <span>Fraction Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Fraction Calculator</h1>
+        <p>Two fractions in, one answer out &mdash; in lowest terms, as a mixed
+           number and as a decimal, with every step of the working shown.
+           Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace">
+
+        <!-- ---------- the two-fraction calculator ---------- -->
+        <div class="panel">
+          <span class="panel__label">Two fractions</span>
+
+          <div class="btn-row" style="align-items:center;gap:var(--s2);flex-wrap:wrap">
+            <input type="number" id="aw" value="0" step="1" style="max-width:80px" aria-label="First fraction, whole number">
+            <input type="number" id="an" value="3" step="1" style="max-width:80px" aria-label="First fraction, numerator">
+            <span>/</span>
+            <input type="number" id="ad" value="4" step="1" style="max-width:80px" aria-label="First fraction, denominator">
+
+            <select id="op" style="max-width:90px" aria-label="Operation">
+              <option value="add" selected>+</option>
+              <option value="sub">&minus;</option>
+              <option value="mul">&times;</option>
+              <option value="div">&divide;</option>
+            </select>
+
+            <input type="number" id="bw" value="0" step="1" style="max-width:80px" aria-label="Second fraction, whole number">
+            <input type="number" id="bn" value="1" step="1" style="max-width:80px" aria-label="Second fraction, numerator">
+            <span>/</span>
+            <input type="number" id="bd" value="6" step="1" style="max-width:80px" aria-label="Second fraction, denominator">
+          </div>
+          <p class="hint">The first box of each pair is the whole number of a
+          mixed number. Leave it at zero for an ordinary fraction.</p>
+
+          <!-- Plain wrapper, because .msg may carry a display of its own and
+               would then beat the browser rule for the hidden attribute. -->
+          <div id="errWrap" hidden style="margin-top:var(--s3)">
+            <p class="msg msg--bad" id="err"></p>
+          </div>
+
+          <div class="result" style="margin-top:var(--s4)">
+            <span class="result__num" id="ansFrac">11/12</span>
+            <span class="result__label" id="ansAlt"></span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="mixed">11/12</span><span class="stat__label">Mixed number</span></div>
+            <div class="stat"><span class="stat__num" id="dec">0.9167</span><span class="stat__label">Decimal</span></div>
+            <div class="stat"><span class="stat__num" id="perc">91.67%</span><span class="stat__label">Percentage</span></div>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s4)">Working</span>
+          <pre class="out" id="working" aria-live="polite"></pre>
+        </div>
+
+        <!-- ---------- simplify one fraction ---------- -->
+        <div class="panel">
+          <span class="panel__label">Simplify one fraction</span>
+
+          <div class="btn-row" style="align-items:center;gap:var(--s2)">
+            <input type="number" id="sn" value="126" step="1" style="max-width:120px" aria-label="Numerator to simplify">
+            <span>/</span>
+            <input type="number" id="sd" value="294" step="1" style="max-width:120px" aria-label="Denominator to simplify">
+          </div>
+
+          <div class="result" style="margin-top:var(--s4)">
+            <span class="result__num" id="sAns">3/7</span>
+            <span class="result__label" id="sHow"></span>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><span class="stat__num" id="sGcd">42</span><span class="stat__label">Greatest common divisor</span></div>
+            <div class="stat"><span class="stat__num" id="sDec">0.4286</span><span class="stat__label">Decimal</span></div>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Type the two fractions. The first box in each group is the whole
+              number, so 2&frac12; is entered as 2, then 1, then 2.</li>
+          <li>Pick the operation in the middle dropdown.</li>
+          <li>Read the answer, then open the working box below it if you need
+              to show your steps rather than just the result.</li>
+        </ol>
+
+        <h2>How the sums work</h2>
+        <p>Adding and subtracting need a common denominator, and the reliable
+        way to get one is to multiply each fraction by the other one&rsquo;s
+        bottom number. Three quarters plus one sixth becomes eighteen
+        twenty-fourths plus four twenty-fourths, which is twenty-two
+        twenty-fourths, and that simplifies to eleven twelfths.</p>
+        <p>Multiplying is the easy one: tops together, bottoms together.
+        Dividing is the same thing with the second fraction turned upside down,
+        which is why textbooks say <em>invert and multiply</em>. Every answer
+        here is reduced to lowest terms afterwards by dividing both halves by
+        their greatest common divisor.</p>
+
+        <h2>Mixed numbers and improper fractions</h2>
+        <p>A mixed number like 2&frac12; is converted to the improper fraction
+        5/2 before anything else happens, because arithmetic on mixed numbers
+        is awkward and error-prone. The answer is given back both ways, so you
+        can use whichever form the question asked for.</p>
+        <p>Negatives work as you would expect. A minus on the whole number
+        makes the whole quantity negative, so &minus;2&frac12; is &minus;5/2,
+        not &minus;2 plus a half. If you want only the fraction to be negative,
+        leave the whole box at zero and put the minus on the numerator.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How do you add fractions with different denominators?</h3>
+          <p>Give them the same denominator first. The quickest way is to
+          multiply each fraction by the other one's denominator, so three
+          quarters plus one sixth becomes eighteen twenty-fourths plus four
+          twenty-fourths, which is twenty-two twenty-fourths, and that
+          simplifies to eleven twelfths. The working box on this page shows
+          each of those steps.</p>
+        </div>
+        <div class="faq">
+          <h3>What does simplifying to lowest terms mean?</h3>
+          <p>It means dividing the top and the bottom by the largest number
+          that goes into both, which is called the greatest common divisor.
+          Twenty-two twenty-fourths has a greatest common divisor of two, so it
+          becomes eleven twelfths. The fraction is worth exactly the same, it
+          is just written with smaller numbers.</p>
+        </div>
+        <div class="faq">
+          <h3>Can it handle mixed numbers and negative fractions?</h3>
+          <p>Yes to both. Put the whole part in the first box of each fraction,
+          and the calculator converts it to an improper fraction before doing
+          anything else. A minus sign on the whole number makes the entire
+          fraction negative, which is how a mixed number is normally read.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=5"></script>
+  <script src="../js/tool-helpers.js?v=5"></script>
+  <script>window.CURRENT_TOOL = "fraction-calculator";</script>
+  <script src="../js/main.js?v=5"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
+    var TIMES   = String.fromCharCode(0x00D7);
+    var DIVIDE  = String.fromCharCode(0x00F7);
+    var MINUS   = String.fromCharCode(0x2212);
+    var PLUS    = String.fromCharCode(0x002B);
+    var APPROX  = String.fromCharCode(0x2248);
+    var NEWLINE = String.fromCharCode(0x000A);
+
+    var SIGNS = { add: PLUS, sub: MINUS, mul: TIMES, div: DIVIDE };
+
+    function el(id) { return document.getElementById(id); }
+
+    /* Fractions are whole numbers all the way down, so parseInt, not
+       parseFloat. A decimal typed into a numerator is simply truncated. */
+    function int(id) {
+      var n = parseInt(el(id).value, 10);
+      return isNaN(n) ? 0 : n;
+    }
+
+    /* Euclid, iterative. Always returns a positive number so it is safe to
+       divide by even when the fraction is negative. */
+    function gcd(a, b) {
+      a = Math.abs(a);
+      b = Math.abs(b);
+      while (b) {
+        var t = b;
+        b = a % b;
+        a = t;
+      }
+      return a || 1;
+    }
+
+    /* A mixed number is turned into a single improper fraction first, because
+       arithmetic on "two and a half" is where mistakes come from. A minus on
+       the whole number makes the entire quantity negative. */
+    function toImproper(whole, numerator, denominator) {
+      if (denominator === 0) return null;
+      var n;
+      if (whole > 0)      n = whole * Math.abs(denominator) + Math.abs(numerator);
+      else if (whole < 0) n = whole * Math.abs(denominator) - Math.abs(numerator);
+      else                n = numerator;
+
+      /* Keep the sign on the top, always, so later steps never have to think
+         about a negative denominator. */
+      var d = denominator;
+      if (d < 0) { n = -n; d = -d; }
+      return { n: n, d: d };
+    }
+
+    function simplify(f) {
+      var g = gcd(f.n, f.d);
+      return { n: f.n / g, d: f.d / g };
+    }
+
+    function asText(f) {
+      return f.d === 1 ? String(f.n) : f.n + "/" + f.d;
+    }
+
+    /* 11/12 stays 11/12, but 22/7 reads better as 3 1/7 */
+    function asMixed(f) {
+      if (f.d === 1) return String(f.n);
+      if (Math.abs(f.n) < f.d) return asText(f);
+      var sign = f.n < 0 ? MINUS : "";
+      var whole = Math.floor(Math.abs(f.n) / f.d);
+      var rest  = Math.abs(f.n) % f.d;
+      return rest === 0
+        ? sign + whole
+        : sign + whole + " " + rest + "/" + f.d;
+    }
+
+    function runMain() {
+      var a = toImproper(int("aw"), int("an"), int("ad"));
+      var b = toImproper(int("bw"), int("bn"), int("bd"));
+      var op = el("op").value;
+
+      function fail(message) {
+        el("errWrap").hidden = false;
+        el("err").textContent = message;
+        el("ansFrac").textContent = MINUS;
+        el("ansAlt").textContent = "";
+        el("mixed").textContent = MINUS;
+        el("dec").textContent = MINUS;
+        el("perc").textContent = MINUS;
+        el("working").textContent = "";
+      }
+
+      if (!a || !b) { fail("A denominator cannot be zero - nothing can be divided into zero parts."); return; }
+      if (op === "div" && b.n === 0) { fail("You cannot divide by zero, and the second fraction is zero."); return; }
+
+      el("errWrap").hidden = true;
+
+      var raw, step;
+      if (op === "add") {
+        raw  = { n: a.n * b.d + b.n * a.d, d: a.d * b.d };
+        step = "(" + a.n + " " + TIMES + " " + b.d + ") " + PLUS + " (" +
+               b.n + " " + TIMES + " " + a.d + ")  over  " + a.d + " " +
+               TIMES + " " + b.d;
+      } else if (op === "sub") {
+        raw  = { n: a.n * b.d - b.n * a.d, d: a.d * b.d };
+        step = "(" + a.n + " " + TIMES + " " + b.d + ") " + MINUS + " (" +
+               b.n + " " + TIMES + " " + a.d + ")  over  " + a.d + " " +
+               TIMES + " " + b.d;
+      } else if (op === "mul") {
+        raw  = { n: a.n * b.n, d: a.d * b.d };
+        step = "tops together, bottoms together";
+      } else {
+        raw  = { n: a.n * b.d, d: a.d * b.n };
+        step = "flip the second fraction and multiply";
+      }
+
+      if (raw.d < 0) { raw.n = -raw.n; raw.d = -raw.d; }
+
+      var answer = simplify(raw);
+      var value  = answer.n / answer.d;
+      var divisor = gcd(raw.n, raw.d);
+
+      el("ansFrac").textContent = asText(answer);
+      el("ansAlt").textContent  = asMixed(answer) + "  " + APPROX + "  " +
+                                  formatNumber(value, 4);
+      el("mixed").textContent = asMixed(answer);
+      el("dec").textContent   = formatNumber(value, 4);
+      el("perc").textContent  = formatNumber(value * 100, 2) + "%";
+
+      var lines = [
+        "1.  as improper fractions:  " + asText(a) + "  " + SIGNS[op] +
+          "  " + asText(b),
+        "2.  " + step,
+        "3.  before simplifying:  " + asText(raw)
+      ];
+      lines.push(divisor > 1
+        ? "4.  divide both by " + divisor + ":  " + asText(answer)
+        : "4.  already in lowest terms:  " + asText(answer));
+
+      el("working").textContent = lines.join(NEWLINE);
+    }
+
+    function runSimplify() {
+      var n = int("sn");
+      var d = int("sd");
+
+      if (d === 0) {
+        el("sAns").textContent  = MINUS;
+        el("sHow").textContent  = "A denominator cannot be zero.";
+        el("sGcd").textContent  = MINUS;
+        el("sDec").textContent  = MINUS;
+        return;
+      }
+
+      if (d < 0) { n = -n; d = -d; }
+      var g = gcd(n, d);
+      var f = { n: n / g, d: d / g };
+
+      el("sAns").textContent = asText(f);
+      el("sHow").textContent = g > 1
+        ? n + "/" + d + ", both divided by " + g + ", is " + asText(f)
+        : n + "/" + d + " is already in lowest terms";
+      el("sGcd").textContent = String(g);
+      el("sDec").textContent = formatNumber(n / d, 4);
+    }
+
+    function run() { runMain(); runSimplify(); }
+
+    ["aw", "an", "ad", "bw", "bn", "bd", "sn", "sd"].forEach(function (id) {
+      el(id).addEventListener("input", run);
+    });
+    el("op").addEventListener("change", run);
+
+    run();   /* run once so the page is correct on load */
+  })();
+  </script>
+</body>
+</html>

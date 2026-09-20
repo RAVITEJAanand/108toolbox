@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Simple Interest Calculator — Interest and Total Due</title>
+  <meta name="description" content="Work out simple interest for any principal, rate and period in years, months or days, with the total repayable and a year by year table. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/simple-interest-calculator.html">
+
+  <meta property="og:title" content="Simple Interest Calculator — Interest and Total Due">
+  <meta property="og:description" content="Work out simple interest for any principal, rate and period in years, months or days, with the total repayable and a year by year table. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=5">
+  <link rel="stylesheet" href="../css/tool.css?v=5">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the simple interest formula?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Interest equals principal times rate times time, divided by one hundred. The rate is per year and the time is in years, so 50,000 at 8 percent for 3 years earns 12,000 of interest and 62,000 comes back in total."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is simple interest different from compound interest?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Simple interest is always charged on the original principal, so every year earns exactly the same amount. Compound interest is charged on the balance, which already includes last year's interest, so each year earns a little more than the one before. Over short periods the gap is small; over ten years or more it is large."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I enter a period in months or days?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Pick months or days in the dropdown and the period is converted to years for you, dividing by 12 or by 365. Lenders sometimes count a year as 360 or 366 days, so a day-based figure can differ slightly from the one on a bank statement."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
+        <span>Simple Interest Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Simple Interest Calculator</h1>
+        <p>Interest on the original amount only, never on interest already
+           earned. Enter the principal, the rate and how long for. Nothing is
+           uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- inputs ---------- -->
+        <div class="panel">
+          <span class="panel__label">The loan or deposit</span>
+
+          <div class="field">
+            <label for="principal">Principal in rupees</label>
+            <input type="number" id="principal" value="50000" min="0" step="100">
+          </div>
+
+          <div class="field">
+            <label for="rate">Interest rate, percent per year</label>
+            <input type="number" id="rate" value="8" min="0" max="100" step="0.05">
+          </div>
+
+          <div class="field">
+            <label for="period">How long for</label>
+            <div class="btn-row" style="align-items:center;gap:var(--s2)">
+              <input type="number" id="period" value="3" min="0" step="1" style="max-width:140px">
+              <select id="unit" style="max-width:160px">
+                <option value="years" selected>years</option>
+                <option value="months">months</option>
+                <option value="days">days</option>
+              </select>
+            </div>
+            <p class="hint" id="yearsNote"></p>
+          </div>
+
+          <div class="result">
+            <span class="result__num" id="interest">&#8377;12,000</span>
+            <span class="result__label" id="formula"></span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="pOut">&#8377;50,000</span><span class="stat__label">Principal</span></div>
+            <div class="stat"><span class="stat__num" id="iOut">&#8377;12,000</span><span class="stat__label">Interest</span></div>
+            <div class="stat"><span class="stat__num" id="tOut">&#8377;62,000</span><span class="stat__label">Total repayable</span></div>
+          </div>
+        </div>
+
+        <!-- ---------- year by year ---------- -->
+        <div class="panel">
+          <span class="panel__label">Year by year</span>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr><th>Year</th><th>Interest</th><th>Balance</th></tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+          <p class="hint">Every row adds the same interest, because simple
+          interest is always charged on the principal and never on the interest
+          already earned. That flat line is the whole difference from
+          compounding.</p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Enter the principal &mdash; the amount borrowed or deposited.</li>
+          <li>Enter the annual rate. A rate written as 8% per annum goes in as
+              simply 8.</li>
+          <li>Set the period, in years, months or days. The table on the right
+              fills in as you type.</li>
+        </ol>
+
+        <h2>The formula</h2>
+        <p>Simple interest is one of the few pieces of financial arithmetic you
+        can do on paper: <strong>interest = principal &times; rate &times; time
+        &divide; 100</strong>, with the rate per year and the time in years.
+        Fifty thousand rupees at 8% for three years earns 12,000, so 62,000
+        comes back at the end.</p>
+        <p>Because the principal never changes, every year earns exactly the
+        same amount. That is why the year-by-year table is a straight line
+        rather than a curve.</p>
+
+        <h2>Where simple interest is actually used</h2>
+        <p>Most long-term products in India compound, so simple interest turns
+        up in a narrower set of places than people expect: many gold loans and
+        short-term personal loans, car loans quoted on a flat rate, some
+        government schemes, and almost every school and competitive exam
+        question. It is also the right sum for a private loan between two
+        people, where nobody is tracking a compounding balance.</p>
+        <p>Watch out for the flat rate trap. A car loan advertised at a flat 8%
+        is not the same as 8% reducing balance, because you keep paying
+        interest on money you have already repaid. The effective rate is close
+        to double. If you are comparing EMIs, use the EMI calculator rather
+        than this page.</p>
+
+        <h2>Months and days</h2>
+        <p>Months are divided by 12 and days by 365 before the sum runs. Banks
+        and lenders sometimes count a year as 360 or 366 days instead, so a
+        figure worked out in days can sit a little either side of a statement.
+        For anything that matters legally, check the convention written into
+        the agreement.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>What is the simple interest formula?</h3>
+          <p>Interest equals principal times rate times time, divided by one
+          hundred. The rate is per year and the time is in years, so 50,000 at
+          8 percent for 3 years earns 12,000 of interest and 62,000 comes back
+          in total.</p>
+        </div>
+        <div class="faq">
+          <h3>How is simple interest different from compound interest?</h3>
+          <p>Simple interest is always charged on the original principal, so
+          every year earns exactly the same amount. Compound interest is
+          charged on the balance, which already includes last year's interest,
+          so each year earns a little more than the one before. Over short
+          periods the gap is small; over ten years or more it is large.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I enter a period in months or days?</h3>
+          <p>Yes. Pick months or days in the dropdown and the period is
+          converted to years for you, dividing by 12 or by 365. Lenders
+          sometimes count a year as 360 or 366 days, so a day-based figure can
+          differ slightly from the one on a bank statement.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=5"></script>
+  <script src="../js/tool-helpers.js?v=5"></script>
+  <script>window.CURRENT_TOOL = "simple-interest-calculator";</script>
+  <script src="../js/main.js?v=5"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
+    var RUPEE = String.fromCharCode(0x20B9);
+    var TIMES = String.fromCharCode(0x00D7);
+    var DIVIDE = String.fromCharCode(0x00F7);
+
+    /* A year is 365 days here. Lenders sometimes use 360 or 366, which is why
+       the page says so rather than pretending there is one right answer. */
+    var DAYS_IN_YEAR = 365;
+    var MONTHS_IN_YEAR = 12;
+
+    /* Long loans would otherwise build a table nobody scrolls through */
+    var MAX_ROWS = 40;
+
+    function el(id) { return document.getElementById(id); }
+
+    function num(id) {
+      var n = parseFloat(el(id).value);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function money(value) {
+      var rounded = Math.round(value * 100) / 100;
+      return RUPEE + formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
+    }
+
+    /* Whatever unit was chosen, the sum needs years */
+    function years() {
+      var value = Math.max(0, num("period"));
+      var unit  = el("unit").value;
+      if (unit === "months") return value / MONTHS_IN_YEAR;
+      if (unit === "days")   return value / DAYS_IN_YEAR;
+      return value;
+    }
+
+    function buildTable(principal, perYear, totalYears) {
+      var body = el("rows");
+      body.textContent = "";          /* clears every child in one go */
+
+      if (totalYears <= 0 || principal <= 0) return;
+
+      var whole = Math.min(Math.ceil(totalYears), MAX_ROWS);
+      var fragment = document.createDocumentFragment();
+
+      for (var y = 1; y <= whole; y++) {
+        /* The last row is usually a part year, so charge only that fraction */
+        var elapsed = Math.min(y, totalYears);
+        var accrued = perYear * elapsed;
+        var row = document.createElement("tr");
+
+        var label = y <= totalYears
+          ? "Year " + y
+          : "Year " + y + " (part)";
+
+        [label, money(perYear * Math.min(1, totalYears - (y - 1))),
+         money(principal + accrued)].forEach(function (text) {
+          var cell = document.createElement("td");
+          cell.textContent = text;
+          row.appendChild(cell);
+        });
+
+        fragment.appendChild(row);
+      }
+      body.appendChild(fragment);
+    }
+
+    function run() {
+      var principal = Math.max(0, num("principal"));
+      var rate      = Math.max(0, num("rate"));
+      var t         = years();
+
+      var interest = principal * rate * t / 100;
+      var total    = principal + interest;
+
+      el("interest").textContent = money(interest);
+      el("pOut").textContent = money(principal);
+      el("iOut").textContent = money(interest);
+      el("tOut").textContent = money(total);
+
+      el("formula").textContent =
+        money(principal) + " " + TIMES + " " + formatNumber(rate, 2) + "% " +
+        TIMES + " " + formatNumber(t, 2) + " years " + DIVIDE + " 100 = " +
+        money(interest);
+
+      el("yearsNote").textContent = el("unit").value === "years"
+        ? ""
+        : "That is " + formatNumber(t, 3) + " years.";
+
+      buildTable(principal, principal * rate / 100, t);
+    }
+
+    ["principal", "rate", "period"].forEach(function (id) {
+      el(id).addEventListener("input", run);
+    });
+    el("unit").addEventListener("change", run);
+
+    run();   /* run once so the page is correct on load */
+  })();
+  </script>
+</body>
+</html>

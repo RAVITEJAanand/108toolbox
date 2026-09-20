@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>GST Calculator India — Add or Remove GST Online</title>
+  <meta name="description" content="Add GST to a price or work backwards from a GST-inclusive total. Shows the CGST, SGST and IGST split for every Indian slab. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/gst-calculator.html">
+
+  <meta property="og:title" content="GST Calculator India — Add or Remove GST Online">
+  <meta property="og:description" content="Add GST to a price or work backwards from a GST-inclusive total. Shows the CGST, SGST and IGST split for every Indian slab. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=5">
+  <link rel="stylesheet" href="../css/tool.css?v=5">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I remove GST from a total?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Set the second dropdown to After GST and enter the amount printed on the bill. The calculator divides by one plus the rate, so a total of 1,180 at 18 percent gives a base of 1,000 and GST of 180. Subtracting 18 percent from the total instead is the common mistake, and it gives 967.60, which is wrong."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the current GST slabs in India?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Since the September 2025 revision most goods and services sit at 5 percent or 18 percent, with 0 percent for exempt items and 40 percent for a short list of luxury and sin goods. The older 12 percent and 28 percent slabs are still offered here, because invoices raised before the change carry them and old bills still have to be checked."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between CGST, SGST and IGST?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "When the buyer and the seller are in the same state the tax is split in half between the centre and the state, and the bill shows it as CGST and SGST. When the sale crosses a state border the whole amount goes to a single IGST line instead. The total tax you pay is identical either way."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
+        <span>GST Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>GST Calculator</h1>
+        <p>Add GST to a price, or work backwards from a bill that already
+           includes it. The CGST, SGST and IGST split is worked out for you.
+           Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace">
+
+        <!-- ---------- the calculator itself ---------- -->
+        <div class="panel">
+          <span class="panel__label">Amount and rate</span>
+
+          <div class="field">
+            <label for="amount">Amount in rupees</label>
+            <input type="number" id="amount" value="1000" min="0" step="1">
+          </div>
+
+          <div class="field">
+            <label for="mode">This amount is</label>
+            <select id="mode">
+              <option value="exclusive">Before GST &mdash; add GST to it</option>
+              <option value="inclusive">After GST &mdash; work backwards to the base</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="rate">GST rate</label>
+            <select id="rate">
+              <option value="0">0% &mdash; exempt items</option>
+              <option value="5">5% &mdash; current lower slab</option>
+              <option value="18" selected>18% &mdash; current higher slab</option>
+              <option value="40">40% &mdash; luxury and sin goods</option>
+              <option value="12">12% &mdash; older slab, pre-2025 invoices</option>
+              <option value="28">28% &mdash; older slab, pre-2025 invoices</option>
+              <option value="custom">Custom rate&hellip;</option>
+            </select>
+          </div>
+
+          <div class="field" id="customWrap" hidden>
+            <label for="customRate">Custom rate in percent</label>
+            <input type="number" id="customRate" value="18" min="0" max="100" step="0.01">
+          </div>
+
+          <div class="result">
+            <span class="result__num" id="total">&#8377;1,180</span>
+            <span class="result__label" id="formula"></span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="base">&#8377;1,000</span><span class="stat__label">Base amount</span></div>
+            <div class="stat"><span class="stat__num" id="tax">&#8377;180</span><span class="stat__label">GST</span></div>
+            <div class="stat"><span class="stat__num" id="grand">&#8377;1,180</span><span class="stat__label">Invoice total</span></div>
+          </div>
+        </div>
+
+        <!-- ---------- how that tax is split on the invoice ---------- -->
+        <div class="panel">
+          <span class="panel__label">How the tax splits on the invoice</span>
+
+          <div class="field">
+            <label for="supply">Type of supply</label>
+            <select id="supply">
+              <option value="intra">Within one state &mdash; CGST + SGST</option>
+              <option value="inter">Across state lines &mdash; IGST</option>
+            </select>
+          </div>
+
+          <!-- Plain wrappers, because .stats is display:grid and would win
+               against the browser rule for the hidden attribute. -->
+          <div id="intraWrap">
+            <div class="stats">
+              <div class="stat"><span class="stat__num" id="cgst">&#8377;90</span><span class="stat__label" id="cgstLabel">CGST</span></div>
+              <div class="stat"><span class="stat__num" id="sgst">&#8377;90</span><span class="stat__label" id="sgstLabel">SGST</span></div>
+            </div>
+          </div>
+
+          <div id="interWrap" hidden>
+            <div class="stats">
+              <div class="stat"><span class="stat__num" id="igst">&#8377;180</span><span class="stat__label" id="igstLabel">IGST</span></div>
+              <div class="stat"><span class="stat__num" id="igstTotal">&#8377;180</span><span class="stat__label">Total GST</span></div>
+            </div>
+          </div>
+
+          <p class="hint" id="splitNote"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Type the amount you are working with.</li>
+          <li>Say whether that amount is <strong>before</strong> GST or
+              <strong>after</strong> it. This one dropdown is the whole
+              difference between adding tax and removing it.</li>
+          <li>Pick the slab, then choose whether the sale stays inside one
+              state or crosses a border, to see the split the invoice needs.</li>
+        </ol>
+
+        <h2>Adding GST and removing GST are different sums</h2>
+        <p>Adding is the easy direction: 1,000 at 18% means 180 of tax and a
+        total of 1,180. Going the other way trips people up. Given a bill of
+        1,180, many people take 18% off it and get 967.60. That is wrong,
+        because the 18% was charged on the base amount, not on the total.</p>
+        <p>The correct sum divides instead of subtracting: 1,180 divided by
+        1.18 gives 1,000, and the tax is the 180 left over. The calculator
+        shows the working under the big number so you can check it against a
+        bill line by line.</p>
+
+        <h2>CGST, SGST and IGST</h2>
+        <p>The rate never changes because of where the buyer is; only the way
+        it is written on the invoice changes. Sell within your own state and
+        18% appears as 9% CGST plus 9% SGST, one half to the centre and one
+        half to the state. Sell to another state and the same 18% appears as a
+        single IGST line. Either way the buyer pays the same amount.</p>
+
+        <h2>Which slab applies to my product?</h2>
+        <p>The September 2025 revision simplified the structure: most goods and
+        services now sit at <strong>5%</strong> or <strong>18%</strong>, with
+        <strong>0%</strong> for exempt items and <strong>40%</strong> for a
+        short list of luxury and sin goods. The old <strong>12%</strong> and
+        <strong>28%</strong> slabs are kept in the dropdown because invoices
+        raised before the change still carry them.</p>
+        <p>Rates are set per item against an HSN or SAC code, and they do get
+        revised. This page does the arithmetic; it cannot know which rate your
+        particular product attracts. Confirm the rate against the official CBIC
+        rate finder or with your accountant before you put a number on a real
+        invoice.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How do I remove GST from a total?</h3>
+          <p>Set the second dropdown to After GST and enter the amount printed
+          on the bill. The calculator divides by one plus the rate, so a total
+          of 1,180 at 18 percent gives a base of 1,000 and GST of 180.
+          Subtracting 18 percent from the total instead is the common mistake,
+          and it gives 967.60, which is wrong.</p>
+        </div>
+        <div class="faq">
+          <h3>What are the current GST slabs in India?</h3>
+          <p>Since the September 2025 revision most goods and services sit at 5
+          percent or 18 percent, with 0 percent for exempt items and 40 percent
+          for a short list of luxury and sin goods. The older 12 percent and 28
+          percent slabs are still offered here, because invoices raised before
+          the change carry them and old bills still have to be checked.</p>
+        </div>
+        <div class="faq">
+          <h3>What is the difference between CGST, SGST and IGST?</h3>
+          <p>When the buyer and the seller are in the same state the tax is
+          split in half between the centre and the state, and the bill shows it
+          as CGST and SGST. When the sale crosses a state border the whole
+          amount goes to a single IGST line instead. The total tax you pay is
+          identical either way.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=5"></script>
+  <script src="../js/tool-helpers.js?v=5"></script>
+  <script>window.CURRENT_TOOL = "gst-calculator";</script>
+  <script src="../js/main.js?v=5"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
+    var RUPEE  = String.fromCharCode(0x20B9);
+    var TIMES  = String.fromCharCode(0x00D7);
+    var DIVIDE = String.fromCharCode(0x00F7);
+    var PLUS   = String.fromCharCode(0x002B);
+
+    function el(id) { return document.getElementById(id); }
+
+    /* An input can be empty or hold rubbish, so never trust .value directly */
+    function num(id) {
+      var n = parseFloat(el(id).value);
+      return isNaN(n) ? 0 : n;
+    }
+
+    /* Money rounds to 2 decimals, but a trailing .00 on a whole number is
+       noise, so show decimals only when there actually are any. */
+    function money(value) {
+      var rounded = Math.round(value * 100) / 100;
+      return RUPEE + formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
+    }
+
+    /* The decimal count is a CEILING, not a demand. Forcing two decimals the
+       moment there is one turns the 2.5% half of a 5% slab into "2.50%",
+       which no invoice ever writes. */
+    function pct(value) {
+      if (!isFinite(value)) return String.fromCharCode(0x2014);
+      return value.toLocaleString(undefined, { maximumFractionDigits: 2 }) + "%";
+    }
+
+    /* The dropdown holds the slab; "custom" hands control to a second input.
+       Clamped at zero because a negative rate is not a discount, it is a bug
+       waiting to divide by something silly. */
+    function currentRate() {
+      var chosen = el("rate").value;
+      var r = chosen === "custom" ? num("customRate") : parseFloat(chosen);
+      return Math.max(0, isNaN(r) ? 0 : r);
+    }
+
+    function run() {
+      var amount    = num("amount");
+      var rate      = currentRate();
+      var inclusive = el("mode").value === "inclusive";
+      var interState = el("supply").value === "inter";
+
+      /* The custom box only exists when it is needed */
+      el("customWrap").hidden = el("rate").value !== "custom";
+
+      var base, tax;
+      if (inclusive) {
+        /* The total is base x (1 + rate/100), so recover the base by
+           dividing. Subtracting the rate from the total is the classic
+           mistake and gives a different, wrong answer. */
+        base = amount / (1 + rate / 100);
+        tax  = amount - base;
+      } else {
+        base = amount;
+        tax  = amount * (rate / 100);
+      }
+      var total = base + tax;
+
+      el("total").textContent = money(total);
+      el("base").textContent  = money(base);
+      el("tax").textContent   = money(tax);
+      el("grand").textContent = money(total);
+
+      el("formula").textContent = inclusive
+        ? money(amount) + " " + DIVIDE + " " + formatNumber(1 + rate / 100, 2) +
+          " = " + money(base) + " base, leaving " + money(tax) + " of GST"
+        : money(base) + " " + PLUS + " (" + money(base) + " " + TIMES + " " +
+          pct(rate) + ") = " + money(total);
+
+      /* The rate never changes with the buyer; only the invoice lines do. */
+      el("intraWrap").hidden = interState;
+      el("interWrap").hidden = !interState;
+
+      el("cgst").textContent = money(tax / 2);
+      el("sgst").textContent = money(tax / 2);
+      el("cgstLabel").textContent = "CGST " + pct(rate / 2);
+      el("sgstLabel").textContent = "SGST " + pct(rate / 2);
+
+      el("igst").textContent = money(tax);
+      el("igstTotal").textContent = money(tax);
+      el("igstLabel").textContent = "IGST " + pct(rate);
+
+      el("splitNote").textContent = interState
+        ? "One IGST line at " + pct(rate) + ". The buyer pays the same " +
+          money(tax) + " either way."
+        : "Half to the centre, half to the state. Together they come to " +
+          money(tax) + ", the same as a single IGST line.";
+    }
+
+    ["amount", "customRate"].forEach(function (id) {
+      el(id).addEventListener("input", run);
+    });
+    ["mode", "rate", "supply"].forEach(function (id) {
+      el(id).addEventListener("change", run);
+    });
+
+    run();   /* run once so the page is correct on load */
+  })();
+  </script>
+</body>
+</html>

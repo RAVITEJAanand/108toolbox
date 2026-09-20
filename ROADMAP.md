@@ -58,7 +58,7 @@ Difficulty is honest: **easy** = one afternoon, **medium** = a weekend,
 | Phase | Tools | Why these next | Target |
 |---|---|---|---|
 | 1 ✅ | 1–10 | Proof the system works | done |
-| 2 | 11–30 | Highest search volume, all easy, no libraries | **15 of 20 done** |
+| 2 ✅ | 11–30 | Highest search volume, all easy, no libraries | done |
 | 3 | 31–60 | Converters and date/time. Still no libraries | month 4–6 |
 | 4 | 61–90 | PDF and files. First real libraries | month 7–9 |
 | 5 | 91–108 | The long tail and the India-specific calculators | month 10–12 |
@@ -72,35 +72,41 @@ same mental model and you keep copying the same page.
 
 ---
 
-## Categories: 4 today → 8 at the 30-tool mark
+## Categories: expanded to 8 ✅
 
-Right now `CATEGORIES` in `js/tools-data.js` is:
-
-```js
-["Text", "Image", "Calculator", "Developer"]
-```
-
-At around 30 tools, "Developer" and "Calculator" become dumping grounds.
-Expand to:
+Done at the 30-tool mark, 20 Sep 2026. `CATEGORIES` in `js/tools-data.js` is
+now:
 
 ```js
 ["Text", "Image", "Calculator", "Developer",
  "Converter", "PDF", "Date & Time", "Random"]
 ```
 
-Three files change when you do that, and nothing else:
+Two things this plan originally got wrong, both found while doing it.
 
-1. `js/tools-data.js` — the `CATEGORIES` array (the chips rebuild themselves)
-2. `check.py` — the allowed-category list
-3. `index.html` and `tools.html` — the footer "Categories" link column
+**The chips would have been empty.** `main.js` built one chip per entry in
+`CATEGORIES`, so expanding the list on its own would have shipped four chips -
+Converter, PDF, Date & Time, Random - that open an empty grid. A visitor reads
+that as broken, not unfinished. `main.js` now draws a chip only for a category
+that has at least one tool, which is why `CATEGORIES` is free to run ahead of
+what is built. The chip appears by itself the day the first tool claims it.
 
-Do it all at once, re-run `check.py`, done.
+**The allowed-category list in `check.py` did not exist.** This file said to
+update it; there was nothing to update. It exists now, and it fails the build
+if a tool carries a category that is not in `CATEGORIES`. That typo used to be
+invisible: the tool still appeared on the grid, but no chip ever matched it, so
+search was the only way to reach it.
+
+The footer "Categories" column in `index.html` and `tools.html` was left at the
+four real categories on purpose. Those links are searches (`tools.html?q=pdf`),
+so pointing them at an empty category is a dead link, not a preview. Add each
+one when its category gets its first tool.
 
 ### Final shape at 108
 
 | Category | Tools | Built |
 |---|---|---|
-| Calculator | 20 | 8 |
+| Calculator | 20 | 13 |
 | Developer | 18 | 2 |
 | Text | 16 | 13 |
 | Image | 14 | 2 |
@@ -108,7 +114,7 @@ Do it all at once, re-run `check.py`, done.
 | PDF | 10 | 0 |
 | Date & Time | 8 | 0 |
 | Random | 8 | 0 |
-| **Total** | **108** | **25** |
+| **Total** | **108** | **30** |
 
 ---
 
@@ -169,13 +175,13 @@ matches, so do not rename them later. ✅ = already live.
 | 6 | `tip-calculator` ✅ | easy |
 | 7 | `average-calculator` ✅ | easy |
 | 8 | `ratio-calculator` ✅ | easy |
-| 9 | `fraction-calculator` | easy |
-| 10 | `simple-interest-calculator` | easy |
-| 11 | `compound-interest-calculator` | easy |
-| 12 | `margin-markup-calculator` | easy |
+| 9 | `fraction-calculator` ✅ | easy |
+| 10 | `simple-interest-calculator` ✅ | easy |
+| 11 | `compound-interest-calculator` ✅ | easy |
+| 12 | `margin-markup-calculator` ✅ | easy |
 | 13 | `unit-price-comparison` | easy |
 | 14 | `fuel-cost-calculator` | easy |
-| 15 | `gst-calculator` | easy — India |
+| 15 | `gst-calculator` ✅ | easy — India |
 | 16 | `sip-calculator` | medium — India, very high volume |
 | 17 | `salary-calculator` | medium — CTC to in-hand, India |
 | 18 | `calorie-calculator` | medium — BMR / TDEE |

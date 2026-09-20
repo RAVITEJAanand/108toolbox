@@ -7,7 +7,8 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 25 of a planned 108 tools are built, tested and live.
+**Where it stands:** 30 of a planned 108 tools are built, tested and live.
+Phase 2 is finished.
 
 ---
 
@@ -26,12 +27,12 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`25 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`30 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">25</span> tools live
-<span data-tool-count="remaining">83</span> on the way
+<span data-tool-count="live">30</span> tools live
+<span data-tool-count="remaining">78</span> on the way
 ```
 
 This used to be hand-typed in `index.html`, `tools.html` and `about.html`, and
@@ -49,8 +50,9 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed — this
-already happened once, with the redesign. Find-and-replace `?v=2` → `?v=3`
-across all 35 pages (currently `?v=4`). `check.py` understands the stamp.
+already happened once, with the redesign. Find-and-replace `?v=4` → `?v=5`
+across all 40 pages (currently `?v=5`, 182 occurrences). `check.py`
+understands the stamp.
 
 ### 4. `check.py` passing does NOT mean the tool works
 
@@ -200,25 +202,34 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (25):** word-counter, case-converter, lorem-ipsum-generator,
+**Live (30):** word-counter, case-converter, lorem-ipsum-generator,
 image-compressor, image-converter, percentage-calculator, age-calculator,
 emi-calculator, password-generator, json-formatter, remove-duplicate-lines,
 find-and-replace, sort-text-lines, remove-line-breaks, whitespace-remover,
 reverse-text, text-repeater, add-line-numbers, slug-generator,
 character-frequency-counter, bmi-calculator, discount-calculator,
-tip-calculator, average-calculator, ratio-calculator.
+tip-calculator, average-calculator, ratio-calculator, gst-calculator,
+simple-interest-calculator, compound-interest-calculator, fraction-calculator,
+margin-markup-calculator.
 
-**Next batch (Phase 2, tools 26–30):** `gst-calculator`,
-`simple-interest-calculator`, `compound-interest-calculator`,
-`fraction-calculator`, `margin-markup-calculator`. Lead with `gst-calculator` —
-it is the India angle below, it is still easy, and it is the strongest search
-term left in Phase 2. That finishes Phase 2 and triggers the 4 → 8 category
-expansion. Full plan in `ROADMAP.md`.
+**Next batch (Phase 3, tools 31–35):** converters and date/time, per
+`ROADMAP.md`. Phase 3 runs 31–60 and still needs no libraries. The strongest
+India terms left are `sip-calculator`, `salary-calculator`, `area-converter`
+and `number-to-words` (lakh/crore).
 
-**Categories expand from 4 to 8 at the 30-tool mark — that is the very next
-batch.** `ROADMAP.md` names the exact three files that change. Calculator is
-already 8 of its 20 and Text is 13 of 16, so the dumping-ground problem the
-expansion solves is close.
+**Categories are 8 now**, expanded on 20 Sep 2026 at the 30-tool mark:
+Text, Image, Calculator, Developer, Converter, PDF, Date & Time, Random. The
+last four have no tools yet, and that is fine — **`main.js` draws a chip only
+for a category that has at least one tool**, so `CATEGORIES` is the plan, not
+the inventory. A chip that opens an empty grid reads as broken rather than
+unfinished, which is exactly what the naive version of this change would have
+shipped. `check.py` now also fails if a tool claims a category that is not in
+the list; that typo used to be invisible, because the tool still rendered but
+no chip ever matched it.
+
+The footer "Categories" column stays at the four real ones. Those links are
+searches (`tools.html?q=pdf`), so adding an empty category there is a dead
+link. Add each one when its category gets its first tool.
 
 **The India angle is the real SEO edge.** `gst-calculator`, `sip-calculator`,
 `salary-calculator`, `area-converter` and `number-to-words` (lakh/crore) have

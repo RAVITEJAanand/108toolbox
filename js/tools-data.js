@@ -13,13 +13,17 @@
      slug      -> the file name without .html, and the URL people share
      name      -> shown on the card and as the page <h1>
      desc      -> one line, under 90 characters, plain language
-     category  -> must be one of: Text, Image, Calculator, Developer
+     category  -> must be one of the CATEGORIES below; check.py enforces it
      icon      -> a single emoji (no image file = nothing to download)
      keywords  -> extra words the search should match; think like a visitor
      popular   -> true shows it on the homepage "Popular tools" grid
    ========================================================================== */
 
-const CATEGORIES = ["Text", "Image", "Calculator", "Developer"];
+/* The plan, not the inventory. A category may sit here with nothing in it
+   yet - main.js only draws a chip once at least one tool claims the category,
+   so this list can run ahead of the build without showing an empty grid. */
+const CATEGORIES = ["Text", "Image", "Calculator", "Developer",
+                    "Converter", "PDF", "Date & Time", "Random"];
 
 const TOOLS = [
   {
@@ -227,6 +231,51 @@ const TOOLS = [
     category: "Calculator",
     icon: "\u{2797}",
     keywords: ["ratio calculator", "simplify ratio", "proportion", "aspect ratio", "divide in ratio"],
+    popular: false
+  },
+  {
+    slug: "gst-calculator",
+    name: "GST Calculator",
+    desc: "Add GST to a price or strip it out, with the CGST, SGST and IGST split.",
+    category: "Calculator",
+    icon: "\u{1F9FE}",
+    keywords: ["gst calculator", "gst india", "reverse gst", "remove gst", "cgst sgst igst", "gst inclusive", "add gst", "tax calculator"],
+    popular: true
+  },
+  {
+    slug: "simple-interest-calculator",
+    name: "Simple Interest Calculator",
+    desc: "Interest on the principal only, with the total repayable and a yearly table.",
+    category: "Calculator",
+    icon: "\u{1F4B0}",
+    keywords: ["simple interest", "si calculator", "interest calculator", "principal rate time", "flat rate loan"],
+    popular: false
+  },
+  {
+    slug: "compound-interest-calculator",
+    name: "Compound Interest Calculator",
+    desc: "See what a lump sum grows to, and how far ahead of simple interest it ends up.",
+    category: "Calculator",
+    icon: "\u{1F331}",
+    keywords: ["compound interest", "ci calculator", "compounding", "rule of 72", "future value", "fd maturity"],
+    popular: true
+  },
+  {
+    slug: "fraction-calculator",
+    name: "Fraction Calculator",
+    desc: "Add, subtract, multiply or divide fractions and see every step of the working.",
+    category: "Calculator",
+    icon: "\u{1F9EE}",
+    keywords: ["fraction calculator", "add fractions", "simplify fraction", "mixed number", "lowest terms", "improper fraction"],
+    popular: false
+  },
+  {
+    slug: "margin-markup-calculator",
+    name: "Margin & Markup Calculator",
+    desc: "Set a price from cost, or find the real margin and markup on what you sell.",
+    category: "Calculator",
+    icon: "\u{1F4B9}",
+    keywords: ["margin calculator", "markup calculator", "profit margin", "selling price", "gross margin", "cost price"],
     popular: false
   },
   {

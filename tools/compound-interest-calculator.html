@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Compound Interest Calculator — Growth Year by Year</title>
+  <meta name="description" content="See what a lump sum grows to with yearly, quarterly, monthly or daily compounding, set beside what simple interest would have paid. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/compound-interest-calculator.html">
+
+  <meta property="og:title" content="Compound Interest Calculator — Growth Year by Year">
+  <meta property="og:description" content="See what a lump sum grows to with yearly, quarterly, monthly or daily compounding, set beside what simple interest would have paid. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=5">
+  <link rel="stylesheet" href="../css/tool.css?v=5">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the compound interest formula?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The final amount equals the principal times one plus the rate divided by the number of compounding periods in a year, all raised to the power of that number times the years. Subtract the principal and what is left is the interest earned."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does compounding more often make a big difference?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Less than most people expect. At 8 percent for 10 years, 100,000 grows to 215,892 compounded yearly and 221,964 compounded monthly. Moving from monthly to daily adds only about 570 rupees more. The rate and the number of years matter far more than the frequency."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much more than simple interest is it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Over one year at yearly compounding, nothing at all - the two are identical. The gap opens slowly and then accelerates, because interest starts earning interest of its own. The third tile on this page shows exactly how much compounding is adding for the figures you entered."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
+        <span>Compound Interest Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Compound Interest Calculator</h1>
+        <p>Interest that earns interest. Set the amount, the rate, how long and
+           how often it compounds, and watch the gap against simple interest
+           open up. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- inputs ---------- -->
+        <div class="panel">
+          <span class="panel__label">The investment or loan</span>
+
+          <div class="field">
+            <label for="principal">Principal in rupees</label>
+            <input type="number" id="principal" value="100000" min="0" step="1000">
+          </div>
+
+          <div class="field">
+            <label for="rate">Interest rate, percent per year</label>
+            <input type="number" id="rate" value="8" min="0" max="100" step="0.05">
+          </div>
+
+          <div class="field">
+            <label for="years">Number of years</label>
+            <input type="number" id="years" value="10" min="0" max="100" step="1">
+          </div>
+
+          <div class="field">
+            <label for="freq">Compounded</label>
+            <select id="freq">
+              <option value="1" selected>Yearly</option>
+              <option value="2">Half-yearly</option>
+              <option value="4">Quarterly</option>
+              <option value="12">Monthly</option>
+              <option value="365">Daily</option>
+            </select>
+          </div>
+
+          <div class="result">
+            <span class="result__num" id="finalOut">&#8377;2,15,892</span>
+            <span class="result__label" id="formula"></span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="earned">&#8377;1,15,892</span><span class="stat__label">Interest earned</span></div>
+            <div class="stat"><span class="stat__num" id="simple">&#8377;80,000</span><span class="stat__label">Simple interest would pay</span></div>
+            <div class="stat"><span class="stat__num" id="edge">&#8377;35,892</span><span class="stat__label">Compounding adds</span></div>
+          </div>
+
+          <p class="hint" id="doubleNote"></p>
+        </div>
+
+        <!-- ---------- year by year ---------- -->
+        <div class="panel">
+          <span class="panel__label">Year by year</span>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr><th>Year</th><th>Interest that year</th><th>Balance</th></tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+          <p class="hint">Each row earns more than the one above it, because
+          the balance it is charged on keeps growing. That curve is the whole
+          point of compounding, and it is why the last few years do most of
+          the work.</p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Enter the amount you are starting with and the annual rate.</li>
+          <li>Set the number of years. This is the input that changes the
+              answer most, so try moving it before you fiddle with anything
+              else.</li>
+          <li>Choose how often interest is added. Fixed deposits in India are
+              usually quarterly; savings accounts are often quarterly too;
+              loans are commonly monthly.</li>
+        </ol>
+
+        <h2>The formula</h2>
+        <p>The final amount is <strong>A = P (1 + r / n)<sup>n t</sup></strong>,
+        where <em>r</em> is the yearly rate as a decimal, <em>n</em> is how many
+        times a year interest is added and <em>t</em> is the number of years.
+        Take the principal away from A and what remains is the interest.</p>
+        <p>The exponent is where the power hides. Time sits up in the exponent
+        while the rate sits down in the brackets, which is why ten extra years
+        changes the answer far more than one extra percent.</p>
+
+        <h2>Frequency matters less than people think</h2>
+        <p>One hundred thousand rupees at 8% for ten years comes to 215,892
+        compounded yearly and 221,964 compounded monthly. Switching from
+        monthly to daily adds about another 570. Banks advertise
+        compounding frequency because it sounds like a benefit, but the two
+        inputs that actually decide your outcome are the rate and the number
+        of years.</p>
+
+        <h2>The rule of 72</h2>
+        <p>Divide 72 by the interest rate and you get roughly the number of
+        years the money takes to double. At 8% that is nine years, and the
+        exact figure this page works out is 9.01. It is a good mental shortcut
+        between about 4% and 15%, and it drifts at the extremes.</p>
+        <p>A word of caution: this page shows growth before tax and before
+        inflation. Interest on a fixed deposit is taxable, and 8% growth in a
+        year when prices rise 6% is closer to 2% of real gain. Treat the
+        number as arithmetic, not as advice.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>What is the compound interest formula?</h3>
+          <p>The final amount equals the principal times one plus the rate
+          divided by the number of compounding periods in a year, all raised to
+          the power of that number times the years. Subtract the principal and
+          what is left is the interest earned.</p>
+        </div>
+        <div class="faq">
+          <h3>Does compounding more often make a big difference?</h3>
+          <p>Less than most people expect. At 8 percent for 10 years, 100,000
+          grows to 215,892 compounded yearly and 221,964 compounded monthly.
+          Moving from monthly to daily adds only about 570 rupees more. The
+          rate and the number of years matter far more than the frequency.</p>
+        </div>
+        <div class="faq">
+          <h3>How much more than simple interest is it?</h3>
+          <p>Over one year at yearly compounding, nothing at all - the two are
+          identical. The gap opens slowly and then accelerates, because
+          interest starts earning interest of its own. The third tile on this
+          page shows exactly how much compounding is adding for the figures you
+          entered.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=5"></script>
+  <script src="../js/tool-helpers.js?v=5"></script>
+  <script>window.CURRENT_TOOL = "compound-interest-calculator";</script>
+  <script src="../js/main.js?v=5"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
+    var RUPEE = String.fromCharCode(0x20B9);
+    var EM_DASH = String.fromCharCode(0x2014);
+
+    /* A hundred-year table helps nobody */
+    var MAX_ROWS = 40;
+
+    function el(id) { return document.getElementById(id); }
+
+    function num(id) {
+      var n = parseFloat(el(id).value);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function money(value) {
+      var rounded = Math.round(value * 100) / 100;
+      return RUPEE + formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
+    }
+
+    /* A = P (1 + r/n)^(nt). Kept as its own function because every part of
+       the page needs it: the headline, the table and the comparison. */
+    function amountAfter(principal, rate, freq, t) {
+      if (principal <= 0) return 0;
+      return principal * Math.pow(1 + (rate / 100) / freq, freq * t);
+    }
+
+    /* The exact doubling time, not the rule-of-72 approximation. At 0% the
+       money never doubles, so there is no answer to give. */
+    function yearsToDouble(rate, freq) {
+      if (rate <= 0) return null;
+      var perPeriod = Math.log(1 + (rate / 100) / freq);
+      if (perPeriod <= 0) return null;
+      return Math.log(2) / (freq * perPeriod);
+    }
+
+    function buildTable(principal, rate, freq, totalYears) {
+      var body = el("rows");
+      body.textContent = "";          /* clears every child in one go */
+
+      if (totalYears <= 0 || principal <= 0) return;
+
+      var rows = Math.min(Math.ceil(totalYears), MAX_ROWS);
+      var fragment = document.createDocumentFragment();
+      var previous = principal;
+
+      for (var y = 1; y <= rows; y++) {
+        var elapsed = Math.min(y, totalYears);
+        var balance = amountAfter(principal, rate, freq, elapsed);
+        var gained  = balance - previous;
+        var row = document.createElement("tr");
+
+        var label = y <= totalYears ? "Year " + y : "Year " + y + " (part)";
+
+        [label, money(gained), money(balance)].forEach(function (text) {
+          var cell = document.createElement("td");
+          cell.textContent = text;
+          row.appendChild(cell);
+        });
+
+        fragment.appendChild(row);
+        previous = balance;
+      }
+      body.appendChild(fragment);
+    }
+
+    function run() {
+      var principal = Math.max(0, num("principal"));
+      var rate      = Math.max(0, num("rate"));
+      var t         = Math.max(0, num("years"));
+      var freq      = parseFloat(el("freq").value) || 1;
+
+      var finalAmount = amountAfter(principal, rate, freq, t);
+      var earned      = finalAmount - principal;
+      var simple      = principal * rate * t / 100;
+
+      el("finalOut").textContent = money(finalAmount);
+      el("earned").textContent   = money(earned);
+      el("simple").textContent   = money(simple);
+      el("edge").textContent     = money(earned - simple);
+
+      el("formula").textContent =
+        money(principal) + " grows to " + money(finalAmount) + " over " +
+        formatNumber(t, 0) + " years at " + formatNumber(rate, 2) + "%, " +
+        "compounded " + el("freq").options[el("freq").selectedIndex].text.toLowerCase();
+
+      var doubling = yearsToDouble(rate, freq);
+      el("doubleNote").textContent = doubling === null
+        ? "At 0% the money never doubles " + EM_DASH + " it just sits there."
+        : "At this rate the money doubles every " +
+          formatNumber(doubling, 2) + " years. The rule of 72 guesses " +
+          formatNumber(72 / rate, 2) + ".";
+
+      buildTable(principal, rate, freq, t);
+    }
+
+    ["principal", "rate", "years"].forEach(function (id) {
+      el(id).addEventListener("input", run);
+    });
+    el("freq").addEventListener("change", run);
+
+    run();   /* run once so the page is correct on load */
+  })();
+  </script>
+</body>
+</html>

@@ -89,8 +89,19 @@ function wireSearch(inputId, chipsId, gridId) {
   }
 
   if (chips) {
-    /* Build the chips from the CATEGORIES list so you never hand-edit them */
-    chips.innerHTML = ["All"].concat(CATEGORIES).map(function (cat, i) {
+    /* Build the chips from the CATEGORIES list so you never hand-edit them.
+
+       A category with nothing in it yet gets no chip. CATEGORIES is allowed
+       to run ahead of what is actually built - it is the plan, not the
+       inventory - and a chip that opens an empty grid is worse than no chip,
+       because the visitor assumes the site is broken rather than unfinished.
+       The chip appears by itself the day the first tool in that category is
+       registered. */
+    const filled = CATEGORIES.filter(function (cat) {
+      return TOOLS.some(function (t) { return t.category === cat; });
+    });
+
+    chips.innerHTML = ["All"].concat(filled).map(function (cat, i) {
       return '<button class="chip' + (i === 0 ? " is-active" : "") +
              '" type="button" data-cat="' + cat + '">' + cat + '</button>';
     }).join("");
