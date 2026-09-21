@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Binary, Decimal and Hex Converter — All Four Bases</title>
+  <meta name="description" content="Convert between binary, octal, decimal and hex, with exact arithmetic on numbers far past where most converters start rounding. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/binary-decimal-hex-converter.html">
+
+  <meta property="og:title" content="Binary, Decimal and Hex Converter — All Four Bases">
+  <meta property="og:description" content="Convert between binary, octal, decimal and hex, with exact arithmetic on numbers far past where most converters start rounding. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=7">
+  <link rel="stylesheet" href="../css/tool.css?v=7">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I convert binary to decimal by hand?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Write the place values from the right - 1, 2, 4, 8, 16, 32 and so on - then add up the ones that sit under a 1. For 1011 that is 8 plus 0 plus 2 plus 1, which is 11. Going the other way, keep halving and write down the remainders, then read them bottom to top."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does hexadecimal use letters?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because base sixteen needs sixteen single characters and the digits only reach nine, so A to F stand for ten to fifteen. Hexadecimal is used because one hex digit is exactly four binary digits, which makes a byte exactly two hex characters. That is why colours are written as six hex characters and memory addresses as strings of them."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How large a number can it handle?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "As large as you like. Most converters run out of exactness above about nine quadrillion, because ordinary JavaScript numbers cannot hold a whole number bigger than that and silently round it instead of complaining. This page uses BigInt, so a two hundred digit number converts exactly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The conversion happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
+        <span>Binary, Decimal and Hex</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Binary, Decimal and Hex Converter</h1>
+        <p>One number, all four bases, worked out exactly however long it gets.
+           Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace">
+
+        <!-- ---------- input ---------- -->
+        <div class="panel">
+          <span class="panel__label">The number</span>
+
+          <div class="field">
+            <label for="base">It is written in</label>
+            <select id="base">
+              <option value="2">Binary &mdash; base 2</option>
+              <option value="8">Octal &mdash; base 8</option>
+              <option value="10" selected>Decimal &mdash; base 10</option>
+              <option value="16">Hexadecimal &mdash; base 16</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="value">Value</label>
+            <input type="text" id="value" value="255" spellcheck="false" autocomplete="off">
+            <p class="hint" id="allowed"></p>
+          </div>
+
+          <!-- Plain wrapper: .msg carries its own display, which would beat
+               the browser rule for the hidden attribute. -->
+          <div id="errWrap" hidden style="margin-top:var(--s3)">
+            <p class="msg msg--bad" id="err"></p>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="bits">8</span><span class="stat__label">Bits</span></div>
+            <div class="stat"><span class="stat__num" id="bytes">1</span><span class="stat__label">Bytes</span></div>
+            <div class="stat"><span class="stat__num" id="fits">uint8</span><span class="stat__label">Smallest that holds it</span></div>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s4)">Binary, in bytes</span>
+          <pre class="out mono" id="grouped" aria-live="polite"></pre>
+        </div>
+
+        <!-- ---------- output ---------- -->
+        <div class="panel">
+          <span class="panel__label">Binary</span>
+          <pre class="out mono" id="binOut" aria-live="polite"></pre>
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--ghost" type="button" id="copyBin">Copy</button>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s4)">Octal</span>
+          <pre class="out mono" id="octOut" aria-live="polite"></pre>
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--ghost" type="button" id="copyOct">Copy</button>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s4)">Decimal</span>
+          <pre class="out mono" id="decOut" aria-live="polite"></pre>
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--ghost" type="button" id="copyDec">Copy</button>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s4)">Hexadecimal</span>
+          <pre class="out mono" id="hexOut" aria-live="polite"></pre>
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--ghost" type="button" id="copyHex">Copy</button>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Say which base the number you have is written in.</li>
+          <li>Type it. Spaces are ignored, and a leading <code>0b</code>,
+              <code>0o</code> or <code>0x</code> is accepted and stripped.</li>
+          <li>All four bases update together. The grouped binary on the left
+              shows it padded into whole bytes.</li>
+        </ol>
+
+        <h2>Reading binary without a converter</h2>
+        <p>Write the place values from the right &mdash; 1, 2, 4, 8, 16, 32,
+        64, 128 &mdash; and add the ones sitting under a 1. So
+        <code>1011</code> is 8 + 0 + 2 + 1 = 11, and <code>11111111</code> is
+        255, which is why a byte stops there.</p>
+        <p>Going the other way, keep halving and write down the remainders,
+        then read them from the bottom up. 11 halves to 5 remainder 1, then 2
+        remainder 1, then 1 remainder 0, then 0 remainder 1 &mdash; bottom to
+        top, 1011.</p>
+
+        <h2>Why hexadecimal exists</h2>
+        <p>One hex digit is exactly four binary digits, so a byte is exactly
+        two hex characters and nothing ever straddles a boundary. That single
+        fact is why colours are written as six hex characters, why memory
+        addresses look the way they do, and why hex is far easier to read
+        aloud than a wall of ones and zeros.</p>
+        <p>Base sixteen needs sixteen symbols and the digits run out at nine,
+        so A to F carry ten to fifteen. Case does not matter when you type it
+        here; the answer comes back in upper case because that is the usual
+        convention.</p>
+
+        <h2>Large numbers, and where most converters break</h2>
+        <p>An ordinary JavaScript number cannot hold a whole number above
+        9,007,199,254,740,991 exactly. Past that it starts rounding, and the
+        awkward part is that it does so <strong>silently</strong> &mdash; ask
+        most online converters for the binary of 9007199254740993 and they
+        will confidently give you the binary of 9007199254740992.</p>
+        <p>This page uses BigInt, which has no size limit at all, so a
+        two-hundred-digit number converts exactly. If you work with hashes,
+        large IDs or cryptographic values, that is the difference between a
+        right answer and a plausible one.</p>
+
+        <h2>A note on negative numbers</h2>
+        <p>A negative number is shown with a minus sign in front of its
+        magnitude, which is the mathematical way to write it. It is
+        <strong>not</strong> two&rsquo;s complement. Two&rsquo;s complement
+        only means something once you fix a width &mdash; 8-bit, 32-bit, 64-bit
+        &mdash; and that is a choice this page has no way to make for you.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How do I convert binary to decimal by hand?</h3>
+          <p>Write the place values from the right - 1, 2, 4, 8, 16, 32 and so
+          on - then add up the ones that sit under a 1. For 1011 that is 8 plus
+          0 plus 2 plus 1, which is 11. Going the other way, keep halving and
+          write down the remainders, then read them bottom to top.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does hexadecimal use letters?</h3>
+          <p>Because base sixteen needs sixteen single characters and the
+          digits only reach nine, so A to F stand for ten to fifteen.
+          Hexadecimal is used because one hex digit is exactly four binary
+          digits, which makes a byte exactly two hex characters. That is why
+          colours are written as six hex characters and memory addresses as
+          strings of them.</p>
+        </div>
+        <div class="faq">
+          <h3>How large a number can it handle?</h3>
+          <p>As large as you like. Most converters run out of exactness above
+          about nine quadrillion, because ordinary JavaScript numbers cannot
+          hold a whole number bigger than that and silently round it instead of
+          complaining. This page uses BigInt, so a two hundred digit number
+          converts exactly.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The conversion happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=7"></script>
+  <script src="../js/tool-helpers.js?v=7"></script>
+  <script>window.CURRENT_TOOL = "binary-decimal-hex-converter";</script>
+  <script src="../js/main.js?v=7"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var EM_DASH = String.fromCharCode(0x2014);
+    var MINUS = String.fromCharCode(0x2212);
+
+    /* ---- START: what each base is allowed to contain ----
+       Checked before BigInt sees the string, because BigInt throws a
+       SyntaxError that says nothing useful to a person. */
+    var BASES = {
+      "2":  { name: "binary",      prefix: "0b", digits: /^[01]+$/,        hint: "0 and 1 only" },
+      "8":  { name: "octal",       prefix: "0o", digits: /^[0-7]+$/,       hint: "digits 0 to 7" },
+      "10": { name: "decimal",     prefix: "",   digits: /^[0-9]+$/,       hint: "digits 0 to 9" },
+      "16": { name: "hexadecimal", prefix: "0x", digits: /^[0-9a-fA-F]+$/, hint: "digits 0 to 9 and letters A to F" }
+    };
+    /* ---- END: what each base is allowed to contain ---- */
+
+    function el(id) { return document.getElementById(id); }
+
+    /* ---- START: reading the typed value ----
+       BigInt rather than Number on purpose. A Number cannot hold a whole
+       number above 9,007,199,254,740,991 and rounds silently past it, so a
+       converter built on Number gives a confident wrong answer instead of an
+       error. BigInt has no ceiling. */
+    function readValue(text, baseKey) {
+      var base = BASES[baseKey];
+      var cleaned = text.replace(/[\s_,]/g, "");
+      var negative = false;
+
+      if (cleaned.charAt(0) === "-" || cleaned.charAt(0) === MINUS) {
+        negative = true;
+        cleaned = cleaned.slice(1);
+      }
+
+      /* Accept a prefix people paste in out of habit, then drop it */
+      var lower = cleaned.toLowerCase();
+      if (base.prefix && lower.indexOf(base.prefix) === 0) {
+        cleaned = cleaned.slice(2);
+      }
+
+      if (cleaned === "") return { error: "Type a number to convert." };
+      if (!base.digits.test(cleaned)) {
+        return { error: "That is not a valid " + base.name + " number - " +
+                        base.hint + "." };
+      }
+
+      try {
+        var value = BigInt(base.prefix + cleaned);
+        return { value: negative ? -value : value };
+      } catch (e) {
+        return { error: "That is not a valid " + base.name + " number." };
+      }
+    }
+    /* ---- END: reading the typed value ---- */
+
+    /* ---- START: presenting a binary string in whole bytes ----
+       Padded to a multiple of eight and split, because that is how anyone
+       reading a byte actually wants to see it. */
+    function inBytes(binary) {
+      var padding = (8 - (binary.length % 8)) % 8;
+      var padded = new Array(padding + 1).join("0") + binary;
+      var chunks = [];
+      for (var i = 0; i < padded.length; i += 8) {
+        chunks.push(padded.slice(i, i + 8));
+      }
+      return chunks.join(" ");
+    }
+    /* ---- END: presenting a binary string in whole bytes ---- */
+
+    /* ---- START: the smallest standard type that holds it ----
+       Useful when the number came out of code, and it is the question people
+       are usually really asking when they count the bits. */
+    function smallestType(bits, negative) {
+      var widths = [8, 16, 32, 64, 128];
+      for (var i = 0; i < widths.length; i++) {
+        /* A signed type spends one bit on the sign, so it holds one bit less */
+        if (bits <= widths[i] - (negative ? 1 : 0)) {
+          return (negative ? "int" : "uint") + widths[i];
+        }
+      }
+      return "bigger than 128 bits";
+    }
+    /* ---- END: the smallest standard type that holds it ---- */
+
+    /* ---- START: the whole conversion ---- */
+    function run() {
+      var baseKey = el("base").value;
+      el("allowed").textContent = "Allowed: " + BASES[baseKey].hint +
+        ". Spaces are ignored.";
+
+      var read = readValue(el("value").value, baseKey);
+
+      if (read.error) {
+        el("errWrap").hidden = false;
+        el("err").textContent = read.error;
+        ["binOut", "octOut", "decOut", "hexOut", "grouped"].forEach(function (id) {
+          el(id).textContent = "";
+        });
+        el("bits").textContent = EM_DASH;
+        el("bytes").textContent = EM_DASH;
+        el("fits").textContent = EM_DASH;
+        return;
+      }
+
+      el("errWrap").hidden = true;
+
+      var value = read.value;
+      var negative = value < 0n;
+      var magnitude = negative ? -value : value;
+      var sign = negative ? "-" : "";
+
+      var binary = magnitude.toString(2);
+
+      el("binOut").textContent = sign + binary;
+      el("octOut").textContent = sign + magnitude.toString(8);
+      el("decOut").textContent = sign + magnitude.toString(10);
+      el("hexOut").textContent = sign + magnitude.toString(16).toUpperCase();
+      el("grouped").textContent = sign + inBytes(binary);
+
+      /* Zero is one bit wide by convention here, not zero bits */
+      var bits = magnitude === 0n ? 1 : binary.length;
+      el("bits").textContent = String(bits);
+      el("bytes").textContent = String(Math.ceil(bits / 8));
+      el("fits").textContent = smallestType(bits, negative);
+    }
+    /* ---- END: the whole conversion ---- */
+
+    /* ---- START: wiring ---- */
+    el("value").addEventListener("input", run);
+    el("base").addEventListener("change", run);
+
+    [["copyBin", "binOut"], ["copyOct", "octOut"],
+     ["copyDec", "decOut"], ["copyHex", "hexOut"]].forEach(function (pair) {
+      el(pair[0]).addEventListener("click", function () {
+        copyText(el(pair[1]).textContent);
+      });
+    });
+
+    run();   /* run once so the page is correct on load */
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

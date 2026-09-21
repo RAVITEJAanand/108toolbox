@@ -59,7 +59,7 @@ Difficulty is honest: **easy** = one afternoon, **medium** = a weekend,
 |---|---|---|---|
 | 1 ✅ | 1–10 | Proof the system works | done |
 | 2 ✅ | 11–30 | Highest search volume, all easy, no libraries | done |
-| 3 | 31–60 | Converters and date/time. Still no libraries | **5 of 30 done** |
+| 3 | 31–60 | Converters and date/time. Still no libraries | **10 of 30 done** |
 | 4 | 61–90 | PDF and files. First real libraries | month 7–9 |
 | 5 | 91–108 | The long tail and the India-specific calculators | month 10–12 |
 
@@ -106,15 +106,15 @@ one when its category gets its first tool.
 
 | Category | Tools | Built |
 |---|---|---|
-| Calculator | 20 | 13 |
+| Calculator | 20 | 14 |
 | Developer | 18 | 2 |
 | Text | 16 | 13 |
 | Image | 14 | 2 |
-| Converter | 14 | 3 |
+| Converter | 14 | 6 |
 | PDF | 10 | 0 |
-| Date & Time | 8 | 2 |
+| Date & Time | 8 | 3 |
 | Random | 8 | 0 |
-| **Total** | **108** | **35** |
+| **Total** | **108** | **40** |
 
 ---
 
@@ -182,7 +182,7 @@ matches, so do not rename them later. ✅ = already live.
 | 13 | `unit-price-comparison` | easy |
 | 14 | `fuel-cost-calculator` | easy |
 | 15 | `gst-calculator` ✅ | easy — India |
-| 16 | `sip-calculator` | medium — India, very high volume |
+| 16 | `sip-calculator` ✅ | medium — India, very high volume |
 | 17 | `salary-calculator` | medium — CTC to in-hand, India |
 | 18 | `calorie-calculator` | medium — BMR / TDEE |
 | 19 | `scientific-calculator` | medium |
@@ -220,15 +220,15 @@ which never leave the tab, so the overlap is narrower than the word suggests.
 
 | # | Slug | Difficulty |
 |---|---|---|
-| 1 | `unit-converter` | medium — length / weight / volume on one page |
+| 1 | `unit-converter` ✅ | medium — length / weight / volume on one page |
 | 2 | `temperature-converter` ✅ | easy |
 | 3 | `speed-converter` | easy |
 | 4 | `data-storage-converter` | easy |
 | 5 | `area-converter` ✅ | easy — include gunta / bigha / cent, India |
-| 6 | `binary-decimal-hex-converter` | easy |
+| 6 | `binary-decimal-hex-converter` ✅ | easy |
 | 7 | `roman-numeral-converter` | easy |
 | 8 | `number-to-words` ✅ | medium — add the Indian lakh / crore system |
-| 9 | `timestamp-converter` | easy — Unix ↔ human date |
+| 9 | `timestamp-converter` ✅ | easy — Unix ↔ human date |
 | 10 | `cooking-measurement-converter` | easy |
 | 11 | `shoe-size-converter` | easy |
 | 12 | `text-to-morse` | easy |
@@ -284,7 +284,7 @@ the footer and becomes the entire reason to pick this site.
 | 2 | `add-subtract-days` ✅ | easy |
 | 3 | `leap-year-checker` | easy |
 | 4 | `week-number-calculator` | easy |
-| 5 | `days-until-countdown` | easy |
+| 5 | `days-until-countdown` ✅ | easy |
 | 6 | `working-days-calculator` | medium — holidays are the tricky bit |
 | 7 | `stopwatch-timer` | medium |
 | 8 | `time-zone-converter` | medium — `Intl.DateTimeFormat`, no library |

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Unit Converter — Length, Weight and Volume in One</title>
+  <meta name="description" content="Convert length, weight and volume between metric and imperial units, and see the same measurement in every unit at once. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/unit-converter.html">
+
+  <meta property="og:title" content="Unit Converter — Length, Weight and Volume in One">
+  <meta property="og:description" content="Convert length, weight and volume between metric and imperial units, and see the same measurement in every unit at once. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=7">
+  <link rel="stylesheet" href="../css/tool.css?v=7">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How many centimetres are in an inch?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Exactly 2.54, and exactly is the right word. Since 1959 the inch has been defined as 2.54 centimetres by agreement rather than measured, so the conversion carries no rounding error at all. A foot is therefore exactly 30.48 centimetres."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is a US gallon the same as an imperial gallon?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, and the gap is large. A US gallon is 3.785 litres while an imperial gallon is 4.546 litres, about twenty percent more. Both are listed separately here for that reason. The same split affects pints and fluid ounces, so a recipe that just says pint is ambiguous unless you know where it was written."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does a cup in my recipe not match?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because there are two cups in common use. A US cup is 236.6 millilitres and a metric cup, used in India and Australia, is a round 250 millilitres. Both are in the list. For baking the difference is enough to matter, so weigh the ingredient if the recipe gives a weight."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
+        <span>Unit Converter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Unit Converter</h1>
+        <p>Length, weight and volume, metric and imperial, with the same
+           measurement shown in every unit at once. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- the conversion ---------- -->
+        <div class="panel">
+          <span class="panel__label">Convert</span>
+
+          <div class="field">
+            <label for="kind">What are you measuring</label>
+            <select id="kind">
+              <option value="length" selected>Length</option>
+              <option value="weight">Weight</option>
+              <option value="volume">Volume</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="amount">Amount</label>
+            <input type="number" id="amount" value="1" step="any">
+          </div>
+
+          <div class="field">
+            <label for="from">From</label>
+            <select id="from"></select>
+          </div>
+
+          <div class="field">
+            <label for="to">To</label>
+            <select id="to"></select>
+          </div>
+
+          <div class="result">
+            <span class="result__num" id="out">100</span>
+            <span class="result__label" id="formula"></span>
+          </div>
+
+          <p class="hint" id="note"></p>
+        </div>
+
+        <!-- ---------- every unit at once ---------- -->
+        <div class="panel">
+          <span class="panel__label">The same measurement in every unit</span>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr><th>Unit</th><th>Value</th></tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Pick length, weight or volume. The unit lists change with it.</li>
+          <li>Type the amount and choose the two units.</li>
+          <li>The table on the right shows the same measurement in every unit
+              of that kind, which saves converting twice.</li>
+        </ol>
+
+        <h2>Most of these conversions are exact</h2>
+        <p>They are not measurements, they are definitions agreed in 1959, so
+        there is no rounding error hiding anywhere:</p>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>1 of these</th><th>is exactly</th></tr></thead>
+            <tbody>
+              <tr><td>inch</td><td>2.54 cm</td></tr>
+              <tr><td>foot</td><td>30.48 cm</td></tr>
+              <tr><td>yard</td><td>0.9144 m</td></tr>
+              <tr><td>mile</td><td>1,609.344 m</td></tr>
+              <tr><td>pound</td><td>0.453 592 37 kg</td></tr>
+              <tr><td>nautical mile</td><td>1,852 m</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Any figure this page shows to several decimals is therefore the
+        genuine value, not an approximation that got away from someone.</p>
+
+        <h2>US and imperial are different systems</h2>
+        <p>They share names and not much else. A <strong>US gallon is 3.785
+        litres</strong> while an <strong>imperial gallon is 4.546</strong>,
+        about twenty percent more. Pints and fluid ounces split the same way.
+        A recipe or a fuel figure that just says gallon is ambiguous until you
+        know where it was written, so both are listed separately here rather
+        than quietly picking one.</p>
+
+        <h2>Cooking measures are the worst of it</h2>
+        <p>A <strong>US cup is 236.6 ml</strong> and a <strong>metric cup,
+        used across India and Australia, is a round 250 ml</strong>. That is a
+        six percent difference, which a curry will forgive and a cake will
+        not.</p>
+        <p>Where a recipe gives a weight as well as a volume, use the weight.
+        A cup of flour can vary by twenty percent depending on whether it was
+        scooped or spooned, and no converter can fix that.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How many centimetres are in an inch?</h3>
+          <p>Exactly 2.54, and exactly is the right word. Since 1959 the inch
+          has been defined as 2.54 centimetres by agreement rather than
+          measured, so the conversion carries no rounding error at all. A foot
+          is therefore exactly 30.48 centimetres.</p>
+        </div>
+        <div class="faq">
+          <h3>Is a US gallon the same as an imperial gallon?</h3>
+          <p>No, and the gap is large. A US gallon is 3.785 litres while an
+          imperial gallon is 4.546 litres, about twenty percent more. Both are
+          listed separately here for that reason. The same split affects pints
+          and fluid ounces, so a recipe that just says pint is ambiguous unless
+          you know where it was written.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does a cup in my recipe not match?</h3>
+          <p>Because there are two cups in common use. A US cup is 236.6
+          millilitres and a metric cup, used in India and Australia, is a round
+          250 millilitres. Both are in the list. For baking the difference is
+          enough to matter, so weigh the ingredient if the recipe gives a
+          weight.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=7"></script>
+  <script src="../js/tool-helpers.js?v=7"></script>
+  <script>window.CURRENT_TOOL = "unit-converter";</script>
+  <script src="../js/main.js?v=7"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    /* ---- START: the unit tables ----
+       Each kind has one base unit and every other unit is expressed in it, so
+       a conversion is one multiply and one divide. The long decimals are not
+       sloppiness: since 1959 the inch and the pound are DEFINED as those exact
+       figures, so rounding them here would introduce an error that does not
+       exist in the real world. */
+    var KINDS = {
+      length: {
+        base: "metre",
+        units: [
+          { id: "mm",   label: "Millimetre",    size: 0.001 },
+          { id: "cm",   label: "Centimetre",    size: 0.01 },
+          { id: "m",    label: "Metre",         size: 1 },
+          { id: "km",   label: "Kilometre",     size: 1000 },
+          { id: "in",   label: "Inch",          size: 0.0254 },
+          { id: "ft",   label: "Foot",          size: 0.3048 },
+          { id: "yd",   label: "Yard",          size: 0.9144 },
+          { id: "mi",   label: "Mile",          size: 1609.344 },
+          { id: "nmi",  label: "Nautical mile", size: 1852 }
+        ],
+        defaultFrom: "m",
+        defaultTo: "cm"
+      },
+      weight: {
+        base: "kilogram",
+        units: [
+          { id: "mg",    label: "Milligram", size: 0.000001 },
+          { id: "g",     label: "Gram",      size: 0.001 },
+          { id: "kg",    label: "Kilogram",  size: 1 },
+          { id: "t",     label: "Tonne",     size: 1000 },
+          { id: "oz",    label: "Ounce",     size: 0.028349523125 },
+          { id: "lb",    label: "Pound",     size: 0.45359237 },
+          { id: "stone", label: "Stone",     size: 6.35029318 }
+        ],
+        defaultFrom: "kg",
+        defaultTo: "lb"
+      },
+      volume: {
+        base: "litre",
+        units: [
+          { id: "ml",     label: "Millilitre",         size: 0.001 },
+          { id: "l",      label: "Litre",              size: 1 },
+          { id: "m3",     label: "Cubic metre",        size: 1000 },
+          { id: "tsp",    label: "Teaspoon (US)",      size: 0.00492892159375 },
+          { id: "tbsp",   label: "Tablespoon (US)",    size: 0.01478676478125 },
+          { id: "cupus",  label: "Cup (US, 236.6 ml)", size: 0.2365882365 },
+          { id: "cupm",   label: "Cup (metric, 250 ml)", size: 0.25 },
+          { id: "ptus",   label: "Pint (US)",          size: 0.473176473 },
+          { id: "qtus",   label: "Quart (US)",         size: 0.946352946 },
+          { id: "galus",  label: "Gallon (US)",        size: 3.785411784 },
+          { id: "galimp", label: "Gallon (imperial)",  size: 4.54609 }
+        ],
+        defaultFrom: "l",
+        defaultTo: "ml"
+      }
+    };
+    /* ---- END: the unit tables ---- */
+
+    function el(id) { return document.getElementById(id); }
+
+    function currentKind() { return KINDS[el("kind").value]; }
+
+    function unitById(kind, id) {
+      for (var i = 0; i < kind.units.length; i++) {
+        if (kind.units[i].id === id) return kind.units[i];
+      }
+      return kind.units[0];
+    }
+
+    /* ---- START: formatting ----
+       A millimetre and a mile live in the same list, so a fixed number of
+       decimals is useless at one end. Scale the precision to the size. */
+    function show(value) {
+      if (!isFinite(value)) return String.fromCharCode(0x2014);
+      if (value === 0) return "0";
+      var abs = Math.abs(value);
+      var places = abs >= 1000 ? 2 : abs >= 1 ? 4 : 6;
+      return value.toLocaleString(undefined, { maximumFractionDigits: places });
+    }
+    /* ---- END: formatting ---- */
+
+    /* ---- START: filling the dropdowns for a kind ----
+       Rebuilt whenever the kind changes, because a length in gallons is not a
+       conversion, it is a typo waiting to happen. */
+    function fillSelects() {
+      var kind = currentKind();
+
+      ["from", "to"].forEach(function (which) {
+        var select = el(which);
+        select.textContent = "";
+        kind.units.forEach(function (u) {
+          var option = document.createElement("option");
+          option.value = u.id;
+          option.textContent = u.label;
+          select.appendChild(option);
+        });
+      });
+
+      el("from").value = kind.defaultFrom;
+      el("to").value = kind.defaultTo;
+    }
+    /* ---- END: filling the dropdowns for a kind ---- */
+
+    /* ---- START: the same measurement in every unit ---- */
+    function buildTable(kind, inBase) {
+      var body = el("rows");
+      body.textContent = "";
+      var fragment = document.createDocumentFragment();
+
+      kind.units.forEach(function (u) {
+        var row = document.createElement("tr");
+        [u.label, show(inBase / u.size)].forEach(function (text) {
+          var cell = document.createElement("td");
+          cell.textContent = text;
+          row.appendChild(cell);
+        });
+        fragment.appendChild(row);
+      });
+      body.appendChild(fragment);
+    }
+    /* ---- END: the same measurement in every unit ---- */
+
+    /* ---- START: the conversion itself ---- */
+    function run() {
+      var kind = currentKind();
+      var raw = parseFloat(el("amount").value);
+      var amount = isNaN(raw) ? 0 : raw;
+      var from = unitById(kind, el("from").value);
+      var to = unitById(kind, el("to").value);
+
+      /* Through the base unit every time. Direct pairs would need a table of
+         every combination, and one wrong cell in it would be invisible. */
+      var inBase = amount * from.size;
+      var result = inBase / to.size;
+
+      el("out").textContent = show(result);
+      el("formula").textContent =
+        show(amount) + " " + from.label + " = " + show(result) + " " + to.label;
+      el("note").textContent =
+        "Everything is converted through the " + kind.base + ".";
+
+      buildTable(kind, inBase);
+    }
+    /* ---- END: the conversion itself ---- */
+
+    /* ---- START: wiring ---- */
+    el("kind").addEventListener("change", function () {
+      fillSelects();
+      run();
+    });
+    el("amount").addEventListener("input", run);
+    el("from").addEventListener("change", run);
+    el("to").addEventListener("change", run);
+
+    fillSelects();
+    run();   /* run once so the page is correct on load */
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

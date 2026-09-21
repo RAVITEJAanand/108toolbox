@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Unix Timestamp Converter — Epoch to Date and Back</title>
+  <meta name="description" content="Turn a Unix timestamp into a readable date in UTC and your own time zone, or go the other way, with seconds and milliseconds detected for you. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/timestamp-converter.html">
+
+  <meta property="og:title" content="Unix Timestamp Converter — Epoch to Date and Back">
+  <meta property="og:description" content="Turn a Unix timestamp into a readable date in UTC and your own time zone, or go the other way, with seconds and milliseconds detected for you. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=7">
+  <link rel="stylesheet" href="../css/tool.css?v=7">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a Unix timestamp?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The number of seconds that have passed since midnight UTC on 1 January 1970, a moment called the epoch. It is a single number with no time zone and no daylight saving in it, which is why almost every database and API stores time that way and converts to a readable date only at the last moment."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I tell seconds from milliseconds?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Count the digits. A timestamp in seconds for any date near today has ten digits; the same moment in milliseconds has thirteen. This page checks the size and tells you which it assumed, because reading milliseconds as seconds throws the answer about fifty thousand years into the future."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the year 2038 problem?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Older systems store the timestamp in a signed 32-bit integer, which runs out at 2,147,483,647 seconds. That moment arrives at 03:14:07 UTC on 19 January 2038, and a system that has not moved to 64-bit will wrap round to December 1901. This page uses JavaScript numbers, which are not affected."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The conversion happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
+        <span>Timestamp Converter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Unix Timestamp Converter</h1>
+        <p>A timestamp into a readable date, or a date back into a timestamp,
+           with seconds and milliseconds told apart for you. Nothing is
+           uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace">
+
+        <!-- ---------- timestamp to date ---------- -->
+        <div class="panel">
+          <span class="panel__label">Timestamp to date</span>
+
+          <div class="field">
+            <label for="stamp">Unix timestamp</label>
+            <input type="text" id="stamp" value="1700000000" spellcheck="false" autocomplete="off">
+            <p class="hint" id="detected"></p>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--ghost" type="button" id="nowBtn">Use this moment</button>
+          </div>
+
+          <!-- Plain wrapper: .msg carries its own display, which would beat
+               the browser rule for the hidden attribute. -->
+          <div id="errWrap" hidden style="margin-top:var(--s3)">
+            <p class="msg msg--bad" id="err"></p>
+          </div>
+
+          <div class="result" style="margin-top:var(--s4)">
+            <span class="result__num" id="utcOut">14 Nov 2023, 22:13:20</span>
+            <span class="result__label" id="relative"></span>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><span class="stat__num" id="localOut">&mdash;</span><span class="stat__label">Your time zone</span></div>
+            <div class="stat"><span class="stat__num" id="isoOut">&mdash;</span><span class="stat__label">ISO 8601</span></div>
+          </div>
+
+          <div class="stats" style="margin-top:var(--s2)">
+            <div class="stat"><span class="stat__num" id="secOut">&mdash;</span><span class="stat__label">Seconds</span></div>
+            <div class="stat"><span class="stat__num" id="msOut">&mdash;</span><span class="stat__label">Milliseconds</span></div>
+          </div>
+        </div>
+
+        <!-- ---------- date to timestamp ---------- -->
+        <div class="panel">
+          <span class="panel__label">Date to timestamp</span>
+
+          <div class="field">
+            <label for="date">Date</label>
+            <input type="date" id="date" value="2026-01-01">
+          </div>
+
+          <div class="field">
+            <label for="time">Time</label>
+            <input type="time" id="time" value="00:00" step="1">
+          </div>
+
+          <div class="field">
+            <label for="zone">That time is in</label>
+            <select id="zone">
+              <option value="utc" selected>UTC</option>
+              <option value="local">My own time zone</option>
+            </select>
+          </div>
+
+          <div id="dateErrWrap" hidden style="margin-top:var(--s3)">
+            <p class="msg msg--bad" id="dateErr"></p>
+          </div>
+
+          <div class="result" style="margin-top:var(--s4)">
+            <span class="result__num" id="stampOut">1767225600</span>
+            <span class="result__label" id="stampNote"></span>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--primary" type="button" id="copyStamp">Copy the timestamp</button>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Paste a timestamp on the left. Seconds or milliseconds &mdash;
+              it works out which and says so.</li>
+          <li>Or build a date on the right and read the timestamp back.</li>
+          <li>Both panels are independent, so you can convert in each
+              direction at the same time.</li>
+        </ol>
+
+        <h2>What the epoch actually is</h2>
+        <p>A Unix timestamp counts the seconds since <strong>midnight UTC on 1
+        January 1970</strong>. That instant is called the epoch, and it was
+        chosen because it was a convenient round date shortly before Unix was
+        written.</p>
+        <p>The reason it is everywhere is that it carries no time zone and no
+        daylight saving. It is one number that means the same instant
+        everywhere on earth, which makes it safe to store, sort and subtract.
+        The messy business of turning it into "Tuesday evening" happens once,
+        at the last moment, in front of the person reading it.</p>
+
+        <h2>Seconds or milliseconds</h2>
+        <p>Count the digits. A timestamp in seconds for a date near today has
+        <strong>ten</strong>; the same moment in milliseconds has
+        <strong>thirteen</strong>. Unix, PHP and most databases use seconds;
+        JavaScript and Java use milliseconds, which is where most of the
+        confusion starts.</p>
+        <p>Getting it wrong is not subtle. Read a millisecond timestamp as
+        seconds and your date lands around the year 55,000. This page checks
+        the magnitude and tells you which it assumed, so you can catch it
+        immediately.</p>
+
+        <h2>The year 2038 problem</h2>
+        <p>Older systems keep the timestamp in a signed 32-bit integer, which
+        cannot go past 2,147,483,647. That number of seconds runs out at
+        <strong>03:14:07 UTC on 19 January 2038</strong>, and anything still
+        using 32 bits will wrap around to December 1901.</p>
+        <p>Most things have moved to 64-bit, which pushes the limit far beyond
+        the lifetime of the sun. This page is unaffected either way, because
+        JavaScript uses a floating point number that comfortably covers dates
+        a quarter of a million years out.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>What is a Unix timestamp?</h3>
+          <p>The number of seconds that have passed since midnight UTC on 1
+          January 1970, a moment called the epoch. It is a single number with
+          no time zone and no daylight saving in it, which is why almost every
+          database and API stores time that way and converts to a readable date
+          only at the last moment.</p>
+        </div>
+        <div class="faq">
+          <h3>How do I tell seconds from milliseconds?</h3>
+          <p>Count the digits. A timestamp in seconds for any date near today
+          has ten digits; the same moment in milliseconds has thirteen. This
+          page checks the size and tells you which it assumed, because reading
+          milliseconds as seconds throws the answer about fifty thousand years
+          into the future.</p>
+        </div>
+        <div class="faq">
+          <h3>What is the year 2038 problem?</h3>
+          <p>Older systems store the timestamp in a signed 32-bit integer,
+          which runs out at 2,147,483,647 seconds. That moment arrives at
+          03:14:07 UTC on 19 January 2038, and a system that has not moved to
+          64-bit will wrap round to December 1901. This page uses JavaScript
+          numbers, which are not affected.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The conversion happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=7"></script>
+  <script src="../js/tool-helpers.js?v=7"></script>
+  <script>window.CURRENT_TOOL = "timestamp-converter";</script>
+  <script src="../js/main.js?v=7"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var EM_DASH = String.fromCharCode(0x2014);
+    var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    /* Anything past this many units is milliseconds, not seconds. A seconds
+       timestamp this large would be the year 5138; a milliseconds one is 1973,
+       so the split is nowhere near any date a person will type. */
+    var MILLISECOND_THRESHOLD = 100000000000;
+
+    function el(id) { return document.getElementById(id); }
+
+    function pad(n, width) {
+      var s = String(Math.abs(n));
+      while (s.length < (width || 2)) s = "0" + s;
+      return (n < 0 ? "-" : "") + s;
+    }
+
+    /* ---- START: printing a date in UTC ----
+       Written out by hand rather than with toLocaleString, because that
+       follows the visitor's locale and this panel has to say UTC and mean it. */
+    function utcText(date) {
+      return date.getUTCDate() + " " + MONTHS[date.getUTCMonth()] + " " +
+             date.getUTCFullYear() + ", " +
+             pad(date.getUTCHours()) + ":" + pad(date.getUTCMinutes()) +
+             ":" + pad(date.getUTCSeconds()) + " UTC";
+    }
+    /* ---- END: printing a date in UTC ---- */
+
+    /* ---- START: how long ago, in words ----
+       Rough on purpose. "About 2 years ago" is what the question wants; an
+       exact count of days is what the date difference tool is for. */
+    function relativeText(ms) {
+      var diff = ms - Date.now();
+      var future = diff > 0;
+      var seconds = Math.abs(diff) / 1000;
+
+      var steps = [
+        [1, "second"], [60, "minute"], [3600, "hour"], [86400, "day"],
+        [604800, "week"], [2629800, "month"], [31557600, "year"]
+      ];
+
+      var unit = steps[0];
+      for (var i = 0; i < steps.length; i++) {
+        if (seconds >= steps[i][0]) unit = steps[i];
+      }
+
+      var count = Math.round(seconds / unit[0]);
+      var word = unit[1] + (count === 1 ? "" : "s");
+      return future ? "in " + count + " " + word : count + " " + word + " ago";
+    }
+    /* ---- END: how long ago, in words ---- */
+
+    /* ---- START: timestamp to date ---- */
+    function runStampToDate() {
+      var raw = el("stamp").value.replace(/[\s_,]/g, "");
+
+      function fail(message) {
+        el("errWrap").hidden = false;
+        el("err").textContent = message;
+        ["utcOut", "localOut", "isoOut", "secOut", "msOut"].forEach(function (id) {
+          el(id).textContent = EM_DASH;
+        });
+        el("relative").textContent = "";
+        el("detected").textContent = "";
+      }
+
+      if (raw === "") { fail("Paste a timestamp to see the date."); return; }
+      if (!/^-?\d+$/.test(raw)) { fail("A timestamp is a whole number of seconds or milliseconds."); return; }
+
+      var value = Number(raw);
+      if (!isFinite(value)) { fail("That number is too large to be a timestamp."); return; }
+
+      /* The size of the number decides the unit. Getting this backwards
+         throws the answer about fifty thousand years out, so it is said on
+         screen rather than assumed quietly. */
+      var isMilliseconds = Math.abs(value) >= MILLISECOND_THRESHOLD;
+      var ms = isMilliseconds ? value : value * 1000;
+
+      var date = new Date(ms);
+      if (isNaN(date.getTime())) { fail("That is outside the range of dates a browser can represent."); return; }
+
+      el("errWrap").hidden = true;
+      el("detected").textContent = isMilliseconds
+        ? "Read as milliseconds - it has " + raw.replace("-", "").length + " digits."
+        : "Read as seconds - it has " + raw.replace("-", "").length + " digits.";
+
+      el("utcOut").textContent = utcText(date);
+      el("relative").textContent = relativeText(ms);
+      el("localOut").textContent = date.toLocaleString();
+      el("isoOut").textContent = date.toISOString();
+      el("secOut").textContent = String(Math.floor(ms / 1000));
+      el("msOut").textContent = String(ms);
+    }
+    /* ---- END: timestamp to date ---- */
+
+    /* ---- START: date to timestamp ---- */
+    function runDateToStamp() {
+      var dateValue = el("date").value;
+      var timeValue = el("time").value || "00:00:00";
+      var useUtc = el("zone").value === "utc";
+
+      function fail(message) {
+        el("dateErrWrap").hidden = false;
+        el("dateErr").textContent = message;
+        el("stampOut").textContent = EM_DASH;
+        el("stampNote").textContent = "";
+      }
+
+      var d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateValue || "");
+      var t = /^(\d{2}):(\d{2})(?::(\d{2}))?$/.exec(timeValue);
+      if (!d || !t) { fail("Pick a real date and time."); return; }
+
+      var year = parseInt(d[1], 10);
+      var month = parseInt(d[2], 10) - 1;
+      var day = parseInt(d[3], 10);
+      var hour = parseInt(t[1], 10);
+      var minute = parseInt(t[2], 10);
+      var second = t[3] ? parseInt(t[3], 10) : 0;
+
+      var ms = useUtc
+        ? Date.UTC(year, month, day, hour, minute, second)
+        : new Date(year, month, day, hour, minute, second).getTime();
+
+      if (isNaN(ms)) { fail("That date cannot be represented."); return; }
+
+      el("dateErrWrap").hidden = true;
+      el("stampOut").textContent = String(Math.floor(ms / 1000));
+      el("stampNote").textContent =
+        "In milliseconds: " + ms + ". " +
+        (useUtc ? "Read as UTC." : "Read in your own time zone, which includes any daylight saving in force on that date.");
+    }
+    /* ---- END: date to timestamp ---- */
+
+    /* ---- START: wiring ---- */
+    el("stamp").addEventListener("input", runStampToDate);
+    ["date", "time"].forEach(function (id) {
+      el(id).addEventListener("input", runDateToStamp);
+      el(id).addEventListener("change", runDateToStamp);
+    });
+    el("zone").addEventListener("change", runDateToStamp);
+
+    el("nowBtn").addEventListener("click", function () {
+      el("stamp").value = String(Math.floor(Date.now() / 1000));
+      runStampToDate();
+    });
+
+    el("copyStamp").addEventListener("click", function () {
+      copyText(el("stampOut").textContent);
+    });
+
+    runStampToDate();
+    runDateToStamp();   /* run once so the page is correct on load */
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

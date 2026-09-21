@@ -324,6 +324,51 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "sip-calculator",
+    name: "SIP Calculator",
+    desc: "What a monthly investment grows to, with an annual step-up option.",
+    category: "Calculator",
+    icon: "\u{1F4B5}",
+    keywords: ["sip calculator", "mutual fund calculator", "systematic investment plan", "step up sip", "monthly investment", "sip returns"],
+    popular: true
+  },
+  {
+    slug: "unit-converter",
+    name: "Unit Converter",
+    desc: "Length, weight and volume between metric and imperial, all units at once.",
+    category: "Converter",
+    icon: "\u{1F4CF}",
+    keywords: ["unit converter", "length converter", "weight converter", "volume converter", "cm to inches", "kg to pounds", "litres to gallons"],
+    popular: true
+  },
+  {
+    slug: "binary-decimal-hex-converter",
+    name: "Binary, Decimal and Hex",
+    desc: "Convert between base 2, 8, 10 and 16, exactly, however long the number.",
+    category: "Converter",
+    icon: "\u{1F5A5}\u{FE0F}",
+    keywords: ["binary to decimal", "decimal to binary", "hex converter", "base converter", "octal", "hexadecimal"],
+    popular: false
+  },
+  {
+    slug: "timestamp-converter",
+    name: "Unix Timestamp Converter",
+    desc: "Epoch to a readable date and back, with seconds and milliseconds told apart.",
+    category: "Converter",
+    icon: "\u{23F1}\u{FE0F}",
+    keywords: ["unix timestamp", "epoch converter", "timestamp to date", "date to timestamp", "epoch time"],
+    popular: false
+  },
+  {
+    slug: "days-until-countdown",
+    name: "Days Until Countdown",
+    desc: "How many days until a date, with a live countdown to the exact moment.",
+    category: "Date & Time",
+    icon: "\u{23F3}",
+    keywords: ["days until", "countdown", "how many days until", "days since", "countdown timer", "days left"],
+    popular: false
+  },
+  {
     slug: "password-generator",
     name: "Password Generator",
     desc: "Create strong random passwords with a live strength meter.",

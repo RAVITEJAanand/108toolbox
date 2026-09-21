@@ -1399,6 +1399,202 @@ T["add-subtract-days"] = r"""
     finish();
 """
 
+T["sip-calculator"] = r"""
+    near("5000 a month, 12%, 10 years", txt("maturity"), 1161695, 2);
+    near("what you put in", txt("invested"), 600000);
+    near("what it earned", txt("returns"), 561695, 2);
+    eq("ten rows", rows().length, 10);
+    near("year 1 invested", cell(0, 1), 60000);
+    near("year 10 value", cell(9, 2), 1161695, 2);
+    has("the assumption is stated on the page", txt("note"), "not guaranteed");
+
+    set("stepup", "10");
+    near("a 10% step-up changes the maturity", txt("maturity"), 1687163, 5);
+    near("and you invest more too", txt("invested"), 956245, 5);
+    has("step-up mentioned in the summary", txt("formula"), "rising");
+
+    set("stepup", "0"); set("rate", "0");
+    near("no return means you get back what you put in", txt("maturity"), 600000);
+    near("and earn nothing", txt("returns"), 0);
+
+    set("rate", "12"); set("years", "1");
+    eq("one year, one row", rows().length, 1);
+
+    set("monthly", "0");
+    near("nothing invested, nothing back", txt("maturity"), 0);
+
+    set("monthly", "");
+    near("an empty box does not crash it", txt("maturity"), 0);
+    finish();
+"""
+
+T["unit-converter"] = r"""
+    near("1 metre is 100 cm", txt("out"), 100);
+    eq("nine length units", rows().length, 9);
+
+    set("to", "in");
+    near("1 metre in inches", txt("out"), 39.3701, 0.001);
+
+    set("from", "in"); set("to", "cm"); set("amount", "1");
+    near("an inch is exactly 2.54 cm", txt("out"), 2.54, 0.0001);
+
+    set("from", "mi"); set("to", "km");
+    near("a mile is 1.609344 km", txt("out"), 1.6093, 0.001);
+
+    set("kind", "weight");
+    eq("seven weight units", rows().length, 7);
+    near("1 kg in pounds", txt("out"), 2.2046, 0.001);
+    set("from", "lb"); set("to", "kg");
+    near("a pound is exactly 0.45359237 kg", txt("out"), 0.4536, 0.0001);
+
+    set("kind", "volume");
+    eq("eleven volume units", rows().length, 11);
+    near("1 litre is 1000 ml", txt("out"), 1000);
+
+    set("from", "galus"); set("to", "l");
+    near("a US gallon is 3.785 litres", txt("out"), 3.7854, 0.001);
+    set("from", "galimp");
+    near("an imperial gallon is 4.546 litres", txt("out"), 4.5461, 0.001);
+
+    set("from", "cupus"); set("to", "ml");
+    near("a US cup is 236.6 ml", txt("out"), 236.5882, 0.01);
+    set("from", "cupm");
+    near("a metric cup is a round 250 ml", txt("out"), 250);
+
+    set("kind", "length");
+    has("it says which base unit is used", txt("note"), "metre");
+
+    set("amount", "");
+    near("an empty box does not crash it", txt("out"), 0);
+    finish();
+"""
+
+T["binary-decimal-hex-converter"] = r"""
+    eq("255 in binary", txt("binOut"), "11111111");
+    eq("255 in octal", txt("octOut"), "377");
+    eq("255 in decimal", txt("decOut"), "255");
+    eq("255 in hex", txt("hexOut"), "FF");
+    eq("grouped into a byte", txt("grouped"), "11111111");
+    eq("eight bits", txt("bits"), "8");
+    eq("one byte", txt("bytes"), "1");
+    eq("fits a uint8", txt("fits"), "uint8");
+    gone("no error for a valid number", "errWrap");
+
+    set("value", "1011"); set("base", "2");
+    eq("binary 1011 is 11", txt("decOut"), "11");
+    eq("and B in hex", txt("hexOut"), "B");
+    eq("padded to a whole byte", txt("grouped"), "00001011");
+
+    set("base", "16"); set("value", "DEADBEEF");
+    eq("hex DEADBEEF in decimal", txt("decOut"), "3735928559");
+    eq("32 bits", txt("bits"), "32");
+
+    set("value", "0xdeadbeef");
+    eq("a 0x prefix is accepted", txt("decOut"), "3735928559");
+
+    set("base", "10"); set("value", "9007199254740993");
+    eq("past the safe integer limit, exactly", txt("decOut"), "9007199254740993");
+    eq("and its hex is exact too", txt("hexOut"), "20000000000001");
+
+    set("value", "0");
+    eq("zero", txt("binOut"), "0");
+    eq("zero is one bit wide by convention", txt("bits"), "1");
+
+    set("value", "-10");
+    eq("a negative number keeps its sign", txt("binOut"), "-1010");
+    eq("and is offered a signed type", txt("fits"), "int8");
+
+    set("base", "2"); set("value", "1012");
+    shown("a 2 in binary is refused", "errWrap");
+    has("and says what is allowed", txt("err"), "0 and 1 only");
+
+    set("value", "");
+    shown("an empty box is refused", "errWrap");
+    finish();
+"""
+
+T["timestamp-converter"] = r"""
+    has("1700000000 is Nov 2023", txt("utcOut"), "14 Nov 2023");
+    has("at 22:13:20 UTC", txt("utcOut"), "22:13:20");
+    eq("seconds echoed back", txt("secOut"), "1700000000");
+    eq("milliseconds", txt("msOut"), "1700000000000");
+    has("read as seconds", txt("detected"), "seconds");
+    has("ISO 8601", txt("isoOut"), "2023-11-14T22:13:20");
+    gone("no error for a valid timestamp", "errWrap");
+
+    set("stamp", "0");
+    has("zero is the epoch itself", txt("utcOut"), "1 Jan 1970");
+
+    set("stamp", "1000000000");
+    has("a billion seconds is Sep 2001", txt("utcOut"), "9 Sep 2001");
+
+    set("stamp", "1700000000000");
+    has("thirteen digits are read as milliseconds", txt("detected"), "milliseconds");
+    has("and give the same moment", txt("utcOut"), "14 Nov 2023");
+
+    set("stamp", "notanumber");
+    shown("letters are refused", "errWrap");
+
+    set("stamp", "");
+    shown("an empty box is refused", "errWrap");
+
+    set("date", "2026-01-01"); set("time", "00:00"); set("zone", "utc");
+    eq("2026 new year in UTC", txt("stampOut"), "1767225600");
+    has("milliseconds given too", txt("stampNote"), "1767225600000");
+
+    set("date", "1970-01-01");
+    eq("the epoch itself is zero", txt("stampOut"), "0");
+
+    set("date", "2038-01-19"); set("time", "03:14:07");
+    eq("the 32-bit ceiling", txt("stampOut"), "2147483647");
+
+    set("date", "");
+    shown("a missing date is refused", "dateErrWrap");
+    finish();
+"""
+
+T["days-until-countdown"] = r"""
+    /* Built from the same clock the page reads, so the assertion stays true
+       whatever day the suite is run on. */
+    var today = new Date();
+    function isoPlus(days) {
+      var d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + days);
+      return d.getFullYear() + "-" +
+             String(d.getMonth() + 1).padStart(2, "0") + "-" +
+             String(d.getDate()).padStart(2, "0");
+    }
+
+    set("target", isoPlus(0));
+    eq("today reads as today", txt("days"), "Today");
+
+    set("target", isoPlus(1));
+    eq("tomorrow is one day", txt("days"), "1 day to go");
+
+    set("target", isoPlus(30));
+    eq("thirty days out", txt("days"), "30 days to go");
+    eq("which is 4 weeks and 2 days", txt("weeks"), "4w 2d");
+    has("the target is spelled out", txt("targetText"), String(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30).getFullYear()));
+
+    set("target", isoPlus(-5));
+    eq("a past date counts up", txt("days"), "5 days ago");
+    has("and the note says it has passed", txt("note"), "has passed");
+
+    set("target", isoPlus(7));
+    eq("a week out", txt("days"), "7 days to go");
+    eq("one week, no spare days", txt("weeks"), "1w 0d");
+    near("five working days in a week", txt("working"), 5);
+
+    has("the live line ticks in seconds", txt("live"), "seconds");
+
+    document.getElementById("newYearBtn").click();
+    eq("the new year button jumps to 1 January", document.getElementById("target").value,
+       (today.getFullYear() + 1) + "-01-01");
+
+    set("target", "");
+    shown("a missing date is refused", "errWrap");
+    finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 

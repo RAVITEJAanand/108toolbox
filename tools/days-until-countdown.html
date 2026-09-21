@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Days Until Countdown — How Many Days Until a Date</title>
+  <meta name="description" content="Count the days, hours and minutes until any date, or how long since one that has already passed, with the countdown ticking live. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/days-until-countdown.html">
+
+  <meta property="og:title" content="Days Until Countdown — How Many Days Until a Date">
+  <meta property="og:description" content="Count the days, hours and minutes until any date, or how long since one that has already passed, with the countdown ticking live. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=7">
+  <link rel="stylesheet" href="../css/tool.css?v=7">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does the count include today?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The big number is how many whole days are left, so a date tomorrow shows one and a date today shows zero. That matches the way people say it out loud. If you need both days counted, as a leave application would, use the date difference tool and tick the box there."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does the day count change at midnight rather than at the time I set?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because the big number counts calendar days, which is what people mean by how many days until something. The live line below it counts down to the exact moment instead, so it ticks over at the time you set. The two are deliberately different and both are shown."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it count days since a date that has passed?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Pick any past date and it counts up instead of down, saying how long ago it was. It is the same arithmetic with the sign the other way round, so anniversaries and how long since I started work both work."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=date">Date &amp; Time</a><span>&rsaquo;</span>
+        <span>Days Until Countdown</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Days Until Countdown</h1>
+        <p>How many days until a date, and a live countdown to the exact
+           moment. Past dates count up instead. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- the target ---------- -->
+        <div class="panel">
+          <span class="panel__label">The date</span>
+
+          <div class="field">
+            <label for="target">Counting to</label>
+            <input type="date" id="target">
+          </div>
+
+          <div class="field">
+            <label for="attime">At what time</label>
+            <input type="time" id="attime" value="00:00">
+            <p class="hint">Only the live line below uses the time. The day
+            count works in whole calendar days.</p>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--ghost" type="button" id="newYearBtn">Next New Year</button>
+          </div>
+
+          <!-- Plain wrapper: .msg carries its own display, which would beat
+               the browser rule for the hidden attribute. -->
+          <div id="errWrap" hidden style="margin-top:var(--s3)">
+            <p class="msg msg--bad" id="err"></p>
+          </div>
+        </div>
+
+        <!-- ---------- the countdown ---------- -->
+        <div class="panel">
+          <span class="panel__label">The countdown</span>
+
+          <div class="result">
+            <span class="result__num" id="days">30 days to go</span>
+            <span class="result__label" id="targetText"></span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="weeks">4w 2d</span><span class="stat__label">Weeks and days</span></div>
+            <div class="stat"><span class="stat__num" id="working">22</span><span class="stat__label">Working days</span></div>
+            <div class="stat"><span class="stat__num" id="falls">Monday</span><span class="stat__label">Falls on a</span></div>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s4)">To the exact moment</span>
+          <pre class="out" id="live" aria-live="off"></pre>
+          <p class="hint" id="note"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Pick the date you are counting to. It starts on today, so change
+              it to anything.</li>
+          <li>Set a time if the exact moment matters &mdash; an exam, a flight,
+              a deadline. The live line ticks down to it.</li>
+          <li>A date in the past counts up instead and tells you how long ago
+              it was.</li>
+        </ol>
+
+        <h2>Two ways to count, and both are shown</h2>
+        <p>Ask how many days until an exam on Friday and nobody means 3 days,
+        14 hours and 22 minutes. They mean <strong>three days</strong>. The big
+        number counts whole calendar days, and it changes at midnight, which is
+        how people actually talk.</p>
+        <p>The live line underneath does the other thing: it counts down to the
+        exact instant you set, and it ticks over at that time rather than at
+        midnight. Both are correct, they answer different questions, and every
+        argument about a countdown being "wrong" is really about which of the
+        two someone meant.</p>
+
+        <h2>Today counts as zero</h2>
+        <p>A date set to today shows nought days, and tomorrow shows one. That
+        is the everyday reading of the words. A leave application or a notice
+        period usually wants both the first and last day counted instead, which
+        is a different sum &mdash; the date difference tool has a tick box for
+        exactly that.</p>
+
+        <h2>Working days</h2>
+        <p>The working-day figure counts Monday to Friday between now and the
+        target. As everywhere on this site, it takes <strong>no account of
+        public holidays</strong>, because they differ by state, by year and by
+        employer. Subtract your own.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Does the count include today?</h3>
+          <p>No. The big number is how many whole days are left, so a date
+          tomorrow shows one and a date today shows zero. That matches the way
+          people say it out loud. If you need both days counted, as a leave
+          application would, use the date difference tool and tick the box
+          there.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does the day count change at midnight rather than at the time I set?</h3>
+          <p>Because the big number counts calendar days, which is what people
+          mean by how many days until something. The live line below it counts
+          down to the exact moment instead, so it ticks over at the time you
+          set. The two are deliberately different and both are shown.</p>
+        </div>
+        <div class="faq">
+          <h3>Can it count days since a date that has passed?</h3>
+          <p>Yes. Pick any past date and it counts up instead of down, saying
+          how long ago it was. It is the same arithmetic with the sign the
+          other way round, so anniversaries and how long since I started work
+          both work.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=7"></script>
+  <script src="../js/tool-helpers.js?v=7"></script>
+  <script>window.CURRENT_TOOL = "days-until-countdown";</script>
+  <script src="../js/main.js?v=7"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var DAY = 86400000;
+    var EM_DASH = String.fromCharCode(0x2014);
+    var DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                     "Friday", "Saturday"];
+    var MONTHS = ["January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November",
+                  "December"];
+
+    function el(id) { return document.getElementById(id); }
+
+    /* ---- START: today, as a plain calendar day ----
+       Local midnight, not UTC. The big number answers "what does my calendar
+       say", and a visitor in India whose clock reads Tuesday should not be
+       told Monday because UTC has not caught up yet. */
+    function localMidnight(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+
+    function parseDate(value) {
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
+      if (!m) return null;
+      var year = parseInt(m[1], 10);
+      var month = parseInt(m[2], 10) - 1;
+      var day = parseInt(m[3], 10);
+      var date = new Date(year, month, day);
+      if (date.getMonth() !== month || date.getDate() !== day) return null;
+      return date;
+    }
+
+    function iso(date) {
+      return date.getFullYear() + "-" +
+             String(date.getMonth() + 1).padStart(2, "0") + "-" +
+             String(date.getDate()).padStart(2, "0");
+    }
+    /* ---- END: today, as a plain calendar day ---- */
+
+    /* ---- START: counting weekdays between two calendar days ----
+       Whole weeks by arithmetic, only the ragged tail walked, so a target
+       fifty years out costs the same as one next week. */
+    function weekdaysBetween(from, to) {
+      var total = Math.round((to - from) / DAY);
+      if (total <= 0) return 0;
+
+      var wholeWeeks = Math.floor(total / 7);
+      var count = wholeWeeks * 5;
+      var leftover = total % 7;
+      var startDay = from.getDay();
+
+      for (var i = 0; i < leftover; i++) {
+        /* Count the days AFTER the start day, up to and including the target */
+        var weekday = (startDay + wholeWeeks * 7 + i + 1) % 7;
+        if (weekday !== 0 && weekday !== 6) count = count + 1;
+      }
+      return count;
+    }
+    /* ---- END: counting weekdays ---- */
+
+    /* ---- START: the calendar-day part, recalculated on every change ----
+       Separate from the live ticker on purpose: this changes at midnight,
+       the ticker changes every second, and conflating them is what makes
+       other countdowns look wrong. */
+    function runCalendar() {
+      var target = parseDate(el("target").value);
+
+      if (!target) {
+        el("errWrap").hidden = false;
+        el("err").textContent = "Pick a real date to count to.";
+        el("days").textContent = EM_DASH;
+        el("weeks").textContent = EM_DASH;
+        el("working").textContent = EM_DASH;
+        el("falls").textContent = EM_DASH;
+        el("live").textContent = "";
+        el("note").textContent = "";
+        return null;
+      }
+
+      el("errWrap").hidden = true;
+
+      var today = localMidnight(new Date());
+      var whole = Math.round((target - today) / DAY);
+      var size = Math.abs(whole);
+
+      el("days").textContent = whole === 0
+        ? "Today"
+        : formatNumber(size, 0) + (size === 1 ? " day " : " days ") +
+          (whole > 0 ? "to go" : "ago");
+
+      el("weeks").textContent = Math.floor(size / 7) + "w " + (size % 7) + "d";
+      el("working").textContent = whole > 0
+        ? formatNumber(weekdaysBetween(today, target), 0)
+        : EM_DASH;
+      el("falls").textContent = DAY_NAMES[target.getDay()];
+
+      return target;
+    }
+    /* ---- END: the calendar-day part ---- */
+
+    /* ---- START: the live ticker, to the exact moment ---- */
+    function tick() {
+      var target = parseDate(el("target").value);
+      if (!target) return;
+
+      var t = /^(\d{2}):(\d{2})(?::(\d{2}))?$/.exec(el("attime").value || "00:00");
+      var hour = t ? parseInt(t[1], 10) : 0;
+      var minute = t ? parseInt(t[2], 10) : 0;
+      var second = t && t[3] ? parseInt(t[3], 10) : 0;
+
+      var moment = new Date(target.getFullYear(), target.getMonth(),
+                            target.getDate(), hour, minute, second);
+      var diff = moment - Date.now();
+      var future = diff > 0;
+      var left = Math.abs(diff);
+
+      var days = Math.floor(left / DAY);
+      var hours = Math.floor((left % DAY) / 3600000);
+      var minutes = Math.floor((left % 3600000) / 60000);
+      var seconds = Math.floor((left % 60000) / 1000);
+
+      el("live").textContent =
+        days + " days, " + hours + " hours, " + minutes + " minutes, " +
+        seconds + " seconds " + (future ? "to go" : "ago");
+
+      el("targetText").textContent =
+        target.getDate() + " " + MONTHS[target.getMonth()] + " " +
+        target.getFullYear() + ", " + DAY_NAMES[target.getDay()];
+
+      el("note").textContent = future
+        ? "Counting down to " + el("attime").value + " on that date, in your own time zone."
+        : "That moment has passed. The line above counts up from it.";
+    }
+    /* ---- END: the live ticker ---- */
+
+    function run() {
+      runCalendar();
+      tick();
+    }
+
+    /* ---- START: wiring ---- */
+    el("target").value = iso(new Date());
+
+    ["target", "attime"].forEach(function (id) {
+      el(id).addEventListener("input", run);
+      el(id).addEventListener("change", run);
+    });
+
+    el("newYearBtn").addEventListener("click", function () {
+      var now = new Date();
+      el("target").value = (now.getFullYear() + 1) + "-01-01";
+      el("attime").value = "00:00";
+      run();
+    });
+
+    /* One second is the right interval for a seconds display and costs
+       nothing. It keeps running while the tab is open and stops with it. */
+    setInterval(tick, 1000);
+
+    run();   /* run once so the page is correct on load */
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>
