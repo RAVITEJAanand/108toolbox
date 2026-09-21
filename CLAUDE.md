@@ -54,11 +54,27 @@ already happened once, with the redesign. Find-and-replace `?v=4` → `?v=5`
 across all 40 pages (currently `?v=5`, 182 occurrences). `check.py`
 understands the stamp.
 
-### 4. `check.py` passing does NOT mean the tool works
+### 4. Two scripts, and you run BOTH, every time
 
-It validates markup, titles, meta lengths, canonicals, JSON-LD, the registry
-and internal links. **It never runs your JavaScript.** Always open the page in
-a browser and actually use the tool before deploying.
+```
+python check.py        reads the files   — markup, titles, meta, canonicals,
+                                           JSON-LD, the registry, links
+python test_tools.py   RUNS the files    — every tool, in real Chrome,
+                                           driving the real controls
+```
+
+`check.py` never executes a line of JavaScript. A tool that throws on the
+first keystroke still has a perfect title, a valid canonical and clean
+JSON-LD, and `check.py` will wave it through.
+
+**`test_tools.py` runs all 30, not just the one you changed.** That is the
+point of it — a shared change like a `main.js` edit or a `?v=` bump can break
+a tool you never opened. It also **fails if a registered tool has no test at
+all**, so a new tool is not finished until its assertions exist. One tool
+while you work: `python test_tools.py gst-calculator`.
+
+Adding a tool means adding its test body to `T` in `test_tools.py`. Both
+scripts green, then push.
 
 ### 5. Never type a `\uXXXX` escape into a tool's `<script>`
 
@@ -81,6 +97,39 @@ touches a server, a third-party API, or someone else's content.
 The homepage says "no tracking". If analytics are ever wanted, use Plausible,
 Umami or Cloudflare Web Analytics — or drop the claim. Not both.
 
+### 8. Never name another website on the site
+
+Not a comparison, not a "better than X", not a link, **not one letter**. The
+owner's instruction, and it is the right call: naming a competitor on your own
+pages sends visitors to look them up, hands them a free mention, and dates the
+page the moment they change. Keep every page about what this site does.
+
+Competitor research belongs in `ROADMAP.md`, which is a working document, not
+a page anybody lands on. The 123apps note under **PDF** is the shape to
+follow.
+
+This is about *other websites*, not about honest disclosure. `privacy.html`
+naming GitHub Pages as the host stays — it is a legal requirement and it is a
+supplier, not a rival. Same for a library credited in a code comment.
+
+### 9. Mark where every function and feature starts and ends
+
+The owner asked for this so a bug can be found and fixed without reading the
+whole file. In any `<script data-tool>`, and in the Python scripts:
+
+```js
+/* ---- START: recovering the base from a GST-inclusive total ---- */
+function removeGst(total, rate) {
+  return total / (1 + rate / 100);
+}
+/* ---- END: recovering the base from a GST-inclusive total ---- */
+```
+
+Name the **job**, not the function — "recovering the base from a
+GST-inclusive total" is findable six months later; "removeGst helper" is not.
+Wrap a whole feature the same way when several functions serve one job, and
+nest the inner ones. `test_tools.py` shows the pattern at both levels.
+
 ---
 
 ## Layout
@@ -97,7 +146,8 @@ js/tool-helpers.js copyText, downloadText, downloadBlob, showToast,
                    formatBytes, formatNumber
 tools/*.html       One self-contained file per tool
 tools/_template.html   Start here for a new tool (check.py skips `_` files)
-check.py           Pre-deploy validation — run before every push
+check.py           Reads the files — run before every push
+test_tools.py      RUNS every tool in real Chrome — run before every push
 setup.py           One-time domain/name/email rewrite (already run)
 ```
 
