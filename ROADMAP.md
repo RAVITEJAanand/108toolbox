@@ -213,6 +213,11 @@ matches, so do not rename them later. ✅ = already live.
 
 ### Converter (14)
 
+The other shelf that meets 123apps head on — see the note under PDF below.
+Their converters are the file kind (video, audio, archives, ebooks), which
+genuinely need a server. Most of the fourteen here convert numbers and units,
+which never leave the tab, so the overlap is narrower than the word suggests.
+
 | # | Slug | Difficulty |
 |---|---|---|
 | 1 | `unit-converter` | medium — length / weight / volume on one page |
@@ -244,6 +249,32 @@ matches, so do not rename them later. ✅ = already live.
 | 8 | `pdf-metadata-editor` | medium |
 | 9 | `pdf-to-image` | hard — needs `pdf.js` as well |
 | 10 | `compress-pdf` | hard — re-encodes images, test it a lot |
+
+**This batch is the one that meets a real competitor.** Checked 20 Sep 2026.
+<https://123apps.com> has run since about 2014 and carries roughly 51 tools:
+18 video, 8 audio, **17 PDF** and 8 converters. Nothing on the site today
+overlaps with it — they have no word counter, no GST calculator, no JSON
+formatter — but their PDF and Converter shelves are exactly the two this file
+plans next.
+
+Their own privacy policy is the reason not to worry about it:
+
+> Any Data which you provide for the purpose of utilizing our Services is
+> stored on our servers only for as long as necessary, and is deleted
+> automatically no later than twelve (12) hours from the moment you complete
+> your use of our Services.
+
+They also load Google Analytics, DoubleClick and AdSense, gate large files
+behind a subscription, and ask people to sign in. **None of that is a choice
+they can reverse.** Converting video needs a server, and a server needs paying
+for, which needs ads and accounts. The upload is load-bearing for their whole
+business.
+
+So when these ten get built, lead with the thing they structurally cannot say.
+Somebody merging a salary slip, a bank statement or an Aadhaar PDF is being
+asked to hand a stranger's server twelve hours with it. `pdf-lib` does the same
+job in the tab. On this shelf "nothing is uploaded" stops being a nice line in
+the footer and becomes the entire reason to pick this site.
 
 ### Date & Time (8)
 
