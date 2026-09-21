@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 40 of a planned 108 tools are built, tested and live.
+**Where it stands:** 45 of a planned 108 tools are built, tested and live.
 Phase 2 is finished; Phase 3 has started.
 
 ---
@@ -27,12 +27,12 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`40 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`45 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">40</span> tools live
-<span data-tool-count="remaining">68</span> on the way
+<span data-tool-count="live">45</span> tools live
+<span data-tool-count="remaining">63</span> on the way
 ```
 
 This used to be hand-typed in `index.html`, `tools.html` and `about.html`, and
@@ -50,8 +50,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed — this
-already happened once, with the redesign. Find-and-replace `?v=7` → `?v=8`
-across all 50 pages (currently `?v=8`, 232 occurrences). `check.py`
+already happened once, with the redesign. Find-and-replace `?v=8` → `?v=9`
+across all 55 pages (currently `?v=9`, 257 occurrences). `check.py`
 understands the stamp.
 
 ### 4. Two scripts, and you run BOTH, every time
@@ -67,7 +67,7 @@ python test_tools.py   RUNS the files    — every tool, in real Chrome,
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 40, not just the one you changed.** That is the
+**`test_tools.py` runs all 45, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -285,23 +285,30 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (30):** word-counter, case-converter, lorem-ipsum-generator,
+**Live (45):** word-counter, case-converter, lorem-ipsum-generator,
+remove-duplicate-lines, find-and-replace, sort-text-lines,
+remove-line-breaks, whitespace-remover, reverse-text, text-repeater,
+add-line-numbers, slug-generator, character-frequency-counter,
 image-compressor, image-converter, percentage-calculator, age-calculator,
-emi-calculator, password-generator, json-formatter, remove-duplicate-lines,
-find-and-replace, sort-text-lines, remove-line-breaks, whitespace-remover,
-reverse-text, text-repeater, add-line-numbers, slug-generator,
-character-frequency-counter, bmi-calculator, discount-calculator,
-tip-calculator, average-calculator, ratio-calculator, gst-calculator,
-simple-interest-calculator, compound-interest-calculator, fraction-calculator,
-margin-markup-calculator, area-converter, number-to-words,
-temperature-converter, date-difference-calculator, add-subtract-days,
-sip-calculator, unit-converter, binary-decimal-hex-converter,
-timestamp-converter, days-until-countdown.
+emi-calculator, bmi-calculator, discount-calculator, tip-calculator,
+average-calculator, ratio-calculator, gst-calculator,
+simple-interest-calculator, compound-interest-calculator,
+fraction-calculator, margin-markup-calculator, area-converter,
+number-to-words, temperature-converter, date-difference-calculator,
+add-subtract-days, sip-calculator, unit-converter,
+binary-decimal-hex-converter, timestamp-converter, days-until-countdown,
+password-generator, json-formatter, roman-numeral-converter,
+data-storage-converter, speed-converter, leap-year-checker,
+week-number-calculator.
 
-**Next batch (Phase 3, tools 41–45):** more converters and date/time, per
+That count is checked: `check.py` fails if it drifts from the registry.
+It read 30 while listing 40 for a whole batch, which is the same hand-typed
+count problem rule 2 exists to stop, one file further out.
+
+**Next batch (Phase 3, tools 46–50):** more converters and date/time, per
 `ROADMAP.md`. Phase 3 runs 31–60 and still needs no libraries.
 
-`salary-calculator` was deliberately skipped in this batch. CTC to in-hand
+`salary-calculator` is still deliberately skipped. CTC to in-hand
 needs current income tax slabs, and a figure that goes stale without anyone
 noticing is worse than no tool. Build it with a visible "rates as of" date
 and add it to the Maintenance list, or leave it.

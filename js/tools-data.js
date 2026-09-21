@@ -385,5 +385,50 @@ const TOOLS = [
     icon: "\u{1F9E9}",
     keywords: ["json formatter", "json beautifier", "json validator", "pretty print json", "minify json"],
     popular: true
+  },
+  {
+    slug: "roman-numeral-converter",
+    name: "Roman Numeral Converter",
+    desc: "Numbers to Roman numerals and back, with the sum shown and bad spellings caught.",
+    category: "Converter",
+    icon: "\u{1F3DB}\u{FE0F}",
+    keywords: ["roman numerals", "roman numeral converter", "number to roman", "roman to number", "mcmxciv", "roman numeral date"],
+    popular: false
+  },
+  {
+    slug: "data-storage-converter",
+    name: "Data Storage Converter",
+    desc: "Bytes, KB, MB, GB and TB, with the 1024-based units kept separate.",
+    category: "Converter",
+    icon: "\u{1F4BE}",
+    keywords: ["kb to mb", "mb to gb", "gb to tb", "bytes converter", "file size converter", "kib vs kb", "why is my 1tb drive 931gb"],
+    popular: false
+  },
+  {
+    slug: "speed-converter",
+    name: "Speed Converter",
+    desc: "km/h, mph, m/s, knots and feet per second, plus the same speed as a running pace.",
+    category: "Converter",
+    icon: "\u{1F3CE}\u{FE0F}",
+    keywords: ["kmh to mph", "mph to kmh", "m/s to km/h", "knots to mph", "running pace", "min per km", "pace converter"],
+    popular: false
+  },
+  {
+    slug: "leap-year-checker",
+    name: "Leap Year Checker",
+    desc: "Is it a leap year? The answer, and which of the three rules decided it.",
+    category: "Date & Time",
+    icon: "\u{1F4C6}",
+    keywords: ["leap year", "is 2026 a leap year", "leap year checker", "29 february", "leap year rule", "days in february"],
+    popular: false
+  },
+  {
+    slug: "week-number-calculator",
+    name: "Week Number Calculator",
+    desc: "The ISO 8601 week number for any date, and the dates any week covers.",
+    category: "Date & Time",
+    icon: "\u{1F5D3}\u{FE0F}",
+    keywords: ["week number", "iso week", "what week is it", "current week number", "week number calculator", "week of year"],
+    popular: false
   }
 ];

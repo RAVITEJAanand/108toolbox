@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Roman Numeral Converter &mdash; Number to Roman and Back</title>
+  <meta name="description" content="Convert a number to Roman numerals or read Roman numerals back as a number, from 1 to 3999, with the breakdown shown. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/roman-numeral-converter.html">
+
+  <meta property="og:title" content="Roman Numeral Converter &mdash; Number to Roman and Back">
+  <meta property="og:description" content="Convert a number to Roman numerals or read Roman numerals back as a number, from 1 to 3999, with the breakdown shown. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=9">
+  <link rel="stylesheet" href="../css/tool.css?v=9">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why is 4 written IV and not IIII?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because a smaller symbol placed before a larger one is subtracted from it, so IV is five minus one. The rule keeps any symbol from repeating more than three times in a row. IIII does appear on clock faces, where it balances the VIII opposite it, but it is not the standard spelling and this converter will tell you so."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the largest Roman numeral?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "With the ordinary seven letters it is MMMCMXCIX, which is 3999. There is no single letter for 5000, and M can only repeat three times, so 4000 cannot be spelled. Larger numbers needed a bar drawn over a letter to multiply it by a thousand, which is a mark rather than a character and does not survive being copied as plain text."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a Roman numeral for zero?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The system counts things, and it was built before zero was treated as a number in Europe. There is no symbol for it and no way to write a negative number or a fraction of one either, which is why this converter starts at 1."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The conversion happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
+        <span>Roman Numeral Converter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Roman Numeral Converter</h1>
+        <p>Type a number or type Roman numerals &mdash; the page works out which you meant and converts it, showing the sum it used. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- the conversion ---------- -->
+        <div class="panel">
+          <span class="panel__label">Convert</span>
+
+          <div class="field">
+            <label for="input">A number (1&ndash;3999) or Roman numerals</label>
+            <input type="text" id="input" value="1994" autocomplete="off" spellcheck="false">
+          </div>
+
+          <div class="result">
+            <span class="result__num" id="headline">MCMXCIV</span>
+            <span class="result__label" id="reading"></span>
+          </div>
+
+          <div class="stats stats--2">
+            <div class="stat"><span class="stat__num" id="asNumber">1,994</span><span class="stat__label">As a number</span></div>
+            <div class="stat"><span class="stat__num" id="asRoman">MCMXCIV</span><span class="stat__label">As Roman numerals</span></div>
+          </div>
+
+          <p class="hint" id="breakdown"></p>
+
+          <!-- Plain wrapper: .msg carries its own display, which would beat
+               the browser rule for the hidden attribute. -->
+          <div id="errWrap" hidden style="margin-top:var(--s3)">
+            <p class="msg msg--bad" id="err"></p>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--ghost" type="button" id="copyBtn">Copy the numerals</button>
+            <button class="btn btn--ghost" type="button" id="yearBtn">This year</button>
+          </div>
+        </div>
+
+        <!-- ---------- the seven letters ---------- -->
+        <div class="panel">
+          <span class="panel__label">The seven letters, and the six pairs</span>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr><th>Symbol</th><th>Value</th><th>Note</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>I</td><td>1</td><td>&nbsp;</td></tr>
+                <tr><td>IV</td><td>4</td><td>one before five</td></tr>
+                <tr><td>V</td><td>5</td><td>&nbsp;</td></tr>
+                <tr><td>IX</td><td>9</td><td>one before ten</td></tr>
+                <tr><td>X</td><td>10</td><td>&nbsp;</td></tr>
+                <tr><td>XL</td><td>40</td><td>ten before fifty</td></tr>
+                <tr><td>L</td><td>50</td><td>&nbsp;</td></tr>
+                <tr><td>XC</td><td>90</td><td>ten before a hundred</td></tr>
+                <tr><td>C</td><td>100</td><td>&nbsp;</td></tr>
+                <tr><td>CD</td><td>400</td><td>hundred before five hundred</td></tr>
+                <tr><td>D</td><td>500</td><td>&nbsp;</td></tr>
+                <tr><td>CM</td><td>900</td><td>hundred before a thousand</td></tr>
+                <tr><td>M</td><td>1000</td><td>the largest single letter</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="hint">Only I, X and C are ever subtracted, and only from the
+          next two values up. That is why 99 is XCIX and never IC.</p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Type a number, such as 2026, or Roman numerals, such as MMXXVI.</li>
+          <li>The page works out which one you typed &mdash; no switch to flip.</li>
+          <li>The line under the tiles shows the sum, so you can check it rather
+              than trust it.</li>
+        </ol>
+
+        <h2>The rule that explains almost everything</h2>
+        <p>A Roman numeral is read left to right, adding as you go, with one
+        exception: <strong>a smaller symbol in front of a larger one is
+        subtracted instead</strong>. So VI is 5 + 1 = 6, but IV is 5 &minus; 1
+        = 4. Once you have that, MCMXCIV comes apart cleanly: M is 1000, CM is
+        900, XC is 90, IV is 4, and they add to 1994.</p>
+        <p>The subtraction is not allowed everywhere. Only I, X and C are ever
+        put in front, and only in front of the next two values up. That gives
+        exactly six legal pairs &mdash; IV, IX, XL, XC, CD, CM &mdash; and no
+        others. IC for 99 looks sensible and is wrong; the answer is XCIX.</p>
+
+        <h2>Why it stops at 3999</h2>
+        <p>M is the largest letter, and no letter may repeat more than three
+        times, so MMM is 3000 and there is nothing left to add for 4000. The
+        Romans handled bigger numbers by drawing a bar over a letter to multiply
+        it by a thousand. That bar is a mark on top of a character rather than a
+        character of its own, so it does not survive being copied, pasted or
+        typed into a form. Rather than invent a spelling nobody else uses, this
+        converter stops where the letters stop and says so.</p>
+
+        <h2>Where you still meet them</h2>
+        <p>Copyright years at the end of films, chapter and appendix numbers,
+        Super Bowls, monarchs and popes, the faces of expensive clocks, and the
+        outline of almost every formal document. Reading a film's closing
+        MMXIV is the single most common reason people look one of these up.</p>
+        <p>Clock faces are the famous exception to the rules above. Many print
+        IIII rather than IV for four, because IIII balances the VIII directly
+        opposite it and because it keeps the first four hours using only I. It
+        is a design choice, not a spelling, and this page will flag it.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Why is 4 written IV and not IIII?</h3>
+          <p>Because a smaller symbol placed before a larger one is subtracted
+          from it, so IV is five minus one. The rule keeps any symbol from
+          repeating more than three times in a row. IIII does appear on clock
+          faces, where it balances the VIII opposite it, but it is not the
+          standard spelling and this converter will tell you so.</p>
+        </div>
+        <div class="faq">
+          <h3>What is the largest Roman numeral?</h3>
+          <p>With the ordinary seven letters it is MMMCMXCIX, which is 3999.
+          There is no single letter for 5000, and M can only repeat three times,
+          so 4000 cannot be spelled. Larger numbers needed a bar drawn over a
+          letter to multiply it by a thousand, which is a mark rather than a
+          character and does not survive being copied as plain text.</p>
+        </div>
+        <div class="faq">
+          <h3>Is there a Roman numeral for zero?</h3>
+          <p>No. The system counts things, and it was built before zero was
+          treated as a number in Europe. There is no symbol for it and no way to
+          write a negative number or a fraction of one either, which is why this
+          converter starts at 1.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The conversion happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=9"></script>
+  <script src="../js/tool-helpers.js?v=9"></script>
+  <script>window.CURRENT_TOOL = "roman-numeral-converter";</script>
+  <script src="../js/main.js?v=9"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
+    var EM_DASH = String.fromCharCode(0x2014);
+
+    var MIN = 1;
+    var MAX = 3999;
+
+    function el(id) { return document.getElementById(id); }
+
+    /* ---- START: the symbol table ----
+       Largest first, and the six subtractive pairs sit here as values in their
+       own right. That is what makes the greedy loop below correct rather than
+       lucky: it can never produce IIII, because it takes IV in one step long
+       before it gets down to I. */
+    var SYMBOLS = [
+      { value: 1000, letters: "M"  },
+      { value: 900,  letters: "CM" },
+      { value: 500,  letters: "D"  },
+      { value: 400,  letters: "CD" },
+      { value: 100,  letters: "C"  },
+      { value: 90,   letters: "XC" },
+      { value: 50,   letters: "L"  },
+      { value: 40,   letters: "XL" },
+      { value: 10,   letters: "X"  },
+      { value: 9,    letters: "IX" },
+      { value: 5,    letters: "V"  },
+      { value: 4,    letters: "IV" },
+      { value: 1,    letters: "I"  }
+    ];
+
+    var LETTER_VALUE = {
+      I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000
+    };
+    /* ---- END: the symbol table ---- */
+
+    /* ---- START: a number to Roman numerals ---- */
+    function toRoman(n) {
+      var out = "";
+      for (var i = 0; i < SYMBOLS.length; i++) {
+        while (n >= SYMBOLS[i].value) {
+          out += SYMBOLS[i].letters;
+          n -= SYMBOLS[i].value;
+        }
+      }
+      return out;
+    }
+    /* ---- END: a number to Roman numerals ---- */
+
+    /* ---- START: Roman numerals back to a number ----
+       Read right to left. A letter worth less than the biggest one seen so far
+       is being subtracted; anything else is added. Six lines, and it handles
+       every legal pair without listing them.
+
+       It is deliberately lenient, so IIII and IC both parse. Checking the
+       spelling is a separate job, done below, because a parser that refuses
+       cannot tell the visitor what the number was meant to be. */
+    function fromRoman(text) {
+      var total = 0;
+      var biggest = 0;
+      for (var i = text.length - 1; i >= 0; i--) {
+        var value = LETTER_VALUE[text.charAt(i)];
+        if (!value) { return null; }
+        if (value < biggest) { total -= value; } else { total += value; biggest = value; }
+      }
+      return total;
+    }
+    /* ---- END: Roman numerals back to a number ---- */
+
+    /* ---- START: the sum, written out ----
+       MCMXCIV becomes "M (1000) + CM (900) + XC (90) + IV (4) = 1994", which
+       is the thing somebody checking a film credit actually wants to see. */
+    function breakdownOf(n) {
+      var parts = [];
+      var left = n;
+      for (var i = 0; i < SYMBOLS.length; i++) {
+        while (left >= SYMBOLS[i].value) {
+          parts.push(SYMBOLS[i].letters + " (" + SYMBOLS[i].value + ")");
+          left -= SYMBOLS[i].value;
+        }
+      }
+      return parts.join(" + ") + " = " + n.toLocaleString();
+    }
+    /* ---- END: the sum, written out ---- */
+
+    /* ---- START: working out what was typed ----
+       One box for both directions. Digits mean a number, letters mean
+       numerals, and anything else is a mistake worth naming. */
+    function classify(raw) {
+      var text = raw.trim();
+      if (!text) { return { kind: "empty" }; }
+      if (/^[0-9,\s]+$/.test(text)) {
+        return { kind: "number", value: parseInt(text.replace(/[,\s]/g, ""), 10) };
+      }
+      if (/^[IVXLCDMivxlcdm]+$/.test(text)) {
+        return { kind: "roman", text: text.toUpperCase() };
+      }
+      /* A decimal is digits, so telling someone who typed 3.5 to "use digits"
+         reads as nonsense. Name the real problem: the system has no fractions. */
+      if (/^[0-9]*[.][0-9]+$/.test(text)) { return { kind: "fraction" }; }
+      return { kind: "junk" };
+    }
+    /* ---- END: working out what was typed ---- */
+
+    /* ---- START: showing an answer, or explaining why there is none ---- */
+    function blank() {
+      el("headline").textContent = EM_DASH;
+      el("asNumber").textContent = EM_DASH;
+      el("asRoman").textContent = EM_DASH;
+      el("breakdown").textContent = "";
+      el("reading").textContent = "";
+    }
+
+    function problem(message) {
+      blank();
+      el("errWrap").hidden = false;
+      el("err").textContent = message;
+    }
+
+    function answer(number, roman, reading) {
+      el("errWrap").hidden = true;
+      el("headline").textContent = roman;
+      el("asNumber").textContent = number.toLocaleString();
+      el("asRoman").textContent = roman;
+      el("breakdown").textContent = breakdownOf(number);
+      el("reading").textContent = reading;
+    }
+    /* ---- END: showing an answer, or explaining why there is none ---- */
+
+    /* ---- START: the conversion itself ---- */
+    function run() {
+      var what = classify(el("input").value);
+
+      if (what.kind === "empty") {
+        blank();
+        el("errWrap").hidden = true;
+        el("reading").textContent = "Type a number or some Roman numerals.";
+        return;
+      }
+
+      if (what.kind === "fraction") {
+        problem("Roman numerals have no way to write a fraction. Use a whole number.");
+        return;
+      }
+
+      if (what.kind === "junk") {
+        problem("Use digits for a number, or only the letters I V X L C D M.");
+        return;
+      }
+
+      if (what.kind === "number") {
+        if (isNaN(what.value)) { problem("That is not a whole number."); return; }
+        if (what.value < MIN) {
+          problem("Roman numerals start at I. There is no symbol for zero or for a negative number.");
+          return;
+        }
+        if (what.value > MAX) {
+          problem("3999 is as far as the seven letters go. Above that needs a bar over a letter, which is not plain text.");
+          return;
+        }
+        answer(what.value, toRoman(what.value), "Read as a number.");
+        return;
+      }
+
+      /* Roman numerals in. Parse first, then judge the spelling, so a
+         non-standard one can still be told what it was trying to say. */
+      var value = fromRoman(what.text);
+      if (value === null || value < MIN || value > MAX) {
+        problem("Those letters do not make a number between I and MMMCMXCIX.");
+        return;
+      }
+
+      /* ---- START: is that the standard spelling ----
+         Rather than code up every rule about repeats and legal pairs, convert
+         the parsed number back and compare. Exactly one spelling of each
+         number survives that round trip, so anything that comes back
+         different was non-standard - and the proper form is already in hand
+         to suggest. IIII lands here, and so does IC. */
+      var standard = toRoman(value);
+      answer(value, standard, "Read as Roman numerals.");
+      if (standard !== what.text) {
+        el("errWrap").hidden = false;
+        el("err").textContent = what.text + " is not the standard spelling of " +
+          value + ". Written properly it is " + standard + ".";
+      }
+      /* ---- END: is that the standard spelling ---- */
+    }
+    /* ---- END: the conversion itself ---- */
+
+    /* ---- START: wiring ---- */
+    el("input").addEventListener("input", run);
+
+    el("copyBtn").addEventListener("click", function () {
+      var roman = el("asRoman").textContent;
+      if (roman === EM_DASH || !roman) { showToast("Nothing to copy yet"); return; }
+      copyText(roman);
+    });
+
+    el("yearBtn").addEventListener("click", function () {
+      el("input").value = String(new Date().getFullYear());
+      run();
+    });
+
+    run();   /* run once so the page is correct on load */
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

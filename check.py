@@ -186,6 +186,29 @@ else:
     if media_tokens == toggle_tokens:
         ok("both dark blocks define the same %d tokens" % len(media_tokens))
 
+# ---- 4d. CLAUDE.md agrees with the registry --------------------------------
+# Rule 2 says never hand-type a tool count into a page, because it goes stale.
+# The same thing happened one file further out: CLAUDE.md said "Live (30)"
+# above a list of 40 names, and it stayed wrong for a whole batch because
+# nothing was reading it. A number that matters is a number worth checking,
+# wherever it lives.
+claude = ROOT / "CLAUDE.md"
+if claude.exists():
+    text = claude.read_text(encoding="utf-8")
+    stated = re.search(r"\*\*Live \((\d+)\):\*\*", text)
+    if not stated:
+        fail("CLAUDE.md has no '**Live (n):**' line to check")
+    elif int(stated.group(1)) != len(slugs):
+        fail("CLAUDE.md says %s tools are live, the registry has %d"
+             % (stated.group(1), len(slugs)))
+    else:
+        named = set(re.findall(r"[a-z0-9]+(?:-[a-z0-9]+)+", stated.string[
+            stated.end():text.index("That count is checked")]))
+        for missing in sorted(slugs - named):
+            fail("CLAUDE.md does not list the tool '%s'" % missing)
+        if slugs <= named:
+            ok("CLAUDE.md lists all %d tools" % len(slugs))
+
 # ---- 5. No dead internal links --------------------------------------------
 for path in list(ROOT.glob("*.html")) + tool_pages():
     text = path.read_text(encoding="utf-8")

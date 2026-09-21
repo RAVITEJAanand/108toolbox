@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Week Number Calculator &mdash; ISO Week for Any Date</title>
+  <meta name="description" content="Find the ISO 8601 week number for any date, see which dates a week covers, and compare it with the Sunday-start numbering. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/week-number-calculator.html">
+
+  <meta property="og:title" content="Week Number Calculator &mdash; ISO Week for Any Date">
+  <meta property="og:description" content="Find the ISO 8601 week number for any date, see which dates a week covers, and compare it with the Sunday-start numbering. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=9">
+  <link rel="stylesheet" href="../css/tool.css?v=9">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How is the ISO week number worked out?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Weeks run Monday to Sunday, and week 1 is the week that contains the first Thursday of January. The same rule can be stated as the week containing 4 January, or the first week with most of its days in the new year. Every week belongs to exactly one year and no week is ever split between two."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does 1 January sometimes fall in week 52 or 53?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because a week is never split. If 1 January is a Friday, Saturday or Sunday, then that week has most of its days in the old year, so the whole week counts as the last week of the old year. 1 January 2027 is a Friday and sits in week 53 of 2026. The reverse happens too: 31 December 2024 was a Tuesday, in week 1 of 2025."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why do two calendars give different week numbers for the same day?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There are two common conventions. ISO 8601 starts weeks on Monday and gives week 1 to the week holding the first Thursday. The North American convention starts weeks on Sunday and gives week 1 to whatever week holds 1 January, however few days of it there are. The two disagree by one for much of the year, so always say which one you mean."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=date">Date & Time</a><span>&rsaquo;</span>
+        <span>Week Number Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Week Number Calculator</h1>
+        <p>Which week of the year a date falls in, by the ISO 8601 rule that business and software use &mdash; and which dates any week number covers. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- a date in, a week number out ---------- -->
+        <div class="panel">
+          <span class="panel__label">Which week is this date in?</span>
+
+          <div class="field">
+            <label for="date">Date</label>
+            <input type="date" id="date">
+          </div>
+
+          <div class="result">
+            <span class="result__num" id="headline">2026-W39</span>
+            <span class="result__label" id="reading"></span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="isoWeek">39</span><span class="stat__label">ISO week</span></div>
+            <div class="stat"><span class="stat__num" id="isoYear">2026</span><span class="stat__label">ISO week-year</span></div>
+            <div class="stat"><span class="stat__num" id="usWeek">39</span><span class="stat__label">Sunday-start week</span></div>
+          </div>
+
+          <p class="hint" id="range"></p>
+          <p class="hint" id="note"></p>
+
+          <!-- Plain wrapper: .msg carries its own display, which would beat
+               the browser rule for the hidden attribute. -->
+          <div id="errWrap" hidden style="margin-top:var(--s3)">
+            <p class="msg msg--bad" id="err"></p>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--ghost" type="button" id="todayBtn">Today</button>
+          </div>
+        </div>
+
+        <!-- ---------- a week number in, the dates out ---------- -->
+        <div class="panel">
+          <span class="panel__label">Which dates are in a week?</span>
+
+          <div class="field">
+            <label for="wYear">ISO week-year</label>
+            <input type="number" id="wYear" value="2026" step="1">
+          </div>
+
+          <div class="field">
+            <label for="wNum">Week number</label>
+            <input type="number" id="wNum" value="1" step="1" min="1" max="53">
+          </div>
+
+          <div class="result">
+            <span class="result__num" id="wRange">&mdash;</span>
+            <span class="result__label" id="wNote"></span>
+          </div>
+
+          <div id="wErrWrap" hidden style="margin-top:var(--s3)">
+            <p class="msg msg--bad" id="wErr"></p>
+          </div>
+
+          <div class="table-wrap" style="margin-top:var(--s4)">
+            <table class="data">
+              <thead>
+                <tr><th>Day</th><th>Date</th></tr>
+              </thead>
+              <tbody id="wDays"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="workspace" style="margin-top:var(--s5)">
+        <div class="panel">
+          <span class="panel__label">Where the years overlap</span>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr><th>Year</th><th>1 January is in</th><th>31 December is in</th><th>ISO weeks</th></tr>
+              </thead>
+              <tbody id="edges"></tbody>
+            </table>
+          </div>
+          <p class="hint">A week is never split between two years, so the first
+          and last few days of a calendar year can belong to the week-year on
+          either side of it.</p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Pick a date on the left to get its week number.</li>
+          <li>Or type a year and a week number on the right to get the seven
+              dates that week covers.</li>
+          <li>The bottom table shows how the first and last days of nearby
+              years fall, which is where the surprises are.</li>
+        </ol>
+
+        <h2>The ISO 8601 rule</h2>
+        <p>Two sentences cover the whole thing. <strong>Weeks run Monday to
+        Sunday.</strong> <strong>Week 1 is the week containing the first
+        Thursday of January.</strong></p>
+        <p>The Thursday is not arbitrary. Thursday is the middle day of a
+        Monday-to-Sunday week, so the week containing the first Thursday is the
+        first week with at least four of its seven days in the new year. The
+        same rule is often stated as &ldquo;the week containing 4
+        January&rdquo;, which is easier to check and means exactly the same
+        thing.</p>
+        <p>The consequence is that a week is never cut in half. Every week
+        belongs wholly to one year, which is what makes week numbers usable for
+        payroll, shift rotas, production planning and anything that has to add
+        up over a year without double counting a day.</p>
+
+        <h2>Why 1 January is sometimes in week 52 or 53</h2>
+        <p>If 1 January falls on a Friday, Saturday or Sunday, its week has
+        four or more days still in the old year, so the whole week counts as the
+        old year's last week. 1 January 2027 is a Friday, and it sits in
+        <strong>2026-W53</strong>.</p>
+        <p>It happens at the other end too. 31 December 2024 was a Tuesday, and
+        that week had most of its days in January, so it was
+        <strong>2025-W01</strong>. Neither case is a bug: it is the
+        no-split-weeks rule doing what it is for. This is why a week number is
+        written with its own year attached &mdash; 2026-W01 &mdash; and why that
+        year is called the week-year rather than just the year.</p>
+
+        <h2>52 weeks, or 53</h2>
+        <p>Seven times fifty-two is 364, one day short of a normal year, so the
+        extra day has to go somewhere. Most years have 52 ISO weeks; a year has
+        <strong>53</strong> when 1 January is a Thursday, or when it is a leap
+        year starting on a Wednesday. That works out at roughly 71 years in
+        every 400.</p>
+        <p>A 53-week year is the one that breaks reports and spreadsheets built
+        on the assumption that a year is 52 weeks. If a formula anywhere divides
+        an annual figure by 52, it will be wrong in those years.</p>
+
+        <h2>The other numbering</h2>
+        <p>North American calendars usually start the week on Sunday and give
+        week 1 to whichever week contains 1 January, even if only one day of it
+        is in the new year. That is a different rule, and it gives a different
+        answer for a great many dates &mdash; usually one higher than the ISO
+        number. Both are shown above so you can see when they part company.</p>
+        <p>If you are sending a week number to somebody else, say which one you
+        mean. &ldquo;Week 14&rdquo; on its own has caused more than one meeting
+        to be booked seven days out.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How is the ISO week number worked out?</h3>
+          <p>Weeks run Monday to Sunday, and week 1 is the week that contains
+          the first Thursday of January. The same rule can be stated as the week
+          containing 4 January, or the first week with most of its days in the
+          new year. Every week belongs to exactly one year and no week is ever
+          split between two.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does 1 January sometimes fall in week 52 or 53?</h3>
+          <p>Because a week is never split. If 1 January is a Friday, Saturday
+          or Sunday, then that week has most of its days in the old year, so the
+          whole week counts as the last week of the old year. 1 January 2027 is
+          a Friday and sits in week 53 of 2026. The reverse happens too: 31
+          December 2024 was a Tuesday, in week 1 of 2025.</p>
+        </div>
+        <div class="faq">
+          <h3>Why do two calendars give different week numbers for the same day?</h3>
+          <p>There are two common conventions. ISO 8601 starts weeks on Monday
+          and gives week 1 to the week holding the first Thursday. The North
+          American convention starts weeks on Sunday and gives week 1 to
+          whatever week holds 1 January, however few days of it there are. The
+          two disagree by one for much of the year, so always say which one you
+          mean.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=9"></script>
+  <script src="../js/tool-helpers.js?v=9"></script>
+  <script>window.CURRENT_TOOL = "week-number-calculator";</script>
+  <script src="../js/main.js?v=9"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
+    var EM_DASH = String.fromCharCode(0x2014);
+    var EN_DASH = String.fromCharCode(0x2013);
+
+    var DAY = 86400000;
+
+    var DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday",
+                     "Friday", "Saturday", "Sunday"];
+    var MONTHS = ["January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December"];
+
+    function el(id) { return document.getElementById(id); }
+
+    /* ---- START: everything happens in UTC ----
+       A local-time Date shifts by an hour when the clocks change, and a week
+       boundary is exactly the kind of thing that lands on the wrong side of
+       that shift. Building every date at UTC midnight takes daylight saving
+       out of the arithmetic completely. */
+    function utc(year, month, day) {
+      return new Date(Date.UTC(year, month, day));
+    }
+
+    function parseDate(text) {
+      var match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(text || "").trim());
+      if (!match) { return null; }
+      var year = +match[1], month = +match[2], day = +match[3];
+      var date = utc(year, month - 1, day);
+      /* Rejects 31 February, which the Date constructor would roll forward
+         into March without complaining. */
+      if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 ||
+          date.getUTCDate() !== day) { return null; }
+      return date;
+    }
+
+    /* Monday is 0 here, not Sunday. ISO weeks start on Monday, and carrying
+       the JavaScript numbering around would mean correcting for it at every
+       single use. */
+    function mondayIndex(date) { return (date.getUTCDay() + 6) % 7; }
+    /* ---- END: everything happens in UTC ---- */
+
+    /* ---- START: the ISO week number ----
+       The rule is "week 1 contains the first Thursday of January", so the
+       whole calculation is done on Thursdays. Step from the date to the
+       Thursday of its own week: that Thursday's calendar year IS the week-year,
+       which is what makes 31 December able to sit in the next year's week 1
+       without any special case for it. */
+    function thursdayOf(date) {
+      return new Date(date.getTime() + (3 - mondayIndex(date)) * DAY);
+    }
+
+    function isoWeekOf(date) {
+      var thursday = thursdayOf(date);
+      var weekYear = thursday.getUTCFullYear();
+      var firstThursday = thursdayOf(utc(weekYear, 0, 4));
+      var week = 1 + Math.round((thursday - firstThursday) / (7 * DAY));
+      return { year: weekYear, week: week };
+    }
+
+    /* The Monday that week 1 of a week-year starts on. 4 January is always in
+       week 1, by the rule, so walking back to its Monday is the whole job. */
+    function mondayOfWeek(weekYear, week) {
+      var jan4 = utc(weekYear, 0, 4);
+      var week1Monday = new Date(jan4.getTime() - mondayIndex(jan4) * DAY);
+      return new Date(week1Monday.getTime() + (week - 1) * 7 * DAY);
+    }
+
+    /* 28 December is always in the last ISO week of its own year - it cannot
+       be pulled into the next year's week 1, because that would need four of
+       its week's days in January. So asking for its week number answers "how
+       many weeks does this year have" without a table of special cases. */
+    function weeksInYear(weekYear) {
+      return isoWeekOf(utc(weekYear, 11, 28)).week;
+    }
+    /* ---- END: the ISO week number ---- */
+
+    /* ---- START: the other numbering ----
+       Sunday-start weeks, with week 1 being whatever week holds 1 January even
+       if only one day of it is in the new year. It is the common North
+       American convention and it disagrees with ISO for much of the year,
+       which is the point of showing both. */
+    function sundayStartWeek(date) {
+      var jan1 = utc(date.getUTCFullYear(), 0, 1);
+      var dayOfYear = Math.round((date - jan1) / DAY);
+      return Math.floor((dayOfYear + jan1.getUTCDay()) / 7) + 1;
+    }
+    /* ---- END: the other numbering ---- */
+
+    /* ---- START: writing dates out ---- */
+    function longDate(date) {
+      return date.getUTCDate() + " " + MONTHS[date.getUTCMonth()] + " " +
+             date.getUTCFullYear();
+    }
+
+    /* A week that crosses New Year reads as "28 Dec - 3 Jan", which leaves the
+       reader to guess which year each end is in - and that is exactly the week
+       where guessing goes wrong. Show the years when, and only when, the two
+       ends disagree. */
+    function shortRange(from, to) {
+      var split = from.getUTCFullYear() !== to.getUTCFullYear();
+      function part(date) {
+        return date.getUTCDate() + " " + MONTHS[date.getUTCMonth()].slice(0, 3) +
+               (split ? " " + date.getUTCFullYear() : "");
+      }
+      return part(from) + " " + EN_DASH + " " + part(to);
+    }
+
+    function weekLabel(iso) {
+      return iso.year + "-W" + (iso.week < 10 ? "0" : "") + iso.week;
+    }
+    /* ---- END: writing dates out ---- */
+
+    /* ---- START: a date in, a week number out ---- */
+    function runDate() {
+      var date = parseDate(el("date").value);
+
+      if (!date) {
+        el("errWrap").hidden = false;
+        el("err").textContent = "Pick a real date.";
+        el("headline").textContent = EM_DASH;
+        el("reading").textContent = "";
+        el("isoWeek").textContent = EM_DASH;
+        el("isoYear").textContent = EM_DASH;
+        el("usWeek").textContent = EM_DASH;
+        el("range").textContent = "";
+        el("note").textContent = "";
+        el("edges").innerHTML = "";
+        return;
+      }
+
+      el("errWrap").hidden = true;
+
+      var iso = isoWeekOf(date);
+      var monday = mondayOfWeek(iso.year, iso.week);
+      var sunday = new Date(monday.getTime() + 6 * DAY);
+
+      el("headline").textContent = weekLabel(iso);
+      el("reading").textContent = DAY_NAMES[mondayIndex(date)] + ", " + longDate(date);
+      el("isoWeek").textContent = String(iso.week);
+      el("isoYear").textContent = String(iso.year);
+      el("usWeek").textContent = String(sundayStartWeek(date));
+
+      el("range").textContent = "That week runs " + longDate(monday) + " " +
+        EN_DASH + " " + longDate(sunday) + ", and " + iso.year + " has " +
+        weeksInYear(iso.year) + " ISO weeks.";
+
+      /* The two things worth pointing out, and only when they are true: a
+         week-year that disagrees with the calendar year, and the two
+         conventions disagreeing with each other. */
+      var messages = [];
+      if (iso.year !== date.getUTCFullYear()) {
+        messages.push("Note the year: this date is in " + date.getUTCFullYear() +
+          " but its week belongs to " + iso.year + ", because a week is never " +
+          "split between two years.");
+      }
+      var us = sundayStartWeek(date);
+      if (us !== iso.week) {
+        messages.push("The Sunday-start convention calls this week " + us +
+          " rather than " + iso.week + ".");
+      } else {
+        messages.push("Both conventions agree on week " + iso.week + " this time.");
+      }
+      el("note").textContent = messages.join(" ");
+
+      fillEdges(date.getUTCFullYear());
+    }
+    /* ---- END: a date in, a week number out ---- */
+
+    /* ---- START: a week number in, the dates out ---- */
+    function runWeek() {
+      var year = parseInt(el("wYear").value, 10);
+      var week = parseInt(el("wNum").value, 10);
+
+      function refuse(message) {
+        el("wErrWrap").hidden = false;
+        el("wErr").textContent = message;
+        el("wRange").textContent = EM_DASH;
+        el("wNote").textContent = "";
+        el("wDays").innerHTML = "";
+      }
+
+      if (isNaN(year) || year < 1 || year > 9999) {
+        refuse("Type a year between 1 and 9999.");
+        return;
+      }
+      if (isNaN(week) || week < 1) {
+        refuse("Type a week number, starting at 1.");
+        return;
+      }
+
+      var total = weeksInYear(year);
+      if (week > total) {
+        refuse(year + " has only " + total + " ISO weeks, so there is no week " +
+               week + " in it.");
+        return;
+      }
+
+      el("wErrWrap").hidden = true;
+
+      var monday = mondayOfWeek(year, week);
+      var sunday = new Date(monday.getTime() + 6 * DAY);
+      el("wRange").textContent = shortRange(monday, sunday);
+      el("wNote").textContent = weekLabel({ year: year, week: week }) +
+        ", one of " + total + " weeks in " + year + ".";
+
+      var html = "";
+      for (var i = 0; i < 7; i++) {
+        var day = new Date(monday.getTime() + i * DAY);
+        html += "<tr><td>" + DAY_NAMES[i] + "</td><td>" + longDate(day) + "</td></tr>";
+      }
+      el("wDays").innerHTML = html;
+    }
+    /* ---- END: a week number in, the dates out ---- */
+
+    /* ---- START: where the years overlap ----
+       Built from the same functions the rest of the page uses, so it cannot
+       quietly disagree with the answer above it. */
+    function fillEdges(centreYear) {
+      var html = "";
+      for (var offset = -2; offset <= 2; offset++) {
+        var year = centreYear + offset;
+        if (year < 1 || year > 9999) { continue; }
+        var first = isoWeekOf(utc(year, 0, 1));
+        var last = isoWeekOf(utc(year, 11, 31));
+        html += "<tr" + (offset === 0 ? ' style="font-weight:700"' : "") + ">" +
+                "<td>" + year + "</td>" +
+                "<td>" + weekLabel(first) + "</td>" +
+                "<td>" + weekLabel(last) + "</td>" +
+                "<td>" + weeksInYear(year) + "</td></tr>";
+      }
+      el("edges").innerHTML = html;
+    }
+    /* ---- END: where the years overlap ---- */
+
+    /* ---- START: wiring ---- */
+    function today() {
+      var now = new Date();
+      return utc(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    function isoString(date) {
+      return date.getUTCFullYear() + "-" +
+             String(date.getUTCMonth() + 1).padStart(2, "0") + "-" +
+             String(date.getUTCDate()).padStart(2, "0");
+    }
+
+    el("date").value = isoString(today());
+    el("date").addEventListener("input", runDate);
+    el("date").addEventListener("change", runDate);
+
+    el("wYear").addEventListener("input", runWeek);
+    el("wNum").addEventListener("input", runWeek);
+
+    el("todayBtn").addEventListener("click", function () {
+      el("date").value = isoString(today());
+      runDate();
+    });
+
+    /* The week panel opens on the week the date panel is showing, so the two
+       halves of the page start out talking about the same thing. */
+    var startIso = isoWeekOf(today());
+    el("wYear").value = String(startIso.year);
+    el("wNum").value = String(startIso.week);
+
+    runDate();
+    runWeek();
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

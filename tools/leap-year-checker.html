@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Leap Year Checker &mdash; Is Any Year a Leap Year?</title>
+  <meta name="description" content="Check whether any year is a leap year and see which of the three rules decided it, with February's length and the next leap years. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/leap-year-checker.html">
+
+  <meta property="og:title" content="Leap Year Checker &mdash; Is Any Year a Leap Year?">
+  <meta property="og:description" content="Check whether any year is a leap year and see which of the three rules decided it, with February's length and the next leap years. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=9">
+  <link rel="stylesheet" href="../css/tool.css?v=9">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why was 1900 not a leap year when 2000 was?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A year divisible by 100 skips its leap day, unless it is also divisible by 400. 1900 divides by 100 and not by 400, so it was an ordinary year of 365 days. 2000 divides by 400, so it kept its 29 February. This is the rule most calendar software got wrong in 1999, because a great deal of it tested only for divisibility by four."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the leap year rule in full?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A year is a leap year if it divides by 4, except that it is not if it divides by 100, except that it is again if it divides by 400. That gives 97 leap years every 400 years rather than 100, making the average calendar year 365.2425 days long against the true 365.24219."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "When is the next leap year?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Leap years run every four years with the century exception, so after 2024 come 2028, 2032, 2036 and 2040. The next skipped one is 2100, which divides by 100 but not by 400 and so will have no 29 February. Nobody alive has seen a skipped century year, because the last was 1900."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=date">Date & Time</a><span>&rsaquo;</span>
+        <span>Leap Year Checker</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Leap Year Checker</h1>
+        <p>Type a year and find out whether it has a 29 February &mdash; and, more usefully, which rule decided it. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- the check ---------- -->
+        <div class="panel">
+          <span class="panel__label">Check a year</span>
+
+          <div class="field">
+            <label for="year">Year</label>
+            <input type="number" id="year" value="2026" step="1">
+          </div>
+
+          <div class="result">
+            <span class="result__num" id="headline">Not a leap year</span>
+            <span class="result__label" id="reading"></span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="febDays">28</span><span class="stat__label">Days in February</span></div>
+            <div class="stat"><span class="stat__num" id="yearDays">365</span><span class="stat__label">Days in the year</span></div>
+            <div class="stat"><span class="stat__num" id="nextLeap">2028</span><span class="stat__label">Next leap year</span></div>
+          </div>
+
+          <p class="hint" id="why"></p>
+
+          <!-- Plain wrapper: .msg carries its own display, which would beat
+               the browser rule for the hidden attribute. -->
+          <div id="errWrap" hidden style="margin-top:var(--s3)">
+            <p class="msg msg--bad" id="err"></p>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--ghost" type="button" id="thisYearBtn">This year</button>
+            <button class="btn btn--ghost" type="button" id="prevBtn">Previous leap year</button>
+            <button class="btn btn--ghost" type="button" id="nextBtn">Next leap year</button>
+          </div>
+        </div>
+
+        <!-- ---------- the years around it ---------- -->
+        <div class="panel">
+          <span class="panel__label">The years either side</span>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr><th>Year</th><th>Leap?</th><th>Because</th></tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="workspace" style="margin-top:var(--s5)">
+        <div class="panel">
+          <span class="panel__label">The century years, where people get caught out</span>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr><th>Year</th><th>Divides by 4</th><th>Divides by 100</th><th>Divides by 400</th><th>Leap?</th></tr>
+              </thead>
+              <tbody id="centuries"></tbody>
+            </table>
+          </div>
+          <p class="hint">Three of these eight are leap years. A check that only
+          tests for division by four gets five of them wrong.</p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Type any year.</li>
+          <li>The answer says yes or no, and the line underneath says which of
+              the three rules produced it.</li>
+          <li>The tables show the years either side and the century years,
+              which are where the rule stops being obvious.</li>
+        </ol>
+
+        <h2>The rule, in the order it is applied</h2>
+        <ol>
+          <li><strong>Does it divide by 4?</strong> If not, it is an ordinary
+          year and there is nothing more to check.</li>
+          <li><strong>Does it divide by 100?</strong> If not, it is a leap year.
+          This covers almost every leap year you will ever meet.</li>
+          <li><strong>Does it divide by 400?</strong> If it does, it is a leap
+          year after all. If it does not, the leap day is skipped.</li>
+        </ol>
+        <p>So 2024 is a leap year at step two. 1900 fails at step three and is
+        not. 2000 passes step three and is. That last pair is the whole reason
+        the rule exists in the form it does.</p>
+
+        <h2>Why a leap day is needed at all</h2>
+        <p>A year is not a whole number of days. The Earth takes about
+        <strong>365.24219</strong> days to get back round the Sun, so a
+        365&nbsp;day calendar loses very nearly a quarter of a day each year.
+        Left alone, the seasons drift: after a century the calendar is out by
+        around 24 days, and midsummer starts sliding towards spring.</p>
+        <p>Adding a day every four years overcorrects slightly, to 365.25.
+        Skipping three leap days every four centuries brings the average to
+        <strong>365.2425</strong>, which is within half a minute a year of the
+        truth. That is close enough to hold the date of the equinox steady for
+        thousands of years, which is exactly what the Gregorian reform of 1582
+        was for.</p>
+
+        <h2>The years this page is honest about</h2>
+        <p>This checker applies the modern rule to every year you give it,
+        including years long before the rule existed. That is a deliberate and
+        standard choice &mdash; it is called the proleptic Gregorian calendar,
+        and it is what software and historians use so dates can be compared at
+        all.</p>
+        <p>It is not what people living then would have recognised. The
+        Gregorian calendar began in October 1582 and was adopted country by
+        country over the next three and a half centuries; Britain and its
+        colonies only changed in 1752, and skipped eleven days to catch up. For
+        a year before your country's changeover, treat the answer here as the
+        modern arithmetic rather than a historical fact.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Why was 1900 not a leap year when 2000 was?</h3>
+          <p>A year divisible by 100 skips its leap day, unless it is also
+          divisible by 400. 1900 divides by 100 and not by 400, so it was an
+          ordinary year of 365 days. 2000 divides by 400, so it kept its 29
+          February. This is the rule most calendar software got wrong in 1999,
+          because a great deal of it tested only for divisibility by four.</p>
+        </div>
+        <div class="faq">
+          <h3>What is the leap year rule in full?</h3>
+          <p>A year is a leap year if it divides by 4, except that it is not if
+          it divides by 100, except that it is again if it divides by 400. That
+          gives 97 leap years every 400 years rather than 100, making the
+          average calendar year 365.2425 days long against the true
+          365.24219.</p>
+        </div>
+        <div class="faq">
+          <h3>When is the next leap year?</h3>
+          <p>Leap years run every four years with the century exception, so
+          after 2024 come 2028, 2032, 2036 and 2040. The next skipped one is
+          2100, which divides by 100 but not by 400 and so will have no 29
+          February. Nobody alive has seen a skipped century year, because the
+          last was 1900.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=9"></script>
+  <script src="../js/tool-helpers.js?v=9"></script>
+  <script>window.CURRENT_TOOL = "leap-year-checker";</script>
+  <script src="../js/main.js?v=9"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
+    var EM_DASH = String.fromCharCode(0x2014);
+    var TICK    = String.fromCharCode(0x2713);
+    var CROSS   = String.fromCharCode(0x2717);
+
+    var MIN_YEAR = -9999;
+    var MAX_YEAR = 9999;
+
+    function el(id) { return document.getElementById(id); }
+
+    /* ---- START: the rule itself ----
+       Written as the three questions in the order they are asked, rather than
+       the one-line boolean, because the page has to explain which question
+       produced the answer and not only what the answer was. */
+    function decide(year) {
+      if (year % 4 !== 0) {
+        return { leap: false, rule: "does not divide by 4" };
+      }
+      if (year % 100 !== 0) {
+        return { leap: true, rule: "divides by 4 and not by 100" };
+      }
+      if (year % 400 !== 0) {
+        return { leap: false, rule: "divides by 100 but not by 400" };
+      }
+      return { leap: true, rule: "divides by 400" };
+    }
+
+    function isLeap(year) { return decide(year).leap; }
+    /* ---- END: the rule itself ---- */
+
+    /* ---- START: walking to the nearest leap year ----
+       A loop rather than arithmetic on purpose. Stepping by four from a leap
+       year lands on 2100, which is not one, and the tidy formula that handles
+       that is harder to read than simply asking the rule again. Four steps at
+       most in every real case, eight across a skipped century. */
+    function leapYearFrom(year, direction) {
+      var next = year + direction;
+      for (var i = 0; i < 16; i++) {
+        if (next < MIN_YEAR || next > MAX_YEAR) { return null; }
+        if (isLeap(next)) { return next; }
+        next += direction;
+      }
+      return null;
+    }
+    /* ---- END: walking to the nearest leap year ---- */
+
+    /* ---- START: the years either side ---- */
+    function fillNearby(year) {
+      var html = "";
+      for (var offset = -4; offset <= 4; offset++) {
+        var y = year + offset;
+        if (y < MIN_YEAR || y > MAX_YEAR) { continue; }
+        var verdict = decide(y);
+        var mark = verdict.leap ? TICK + " yes" : CROSS + " no";
+        html += "<tr" + (offset === 0 ? ' style="font-weight:700"' : "") + ">" +
+                "<td>" + y + "</td><td>" + mark + "</td><td>" +
+                verdict.rule + "</td></tr>";
+      }
+      el("rows").innerHTML = html;
+    }
+    /* ---- END: the years either side ---- */
+
+    /* ---- START: the century table ----
+       Built rather than typed out, so it cannot drift away from the rule the
+       rest of the page uses. If decide() were ever wrong, this table would be
+       wrong in the same way instead of silently disagreeing. */
+    function fillCenturies() {
+      var html = "";
+      var years = [1600, 1700, 1800, 1900, 2000, 2100, 2200, 2400];
+      for (var i = 0; i < years.length; i++) {
+        var y = years[i];
+        html += "<tr><td>" + y + "</td>" +
+                "<td>" + (y % 4 === 0 ? TICK : CROSS) + "</td>" +
+                "<td>" + (y % 100 === 0 ? TICK : CROSS) + "</td>" +
+                "<td>" + (y % 400 === 0 ? TICK : CROSS) + "</td>" +
+                "<td>" + (isLeap(y) ? TICK + " yes" : CROSS + " no") + "</td></tr>";
+      }
+      el("centuries").innerHTML = html;
+    }
+    /* ---- END: the century table ---- */
+
+    /* ---- START: the check itself ---- */
+    function run() {
+      var raw = el("year").value.trim();
+      var year = parseInt(raw, 10);
+
+      /* Every refusal clears the tiles as well as showing the reason. Leaving
+         the last good answer up next to an error message is worse than showing
+         nothing: it reads as the answer to what was just typed. */
+      function refuse(message) {
+        el("errWrap").hidden = false;
+        el("err").textContent = message;
+        el("headline").textContent = EM_DASH;
+        el("reading").textContent = "";
+        el("febDays").textContent = EM_DASH;
+        el("yearDays").textContent = EM_DASH;
+        el("nextLeap").textContent = EM_DASH;
+        el("why").textContent = "";
+        el("rows").innerHTML = "";
+      }
+
+      if (raw === "" || isNaN(year) || String(year) !== raw.replace(/^\+/, "")) {
+        refuse("Type a whole year, such as 2026.");
+        return;
+      }
+
+      if (year < MIN_YEAR || year > MAX_YEAR) {
+        refuse("Stick to years between " + MIN_YEAR + " and " + MAX_YEAR +
+               ". Outside that the calendar is guesswork rather than arithmetic.");
+        return;
+      }
+
+      el("errWrap").hidden = true;
+
+      var verdict = decide(year);
+      el("headline").textContent = year + (verdict.leap ? " is a leap year" : " is not a leap year");
+      el("reading").textContent = "It " + verdict.rule + ".";
+
+      el("febDays").textContent = verdict.leap ? "29" : "28";
+      el("yearDays").textContent = verdict.leap ? "366" : "365";
+
+      var next = leapYearFrom(year, 1);
+      el("nextLeap").textContent = next === null ? EM_DASH : String(next);
+
+      /* The interesting years deserve the sentence that explains them, rather
+         than the same generic line every time. */
+      if (year % 100 === 0) {
+        el("why").textContent = verdict.leap
+          ? year + " is a century year that kept its leap day, because it divides by 400. " +
+            "The next century year to do that is " + (Math.ceil((year + 1) / 400) * 400) + "."
+          : year + " is a century year, and it divides by 100 without dividing by 400, " +
+            "so the leap day is skipped. A check that only tests for division by four gets this wrong.";
+      } else if (verdict.leap) {
+        el("why").textContent = "February has 29 days, so " + year +
+          " runs to 366. The previous one was " + (leapYearFrom(year, -1) || EM_DASH) +
+          " and the next is " + (next === null ? EM_DASH : next) + ".";
+      } else {
+        var previous = leapYearFrom(year, -1);
+        el("why").textContent = "February has 28 days. The nearest leap years are " +
+          (previous === null ? EM_DASH : previous) + " behind and " +
+          (next === null ? EM_DASH : next) + " ahead.";
+      }
+
+      fillNearby(year);
+    }
+    /* ---- END: the check itself ---- */
+
+    /* ---- START: wiring ---- */
+    el("year").addEventListener("input", run);
+
+    el("thisYearBtn").addEventListener("click", function () {
+      el("year").value = String(new Date().getFullYear());
+      run();
+    });
+
+    el("nextBtn").addEventListener("click", function () {
+      var from = parseInt(el("year").value, 10);
+      if (isNaN(from)) { from = new Date().getFullYear(); }
+      var target = leapYearFrom(from, 1);
+      if (target === null) { showToast("No leap year that way inside the range"); return; }
+      el("year").value = String(target);
+      run();
+    });
+
+    el("prevBtn").addEventListener("click", function () {
+      var from = parseInt(el("year").value, 10);
+      if (isNaN(from)) { from = new Date().getFullYear(); }
+      var target = leapYearFrom(from, -1);
+      if (target === null) { showToast("No leap year that way inside the range"); return; }
+      el("year").value = String(target);
+      run();
+    });
+
+    fillCenturies();
+    run();   /* run once so the page is correct on load */
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

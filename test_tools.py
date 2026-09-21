@@ -1630,6 +1630,330 @@ T["days-until-countdown"] = r"""
     finish();
 """
 
+T["roman-numeral-converter"] = r"""
+    set("input", "1994");
+    eq("1994 is MCMXCIV", txt("asRoman"), "MCMXCIV");
+    eq("and reads back as 1,994", txt("asNumber"), "1,994");
+    has("with the sum written out", txt("breakdown"), "M (1000) + CM (900) + XC (90) + IV (4)");
+
+    set("input", "4");
+    eq("four is IV, never IIII", txt("asRoman"), "IV");
+    set("input", "9");
+    eq("nine is IX", txt("asRoman"), "IX");
+    set("input", "40");
+    eq("forty is XL", txt("asRoman"), "XL");
+    set("input", "444");
+    eq("444 needs three subtractive pairs", txt("asRoman"), "CDXLIV");
+    set("input", "3999");
+    eq("the largest is MMMCMXCIX", txt("asRoman"), "MMMCMXCIX");
+
+    set("input", "4000");
+    shown("4000 is refused", "errWrap");
+    has("and says where the letters run out", txt("err"), "3999 is as far");
+    set("input", "0");
+    shown("zero is refused", "errWrap");
+    has("because the system has no symbol for it", txt("err"), "no symbol for zero");
+
+    set("input", "MCMXCIV");
+    eq("MCMXCIV reads as 1,994", txt("asNumber"), "1,994");
+    gone("and is accepted without complaint", "errWrap");
+    set("input", "mcmxciv");
+    eq("lower case is accepted too", txt("asNumber"), "1,994");
+
+    /* The two famous non-standard spellings. Both are understood, and both are
+       corrected - refusing them outright would leave somebody holding a clock
+       face with no idea what it says. */
+    set("input", "IIII");
+    eq("IIII is understood as 4", txt("asNumber"), "4");
+    has("and corrected to IV", txt("err"), "Written properly it is IV");
+    set("input", "IC");
+    eq("IC is understood as 99", txt("asNumber"), "99");
+    has("and corrected to XCIX", txt("err"), "XCIX");
+    set("input", "XCIX");
+    gone("XCIX itself is the standard spelling", "errWrap");
+
+    set("input", "3.5");
+    has("a fraction gets its own message", txt("err"), "no way to write a fraction");
+    set("input", "ABC");
+    has("junk letters are named as junk", txt("err"), "only the letters");
+
+    /* ---- START: the round trip ----
+       Every number in range, converted and read back, against a reference
+       written here rather than borrowed from the page. Two tables that agree
+       prove nothing if one was copied from the other. */
+    var SYM = [[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],
+               [50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+    function ref(n) {
+      var s = "";
+      for (var i = 0; i < SYM.length; i++) {
+        while (n >= SYM[i][0]) { s += SYM[i][1]; n -= SYM[i][0]; }
+      }
+      return s;
+    }
+    var wrong = 0, firstWrong = "";
+    for (var y = 1; y <= 3999; y++) {
+      set("input", String(y));
+      var got = txt("asRoman");
+      if (got !== ref(y)) {
+        wrong++;
+        if (!firstWrong) { firstWrong = y + " gave " + got + ", wanted " + ref(y); }
+      }
+      set("input", got);
+      if (txt("asNumber").replace(/,/g, "") !== String(y)) {
+        wrong++;
+        if (!firstWrong) { firstWrong = got + " read back as " + txt("asNumber"); }
+      }
+    }
+    ok("all 3999 numbers convert and read back correctly", wrong === 0,
+       wrong + " wrong, first: " + firstWrong);
+    /* ---- END: the round trip ---- */
+
+    click("yearBtn");
+    eq("the year button fills in this year", val("input"),
+       String(new Date().getFullYear()));
+    finish();
+"""
+
+T["data-storage-converter"] = r"""
+    set("from", "tb");
+    set("value", "1");
+    eq("1 TB is a trillion bytes", txt("asBytes"), "1,000,000,000,000");
+    eq("which is 1,000 GB on the box", txt("asGb"), "1,000 GB");
+    eq("and 931.32 GiB to an operating system", txt("asGib"), "931.32 GiB");
+    has("the note explains the 1024 division", txt("note"), "divides by 1024");
+
+    set("from", "gb");
+    set("value", "500");
+    eq("500 GB reads as 465.66 GiB", txt("asGib"), "465.66 GiB");
+
+    set("from", "kib");
+    set("value", "1");
+    eq("a kibibyte is 1,024 bytes", txt("asBytes"), "1,024");
+    set("from", "kb");
+    eq("a kilobyte is 1,000 bytes", txt("asBytes"), "1,000");
+    set("from", "gib");
+    eq("a gibibyte is 1,073,741,824 bytes", txt("asBytes"), "1,073,741,824");
+
+    set("from", "bit");
+    set("value", "8");
+    eq("eight bits make one byte", txt("asBytes"), "1");
+
+    set("from", "mbit");
+    set("value", "100");
+    eq("100 Mbps carries 12.5 MB a second", txt("headline"), "12.5 MB");
+    has("and the note gives the reason", txt("note"), "8 bits in a byte");
+
+    /* The headline has to pick a unit a person would use. A fixed GiB makes a
+       kilobyte read as 0.0000009313 GiB, which is true and useless. */
+    set("from", "kb");
+    set("value", "1");
+    eq("a small size gets a small unit, not GiB", txt("headline"), "1,000 B");
+    set("from", "tb");
+    set("value", "2");
+    eq("and a large one gets TiB", txt("headline"), "1.819 TiB");
+
+    set("from", "tb");
+    set("value", "1");
+    eq("the table lists all thirteen units", rows().length, 13);
+    eq("1 TB is exactly 976,562,500 KiB", cell(3, 1), "976,562,500");
+    eq("and exactly 8 trillion bits", cell(0, 1), "8,000,000,000,000");
+
+    /* Past 2^53 a JavaScript number cannot hold every integer. Printing all
+       those digits anyway would look exact and be wrong. */
+    set("from", "pb");
+    set("value", "1000");
+    has("a byte count past 2^53 is marked approximate", txt("asBytes"),
+        String.fromCharCode(0x2248));
+    has("and the note says it is rounded", txt("note"), "rounded");
+
+    set("from", "gb");
+    set("value", "");
+    shown("an empty box is refused", "errWrap");
+    set("value", "-5");
+    shown("a negative is flagged", "errWrap");
+    eq("but converted as the size that was obviously meant", txt("asGb"), "5 GB");
+    finish();
+"""
+
+T["speed-converter"] = r"""
+    set("from", "kmh");
+    set("value", "100");
+    eq("100 km/h is 62.14 mph", txt("asMph"), "62.14 mph");
+    eq("and 27.78 m/s", txt("asMs"), "27.78 m/s");
+    has("with the five-eighths shortcut alongside the exact figure", txt("note"), "62.5");
+
+    set("value", "12");
+    eq("12 km/h is a five minute kilometre", txt("paceKm"), "5:00");
+    eq("which is an 8:03 mile", txt("paceMile"), "8:03");
+    /* A marathon at this pace is three and a half HOURS. Printed as minutes it
+       would read 210:59, which is the same number and no use to a runner. */
+    has("and a marathon time written in hours", txt("paceNote"), "3:30:59");
+
+    set("value", "20");
+    eq("20 km/h is a three minute kilometre", txt("paceKm"), "3:00");
+    has("and a 2:06:35 marathon", txt("paceNote"), "2:06:35");
+
+    set("value", "0");
+    eq("a speed of zero has no pace", txt("paceKm"), String.fromCharCode(0x2014));
+    has("and the page says why rather than dividing", txt("paceNote"), "never covers one");
+
+    set("value", "-20");
+    eq("a negative speed still converts",
+       txt("asMph"), String.fromCharCode(0x2212) + "12.43 mph");
+    has("but has no pace", txt("paceNote"), "needs a forward speed");
+
+    set("from", "knot");
+    set("value", "1");
+    eq("one knot is 1.85 km/h", txt("asKmh"), "1.85 km/h");
+    has("and the note gives the exact definition", txt("note"), "1852 metres");
+
+    set("from", "mach");
+    set("value", "1");
+    eq("Mach 1 at sea level is 1,225.04 km/h", txt("asKmh"), "1,225.04 km/h");
+    eq("which is 761.21 mph", txt("asMph"), "761.21 mph");
+    has("with the caveat that it changes with temperature", txt("note"), "sea level");
+
+    set("from", "ms");
+    set("value", "1");
+    eq("1 m/s is 3.6 km/h", txt("asKmh"), "3.6 km/h");
+    eq("and 2.24 mph", txt("asMph"), "2.24 mph");
+
+    set("from", "fts");
+    set("value", "100");
+    eq("100 ft/s is 109.73 km/h", txt("asKmh"), "109.73 km/h");
+
+    eq("the table lists six units", rows().length, 6);
+
+    set("value", "");
+    shown("an empty box is refused", "errWrap");
+    finish();
+"""
+
+T["leap-year-checker"] = r"""
+    set("year", "2024");
+    has("2024 is a leap year", txt("headline"), "2024 is a leap year");
+    eq("February has 29 days", txt("febDays"), "29");
+    eq("and the year runs to 366", txt("yearDays"), "366");
+
+    set("year", "2026");
+    has("2026 is not", txt("headline"), "is not a leap year");
+    eq("February has 28 days", txt("febDays"), "28");
+    eq("the year runs to 365", txt("yearDays"), "365");
+    eq("and the next leap year is 2028", txt("nextLeap"), "2028");
+
+    /* The pair the whole rule exists for. */
+    set("year", "1900");
+    has("1900 was not a leap year", txt("headline"), "is not a leap year");
+    has("because it divides by 100 and not by 400", txt("reading"),
+        "divides by 100 but not by 400");
+    set("year", "2000");
+    has("2000 was", txt("headline"), "is a leap year");
+    has("because it divides by 400", txt("reading"), "divides by 400");
+    set("year", "2100");
+    has("2100 will not be", txt("headline"), "is not a leap year");
+    eq("and the next one after it is 2104", txt("nextLeap"), "2104");
+
+    set("year", "2026");
+    click("nextBtn");
+    eq("the next button jumps to 2028", val("year"), "2028");
+    click("prevBtn");
+    eq("and the previous button comes back to 2024", val("year"), "2024");
+    set("year", "2096");
+    click("nextBtn");
+    eq("stepping forward from 2096 skips over 2100", val("year"), "2104");
+
+    set("year", "abc");
+    shown("junk is refused", "errWrap");
+    eq("and the tiles are cleared with it", txt("febDays"),
+       String.fromCharCode(0x2014));
+    set("year", "2024");
+    set("year", "99999");
+    shown("a year outside the range is refused", "errWrap");
+    eq("and does not leave the last answer sitting there", txt("febDays"),
+       String.fromCharCode(0x2014));
+
+    eq("the century table has eight rows",
+       document.querySelectorAll("#centuries tr").length, 8);
+
+    /* ---- START: six hundred years against the rule ----
+       The reference is written out here rather than read off the page, so the
+       two can actually disagree. */
+    function refLeap(y) { return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
+    var wrong = 0, firstWrong = "";
+    for (var y = 1800; y <= 2400; y++) {
+      set("year", String(y));
+      var says = txt("headline").indexOf("is not") === -1;
+      if (says !== refLeap(y)) {
+        wrong++;
+        if (!firstWrong) { firstWrong = String(y); }
+      }
+    }
+    ok("every year from 1800 to 2400 matches the rule", wrong === 0,
+       wrong + " wrong, first " + firstWrong);
+    /* ---- END: six hundred years against the rule ---- */
+    finish();
+"""
+
+T["week-number-calculator"] = r"""
+    /* Known-correct ISO week numbers, including every awkward case: a year
+       starting mid-week, 31 December landing in the next year's week 1, and
+       1 January landing in the previous year's week 53. */
+    var CASES = [
+      ["2026-01-01", "2026-W01"], ["2027-01-01", "2026-W53"],
+      ["2024-12-31", "2025-W01"], ["2025-12-29", "2026-W01"],
+      ["2021-01-01", "2020-W53"], ["2016-01-03", "2015-W53"],
+      ["2016-01-04", "2016-W01"], ["2000-01-01", "1999-W52"],
+      ["2026-09-21", "2026-W39"], ["2005-01-01", "2004-W53"],
+      ["2008-12-29", "2009-W01"], ["2010-01-03", "2009-W53"],
+      ["2010-01-04", "2010-W01"], ["1999-12-31", "1999-W52"],
+      ["2020-12-31", "2020-W53"]
+    ];
+    for (var i = 0; i < CASES.length; i++) {
+      set("date", CASES[i][0]);
+      eq(CASES[i][0] + " is " + CASES[i][1], txt("headline"), CASES[i][1]);
+    }
+
+    set("date", "2027-01-01");
+    has("a week-year that differs from the calendar year is called out",
+        txt("note"), "belongs to 2026");
+
+    set("date", "2026-09-21");
+    has("the range of the week is shown", txt("range"), "21 September 2026");
+    has("with how many weeks the year has", txt("range"), "53 ISO weeks");
+    has("and the day of the week is named", txt("reading"), "Monday");
+
+    set("wYear", "2026");
+    set("wNum", "1");
+    /* A week straddling New Year must carry its years, or "29 Dec - 4 Jan"
+       leaves the reader guessing at exactly the week where guessing fails. */
+    eq("2026 week 1 starts in December 2025", txt("wRange"),
+       "29 Dec 2025 " + String.fromCharCode(0x2013) + " 4 Jan 2026");
+    eq("and it lists seven days", document.querySelectorAll("#wDays tr").length, 7);
+    eq("beginning on Monday 29 December 2025",
+       document.querySelectorAll("#wDays tr")[0].children[1].textContent,
+       "29 December 2025");
+    eq("and ending on Sunday 4 January 2026",
+       document.querySelectorAll("#wDays tr")[6].children[1].textContent,
+       "4 January 2026");
+
+    set("wNum", "39");
+    eq("a mid-year week needs no years on it", txt("wRange"),
+       "21 Sep " + String.fromCharCode(0x2013) + " 27 Sep");
+
+    set("wYear", "2025");
+    set("wNum", "53");
+    shown("2025 has no week 53", "wErrWrap");
+    has("and the page says how many it does have", txt("wErr"), "only 52");
+    set("wYear", "2026");
+    gone("2026 does have one", "wErrWrap");
+    set("wNum", "0");
+    shown("week zero is refused", "wErrWrap");
+
+    set("date", "");
+    shown("an empty date is refused", "errWrap");
+    finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 

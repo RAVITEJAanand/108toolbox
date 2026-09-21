@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Speed Converter &mdash; km/h, mph, m/s, Knots and Pace</title>
+  <meta name="description" content="Convert km/h, mph, m/s, knots and feet per second, and read the same speed as a running pace in minutes per kilometre and per mile. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/speed-converter.html">
+
+  <meta property="og:title" content="Speed Converter &mdash; km/h, mph, m/s, Knots and Pace">
+  <meta property="og:description" content="Convert km/h, mph, m/s, knots and feet per second, and read the same speed as a running pace in minutes per kilometre and per mile. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=9">
+  <link rel="stylesheet" href="../css/tool.css?v=9">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I convert km/h to mph in my head?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Multiply by 5 and divide by 8. That gives 0.625 where the true figure is 0.6214, so 80 km/h comes out as 50 mph against a real 49.7. It is close enough for a speed limit sign and it is the reason 80 km/h and 50 mph are treated as the same limit in practice."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why are boats and planes measured in knots?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A knot is one nautical mile an hour, and a nautical mile is one minute of latitude - one sixtieth of a degree. That makes navigation arithmetic simple on a chart: sixty nautical miles north is exactly one degree of latitude. The name comes from counting knots in a rope paid out behind a ship over a timed interval."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What pace is a five minute kilometre in minutes per mile?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "About 8 minutes 3 seconds per mile, which is 12 km/h or 7.46 mph. A mile is 1.609 kilometres, so a per-mile pace is always the per-kilometre pace multiplied by roughly 1.61. Five minute kilometres for the full distance is a 3 hour 31 minute marathon."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
+        <span>Speed Converter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Speed Converter</h1>
+        <p>Kilometres per hour, miles per hour, metres per second, knots and more &mdash; and the same speed written as a running pace. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- the conversion ---------- -->
+        <div class="panel">
+          <span class="panel__label">Convert</span>
+
+          <div class="field">
+            <label for="value">Speed</label>
+            <input type="number" id="value" value="100" step="any">
+          </div>
+
+          <div class="field">
+            <label for="from">This speed is in</label>
+            <select id="from">
+              <option value="kmh" selected>Kilometres per hour (km/h)</option>
+              <option value="mph">Miles per hour (mph)</option>
+              <option value="ms">Metres per second (m/s)</option>
+              <option value="knot">Knots (nautical miles per hour)</option>
+              <option value="fts">Feet per second (ft/s)</option>
+              <option value="mach">Mach (at sea level)</option>
+            </select>
+          </div>
+
+          <div class="result">
+            <span class="result__num" id="headline">62.14 mph</span>
+            <span class="result__label" id="reading"></span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="asKmh">100 km/h</span><span class="stat__label">Kilometres per hour</span></div>
+            <div class="stat"><span class="stat__num" id="asMph">62.14 mph</span><span class="stat__label">Miles per hour</span></div>
+            <div class="stat"><span class="stat__num" id="asMs">27.78 m/s</span><span class="stat__label">Metres per second</span></div>
+          </div>
+
+          <p class="hint" id="note"></p>
+
+          <!-- Plain wrapper: .msg carries its own display, which would beat
+               the browser rule for the hidden attribute. -->
+          <div id="errWrap" hidden style="margin-top:var(--s3)">
+            <p class="msg msg--bad" id="err"></p>
+          </div>
+        </div>
+
+        <!-- ---------- every unit, and the pace ---------- -->
+        <div class="panel">
+          <span class="panel__label">Every unit at once</span>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr><th>Unit</th><th>Speed</th></tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s5)">As a running pace</span>
+          <div class="stats stats--2">
+            <div class="stat"><span class="stat__num" id="paceKm">0:36</span><span class="stat__label">Per kilometre</span></div>
+            <div class="stat"><span class="stat__num" id="paceMile">0:58</span><span class="stat__label">Per mile</span></div>
+          </div>
+          <p class="hint" id="paceNote"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Type the speed and pick the unit it is already in.</li>
+          <li>Every other unit fills in at once &mdash; nothing to convert twice.</li>
+          <li>The pace tiles read the same speed the way a runner does, in
+              minutes and seconds per kilometre and per mile.</li>
+        </ol>
+
+        <h2>The conversions worth knowing by heart</h2>
+        <p><strong>km/h to mph:</strong> multiply by 5 and divide by 8. The real
+        factor is 0.6214 and this shortcut gives 0.625, which is close enough
+        to read a road sign. It is also why 80 km/h and 50 mph are treated as
+        the same limit: 80 times five eighths is exactly 50.</p>
+        <p><strong>m/s to km/h:</strong> multiply by 3.6, because an hour is
+        3600 seconds and a kilometre is 1000 metres. Physics gives answers in
+        m/s and everyday life wants km/h, so this is the one that comes up most
+        in homework.</p>
+        <p><strong>knots to km/h:</strong> multiply by 1.852, exactly. A
+        nautical mile was defined as 1852 metres, so the conversion is a
+        definition rather than a measurement.</p>
+
+        <h2>Speed and pace are the same thing upside down</h2>
+        <p>A speed says how far you go in a fixed time. A pace says how long you
+        take over a fixed distance. Runners think in pace because a race is a
+        known distance, so one divided by the other gets you between them.</p>
+        <p>The consequence catches people out: <strong>a faster runner has a
+        smaller pace</strong>. Going from 5:00 per kilometre to 4:30 is an
+        improvement, and the number went down. It also means pace cannot be
+        averaged the way speeds can &mdash; two kilometres at 4:00 and 6:00 do
+        not average to a 5:00 pace over the pair.</p>
+        <p>At zero there is no pace at all. Standing still does not take a very
+        long time to cover a kilometre; it never covers one. The tiles say so
+        rather than printing an enormous number.</p>
+
+        <h2>A note on Mach</h2>
+        <p>Mach 1 is the speed of sound, and the speed of sound is not a fixed
+        number. It depends almost entirely on air temperature, falling as the
+        air gets colder. This page uses <strong>340.29 m/s</strong>, the
+        standard figure for dry air at sea level and 15&nbsp;&deg;C.</p>
+        <p>High up where airliners fly it is nearer 295 m/s, so the same Mach
+        number is a slower true speed. Treat the Mach line here as a sea-level
+        reference, not as a reading for an aircraft at altitude.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How do I convert km/h to mph in my head?</h3>
+          <p>Multiply by 5 and divide by 8. That gives 0.625 where the true
+          figure is 0.6214, so 80 km/h comes out as 50 mph against a real 49.7.
+          It is close enough for a speed limit sign and it is the reason 80 km/h
+          and 50 mph are treated as the same limit in practice.</p>
+        </div>
+        <div class="faq">
+          <h3>Why are boats and planes measured in knots?</h3>
+          <p>A knot is one nautical mile an hour, and a nautical mile is one
+          minute of latitude &mdash; one sixtieth of a degree. That makes
+          navigation arithmetic simple on a chart: sixty nautical miles north is
+          exactly one degree of latitude. The name comes from counting knots in
+          a rope paid out behind a ship over a timed interval.</p>
+        </div>
+        <div class="faq">
+          <h3>What pace is a five minute kilometre in minutes per mile?</h3>
+          <p>About 8 minutes 3 seconds per mile, which is 12 km/h or 7.46 mph.
+          A mile is 1.609 kilometres, so a per-mile pace is always the
+          per-kilometre pace multiplied by roughly 1.61. Five minute kilometres
+          for the full distance is a 3 hour 31 minute marathon.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=9"></script>
+  <script src="../js/tool-helpers.js?v=9"></script>
+  <script>window.CURRENT_TOOL = "speed-converter";</script>
+  <script src="../js/main.js?v=9"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
+    var EM_DASH = String.fromCharCode(0x2014);
+    var MINUS   = String.fromCharCode(0x2212);
+
+    function el(id) { return document.getElementById(id); }
+
+    /* ---- START: the units, all measured in metres per second ----
+       Six units through one pivot, so there are six numbers to get right
+       instead of thirty. Every factor here is exact by definition except
+       Mach, which is a physical measurement and is commented as such. */
+    var UNITS = [
+      { id: "kmh",  label: "Kilometres per hour (km/h)", short: "km/h", ms: 1000 / 3600 },
+      { id: "mph",  label: "Miles per hour (mph)",       short: "mph",  ms: 0.44704 },
+      { id: "ms",   label: "Metres per second (m/s)",    short: "m/s",  ms: 1 },
+      { id: "knot", label: "Knots",                      short: "kn",   ms: 1852 / 3600 },
+      { id: "fts",  label: "Feet per second (ft/s)",     short: "ft/s", ms: 0.3048 },
+      /* Dry air, sea level, 15 C. It falls with temperature, which is why the
+         page says so in words rather than presenting this as a constant. */
+      { id: "mach", label: "Mach (sea level)",           short: "Mach", ms: 340.29 }
+    ];
+
+    var METRES_PER_MILE = 1609.344;
+
+    function unitById(id) {
+      for (var i = 0; i < UNITS.length; i++) {
+        if (UNITS[i].id === id) { return UNITS[i]; }
+      }
+      return UNITS[0];
+    }
+    /* ---- END: the units, all measured in metres per second ---- */
+
+    /* ---- START: printing ----
+       Two decimals for anything of everyday size, more for the small ones, so
+       a Mach reading of 0.0817 does not collapse to 0.08. */
+    function pretty(value) {
+      if (!isFinite(value)) { return EM_DASH; }
+      var size = Math.abs(value);
+      var text;
+      if (size >= 1) {
+        text = value.toLocaleString(undefined, { maximumFractionDigits: 2 });
+      } else {
+        text = value.toLocaleString(undefined, { maximumSignificantDigits: 3 });
+      }
+      return text.replace(/^-/, MINUS);
+    }
+
+    function withUnit(value, unit) { return pretty(value) + " " + unit.short; }
+    /* ---- END: printing ---- */
+
+    /* ---- START: speed as a pace ----
+       Pace is the inverse of speed, so zero has no pace at all - not a very
+       large one. Dividing anyway would print 'Infinity:NaN', which looks like
+       a broken page rather than a meaningless question. */
+    function secondsOver(metres, metresPerSecond) {
+      if (!(metresPerSecond > 0)) { return null; }
+      var seconds = metres / metresPerSecond;
+      if (!isFinite(seconds) || seconds >= 360000) { return null; }  /* over 100 hours */
+      return seconds;
+    }
+
+    function two(n) { return (n < 10 ? "0" : "") + n; }
+
+    /* A pace is minutes and seconds. A finish time is hours, minutes and
+       seconds, and printing it as 210:59 instead of 3:30:59 is technically the
+       same number and useless to a runner, who thinks in hours over a
+       marathon. One formatter, and it grows an hours field when it needs one. */
+    function clock(seconds) {
+      if (seconds === null) { return null; }
+      var whole = Math.round(seconds);
+      var hours = Math.floor(whole / 3600);
+      var minutes = Math.floor((whole % 3600) / 60);
+      var rest = whole % 60;
+      if (hours > 0) { return hours + ":" + two(minutes) + ":" + two(rest); }
+      return minutes + ":" + two(rest);
+    }
+
+    function paceOver(metres, metresPerSecond) {
+      return clock(secondsOver(metres, metresPerSecond));
+    }
+    /* ---- END: speed as a pace ---- */
+
+    /* ---- START: the row for every unit ---- */
+    function fillTable(metresPerSecond) {
+      var html = "";
+      for (var i = 0; i < UNITS.length; i++) {
+        html += "<tr><td>" + UNITS[i].label + "</td><td>" +
+                pretty(metresPerSecond / UNITS[i].ms) + "</td></tr>";
+      }
+      el("rows").innerHTML = html;
+    }
+    /* ---- END: the row for every unit ---- */
+
+    /* ---- START: the conversion itself ---- */
+    function run() {
+      var raw = parseFloat(el("value").value);
+      var unit = unitById(el("from").value);
+
+      if (isNaN(raw)) {
+        el("errWrap").hidden = false;
+        el("err").textContent = "Type a speed to convert.";
+        el("headline").textContent = EM_DASH;
+        el("asKmh").textContent = EM_DASH;
+        el("asMph").textContent = EM_DASH;
+        el("asMs").textContent = EM_DASH;
+        el("paceKm").textContent = EM_DASH;
+        el("paceMile").textContent = EM_DASH;
+        el("note").textContent = "";
+        el("paceNote").textContent = "";
+        el("rows").innerHTML = "";
+        el("reading").textContent = "";
+        return;
+      }
+
+      el("errWrap").hidden = true;
+
+      /* A negative speed is a direction, not a mistake, so it converts
+         normally. Pace is the one thing that cannot take one. */
+      var metresPerSecond = raw * unit.ms;
+
+      /* The headline answers what most people came for: km/h wants mph, and
+         everything else wants km/h. */
+      var target = unit.id === "kmh" ? unitById("mph") : unitById("kmh");
+      el("headline").textContent = withUnit(metresPerSecond / target.ms, target);
+      el("reading").textContent = pretty(raw) + " " + unit.label;
+
+      el("asKmh").textContent = withUnit(metresPerSecond / unitById("kmh").ms, unitById("kmh"));
+      el("asMph").textContent = withUnit(metresPerSecond / unitById("mph").ms, unitById("mph"));
+      el("asMs").textContent  = withUnit(metresPerSecond, unitById("ms"));
+
+      fillTable(metresPerSecond);
+
+      var perKm = paceOver(1000, metresPerSecond);
+      var perMile = paceOver(METRES_PER_MILE, metresPerSecond);
+      el("paceKm").textContent = perKm || EM_DASH;
+      el("paceMile").textContent = perMile || EM_DASH;
+
+      if (perKm) {
+        el("paceNote").textContent = "Minutes and seconds to cover the distance " +
+          "at this speed. A marathon at this pace takes " +
+          (paceOver(42195, metresPerSecond) || "longer than a day") + ".";
+      } else if (metresPerSecond > 0) {
+        el("paceNote").textContent = "Slower than one kilometre in a hundred hours, " +
+          "which is past the point where a pace means anything.";
+      } else if (metresPerSecond < 0) {
+        el("paceNote").textContent = "A pace needs a forward speed. A negative " +
+          "figure converts fine as a speed, but there is no pace for it.";
+      } else {
+        el("paceNote").textContent = "A speed of zero has no pace. Standing still " +
+          "does not cover a kilometre slowly; it never covers one.";
+      }
+
+      /* One sentence chosen by what was entered, rather than the same
+         sentence every time. Mach is the one that genuinely needs a caveat. */
+      if (unit.id === "mach") {
+        el("note").textContent = "Mach 1 here is 340.29 m/s, the speed of sound " +
+          "in dry air at sea level and 15 " + String.fromCharCode(0x00B0) +
+          "C. Higher up the air is colder and the same Mach number is slower.";
+      } else if (unit.id === "knot") {
+        el("note").textContent = "A knot is one nautical mile an hour, and a " +
+          "nautical mile is exactly 1852 metres, so knots to km/h is exactly " +
+          String.fromCharCode(0x00D7) + " 1.852.";
+      } else if (unit.id === "kmh") {
+        el("note").textContent = "In your head: multiply km/h by 5 and divide by " +
+          "8 for a close mph. That gives " + pretty(raw * 5 / 8) +
+          " against the exact " + pretty(metresPerSecond / unitById("mph").ms) + ".";
+      } else {
+        el("note").textContent = "Metres per second is the physics unit; " +
+          String.fromCharCode(0x00D7) + " 3.6 gets you to km/h, because an hour " +
+          "is 3600 seconds and a kilometre is 1000 metres.";
+      }
+    }
+    /* ---- END: the conversion itself ---- */
+
+    /* ---- START: wiring ---- */
+    el("value").addEventListener("input", run);
+    el("from").addEventListener("change", run);
+    run();   /* run once so the page is correct on load */
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>
