@@ -276,3 +276,39 @@ table.data tbody tr:hover td { background: var(--surface); }
 .faq:hover { border-left-color: var(--primary); }
 .faq h3 { margin-bottom: var(--s2); color: var(--text); }
 .faq p  { color: var(--text-soft); margin: 0; }
+
+
+/* ---- The check-the-result notice, on every tool page --------------------
+   It has to be seen without shouting. A tool page is calm on purpose, so
+   this is a tinted note with one strong edge rather than a full amber slab.
+   Flex keeps the icon beside the text instead of floating inside it, and the
+   body stays in --text so it is readable rather than decorative. */
+.tool-warn {
+  display: flex;
+  gap: var(--s3);
+  align-items: flex-start;
+  margin: var(--s5) 0 var(--s6);
+  padding: var(--s4);
+  background: var(--warn-soft);
+  border: 1px solid var(--warn-border);
+  border-left: 4px solid var(--warn);
+  border-radius: var(--r-sm);
+}
+.tool-warn__icon {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  flex: none;
+  color: var(--warn);
+}
+.tool-warn p {
+  margin: 0;
+  font-size: .875rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+.tool-warn strong { color: var(--warn); }
+.tool-warn a {
+  color: var(--warn);
+  font-weight: 600;
+  text-decoration: underline;
+}

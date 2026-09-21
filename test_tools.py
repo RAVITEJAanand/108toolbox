@@ -207,6 +207,41 @@ HARNESS = r"""
 # ===== END: the in-page harness ============================================
 
 
+# ===== START: what every tool is checked for ===============================
+# Runs before each tool's own body, on all of them. check.py can see that the
+# check-the-result notice is in the markup; only a browser can say whether it
+# is on the screen. A display:none in a stylesheet, a parent that collapsed to
+# zero height, a colour that matched the background - each of those leaves a
+# page that passes check.py and shows the visitor nothing.
+#
+# It does not call finish(); the tool's own body does that.
+COMMON = r"""
+    /* ---- START: the check-the-result notice ---- */
+    (function () {
+      var note = document.querySelector(".tool-warn");
+      ok("the check-the-result notice is on the page", !!note,
+         "no element with class tool-warn");
+      if (!note) { return; }
+      var box = note.getBoundingClientRect();
+      var style = getComputedStyle(note);
+      ok("and it is really on the screen, not just in the markup",
+         box.width > 0 && box.height > 0 && style.visibility !== "hidden" &&
+         style.display !== "none" && Number(style.opacity) > 0,
+         "w=" + Math.round(box.width) + " h=" + Math.round(box.height) +
+         " display=" + style.display + " visibility=" + style.visibility +
+         " opacity=" + style.opacity);
+      has("and it tells the reader to check the result", note.textContent,
+          "Check the result before you rely on it");
+      ok("and it links to the full disclaimer",
+         !!note.querySelector("a[href$='disclaimer.html']"),
+         "the notice has no link to disclaimer.html");
+    })();
+    /* ---- END: the check-the-result notice ---- */
+
+"""
+# ===== END: what every tool is checked for =================================
+
+
 # ===== START: the test bodies ==============================================
 # One entry per tool, keyed by slug. A body drives the page and calls finish()
 # when it is done; the generator appends finish() to any body that does not.
@@ -1602,7 +1637,7 @@ T["days-until-countdown"] = r"""
 def build(slug):
     """Write tools/_test-<slug>.html: the real page plus the harness."""
     page = (SITE / "tools" / ("%s.html" % slug)).read_text(encoding="utf-8")
-    harness = HARNESS.replace("__TESTS__", T[slug]).replace("__SLUG__", slug)
+    harness = HARNESS.replace("__TESTS__", COMMON + T[slug]).replace("__SLUG__", slug)
     target = SITE / "tools" / ("_test-%s.html" % slug)
     target.write_text(page.replace("</body>", harness + "\n</body>"),
                       encoding="utf-8")

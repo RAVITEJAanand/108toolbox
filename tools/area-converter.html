@@ -15,8 +15,8 @@
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
 
-  <link rel="stylesheet" href="../css/style.css?v=7">
-  <link rel="stylesheet" href="../css/tool.css?v=7">
+  <link rel="stylesheet" href="../css/style.css?v=8">
+  <link rel="stylesheet" href="../css/tool.css?v=8">
 
   <script>
     (function () {
@@ -173,6 +173,21 @@
         </div>
       </div>
       <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
 
       <!-- ===== Text below the tool. This is what Google ranks. ===== -->
       <section class="tool-info prose">
@@ -301,10 +316,10 @@
     </div>
   </footer>
 
-  <script src="../js/tools-data.js?v=7"></script>
-  <script src="../js/tool-helpers.js?v=7"></script>
+  <script src="../js/tools-data.js?v=8"></script>
+  <script src="../js/tool-helpers.js?v=8"></script>
   <script>window.CURRENT_TOOL = "area-converter";</script>
-  <script src="../js/main.js?v=7"></script>
+  <script src="../js/main.js?v=8"></script>
 
   <script data-tool>
   (function () {

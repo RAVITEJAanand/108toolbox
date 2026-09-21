@@ -57,6 +57,10 @@
   --cat-calc:       #c2410c;   --cat-calc-soft:  #fff1e9;
   --cat-dev:        #047857;   --cat-dev-soft:   #e8f7f1;
 
+  /* Warning. Used by the check-the-result notice on every tool page. */
+  --warn:           #92400e;   --warn-soft:      #fffbeb;
+  --warn-border:    #fcd34d;
+
   /* Type */
   --font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           "Helvetica Neue", Arial, sans-serif;
@@ -130,6 +134,9 @@
     --cat-calc:      #fbbf24;   --cat-calc-soft:  #2e2313;
     --cat-dev:       #34d399;   --cat-dev-soft:   #10291f;
 
+    --warn:          #fbbf24;   --warn-soft:      #241d0d;
+    --warn-border:   #4a3a12;
+
     --sh1: 0 1px 2px rgba(0,0,0,.4);
     --sh2: 0 8px 24px -6px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);
     --sh3: 0 20px 48px -12px rgba(139,133,255,.3);
@@ -164,6 +171,9 @@
   --cat-image:     #fb7185;   --cat-image-soft: #331821;
   --cat-calc:      #fbbf24;   --cat-calc-soft:  #2e2313;
   --cat-dev:       #34d399;   --cat-dev-soft:   #10291f;
+
+  --warn:          #fbbf24;   --warn-soft:      #241d0d;
+  --warn-border:   #4a3a12;
 
   --sh1: 0 1px 2px rgba(0,0,0,.4);
   --sh2: 0 8px 24px -6px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);

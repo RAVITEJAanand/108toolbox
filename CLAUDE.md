@@ -50,8 +50,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed — this
-already happened once, with the redesign. Find-and-replace `?v=6` → `?v=7`
-across all 50 pages (currently `?v=7`, 232 occurrences). `check.py`
+already happened once, with the redesign. Find-and-replace `?v=7` → `?v=8`
+across all 50 pages (currently `?v=8`, 232 occurrences). `check.py`
 understands the stamp.
 
 ### 4. Two scripts, and you run BOTH, every time
@@ -129,6 +129,39 @@ Name the **job**, not the function — "recovering the base from a
 GST-inclusive total" is findable six months later; "removeGst helper" is not.
 Wrap a whole feature the same way when several functions serve one job, and
 nest the inner ones. `test_tools.py` shows the pattern at both levels.
+
+### 10. Every tool page carries the check-the-result notice
+
+The owner's instruction, and a correct one: **a tool can be wrong, and the
+visitor has to be told so where they read the answer.** Not buried in the FAQ,
+not only on `disclaimer.html` — directly under the tool.
+
+```html
+<!--TOOL:END-->
+<aside class="tool-warn">…Check the result before you rely on it…</aside>
+```
+
+It is in `tools/_template.html`, so a new tool inherits it by copying. Do not
+reword it per tool — one sentence everywhere is what makes it read as a
+standing policy rather than an admission about that one page. A tool with a
+risk of its own adds a second, specific line inside its own output, the way
+`sip-calculator.html` says returns are not guaranteed.
+
+Both scripts enforce it, and they catch different failures:
+
+- `check.py` fails if the markup, the wording or the `disclaimer.html` link
+  is missing from any tool page.
+- `test_tools.py` fails if the notice is in the markup but **not on the
+  screen** — zero height, `display:none`, hidden, transparent. `check.py`
+  cannot see that, because it never executes CSS. This was proved by hiding
+  the notice on `word-counter.html`: `check.py` passed it, the browser run
+  caught it.
+
+`check.py` also compares the two dark-theme blocks token for token. They are
+deliberate duplicates — the OS preference and the site's own toggle — so a
+token added to one and forgotten in the other is always a bug, and it only
+shows for half the visitors. `--warn` shipped exactly that way for ten
+minutes: cream-on-cream, unreadable, for anyone using the toggle.
 
 ---
 

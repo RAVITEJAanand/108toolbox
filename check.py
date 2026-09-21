@@ -144,6 +144,48 @@ for path in tool_pages() + sorted(ROOT.glob("*.html")):
             except Exception as e:
                 fail("%s has invalid JSON-LD: %s" % (name, e))
 
+# ---- 4b. Every tool page carries the check-the-result notice ---------------
+# The owner asked for this on every single tool, and "every single" is exactly
+# the kind of promise that decays one forgotten page at a time. A tool that
+# quietly loses its notice looks fine, so only a check like this will ever
+# catch it. The link matters as much as the words: without it the notice is a
+# dead end, and disclaimer.html is where the full position is set out.
+missing_notice = []
+for path in tool_pages():
+    text = path.read_text(encoding="utf-8")
+    if ('class="tool-warn"' not in text
+            or "Check the result before you rely on it" not in text
+            or "disclaimer.html" not in text):
+        missing_notice.append(path.name)
+for name in missing_notice:
+    fail("%s is missing the check-the-result notice — see rule 10 in CLAUDE.md" % name)
+if not missing_notice:
+    ok("every tool page carries the check-the-result notice")
+
+# ---- 4c. The two dark blocks define the same tokens ------------------------
+# Dark arrives two ways: the OS preference (@media prefers-color-scheme) and
+# the site's own toggle (:root[data-theme="dark"]). They are deliberate
+# duplicates, so a token added to one and missed in the other is always a bug,
+# and a silent one: half the visitors see the right colour and half see the
+# light value bleeding through. That is exactly how --warn shipped broken the
+# first time - the notice came out cream-on-cream for anyone using the toggle.
+css = (ROOT / "css" / "style.css").read_text(encoding="utf-8")
+by_media = re.search(r"@media \(prefers-color-scheme: dark\) \{(.*?)\n\}", css, re.S)
+by_toggle = re.search(r':root\[data-theme="dark"\] \{(.*?)\n\}', css, re.S)
+if not by_media or not by_toggle:
+    fail("style.css: cannot find both dark theme blocks")
+else:
+    media_tokens = set(re.findall(r"(--[a-z0-9-]+):", by_media.group(1)))
+    toggle_tokens = set(re.findall(r"(--[a-z0-9-]+):", by_toggle.group(1)))
+    for token in sorted(media_tokens - toggle_tokens):
+        fail("style.css: %s is set for the OS dark preference but not for the "
+             "theme toggle" % token)
+    for token in sorted(toggle_tokens - media_tokens):
+        fail("style.css: %s is set for the theme toggle but not for the OS "
+             "dark preference" % token)
+    if media_tokens == toggle_tokens:
+        ok("both dark blocks define the same %d tokens" % len(media_tokens))
+
 # ---- 5. No dead internal links --------------------------------------------
 for path in list(ROOT.glob("*.html")) + tool_pages():
     text = path.read_text(encoding="utf-8")
