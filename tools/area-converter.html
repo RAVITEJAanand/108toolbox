@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Area Converter — Sq Ft, Acre, Guntha, Bigha, Cent</title>
+  <meta name="description" content="Convert between square feet, square yards, acres, hectares and Indian land units like guntha, cent, marla and bigha. Every unit at once. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/area-converter.html">
+
+  <meta property="og:title" content="Area Converter — Sq Ft, Acre, Guntha, Bigha, Cent">
+  <meta property="og:description" content="Convert between square feet, square yards, acres, hectares and Indian land units like guntha, cent, marla and bigha. Every unit at once. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=6">
+  <link rel="stylesheet" href="../css/tool.css?v=6">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How many square feet is one guntha?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "One guntha is 1,089 square feet, which is 121 square yards or about 101.17 square metres. Forty guntha make one acre, which is the check worth remembering when a figure looks wrong."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does bigha appear more than once in the list?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because a bigha is not one fixed size. It differs from state to state and sometimes from district to district, so a single bigha figure would be wrong for most people who used it. Each bigha in the list carries its size in square yards, so pick the one your local records actually use and confirm it against a sale deed before relying on it."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many cents are in an acre?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Exactly one hundred. A cent is defined as one hundredth of an acre, which is 435.6 square feet or about 40.47 square metres. It is used mostly in Tamil Nadu, Kerala and parts of Karnataka and Andhra Pradesh."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
+        <span>Area Converter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Area Converter</h1>
+        <p>Square feet, square yards, acres and hectares, plus the Indian land
+           units &mdash; guntha, cent, marla, kanal, ground and bigha. Enter a
+           figure once and read it in every unit. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- the conversion ---------- -->
+        <div class="panel">
+          <span class="panel__label">Convert</span>
+
+          <div class="field">
+            <label for="amount">Area</label>
+            <input type="number" id="amount" value="1" min="0" step="any">
+          </div>
+
+          <div class="field">
+            <label for="from">From</label>
+            <select id="from"></select>
+          </div>
+
+          <div class="field">
+            <label for="to">To</label>
+            <select id="to"></select>
+          </div>
+
+          <div class="result">
+            <span class="result__num" id="out">43,560</span>
+            <span class="result__label" id="formula"></span>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><span class="stat__num" id="sqm">4,046.86</span><span class="stat__label">Square metres</span></div>
+            <div class="stat"><span class="stat__num" id="sqft">43,560</span><span class="stat__label">Square feet</span></div>
+          </div>
+
+          <p class="hint" id="warn"></p>
+        </div>
+
+        <!-- ---------- the same area in every unit ---------- -->
+        <div class="panel">
+          <span class="panel__label">The same area in every unit</span>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr><th>Unit</th><th>Value</th></tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Type the area you have.</li>
+          <li>Pick the unit it is in, then the unit you want.</li>
+          <li>The table on the right shows the same area in every unit at
+              once, which is usually faster than converting twice.</li>
+        </ol>
+
+        <h2>The Indian land units, and where they come from</h2>
+        <p>Most of them are defined against the acre or the square yard, which
+        is why the numbers look arbitrary until you see the relationship:</p>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Unit</th><th>Defined as</th><th>Square feet</th></tr></thead>
+            <tbody>
+              <tr><td>Guntha</td><td>1/40 acre</td><td>1,089</td></tr>
+              <tr><td>Cent</td><td>1/100 acre</td><td>435.6</td></tr>
+              <tr><td>Ground</td><td>2,400 sq ft</td><td>2,400</td></tr>
+              <tr><td>Marla</td><td>30.25 sq yd</td><td>272.25</td></tr>
+              <tr><td>Kanal</td><td>20 marla, 1/8 acre</td><td>5,445</td></tr>
+              <tr><td>Gaj</td><td>1 square yard</td><td>9</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Guntha is common in Maharashtra, Karnataka and Andhra Pradesh. Cent
+        turns up in Tamil Nadu, Kerala and parts of Karnataka. Marla and kanal
+        are Punjab and Haryana. Ground is largely Chennai. Gaj is simply the
+        square yard, used across the north.</p>
+
+        <h2>Bigha is the one to be careful with</h2>
+        <p>A bigha is not a fixed size. It varies by state, and in some places
+        by district, from roughly 1,600 square yards to well over 2,700. There
+        is no single correct number, which is why this page lists bigha more
+        than once with the size written into each option instead of quietly
+        picking one for you.</p>
+        <p>Before any of this touches money, check the figure against a sale
+        deed, a 7/12 extract or your local registrar. A converter can only do
+        arithmetic; it cannot know which definition your district records use.
+        The same caution applies to katha, which follows bigha and varies with
+        it.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How many square feet is one guntha?</h3>
+          <p>One guntha is 1,089 square feet, which is 121 square yards or
+          about 101.17 square metres. Forty guntha make one acre, which is the
+          check worth remembering when a figure looks wrong.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does bigha appear more than once in the list?</h3>
+          <p>Because a bigha is not one fixed size. It differs from state to
+          state and sometimes from district to district, so a single bigha
+          figure would be wrong for most people who used it. Each bigha in the
+          list carries its size in square yards, so pick the one your local
+          records actually use and confirm it against a sale deed before
+          relying on it.</p>
+        </div>
+        <div class="faq">
+          <h3>How many cents are in an acre?</h3>
+          <p>Exactly one hundred. A cent is defined as one hundredth of an
+          acre, which is 435.6 square feet or about 40.47 square metres. It is
+          used mostly in Tamil Nadu, Kerala and parts of Karnataka and Andhra
+          Pradesh.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=6"></script>
+  <script src="../js/tool-helpers.js?v=6"></script>
+  <script>window.CURRENT_TOOL = "area-converter";</script>
+  <script src="../js/main.js?v=6"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    /* ---- START: the unit table ----
+       Everything is defined in square metres, so any conversion is one
+       multiply and one divide. The exact figures come from the international
+       foot and yard, which is why they run to so many decimals - rounding
+       them early is how an acre stops being exactly 40 guntha. */
+    var SQFT = 0.09290304;          /* one square foot, in square metres */
+    var SQYD = SQFT * 9;            /* one square yard, the gaj */
+    var ACRE = SQYD * 4840;
+
+    var UNITS = [
+      { id: "sqm",     label: "Square metre",            m2: 1 },
+      { id: "sqft",    label: "Square foot",             m2: SQFT },
+      { id: "sqyd",    label: "Square yard (gaj)",       m2: SQYD },
+      { id: "sqkm",    label: "Square kilometre",        m2: 1000000 },
+      { id: "sqmi",    label: "Square mile",             m2: 2589988.110336 },
+      { id: "acre",    label: "Acre",                    m2: ACRE },
+      { id: "hectare", label: "Hectare",                 m2: 10000 },
+      { id: "are",     label: "Are",                     m2: 100 },
+      { id: "guntha",  label: "Guntha (1/40 acre)",      m2: ACRE / 40 },
+      { id: "cent",    label: "Cent (1/100 acre)",       m2: ACRE / 100 },
+      { id: "ground",  label: "Ground (2,400 sq ft)",    m2: SQFT * 2400 },
+      { id: "marla",   label: "Marla (30.25 sq yd)",     m2: SQYD * 30.25 },
+      { id: "kanal",   label: "Kanal (20 marla)",        m2: SQYD * 605 },
+      /* Bigha is deliberately listed three times. It has no single national
+         value, so choosing one for the user would be a quiet lie; each option
+         states its own size instead. */
+      { id: "bigha16", label: "Bigha (1,600 sq yd)",     m2: SQYD * 1600, varies: true },
+      { id: "bigha24", label: "Bigha (2,400 sq yd)",     m2: SQYD * 2400, varies: true },
+      { id: "bigha27", label: "Bigha (2,700 sq yd)",     m2: SQYD * 2700, varies: true }
+    ];
+    /* ---- END: the unit table ---- */
+
+    function el(id) { return document.getElementById(id); }
+
+    function unit(id) {
+      for (var i = 0; i < UNITS.length; i++) {
+        if (UNITS[i].id === id) return UNITS[i];
+      }
+      return UNITS[0];
+    }
+
+    /* ---- START: formatting a converted number ----
+       Areas span from a square foot to a square mile, so a fixed number of
+       decimals is wrong at one end or the other. Show enough digits to be
+       useful and no more. */
+    function show(value) {
+      if (!isFinite(value)) return String.fromCharCode(0x2014);
+      if (value === 0) return "0";
+      var abs = Math.abs(value);
+      var places = abs >= 1000 ? 2 : abs >= 1 ? 4 : 6;
+      return value.toLocaleString(undefined, { maximumFractionDigits: places });
+    }
+    /* ---- END: formatting a converted number ---- */
+
+    /* ---- START: filling the two dropdowns ---- */
+    function fillSelects() {
+      UNITS.forEach(function (u) {
+        ["from", "to"].forEach(function (which) {
+          var option = document.createElement("option");
+          option.value = u.id;
+          option.textContent = u.label;
+          el(which).appendChild(option);
+        });
+      });
+      el("from").value = "acre";
+      el("to").value = "sqft";
+    }
+    /* ---- END: filling the two dropdowns ---- */
+
+    /* ---- START: the same area in every unit ---- */
+    function buildTable(squareMetres) {
+      var body = el("rows");
+      body.textContent = "";
+      var fragment = document.createDocumentFragment();
+
+      UNITS.forEach(function (u) {
+        var row = document.createElement("tr");
+        [u.label, show(squareMetres / u.m2)].forEach(function (text) {
+          var cell = document.createElement("td");
+          cell.textContent = text;
+          row.appendChild(cell);
+        });
+        fragment.appendChild(row);
+      });
+      body.appendChild(fragment);
+    }
+    /* ---- END: the same area in every unit ---- */
+
+    /* ---- START: the conversion itself ---- */
+    function run() {
+      var raw = parseFloat(el("amount").value);
+      var amount = isNaN(raw) ? 0 : raw;
+      var from = unit(el("from").value);
+      var to = unit(el("to").value);
+
+      /* Go through square metres every time. Converting directly between two
+         units would need a table of every pair, and one wrong cell in it
+         would be almost impossible to spot. */
+      var squareMetres = amount * from.m2;
+      var result = squareMetres / to.m2;
+
+      el("out").textContent = show(result);
+      el("formula").textContent =
+        show(amount) + " " + from.label + " = " + show(result) + " " + to.label;
+      el("sqm").textContent = show(squareMetres);
+      el("sqft").textContent = show(squareMetres / SQFT);
+
+      el("warn").textContent = (from.varies || to.varies)
+        ? "Bigha has no single national value - confirm the one your district records use before this touches money."
+        : "";
+
+      buildTable(squareMetres);
+    }
+    /* ---- END: the conversion itself ---- */
+
+    /* ---- START: wiring ---- */
+    fillSelects();
+    el("amount").addEventListener("input", run);
+    el("from").addEventListener("change", run);
+    el("to").addEventListener("change", run);
+    run();   /* run once so the page is correct on load */
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

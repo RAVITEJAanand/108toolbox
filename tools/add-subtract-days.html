@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Add or Subtract Days, Weeks or Months from a Date</title>
+  <meta name="description" content="Add or subtract days, weeks, months or years from any date and see the answer with its day of the week, or count in working days only. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/add-subtract-days.html">
+
+  <meta property="og:title" content="Add or Subtract Days, Weeks or Months from a Date">
+  <meta property="og:description" content="Add or subtract days, weeks, months or years from any date and see the answer with its day of the week, or count in working days only. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <link rel="stylesheet" href="../css/style.css?v=6">
+  <link rel="stylesheet" href="../css/tool.css?v=6">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What happens when adding a month lands on a date that does not exist?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It is pulled back to the last day of that month. One month after 31 January is 28 February, or 29 February in a leap year, because 31 February does not exist. This is what contracts and banks do, and it is worth knowing that adding one month twice is not always the same as adding two months."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the working days option count?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It steps forward or back one day at a time and only counts Monday to Friday, so ten working days from a Friday lands two weeks later on the Friday. Public holidays are not excluded, because they differ by state and by year, so add your own on top."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it go backwards from a date?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Switch the dropdown from add to subtract and it counts backwards using exactly the same rules, including the month-end clamping and the working-day stepping."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=date">Date &amp; Time</a><span>&rsaquo;</span>
+        <span>Add or Subtract Days</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Add or Subtract Days</h1>
+        <p>Move a date forwards or backwards by days, weeks, months, years or
+           working days, and see which day of the week you land on. Nothing is
+           uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--wide">
+
+        <!-- ---------- the sum ---------- -->
+        <div class="panel">
+          <span class="panel__label">Move a date</span>
+
+          <div class="field">
+            <label for="start">Starting date</label>
+            <input type="date" id="start">
+          </div>
+
+          <div class="field">
+            <label for="direction">Direction</label>
+            <select id="direction">
+              <option value="add" selected>Add &mdash; go forwards</option>
+              <option value="sub">Subtract &mdash; go backwards</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="amount">How much</label>
+            <div class="btn-row" style="align-items:center;gap:var(--s2)">
+              <input type="number" id="amount" value="30" min="0" step="1" style="max-width:130px">
+              <select id="unit" style="max-width:200px">
+                <option value="days" selected>days</option>
+                <option value="weeks">weeks</option>
+                <option value="months">months</option>
+                <option value="years">years</option>
+                <option value="business">working days (Mon&ndash;Fri)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Plain wrapper: .msg carries its own display, which would beat
+               the browser rule for the hidden attribute. -->
+          <div id="errWrap" hidden style="margin-top:var(--s3)">
+            <p class="msg msg--bad" id="err"></p>
+          </div>
+
+          <div class="result" style="margin-top:var(--s4)">
+            <span class="result__num" id="result">Sunday</span>
+            <span class="result__label" id="formula"></span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="weekday">Sunday</span><span class="stat__label">Day of the week</span></div>
+            <div class="stat"><span class="stat__num" id="isoOut">2026-10-21</span><span class="stat__label">ISO format</span></div>
+            <div class="stat"><span class="stat__num" id="fromToday">30</span><span class="stat__label">Days from today</span></div>
+          </div>
+
+          <p class="hint" id="note"></p>
+        </div>
+
+        <!-- ---------- the usual milestones ---------- -->
+        <div class="panel">
+          <span class="panel__label">From the starting date</span>
+          <div class="table-wrap">
+            <table class="data">
+              <thead><tr><th>After</th><th>Date</th><th>Day</th></tr></thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+          <p class="hint">The gaps a notice period, a warranty or a court date
+          usually uses, worked out from the same starting date.</p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+
+      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Pick the starting date.</li>
+          <li>Choose whether to go forwards or backwards.</li>
+          <li>Enter the amount and the unit. Working days is the one to use
+              for a notice period quoted in business days.</li>
+        </ol>
+
+        <h2>Adding months is not adding thirty days</h2>
+        <p>One month after 15 March is 15 April, whether that month has 30 days
+        or 31. The calendar decides, not arithmetic. This matters most at the
+        end of a month: <strong>one month after 31 January is 28 February</strong>,
+        because 31 February does not exist, so the date is pulled back to the
+        last day that does.</p>
+        <p>A consequence worth knowing: adding one month twice is not always
+        the same as adding two months. From 31 January, one month is 28
+        February and another month is 28 March, while two months straight from
+        31 January is 31 March. Neither is a bug. It is why contracts spell out
+        which they mean.</p>
+
+        <h2>Working days</h2>
+        <p>The working days option steps one day at a time and counts only
+        Monday to Friday. Ten working days from a Friday lands on the Friday a
+        fortnight later. If the starting date is itself a weekend, counting
+        begins at the next working day.</p>
+        <p>As everywhere else on this site, <strong>public holidays are not
+        deducted</strong>. They differ by state, by year and by employer, and a
+        figure that silently guessed them would be worse than one that tells
+        you to add your own.</p>
+
+        <h2>Why the date jumps a day on some sites</h2>
+        <p>Many date tools do their arithmetic in your local time zone, and a
+        date that crosses a daylight-saving change can come out a day short.
+        This page works in UTC throughout, so the answer is the same in every
+        country and on every day of the year.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>What happens when adding a month lands on a date that does not exist?</h3>
+          <p>It is pulled back to the last day of that month. One month after
+          31 January is 28 February, or 29 February in a leap year, because 31
+          February does not exist. This is what contracts and banks do, and it
+          is worth knowing that adding one month twice is not always the same
+          as adding two months.</p>
+        </div>
+        <div class="faq">
+          <h3>How does the working days option count?</h3>
+          <p>It steps forward or back one day at a time and only counts Monday
+          to Friday, so ten working days from a Friday lands two weeks later on
+          the Friday. Public holidays are not excluded, because they differ by
+          state and by year, so add your own on top.</p>
+        </div>
+        <div class="faq">
+          <h3>Can it go backwards from a date?</h3>
+          <p>Yes. Switch the dropdown from add to subtract and it counts
+          backwards using exactly the same rules, including the month-end
+          clamping and the working-day stepping.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The arithmetic happens in JavaScript inside your own browser.
+          Nothing is uploaded and nothing is saved - close the tab and it is
+          gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/tools-data.js?v=6"></script>
+  <script src="../js/tool-helpers.js?v=6"></script>
+  <script>window.CURRENT_TOOL = "add-subtract-days";</script>
+  <script src="../js/main.js?v=6"></script>
+
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var DAY = 86400000;
+    var EM_DASH = String.fromCharCode(0x2014);
+    var DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                     "Friday", "Saturday"];
+    var MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
+                       "July", "August", "September", "October", "November",
+                       "December"];
+
+    /* Stepping a working day at a time is cheap, but somebody typing 99999999
+       should not freeze the tab. */
+    var MAX_BUSINESS_STEPS = 200000;
+
+    function el(id) { return document.getElementById(id); }
+
+    /* ---- START: parsing and printing a date ----
+       UTC throughout. A local-time Date crosses a daylight-saving boundary in
+       some countries and the answer comes out a day short - a bug that shows
+       up twice a year and only for some visitors. */
+    function parse(value) {
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
+      if (!m) return null;
+      var y = parseInt(m[1], 10);
+      var mo = parseInt(m[2], 10);
+      var d = parseInt(m[3], 10);
+      var date = new Date(Date.UTC(y, mo - 1, d));
+      if (date.getUTCMonth() !== mo - 1 || date.getUTCDate() !== d) return null;
+      return date;
+    }
+
+    function iso(date) { return date.toISOString().slice(0, 10); }
+
+    function longDate(date) {
+      return date.getUTCDate() + " " + MONTH_NAMES[date.getUTCMonth()] +
+             " " + date.getUTCFullYear();
+    }
+
+    function dayName(date) { return DAY_NAMES[date.getUTCDay()]; }
+    /* ---- END: parsing and printing a date ---- */
+
+    /* ---- START: adding months and years, with month-end clamping ----
+       Date.UTC rolls 31 February forward into March on its own. That is
+       almost never what a contract means, so the day is clamped to the last
+       one the target month actually has. */
+    function addMonths(date, count) {
+      var year = date.getUTCFullYear();
+      var month = date.getUTCMonth() + count;
+      var day = date.getUTCDate();
+
+      var lastDayOfTarget = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+      if (day > lastDayOfTarget) day = lastDayOfTarget;
+
+      return new Date(Date.UTC(year, month, day));
+    }
+    /* ---- END: adding months and years ---- */
+
+    /* ---- START: stepping over working days ----
+       Counted one day at a time rather than by arithmetic, because the
+       starting day may be a weekend and the rule is then "start from the next
+       working day", which a formula hides and a loop makes obvious. */
+    function addBusinessDays(date, count, forwards) {
+      var cursor = new Date(date.getTime());
+      var moved = 0;
+      var steps = 0;
+
+      while (moved < count && steps < MAX_BUSINESS_STEPS) {
+        cursor = new Date(cursor.getTime() + (forwards ? DAY : -DAY));
+        steps = steps + 1;
+        var weekday = cursor.getUTCDay();
+        if (weekday !== 0 && weekday !== 6) moved = moved + 1;
+      }
+      return cursor;
+    }
+    /* ---- END: stepping over working days ---- */
+
+    /* ---- START: one move, whatever the unit ---- */
+    function move(start, amount, unit, forwards) {
+      var signed = forwards ? amount : -amount;
+
+      if (unit === "days")   return new Date(start.getTime() + signed * DAY);
+      if (unit === "weeks")  return new Date(start.getTime() + signed * 7 * DAY);
+      if (unit === "months") return addMonths(start, signed);
+      if (unit === "years")  return addMonths(start, signed * 12);
+      return addBusinessDays(start, amount, forwards);
+    }
+    /* ---- END: one move, whatever the unit ---- */
+
+    /* ---- START: the milestone table ---- */
+    var MILESTONES = [
+      ["7 days", 7, "days"],
+      ["15 days", 15, "days"],
+      ["30 days", 30, "days"],
+      ["1 month", 1, "months"],
+      ["3 months", 3, "months"],
+      ["6 months", 6, "months"],
+      ["1 year", 1, "years"],
+      ["10 working days", 10, "business"]
+    ];
+
+    function buildTable(start) {
+      var body = el("rows");
+      body.textContent = "";
+      var fragment = document.createDocumentFragment();
+
+      MILESTONES.forEach(function (m) {
+        var landing = move(start, m[1], m[2], true);
+        var row = document.createElement("tr");
+        [m[0], longDate(landing), dayName(landing)].forEach(function (text) {
+          var cell = document.createElement("td");
+          cell.textContent = text;
+          row.appendChild(cell);
+        });
+        fragment.appendChild(row);
+      });
+      body.appendChild(fragment);
+    }
+    /* ---- END: the milestone table ---- */
+
+    /* ---- START: the whole calculation ---- */
+    function run() {
+      var start = parse(el("start").value);
+      var raw = parseInt(el("amount").value, 10);
+      var amount = isNaN(raw) ? 0 : Math.max(0, raw);
+      var unit = el("unit").value;
+      var forwards = el("direction").value === "add";
+
+      function fail(message) {
+        el("errWrap").hidden = false;
+        el("err").textContent = message;
+        el("result").textContent = EM_DASH;
+        el("formula").textContent = "";
+        el("weekday").textContent = EM_DASH;
+        el("isoOut").textContent = EM_DASH;
+        el("fromToday").textContent = EM_DASH;
+        el("rows").textContent = "";
+        el("note").textContent = "";
+      }
+
+      if (!start) { fail("Pick a real starting date."); return; }
+      el("errWrap").hidden = true;
+
+      var landing = move(start, amount, unit, forwards);
+
+      el("result").textContent = longDate(landing);
+      el("weekday").textContent = dayName(landing);
+      el("isoOut").textContent = iso(landing);
+
+      var today = new Date();
+      var todayUTC = new Date(Date.UTC(today.getFullYear(), today.getMonth(),
+                                       today.getDate()));
+      var fromToday = Math.round((landing - todayUTC) / DAY);
+      el("fromToday").textContent = formatNumber(fromToday, 0);
+
+      var unitWord = unit === "business" ? "working days" : unit;
+      el("formula").textContent =
+        longDate(start) + " " + (forwards ? "plus " : "minus ") +
+        formatNumber(amount, 0) + " " + unitWord + " = " + longDate(landing) +
+        ", a " + dayName(landing);
+
+      /* Say out loud when the calendar has clamped the day, because a silent
+         31 becoming a 28 is exactly the surprise people write in about. */
+      var clamped = (unit === "months" || unit === "years") &&
+                    landing.getUTCDate() !== start.getUTCDate();
+      el("note").textContent = clamped
+        ? "The starting day is later than the last day of the target month, so it has been pulled back to " +
+          landing.getUTCDate() + " " + MONTH_NAMES[landing.getUTCMonth()] + "."
+        : (unit === "business"
+            ? "Working days are Monday to Friday. Public holidays are not deducted."
+            : "");
+
+      buildTable(start);
+    }
+    /* ---- END: the whole calculation ---- */
+
+    /* ---- START: wiring ---- */
+    var now = new Date();
+    el("start").value = iso(new Date(Date.UTC(now.getFullYear(), now.getMonth(),
+                                              now.getDate())));
+
+    ["start", "amount"].forEach(function (id) {
+      el(id).addEventListener("input", run);
+    });
+    ["direction", "unit"].forEach(function (id) {
+      el(id).addEventListener("change", run);
+    });
+
+    run();   /* run once so the page is correct on load */
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

@@ -70,7 +70,12 @@ HARNESS = r"""
         String(haystack).slice(0, 80), "contains " + needle);
   }
   function n(text) {
-    return parseFloat(String(text).replace(/[^0-9.-]/g, ""));
+    /* U+2212 MINUS SIGN is not ASCII "-". Tools print it because it is the
+       correct typographic minus, and a test that simply stripped it would
+       read a temperature of -40 as 40 and then pass on the wrong number. */
+    return parseFloat(String(text)
+      .replace(new RegExp(String.fromCharCode(0x2212), "g"), "-")
+      .replace(/[^0-9.-]/g, ""));
   }
   function near(label, actual, expected, tol) {
     var a = n(actual);
@@ -1187,6 +1192,210 @@ T["word-counter"] = r"""
     set("input", "");
     check("empty resets", txt("cWords"), "0");
     ok("reading time exists", txt("cRead").length > 0);
+    finish();
+"""
+
+T["area-converter"] = r"""
+    near("1 acre in square feet", txt("out"), 43560);
+    near("1 acre in square metres", txt("sqm"), 4046.86, 0.01);
+    eq("sixteen units in the table", rows().length, 16);
+    eq("no bigha warning for ordinary units", txt("warn"), "");
+
+    set("to", "guntha");
+    near("40 guntha make an acre", txt("out"), 40, 0.01);
+
+    set("to", "cent");
+    near("100 cents make an acre", txt("out"), 100, 0.01);
+
+    set("from", "guntha"); set("to", "sqft");
+    near("one guntha is 1089 sq ft", txt("out"), 1089, 0.5);
+
+    set("from", "hectare"); set("to", "sqm");
+    near("one hectare is 10000 sq m", txt("out"), 10000);
+
+    set("from", "sqyd"); set("to", "sqft");
+    near("one square yard is 9 sq ft", txt("out"), 9);
+
+    set("from", "acre"); set("to", "kanal");
+    near("8 kanal make an acre", txt("out"), 8, 0.01);
+
+    set("from", "kanal"); set("to", "marla");
+    near("20 marla make a kanal", txt("out"), 20, 0.01);
+
+    set("from", "bigha16"); set("to", "sqyd");
+    near("the 1600 sq yd bigha", txt("out"), 1600, 0.5);
+    has("bigha carries a warning", txt("warn"), "no single national value");
+
+    set("from", "acre");
+    eq("warning clears for a fixed unit", txt("warn"), "");
+
+    set("amount", "");
+    near("an empty box does not crash it", txt("out"), 0);
+    finish();
+"""
+
+T["number-to-words"] = r"""
+    eq("indian words", txt("words"),
+       "twelve lakh thirty-four thousand five hundred sixty-seven point five zero");
+    eq("indian grouping", txt("grouped"), "12,34,567.50");
+    eq("digit count", txt("digits"), "7");
+    has("cheque line names the rupees", txt("cheque"),
+        "Rupees Twelve Lakh Thirty-Four Thousand Five Hundred Sixty-Seven");
+    has("cheque line names the paise", txt("cheque"), "and Fifty Paise Only");
+    gone("no error for a valid number", "errWrap");
+
+    set("system", "intl");
+    eq("international words", txt("words"),
+       "one million two hundred thirty-four thousand five hundred sixty-seven point five zero");
+    eq("international grouping", txt("grouped"), "1,234,567.50");
+
+    set("system", "indian"); set("amount", "100000");
+    eq("one lakh", txt("words"), "one lakh");
+    eq("one lakh, grouped the Indian way", txt("grouped"), "1,00,000");
+
+    set("amount", "10000000");
+    eq("one crore", txt("words"), "one crore");
+
+    set("amount", "123456789");
+    eq("twelve crore and change", txt("words"),
+       "twelve crore thirty-four lakh fifty-six thousand seven hundred eighty-nine");
+
+    set("system", "intl");
+    eq("the same number internationally", txt("words"),
+       "one hundred twenty-three million four hundred fifty-six thousand seven hundred eighty-nine");
+
+    set("system", "indian"); set("amount", "0");
+    eq("zero", txt("words"), "zero");
+    eq("zero on a cheque", txt("cheque"), "Rupees Zero Only");
+
+    set("amount", "-5");
+    eq("a negative number", txt("words"), "minus five");
+
+    set("amount", "1234567");
+    eq("no paise means no point", txt("words"),
+       "twelve lakh thirty-four thousand five hundred sixty-seven");
+    eq("cheque line without paise", txt("cheque"),
+       "Rupees Twelve Lakh Thirty-Four Thousand Five Hundred Sixty-Seven Only");
+
+    set("amount", "10000000000000000");
+    shown("past fifteen digits is refused", "errWrap");
+    has("and says why", txt("err"), "fifteen digits");
+
+    set("amount", "");
+    shown("an empty box is refused", "errWrap");
+    finish();
+"""
+
+T["temperature-converter"] = r"""
+    near("37 C is 98.6 F", txt("headline"), 98.6);
+    near("celsius tile", txt("oc"), 37);
+    near("fahrenheit tile", txt("of"), 98.6);
+    near("kelvin tile", txt("ok"), 310.15);
+    has("the working is shown", txt("formula"), "9 / 5 + 32");
+
+    set("from", "f"); set("value", "98.6");
+    near("98.6 F is body temperature", txt("headline"), 37, 0.05);
+
+    set("value", "212");
+    near("212 F is boiling", txt("oc"), 100);
+
+    set("from", "c"); set("value", "-40");
+    near("minus 40 is the same on both scales", txt("of"), -40);
+    near("and celsius agrees", txt("oc"), -40);
+
+    set("from", "k"); set("value", "0");
+    near("absolute zero in celsius", txt("oc"), -273.15);
+    near("absolute zero in fahrenheit", txt("of"), -459.67);
+    has("rankine is reported", txt("note"), "Rankine");
+
+    set("value", "-5");
+    has("below absolute zero is called out", txt("note"), "below absolute zero");
+
+    set("from", "c"); set("value", "0");
+    near("water freezes at 32 F", txt("of"), 32);
+    near("and at 273.15 K", txt("ok"), 273.15);
+
+    set("from", "r"); set("value", "491.67");
+    near("491.67 R is freezing", txt("oc"), 0, 0.01);
+
+    /* Worth its own assertion: zero Rankine really is absolute zero, so an
+       empty box read as 0 while Rankine is selected is correct arithmetic
+       rather than the crash it first looks like. */
+    set("value", "0");
+    near("zero rankine is absolute zero", txt("oc"), -273.15);
+
+    set("from", "c"); set("value", "");
+    near("an empty box does not crash it", txt("oc"), 0);
+    finish();
+"""
+
+T["date-difference-calculator"] = r"""
+    set("start", "2026-01-01"); set("end", "2026-12-31");
+    eq("364 days between", txt("days"), "364 days");
+    has("calendar breakdown", txt("breakdown"), "0 years, 11 months, 30 days");
+    eq("exactly 52 weeks", txt("weeks"), "52w 0d");
+    near("working days in 2026", txt("working"), 260);
+    near("weekend days in 2026", txt("weekend"), 104);
+    eq("six other units", rows().length, 6);
+    gone("no error for two real dates", "errWrap");
+
+    tick("inclusive", true);
+    eq("counting both ends adds one", txt("days"), "365 days");
+
+    tick("inclusive", false);
+    set("start", "2026-12-31"); set("end", "2026-01-01");
+    eq("the order does not matter", txt("days"), "364 days");
+    has("but the note says so", txt("note"), "earlier");
+
+    set("start", "2026-06-15"); set("end", "2026-06-15");
+    eq("the same date is zero", txt("days"), "0 days");
+
+    set("start", "2024-02-01"); set("end", "2024-03-01");
+    eq("february in a leap year", txt("days"), "29 days");
+
+    set("start", "2026-01-31"); set("end", "2026-02-28");
+    has("31 Jan to 28 Feb is one month", txt("breakdown"), "0 years, 0 months, 28 days");
+
+    set("start", "");
+    shown("a missing date is refused", "errWrap");
+    finish();
+"""
+
+T["add-subtract-days"] = r"""
+    set("start", "2026-01-31"); set("amount", "1"); set("unit", "months");
+    eq("31 January plus a month clamps", txt("result"), "28 February 2026");
+    eq("and lands on a Saturday", txt("weekday"), "Saturday");
+    eq("iso form", txt("isoOut"), "2026-02-28");
+    has("the clamp is explained", txt("note"), "pulled back");
+    eq("eight milestones", rows().length, 8);
+    gone("no error for a real date", "errWrap");
+
+    set("start", "2024-01-31");
+    eq("a leap year clamps to the 29th", txt("result"), "29 February 2024");
+
+    set("start", "2026-01-01"); set("unit", "days"); set("amount", "30");
+    eq("thirty days on", txt("result"), "31 January 2026");
+    eq("no clamp note when counting days", txt("note"), "");
+
+    set("direction", "sub"); set("amount", "1");
+    eq("one day back crosses the year", txt("result"), "31 December 2025");
+
+    set("direction", "add"); set("unit", "business"); set("amount", "10");
+    eq("ten working days on", txt("result"), "15 January 2026");
+    eq("landing on a Thursday", txt("weekday"), "Thursday");
+    has("holidays are disclaimed", txt("note"), "Public holidays are not deducted");
+
+    set("unit", "weeks"); set("amount", "2");
+    eq("two weeks on", txt("result"), "15 January 2026");
+
+    set("unit", "years"); set("amount", "1");
+    eq("a year on", txt("result"), "1 January 2027");
+
+    set("unit", "days"); set("amount", "0");
+    eq("zero leaves the date alone", txt("result"), "1 January 2026");
+
+    set("start", "");
+    shown("a missing date is refused", "errWrap");
     finish();
 """
 

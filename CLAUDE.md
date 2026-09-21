@@ -7,8 +7,8 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 30 of a planned 108 tools are built, tested and live.
-Phase 2 is finished.
+**Where it stands:** 35 of a planned 108 tools are built, tested and live.
+Phase 2 is finished; Phase 3 has started.
 
 ---
 
@@ -27,12 +27,12 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`30 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`35 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">30</span> tools live
-<span data-tool-count="remaining">78</span> on the way
+<span data-tool-count="live">35</span> tools live
+<span data-tool-count="remaining">73</span> on the way
 ```
 
 This used to be hand-typed in `index.html`, `tools.html` and `about.html`, and
@@ -50,8 +50,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed — this
-already happened once, with the redesign. Find-and-replace `?v=4` → `?v=5`
-across all 40 pages (currently `?v=5`, 182 occurrences). `check.py`
+already happened once, with the redesign. Find-and-replace `?v=5` → `?v=6`
+across all 45 pages (currently `?v=6`, 207 occurrences). `check.py`
 understands the stamp.
 
 ### 4. Two scripts, and you run BOTH, every time
@@ -67,7 +67,7 @@ python test_tools.py   RUNS the files    — every tool, in real Chrome,
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 30, not just the one you changed.** That is the
+**`test_tools.py` runs all 35, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -260,16 +260,17 @@ reverse-text, text-repeater, add-line-numbers, slug-generator,
 character-frequency-counter, bmi-calculator, discount-calculator,
 tip-calculator, average-calculator, ratio-calculator, gst-calculator,
 simple-interest-calculator, compound-interest-calculator, fraction-calculator,
-margin-markup-calculator.
+margin-markup-calculator, area-converter, number-to-words,
+temperature-converter, date-difference-calculator, add-subtract-days.
 
-**Next batch (Phase 3, tools 31–35):** converters and date/time, per
+**Next batch (Phase 3, tools 36–40):** more converters and date/time, per
 `ROADMAP.md`. Phase 3 runs 31–60 and still needs no libraries. The strongest
-India terms left are `sip-calculator`, `salary-calculator`, `area-converter`
-and `number-to-words` (lakh/crore).
+India terms left are `sip-calculator` and `salary-calculator`.
 
 **Categories are 8 now**, expanded on 20 Sep 2026 at the 30-tool mark:
-Text, Image, Calculator, Developer, Converter, PDF, Date & Time, Random. The
-last four have no tools yet, and that is fine — **`main.js` draws a chip only
+Text, Image, Calculator, Developer, Converter, PDF, Date & Time, Random.
+Converter and Date & Time filled up on 21 Sep 2026 and their chips appeared
+on their own. PDF and Random have no tools yet, and that is fine — **`main.js` draws a chip only
 for a category that has at least one tool**, so `CATEGORIES` is the plan, not
 the inventory. A chip that opens an empty grid reads as broken rather than
 unfinished, which is exactly what the naive version of this change would have

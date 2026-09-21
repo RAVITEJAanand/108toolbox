@@ -279,6 +279,51 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "area-converter",
+    name: "Area Converter",
+    desc: "Square feet, acres, hectares and the Indian units - guntha, cent, marla, bigha.",
+    category: "Converter",
+    icon: "\u{1F4D0}",
+    keywords: ["area converter", "square feet to square metre", "guntha", "cent to sqft", "bigha", "marla", "kanal", "gaj", "land area"],
+    popular: true
+  },
+  {
+    slug: "number-to-words",
+    name: "Number to Words",
+    desc: "Spell any number in lakh and crore or million and billion, ready for a cheque.",
+    category: "Converter",
+    icon: "\u{1F4D6}",
+    keywords: ["number to words", "rupees in words", "lakh crore", "amount in words", "cheque writing", "spell number"],
+    popular: true
+  },
+  {
+    slug: "temperature-converter",
+    name: "Temperature Converter",
+    desc: "Celsius, Fahrenheit, Kelvin and Rankine together, with the formula shown.",
+    category: "Converter",
+    icon: "\u{1F321}\u{FE0F}",
+    keywords: ["temperature converter", "celsius to fahrenheit", "fahrenheit to celsius", "kelvin", "c to f"],
+    popular: false
+  },
+  {
+    slug: "date-difference-calculator",
+    name: "Date Difference Calculator",
+    desc: "Days, weeks, months and working days between any two dates.",
+    category: "Date & Time",
+    icon: "\u{1F4C5}",
+    keywords: ["date difference", "days between dates", "how many days", "date calculator", "working days"],
+    popular: false
+  },
+  {
+    slug: "add-subtract-days",
+    name: "Add or Subtract Days",
+    desc: "Move a date by days, weeks, months, years or working days.",
+    category: "Date & Time",
+    icon: "\u{1F5D3}\u{FE0F}",
+    keywords: ["add days to date", "subtract days", "date plus days", "deadline calculator", "notice period"],
+    popular: false
+  },
+  {
     slug: "password-generator",
     name: "Password Generator",
     desc: "Create strong random passwords with a live strength meter.",
