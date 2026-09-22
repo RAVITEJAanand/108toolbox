@@ -72,6 +72,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "base64-encoder-decoder",
+    name: "Base64 Encoder & Decoder",
+    desc: "Encode text to Base64 or decode it back, URL-safe and Unicode-correct.",
+    category: "Developer",
+    icon: "\u{1F4E6}",
+    keywords: ["base64", "base64 encode", "base64 decode", "base64 converter", "text to base64", "base64 to text", "url safe base64", "jwt base64"],
+    popular: false
+  },
+  {
     slug: "binary-decimal-hex-converter",
     name: "Binary, Decimal and Hex",
     desc: "Convert between base 2, 8, 10 and 16, exactly, however long the number.",
@@ -105,6 +114,15 @@ const TOOLS = [
     category: "Text",
     icon: "\u{1F520}",
     keywords: ["character frequency", "letter frequency", "count letters", "word frequency", "letter counter"],
+    popular: false
+  },
+  {
+    slug: "color-code-converter",
+    name: "Color Code Converter",
+    desc: "HEX, RGB and HSL for any colour, with a swatch and contrast checking.",
+    category: "Developer",
+    icon: "\u{1F3A8}",
+    keywords: ["color converter", "hex to rgb", "rgb to hex", "hex to hsl", "colour converter", "color code", "contrast ratio", "hsl converter"],
     popular: false
   },
   {
@@ -205,6 +223,15 @@ const TOOLS = [
     icon: "\u{1F9FE}",
     keywords: ["gst calculator", "gst india", "reverse gst", "remove gst", "cgst sgst igst", "gst inclusive", "add gst", "tax calculator"],
     popular: true
+  },
+  {
+    slug: "html-encoder-decoder",
+    name: "HTML Entity Encoder & Decoder",
+    desc: "Escape HTML so tags show as text, or decode entities back to characters.",
+    category: "Developer",
+    icon: "\u{1F6E1}\u{FE0F}",
+    keywords: ["html encode", "html decode", "html entities", "escape html", "html entity converter", "ampersand entity", "unescape html"],
+    popular: false
   },
   {
     slug: "image-compressor",
@@ -450,12 +477,30 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "url-encoder-decoder",
+    name: "URL Encoder & Decoder",
+    desc: "Percent-encode a value for a query string, or decode one back to text.",
+    category: "Developer",
+    icon: "\u{1F310}",
+    keywords: ["url encode", "url decode", "percent encoding", "urlencode", "encodeuricomponent", "query string encode", "escape url"],
+    popular: false
+  },
+  {
     slug: "slug-generator",
     name: "URL Slug Generator",
     desc: "Turn a title into a clean lowercase URL slug, one per line.",
     category: "Text",
     icon: "\u{1F517}",
     keywords: ["slug generator", "url slug", "permalink generator", "seo friendly url", "slugify"],
+    popular: false
+  },
+  {
+    slug: "uuid-generator",
+    name: "UUID Generator",
+    desc: "Random version 4 UUIDs, up to 100 at a time, made in your own browser.",
+    category: "Developer",
+    icon: "\u{1F194}",
+    keywords: ["uuid generator", "guid generator", "uuid v4", "random uuid", "generate uuid", "unique id generator"],
     popular: false
   },
   {

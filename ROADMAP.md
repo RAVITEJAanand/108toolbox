@@ -106,15 +106,15 @@ one when its category gets its first tool.
 
 | Category | Tools | Built |
 |---|---|---|
-| Calculator | 20 | 14 |
-| Developer | 18 | 2 |
+| Calculator | 20 | 16 |
+| Developer | 18 | 7 |
 | Text | 16 | 13 |
 | Image | 14 | 2 |
-| Converter | 14 | 9 |
+| Converter | 14 | 13 |
 | PDF | 10 | 0 |
 | Date & Time | 8 | 5 |
 | Random | 8 | 0 |
-| **Total** | **108** | **45** |
+| **Total** | **108** | **56** |
 
 ---
 
@@ -180,10 +180,10 @@ matches, so do not rename them later. ✅ = already live.
 | 11 | `compound-interest-calculator` ✅ | easy |
 | 12 | `margin-markup-calculator` ✅ | easy |
 | 13 | `unit-price-comparison` | easy |
-| 14 | `fuel-cost-calculator` | easy |
+| 14 | `fuel-cost-calculator` ✅ | easy |
 | 15 | `gst-calculator` ✅ | easy — India |
 | 16 | `sip-calculator` ✅ | medium — India, very high volume |
-| 17 | `salary-calculator` | medium — CTC to in-hand, India |
+| 17 | `salary-calculator` ✅ | medium — CTC to in-hand, India |
 | 18 | `calorie-calculator` | medium — BMR / TDEE |
 | 19 | `scientific-calculator` | medium |
 | 20 | `income-tax-calculator` | hard — **rates change yearly, see Maintenance** |
@@ -194,11 +194,11 @@ matches, so do not rename them later. ✅ = already live.
 |---|---|---|
 | 1 | `password-generator` ✅ | medium |
 | 2 | `json-formatter` ✅ | medium |
-| 3 | `base64-encoder-decoder` | easy |
-| 4 | `url-encoder-decoder` | easy |
-| 5 | `html-encoder-decoder` | easy |
-| 6 | `uuid-generator` | easy — `crypto.randomUUID()` |
-| 7 | `color-code-converter` | easy — HEX / RGB / HSL |
+| 3 | `base64-encoder-decoder` ✅ | easy |
+| 4 | `url-encoder-decoder` ✅ | easy |
+| 5 | `html-encoder-decoder` ✅ | easy |
+| 6 | `uuid-generator` ✅ | easy — `crypto.randomUUID()` |
+| 7 | `color-code-converter` ✅ | easy — HEX / RGB / HSL |
 | 8 | `hash-generator` | medium — Web Crypto, SHA-256/384/512 |
 | 9 | `jwt-decoder` | medium — decode and display only, never verify |
 | 10 | `regex-tester` | medium — live match highlighting |
@@ -229,10 +229,10 @@ which never leave the tab, so the overlap is narrower than the word suggests.
 | 7 | `roman-numeral-converter` ✅ | easy |
 | 8 | `number-to-words` ✅ | medium — add the Indian lakh / crore system |
 | 9 | `timestamp-converter` ✅ | easy — Unix ↔ human date |
-| 10 | `cooking-measurement-converter` | easy |
-| 11 | `shoe-size-converter` | easy |
-| 12 | `text-to-morse` | easy |
-| 13 | `nato-phonetic-converter` | easy |
+| 10 | `cooking-measurement-converter` ✅ | easy |
+| 11 | `shoe-size-converter` ✅ | easy |
+| 12 | `text-to-morse` ✅ | easy |
+| 13 | `nato-phonetic-converter` ✅ | easy |
 | 14 | `currency-converter` | hard — **the only tool needing a live API** |
 
 ### PDF (10) — all with `pdf-lib`, all in the browser

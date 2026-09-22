@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>HTML Entity Encoder and Decoder — Escape HTML</title>
+  <meta name="description" content="Escape HTML so tags show as text instead of running, or turn entities such as &amp;amp; and &amp;#39; back into characters. Everything stays in your browser.">
+  <link rel="canonical" href="https://108toolbox.in/tools/html-encoder-decoder.html">
+
+  <meta property="og:title" content="HTML Entity Encoder and Decoder — Escape HTML">
+  <meta property="og:description" content="Escape HTML so tags show as text instead of running, or turn entities such as &amp;amp; and &amp;#39; back into characters. Everything stays in your browser.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=14">
+  <link rel="stylesheet" href="../css/tool.css?v=14">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Which characters actually need escaping?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "In ordinary page text, three: & then < then >. The ampersand must be done first, otherwise you escape the ampersands you just created. Inside an attribute value you also need the quote character, because a stray quote ends the attribute early and everything after it is read as markup. This page does all of them by default."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does it produce &#39; instead of &apos; for an apostrophe?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because &apos; is an XML entity that was never part of HTML 4, and old versions of Internet Explorer print it as literal text instead of an apostrophe. The numeric form &#39; means the same thing and has worked everywhere for thirty years, so it is the safer output."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to encode accented or Indian-language characters?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not if your page is UTF-8, which every modern page is - a Telugu letter or a rupee sign can sit in the source as itself. The option to encode them as numbers is there for the cases where it still matters: a legacy system with an unknown encoding, an email template, or a database column you cannot trust. The page renders identically either way."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is escaping HTML enough to stop cross-site scripting?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It is necessary, not sufficient. Escaping these characters makes text safe in ordinary page content, which is the common case. Text going into a javascript: URL, an inline event handler, a style block or a URL parameter needs the escaping that belongs to that context instead. Escape for the place the text lands in, not out of habit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens to an entity this tool does not recognise?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It is left exactly as it was found, and the page tells you how many were left. HTML has well over a thousand named entities; this tool knows the ones in real use plus every numeric form, decimal and hexadecimal. Silently deleting something it did not understand would be worse than leaving it visible."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>HTML Entity Encoder & Decoder</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>HTML Entity Encoder &amp; Decoder</h1>
+        <p>Turn <code>&lt;</code>, <code>&gt;</code> and <code>&amp;</code> into
+           entities so markup shows up as text, or decode entities back into the
+           characters they stand for.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="mode">What do you want to do?</label>
+            <select id="mode">
+              <option value="encode">Encode &mdash; characters into entities</option>
+              <option value="decode">Decode &mdash; entities back into characters</option>
+            </select>
+          </div>
+
+          <label class="panel__label" for="input">Your text</label>
+          <textarea id="input" placeholder="Paste HTML, or paste entities to decode&hellip;">&lt;a href="?a=1&amp;b=2"&gt;Tom &amp; Jerry's "big" day&lt;/a&gt;</textarea>
+
+          <div class="check" style="margin-top:var(--s4)">
+            <input type="checkbox" id="optQuotes" checked>
+            <label for="optQuotes">Also encode quotes <code>"</code> and <code>'</code></label>
+          </div>
+          <div class="check">
+            <input type="checkbox" id="optAll">
+            <label for="optAll">Encode every non-English character as a number too</label>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="swapBtn">Send result back as input</button>
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+          <pre class="out mono" id="output" aria-live="polite"></pre>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+
+          <div class="stats stats--3" style="margin-top:var(--s4)">
+            <div class="stat"><span class="stat__num" id="cIn">0</span><span class="stat__label">Characters in</span></div>
+            <div class="stat"><span class="stat__num" id="cOut">0</span><span class="stat__label">Characters out</span></div>
+            <div class="stat"><span class="stat__num" id="cEsc">0</span><span class="stat__label">Entities</span></div>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
+            <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Pick <strong>Encode</strong> to make markup safe to show, or
+              <strong>Decode</strong> to read entities back as characters.</li>
+          <li>Paste into the left box. The result updates as you type.</li>
+          <li>Copy the result, or send it back as input to check that it
+              round-trips.</li>
+        </ol>
+
+        <h2>Why HTML has to be escaped</h2>
+        <p>A browser reading a page cannot tell your content apart from the
+           markup around it. It only knows that <code>&lt;</code> starts a tag and
+           <code>&amp;</code> starts an entity. So the moment a visitor's name, a
+           comment or a code sample contains one of those characters, the browser
+           reads it as an instruction instead of as text.</p>
+        <p>Two things go wrong. The harmless one: your page breaks, a stray
+           <code>&lt;b</code> swallows the rest of the paragraph, or
+           <code>Tom &amp; Jerry</code> disappears into a half-formed entity. The
+           serious one: someone types <code>&lt;script&gt;</code> into a comment
+           box and the site runs it for every visitor who reads that page. That is
+           cross-site scripting, and escaping is the first line of defence
+           against it.</p>
+        <p>Only three characters strictly must be escaped in ordinary text:
+           <code>&amp;</code>, <code>&lt;</code> and <code>&gt;</code>. Inside an
+           attribute the quote characters matter too, because a stray
+           <code>"</code> ends the attribute early and everything after it becomes
+           new markup. That is why the quotes option here is on by default.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Which characters actually need escaping?</h3>
+          <p>In ordinary page text, three: &amp; then &lt; then &gt;. The ampersand must be done first, otherwise you escape the ampersands you just created. Inside an attribute value you also need the quote character, because a stray quote ends the attribute early and everything after it is read as markup. This page does all of them by default.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does it produce &amp;#39; instead of &amp;apos; for an apostrophe?</h3>
+          <p>Because &amp;apos; is an XML entity that was never part of HTML 4, and old versions of Internet Explorer print it as literal text instead of an apostrophe. The numeric form &amp;#39; means the same thing and has worked everywhere for thirty years, so it is the safer output.</p>
+        </div>
+        <div class="faq">
+          <h3>Do I need to encode accented or Indian-language characters?</h3>
+          <p>Not if your page is UTF-8, which every modern page is - a Telugu letter or a rupee sign can sit in the source as itself. The option to encode them as numbers is there for the cases where it still matters: a legacy system with an unknown encoding, an email template, or a database column you cannot trust. The page renders identically either way.</p>
+        </div>
+        <div class="faq">
+          <h3>Is escaping HTML enough to stop cross-site scripting?</h3>
+          <p>It is necessary, not sufficient. Escaping these characters makes text safe in ordinary page content, which is the common case. Text going into a javascript: URL, an inline event handler, a style block or a URL parameter needs the escaping that belongs to that context instead. Escape for the place the text lands in, not out of habit.</p>
+        </div>
+        <div class="faq">
+          <h3>What happens to an entity this tool does not recognise?</h3>
+          <p>It is left exactly as it was found, and the page tells you how many were left. HTML has well over a thousand named entities; this tool knows the ones in real use plus every numeric form, decimal and hexadecimal. Silently deleting something it did not understand would be worse than leaving it visible.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=14"></script>
+  <script src="../js/tool-helpers.js?v=14"></script>
+  <script>window.CURRENT_TOOL = "html-encoder-decoder";</script>
+  <script src="../js/main.js?v=14"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input  = document.getElementById("input");
+    var output = document.getElementById("output");
+    var msg    = document.getElementById("msg");
+    var mode   = document.getElementById("mode");
+    var quotes = document.getElementById("optQuotes");
+    var all    = document.getElementById("optAll");
+
+    /* ---- START: the named entities this page knows ---- */
+    /* Stored as code point NUMBERS, never as escape sequences. Rule 5 in
+       CLAUDE.md: a \u escape typed into a tool script can land in the file as
+       the literal character, and some of those characters are JavaScript line
+       terminators, which silently break the whole script. Numbers cannot do
+       that, and String.fromCodePoint turns them into characters at runtime. */
+    var NAMED = {
+      amp: 38, lt: 60, gt: 62, quot: 34, apos: 39,
+      nbsp: 160, iexcl: 161, cent: 162, pound: 163, curren: 164, yen: 165,
+      sect: 167, copy: 169, laquo: 171, not: 172, reg: 174, deg: 176,
+      plusmn: 177, micro: 181, para: 182, middot: 183, raquo: 187,
+      frac14: 188, frac12: 189, frac34: 190, iquest: 191,
+      times: 215, divide: 247,
+      ndash: 8211, mdash: 8212, lsquo: 8216, rsquo: 8217, sbquo: 8218,
+      ldquo: 8220, rdquo: 8221, bdquo: 8222, dagger: 8224, Dagger: 8225,
+      bull: 8226, hellip: 8230, permil: 8240, prime: 8242, Prime: 8243,
+      euro: 8364, trade: 8482,
+      larr: 8592, uarr: 8593, rarr: 8594, darr: 8595, harr: 8596,
+      minus: 8722, radic: 8730, infin: 8734, ne: 8800, le: 8804, ge: 8805,
+      alpha: 945, beta: 946, gamma: 947, delta: 948, pi: 960, sigma: 963,
+      Omega: 937, lambda: 955, mu: 956,
+      spades: 9824, clubs: 9827, hearts: 9829, diams: 9830
+    };
+    /* ---- END: the named entities this page knows ---- */
+
+    /* ---- START: characters into entities ---- */
+    function encode(text, doQuotes, doAll) {
+      var out = "";
+      var i = 0;
+      while (i < text.length) {
+        var cp = text.codePointAt(i);
+        /* Astral characters - emoji, many Indic signs - are two UTF-16 units.
+           Stepping one at a time would split the pair and produce two broken
+           halves instead of one character. */
+        var size = cp > 0xFFFF ? 2 : 1;
+        var piece = text.substr(i, size);
+        i += size;
+
+        if (cp === 38)                      { out += "&amp;"; }
+        else if (cp === 60)                 { out += "&lt;"; }
+        else if (cp === 62)                 { out += "&gt;"; }
+        else if (doQuotes && cp === 34)     { out += "&quot;"; }
+        /* &#39; and not &apos;: the named form is XML, and old Internet
+           Explorer prints it as text instead of an apostrophe. */
+        else if (doQuotes && cp === 39)     { out += "&#39;"; }
+        else if (doAll && cp > 126)         { out += "&#" + cp + ";"; }
+        else                                { out += piece; }
+      }
+      return out;
+    }
+    /* ---- END: characters into entities ---- */
+
+    /* ---- START: entities back into characters ---- */
+    var unknown = 0;
+
+    function decode(text) {
+      unknown = 0;
+      return text.replace(/&(#[0-9]+|#[xX][0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);/g,
+        function (whole, body) {
+          var cp;
+          if (body.charAt(0) === "#") {
+            cp = (body.charAt(1) === "x" || body.charAt(1) === "X")
+               ? parseInt(body.slice(2), 16)
+               : parseInt(body.slice(1), 10);
+          } else if (Object.prototype.hasOwnProperty.call(NAMED, body)) {
+            /* hasOwnProperty, not a plain lookup: &constructor; and
+               &toString; would otherwise find something on the prototype and
+               come back as a function. */
+            cp = NAMED[body];
+          } else {
+            unknown++;
+            return whole;                    /* leave it alone, and say so */
+          }
+
+          /* Surrogates and anything past the last code point are not
+             characters; fromCodePoint throws on them. */
+          if (!isFinite(cp) || cp < 0 || cp > 0x10FFFF ||
+              (cp >= 0xD800 && cp <= 0xDFFF)) {
+            unknown++;
+            return whole;
+          }
+          return String.fromCodePoint(cp);
+        });
+    }
+    /* ---- END: entities back into characters ---- */
+
+    /* ---- START: drawing the answer ---- */
+    function run() {
+      var encoding = mode.value === "encode";
+      var text = input.value;
+      var result, entities;
+
+      /* Both options are about writing entities, so neither has anything to
+         do while decoding. */
+      quotes.disabled = !encoding;
+      all.disabled = !encoding;
+
+      msg.className = "msg";
+
+      if (encoding) {
+        result = encode(text, quotes.checked, all.checked);
+        entities = (result.match(/&(#[0-9]+|#[xX][0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);/g) || []).length;
+        msg.textContent = !text
+          ? "Type or paste something on the left."
+          : entities === 0
+            ? "Nothing needed escaping - this text is already safe to drop into a page."
+            : entities + (entities === 1 ? " character was" : " characters were") +
+              " escaped. Paste this into your HTML and it will show as text.";
+      } else {
+        result = decode(text);
+        entities = (text.match(/&(#[0-9]+|#[xX][0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);/g) || []).length
+                 - unknown;
+        if (!text) {
+          msg.textContent = "Paste text containing entities on the left.";
+        } else if (unknown > 0) {
+          msg.className = "msg msg--bad";
+          msg.textContent = "Decoded " + entities + ", but left " + unknown +
+            (unknown === 1 ? " entity" : " entities") +
+            " alone - this page does not recognise them, and guessing would be worse.";
+        } else {
+          msg.className = "msg msg--ok";
+          msg.textContent = entities === 0
+            ? "No entities found - the text is unchanged."
+            : "Decoded " + entities + (entities === 1 ? " entity." : " entities.");
+        }
+      }
+
+      output.textContent = result;
+      document.getElementById("cIn").textContent = formatNumber(text.length, 0);
+      document.getElementById("cOut").textContent = formatNumber(result.length, 0);
+      document.getElementById("cEsc").textContent = formatNumber(entities, 0);
+    }
+    /* ---- END: drawing the answer ---- */
+
+    input.addEventListener("input", run);
+    mode.addEventListener("change", run);
+    quotes.addEventListener("change", run);
+    all.addEventListener("change", run);
+
+    document.getElementById("swapBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to send back"); return; }
+      input.value = output.textContent;
+      mode.value = mode.value === "encode" ? "decode" : "encode";
+      run();
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to copy"); return; }
+      copyText(output.textContent);
+    });
+
+    document.getElementById("dlBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to download"); return; }
+      downloadText(output.textContent, "html-entities.txt");
+    });
+
+    run();
+  })();
+  </script>
+</body>
+</html>

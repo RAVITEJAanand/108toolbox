@@ -67,6 +67,11 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://108toolbox.in/tools/base64-encoder-decoder.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://108toolbox.in/tools/binary-decimal-hex-converter.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -83,6 +88,11 @@
   </url>
   <url>
     <loc>https://108toolbox.in/tools/character-frequency-counter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/color-code-converter.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -138,6 +148,11 @@
   </url>
   <url>
     <loc>https://108toolbox.in/tools/gst-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/html-encoder-decoder.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -277,7 +292,17 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://108toolbox.in/tools/url-encoder-decoder.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://108toolbox.in/tools/slug-generator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/uuid-generator.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Color Code Converter — HEX, RGB and HSL Online</title>
+  <meta name="description" content="Convert a colour between HEX, RGB and HSL, see it on screen, and check whether white or black text is readable on it. Everything runs in your browser.">
+  <link rel="canonical" href="https://108toolbox.in/tools/color-code-converter.html">
+
+  <meta property="og:title" content="Color Code Converter — HEX, RGB and HSL Online">
+  <meta property="og:description" content="Convert a colour between HEX, RGB and HSL, see it on screen, and check whether white or black text is readable on it. Everything runs in your browser.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=14">
+  <link rel="stylesheet" href="../css/tool.css?v=14">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Which colour format should I use in my CSS?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Any of them - browsers treat them identically. Hex is the shortest and the most widely recognised. HSL is far easier to adjust by hand, because a lighter shade is just a bigger lightness number. If you are building a theme with variations of one colour, HSL will save you real time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What do the three numbers in HSL mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Hue in degrees around the colour wheel from 0 to 360, saturation as a percentage from grey to full colour, and lightness as a percentage from black at 0% through the colour itself at 50% to white at 100%. Change only the lightness and you get a matching darker or lighter shade of the same colour."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I paste a colour name like tomato or rebeccapurple?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. This page hands the text to the browser's own colour parser, so every syntax the browser accepts works here - all 148 CSS names, the space-separated modern forms such as rgb(59 130 246), and hex with alpha. If the browser rejects it, so does this page, and it says so instead of showing a wrong colour."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the contrast ratio telling me?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "How readable text would be on that colour. WCAG AA wants at least 4.5:1 for normal text and 3:1 for large text; AAA wants 7:1. The page shows the ratio against both white and black so you can see which of the two is the readable choice, which is usually the only decision you need."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does my hex code sometimes have eight digits?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The last pair is alpha - opacity - as two hex digits, so ff is fully opaque and 80 is about half transparent. It appears here only when the colour you entered actually has transparency. Every modern browser understands eight-digit hex, so you can paste it straight into your stylesheet."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>Color Code Converter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Color Code Converter</h1>
+        <p>Paste a colour in any form &mdash; HEX, RGB, HSL or a CSS name &mdash;
+           and get the other formats, a live swatch, and the contrast figures that
+           decide whether text on it can be read.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="input">Your colour</label>
+            <input type="text" id="input" value="#3b82f6"
+                   placeholder="#3b82f6, rgb(59 130 246), hsl(217 91% 60%), rebeccapurple">
+          </div>
+
+          <div id="swatch" style="height:150px;border-radius:var(--r-md);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:var(--s5)">
+            <span style="color:#fff;font-weight:600">White text</span>
+            <span style="color:#000;font-weight:600">Black text</span>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite" style="margin-top:var(--s4)"></p>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost" type="button" id="copyHex">Copy HEX</button>
+            <button class="btn btn--ghost" type="button" id="copyRgb">Copy RGB</button>
+            <button class="btn btn--ghost" type="button" id="copyHsl">Copy HSL</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Every format</span>
+
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr><th>Format</th><th>Value</th></tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s5)">Readability</span>
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="cWhite">0</span><span class="stat__label">Against white</span></div>
+            <div class="stat"><span class="stat__num" id="cBlack">0</span><span class="stat__label">Against black</span></div>
+            <div class="stat"><span class="stat__num" id="cLum">0</span><span class="stat__label">Luminance</span></div>
+          </div>
+
+          <p class="hint" style="margin-top:var(--s4)">WCAG AA asks for 4.5:1 for
+             normal text and 3:1 for large text, so a figure below 3 means that
+             text cannot be read comfortably by a lot of people.</p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Type or paste a colour in any form you have it: a hex code, an
+              <code>rgb()</code>, an <code>hsl()</code>, or a CSS name such as
+              <code>tomato</code>.</li>
+          <li>Read the other formats off the table, and copy the one you need.</li>
+          <li>Look at the two contrast figures before you put text on that
+              colour.</li>
+        </ol>
+
+        <h2>Why HSL is worth learning</h2>
+        <p>HEX and RGB say the same thing in different alphabets: how much red,
+           green and blue to mix. They are exact and completely unhelpful when you
+           want a slightly darker version of a colour, because there is no way to
+           look at <code>#3b82f6</code> and know which of the six digits to nudge.</p>
+        <p>HSL splits a colour into three things a person can actually reason
+           about. <strong>Hue</strong> is the position on the colour wheel from 0
+           to 360 &mdash; red at 0, green near 120, blue near 240.
+           <strong>Saturation</strong> is how strong it is, from grey at 0% to
+           full colour at 100%. <strong>Lightness</strong> runs from black at 0%
+           through the pure colour at 50% to white at 100%.</p>
+        <p>That is why a whole palette is easy in HSL: keep the hue, change the
+           lightness, and you have a matching set of shades. Do the same in hex
+           and you are guessing.</p>
+
+        <h2>About the contrast numbers</h2>
+        <p>The two figures are WCAG contrast ratios, the same measure accessibility
+           audits use. They run from 1:1, meaning invisible, to 21:1 for black on
+           white. They are not a matter of taste: a ratio below 4.5 means a real
+           number of people, including anyone reading on a phone in sunlight,
+           will struggle with normal-sized text on that background.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Which colour format should I use in my CSS?</h3>
+          <p>Any of them - browsers treat them identically. Hex is the shortest and the most widely recognised. HSL is far easier to adjust by hand, because a lighter shade is just a bigger lightness number. If you are building a theme with variations of one colour, HSL will save you real time.</p>
+        </div>
+        <div class="faq">
+          <h3>What do the three numbers in HSL mean?</h3>
+          <p>Hue in degrees around the colour wheel from 0 to 360, saturation as a percentage from grey to full colour, and lightness as a percentage from black at 0% through the colour itself at 50% to white at 100%. Change only the lightness and you get a matching darker or lighter shade of the same colour.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I paste a colour name like tomato or rebeccapurple?</h3>
+          <p>Yes. This page hands the text to the browser&#x27;s own colour parser, so every syntax the browser accepts works here - all 148 CSS names, the space-separated modern forms such as rgb(59 130 246), and hex with alpha. If the browser rejects it, so does this page, and it says so instead of showing a wrong colour.</p>
+        </div>
+        <div class="faq">
+          <h3>What is the contrast ratio telling me?</h3>
+          <p>How readable text would be on that colour. WCAG AA wants at least 4.5:1 for normal text and 3:1 for large text; AAA wants 7:1. The page shows the ratio against both white and black so you can see which of the two is the readable choice, which is usually the only decision you need.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does my hex code sometimes have eight digits?</h3>
+          <p>The last pair is alpha - opacity - as two hex digits, so ff is fully opaque and 80 is about half transparent. It appears here only when the colour you entered actually has transparency. Every modern browser understands eight-digit hex, so you can paste it straight into your stylesheet.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=14"></script>
+  <script src="../js/tool-helpers.js?v=14"></script>
+  <script>window.CURRENT_TOOL = "color-code-converter";</script>
+  <script src="../js/main.js?v=14"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input = document.getElementById("input");
+    var msg   = document.getElementById("msg");
+    var rows  = document.getElementById("rows");
+    var swatch = document.getElementById("swatch");
+    var current = null;
+
+    /* ---- START: reading whatever the visitor typed ---- */
+    /* The browser already owns the complete list of colour syntaxes - every
+       CSS name, hex with or without alpha, the comma and the space-separated
+       rgb() and hsl() forms, and whatever gets added next. Re-implementing
+       that here would only create ways for this page to disagree with the
+       page the colour is actually going to be used on.
+
+       So an off-screen element is asked instead. An invalid value is simply
+       ignored by the style setter, which leaves the previous one in place -
+       that is what the sentinel detects. */
+    var probe = document.createElement("span");
+    probe.style.display = "none";
+    document.body.appendChild(probe);
+
+    var SENTINEL = "rgb(1, 2, 3)";
+
+    function parse(text) {
+      var value = String(text).trim();
+      if (!value) { return null; }
+
+      probe.style.color = "";
+      probe.style.color = SENTINEL;
+      probe.style.color = value;
+
+      var got = getComputedStyle(probe).color;
+      if (got === SENTINEL && value.replace(/\s/g, "") !== "rgb(1,2,3)") {
+        return null;                       /* the browser refused it */
+      }
+
+      var nums = got.match(/[0-9.]+/g);
+      if (!nums || nums.length < 3) { return null; }
+      return {
+        r: Math.round(+nums[0]),
+        g: Math.round(+nums[1]),
+        b: Math.round(+nums[2]),
+        a: nums.length > 3 ? +nums[3] : 1
+      };
+    }
+    /* ---- END: reading whatever the visitor typed ---- */
+
+    /* ---- START: the three formats ---- */
+    function hex2(n) {
+      /* + 0x100 then drop the leading 1, so 10 becomes "0a" and not "a" */
+      return (Math.max(0, Math.min(255, n)) + 0x100).toString(16).slice(1);
+    }
+
+    function toHex(c) {
+      return "#" + hex2(c.r) + hex2(c.g) + hex2(c.b) +
+             (c.a < 1 ? hex2(Math.round(c.a * 255)) : "");
+    }
+
+    function toRgb(c) {
+      return c.a < 1
+        ? "rgba(" + c.r + ", " + c.g + ", " + c.b + ", " + round2(c.a) + ")"
+        : "rgb(" + c.r + ", " + c.g + ", " + c.b + ")";
+    }
+
+    function toHsl(c) {
+      var r = c.r / 255, g = c.g / 255, b = c.b / 255;
+      var max = Math.max(r, g, b), min = Math.min(r, g, b);
+      var l = (max + min) / 2;
+      var h = 0, s = 0;
+
+      if (max !== min) {
+        var d = max - min;
+        /* Two formulas, because saturation is measured against how much room
+           is left: below half lightness that is max+min, above it the space
+           runs the other way. */
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        if (max === r)      { h = (g - b) / d + (g < b ? 6 : 0); }
+        else if (max === g) { h = (b - r) / d + 2; }
+        else                { h = (r - g) / d + 4; }
+        h *= 60;
+      }
+
+      h = Math.round(h);
+      var sp = Math.round(s * 100);
+      var lp = Math.round(l * 100);
+      return c.a < 1
+        ? "hsla(" + h + ", " + sp + "%, " + lp + "%, " + round2(c.a) + ")"
+        : "hsl(" + h + ", " + sp + "%, " + lp + "%)";
+    }
+
+    function round2(n) { return Math.round(n * 100) / 100; }
+    /* ---- END: the three formats ---- */
+
+    /* ---- START: how readable text on this colour is ---- */
+    /* WCAG relative luminance. The channel curve is not a simple square:
+       screens are not linear, and using the raw 0-255 numbers would rate
+       mid-tones as far lighter than the eye sees them. */
+    function channel(v) {
+      v = v / 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    }
+
+    function luminance(c) {
+      /* Green counts for nearly three quarters because the eye is most
+         sensitive to it - the same reason a pure blue looks dark. */
+      return 0.2126 * channel(c.r) + 0.7152 * channel(c.g) + 0.0722 * channel(c.b);
+    }
+
+    function ratio(l1, l2) {
+      var hi = Math.max(l1, l2), lo = Math.min(l1, l2);
+      return (hi + 0.05) / (lo + 0.05);
+    }
+    /* ---- END: how readable text on this colour is ---- */
+
+    /* ---- START: drawing the answer ---- */
+    function drawRows(list) {
+      rows.innerHTML = list.map(function (row) {
+        return "<tr><td>" + row[0] + "</td><td class=\"mono\">" + row[1] + "</td></tr>";
+      }).join("");
+    }
+
+    function run() {
+      var colour = parse(input.value);
+
+      if (!colour) {
+        current = null;
+        drawRows([["HEX", "&mdash;"], ["RGB", "&mdash;"], ["HSL", "&mdash;"]]);
+        swatch.style.background = "transparent";
+        document.getElementById("cWhite").textContent = "0";
+        document.getElementById("cBlack").textContent = "0";
+        document.getElementById("cLum").textContent = "0";
+        msg.className = "msg msg--bad";
+        msg.textContent = input.value.trim()
+          ? "That is not a colour this browser recognises."
+          : "Type a colour above.";
+        return;
+      }
+
+      current = { hex: toHex(colour), rgb: toRgb(colour), hsl: toHsl(colour) };
+      drawRows([["HEX", current.hex], ["RGB", current.rgb], ["HSL", current.hsl]]);
+      swatch.style.background = current.rgb;
+
+      var lum = luminance(colour);
+      var white = ratio(lum, 1);
+      var black = ratio(lum, 0);
+      document.getElementById("cWhite").textContent = formatNumber(white, 2);
+      document.getElementById("cBlack").textContent = formatNumber(black, 2);
+      document.getElementById("cLum").textContent = formatNumber(lum * 100, 1);
+
+      /* Against pure white and pure black the better of the two ratios can
+         never drop below about 4.58 - the two curves cross there - so "one of
+         them fails" is not a case that exists. Reporting the winner and then
+         saying whether the OTHER one is usable is the part that changes from
+         colour to colour, and it is what a designer actually wants to know. */
+      var whiteWins = white >= black;
+      var best = whiteWins ? "White" : "Black";
+      var other = whiteWins ? "Black" : "White";
+      var bestRatio = whiteWins ? white : black;
+      var otherRatio = whiteWins ? black : white;
+
+      msg.className = "msg msg--ok";
+      msg.textContent = best + " text is the readable choice at " +
+        formatNumber(bestRatio, 2) + ":1. " + other +
+        (otherRatio >= 4.5
+          ? " also passes AA at " + formatNumber(otherRatio, 2) + ":1."
+          : " text fails AA at " + formatNumber(otherRatio, 2) + ":1.");
+    }
+    /* ---- END: drawing the answer ---- */
+
+    input.addEventListener("input", run);
+
+    function copier(which) {
+      return function () {
+        if (!current) { showToast("No colour to copy"); return; }
+        copyText(current[which]);
+      };
+    }
+    document.getElementById("copyHex").addEventListener("click", copier("hex"));
+    document.getElementById("copyRgb").addEventListener("click", copier("rgb"));
+    document.getElementById("copyHsl").addEventListener("click", copier("hsl"));
+
+    run();
+  })();
+  </script>
+</body>
+</html>

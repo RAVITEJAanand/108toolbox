@@ -9,6 +9,7 @@ push a site with example.com still in the canonical tags.
   Mac/Linux: python3 check.py
 """
 
+import collections
 import hashlib
 import html
 import json
@@ -325,6 +326,47 @@ else:
         fail("css/ or js/ changed but ?v=%s did not move — bump every page to "
              "?v=%d, or returning visitors keep the old file"
              % (stamp, int(stamp) + 1))
+
+# ---- 4g. ROADMAP.md agrees with the registry -------------------------------
+# The same rot as the tool counts, one file further out. The "Built" column
+# said 45 while 51 tools were live, and the ticks had not moved in three
+# batches - so the one document that is supposed to say what is left to do was
+# quietly overstating the work remaining. A plan nobody checks stops being a
+# plan and becomes a wish.
+roadmap = ROOT / "ROADMAP.md"
+if roadmap.exists():
+    text = roadmap.read_text(encoding="utf-8")
+    per_cat = collections.Counter(re.findall(r'category: "([^"]+)"', registry))
+    roadmap_ok = True
+
+    for cat, planned, shown in re.findall(
+            r"\| ([A-Z][A-Za-z &]*?) \| (\d+) \| (\d+) \|", text):
+        if int(shown) != per_cat.get(cat, 0):
+            roadmap_ok = False
+            fail("ROADMAP.md says %d %s tools are built, the registry has %d"
+                 % (int(shown), cat, per_cat.get(cat, 0)))
+
+    total = re.search(r"\| \*\*Total\*\* \| \*\*108\*\* \| \*\*(\d+)\*\* \|", text)
+    if not total:
+        roadmap_ok = False
+        fail("ROADMAP.md has no total row to check")
+    elif int(total.group(1)) != len(slugs):
+        roadmap_ok = False
+        fail("ROADMAP.md totals %s tools built, the registry has %d"
+             % (total.group(1), len(slugs)))
+
+    # A tick that is wrong in either direction is worse than no tick: one hides
+    # finished work, the other sends you to build something twice.
+    for slug, mark in re.findall(r"`([a-z0-9][a-z0-9-]+)`( ✅)? \|", text):
+        ticked = bool(mark)
+        if ticked != (slug in slugs):
+            roadmap_ok = False
+            fail("ROADMAP.md %s '%s' — it %s built"
+                 % ("ticks" if ticked else "does not tick", slug,
+                    "is" if slug in slugs else "is not"))
+
+    if roadmap_ok:
+        ok("ROADMAP.md agrees with the registry, ticks included")
 
 # ---- 5. No dead internal links --------------------------------------------
 for path in list(ROOT.glob("*.html")) + tool_pages():

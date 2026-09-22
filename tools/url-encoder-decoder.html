@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>URL Encoder and Decoder — Percent Encoding Online</title>
+  <meta name="description" content="Percent-encode a value for a query string, or decode one back. Shows the difference between encoding a value and encoding a whole URL. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/url-encoder-decoder.html">
+
+  <meta property="og:title" content="URL Encoder and Decoder — Percent Encoding Online">
+  <meta property="og:description" content="Percent-encode a value for a query string, or decode one back. Shows the difference between encoding a value and encoding a whole URL. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=14">
+  <link rel="stylesheet" href="../css/tool.css?v=14">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the difference between encodeURI and encodeURIComponent?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "encodeURIComponent escapes the reserved punctuation - : / ? # [ ] @ ! $ & ' ( ) * + , ; = - because it assumes your text is one value being dropped into a URL. encodeURI leaves that punctuation alone because it assumes your text is already a URL and its punctuation is doing a job. Use the first for a query parameter, the second for a whole address."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is a space sometimes %20 and sometimes a plus sign?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Both are correct, in different places. Percent-encoding says a space is %20. The older HTML form format, application/x-www-form-urlencoded, says a space is +. Query strings written by browser forms use +, so many servers accept either. In a path, + is a literal plus and never a space - which is why tick the option only when you are building form data."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why did my plus sign turn into a space when I decoded?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because the plus-for-spaces option was on. In form data + really does mean space, so decoding has to turn it back. If your text contains a genuine plus - a phone number, a C++ reference - leave that option off, or the plus is read as a space and quietly lost."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens if the text is not valid percent-encoding?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Decoding says so instead of guessing. A stray % that is not followed by two hex digits, or a byte sequence that is not valid UTF-8, makes decodeURIComponent throw; this page catches that and tells you where the text is malformed rather than handing back something half-decoded."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this the same as HTML escaping?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, and mixing them up is a common bug. Percent-encoding makes text safe inside a URL. HTML escaping makes text safe inside a page, so that a < is not read as the start of a tag. They solve different problems and use different characters - if you need the second one, use the HTML entity encoder on this site."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>URL Encoder & Decoder</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>URL Encoder &amp; Decoder</h1>
+        <p>Make text safe to put in a URL, or read an encoded URL back. The one
+           choice that matters &mdash; a value or a whole URL &mdash; is right here
+           at the top.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="mode">What do you want to do?</label>
+            <select id="mode">
+              <option value="encode">Encode &mdash; make it safe for a URL</option>
+              <option value="decode">Decode &mdash; read it back as plain text</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="scope">Is this a value, or a whole URL?</label>
+            <select id="scope">
+              <option value="part">A value going inside a URL (encodeURIComponent)</option>
+              <option value="whole">A whole URL, keep its structure (encodeURI)</option>
+            </select>
+          </div>
+
+          <label class="panel__label" for="input">Your text</label>
+          <textarea id="input" placeholder="A search term, a redirect URL, a file name&hellip;">lunch box &amp; drinks &mdash; 50% off</textarea>
+
+          <div class="check" style="margin-top:var(--s4)">
+            <input type="checkbox" id="optPlus">
+            <label for="optPlus">Use <code>+</code> for spaces (HTML form style)</label>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="swapBtn">Send result back as input</button>
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+          <pre class="out mono" id="output" aria-live="polite"></pre>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+
+          <div class="stats stats--3" style="margin-top:var(--s4)">
+            <div class="stat"><span class="stat__num" id="cIn">0</span><span class="stat__label">Characters in</span></div>
+            <div class="stat"><span class="stat__num" id="cOut">0</span><span class="stat__label">Characters out</span></div>
+            <div class="stat"><span class="stat__num" id="cEsc">0</span><span class="stat__label">Escapes</span></div>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
+            <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Pick <strong>Encode</strong> or <strong>Decode</strong>.</li>
+          <li>Say whether this is <strong>a value</strong> going inside a URL or
+              <strong>a whole URL</strong>. That single choice is what most
+              broken links come down to.</li>
+          <li>Paste your text. The result updates as you type.</li>
+        </ol>
+
+        <h2>A value or a whole URL?</h2>
+        <p>A URL has punctuation that does a job: <code>:</code> ends the scheme,
+           <code>/</code> separates path segments, <code>?</code> starts the query
+           and <code>&amp;</code> separates one parameter from the next. Those
+           characters are called <em>reserved</em>, and whether they should be
+           encoded depends entirely on which of the two things you are holding.</p>
+        <p>If you are putting one <strong>value</strong> into a query string
+           &mdash; a search term, a file name, a redirect address &mdash; every
+           reserved character in it must be escaped. Otherwise an <code>&amp;</code>
+           inside your value ends the parameter early and the rest of it becomes
+           a parameter of its own. That is the <code>encodeURIComponent</code>
+           behaviour, and it is the right default.</p>
+        <p>If you are holding a <strong>whole URL</strong> that simply contains a
+           space or an accented character, escaping the punctuation would destroy
+           it: <code>https://</code> would become
+           <code>https%3A%2F%2F</code> and it would stop being a link at all. That
+           is the <code>encodeURI</code> behaviour, which leaves the structure
+           alone and only fixes the characters that are never allowed.</p>
+        <p>Neither is more correct than the other. Picking the wrong one is what
+           turns a working link into a 404.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>What is the difference between encodeURI and encodeURIComponent?</h3>
+          <p>encodeURIComponent escapes the reserved punctuation - : / ? # [ ] @ ! $ &amp; &#x27; ( ) * + , ; = - because it assumes your text is one value being dropped into a URL. encodeURI leaves that punctuation alone because it assumes your text is already a URL and its punctuation is doing a job. Use the first for a query parameter, the second for a whole address.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is a space sometimes %20 and sometimes a plus sign?</h3>
+          <p>Both are correct, in different places. Percent-encoding says a space is %20. The older HTML form format, application/x-www-form-urlencoded, says a space is +. Query strings written by browser forms use +, so many servers accept either. In a path, + is a literal plus and never a space - which is why tick the option only when you are building form data.</p>
+        </div>
+        <div class="faq">
+          <h3>Why did my plus sign turn into a space when I decoded?</h3>
+          <p>Because the plus-for-spaces option was on. In form data + really does mean space, so decoding has to turn it back. If your text contains a genuine plus - a phone number, a C++ reference - leave that option off, or the plus is read as a space and quietly lost.</p>
+        </div>
+        <div class="faq">
+          <h3>What happens if the text is not valid percent-encoding?</h3>
+          <p>Decoding says so instead of guessing. A stray % that is not followed by two hex digits, or a byte sequence that is not valid UTF-8, makes decodeURIComponent throw; this page catches that and tells you where the text is malformed rather than handing back something half-decoded.</p>
+        </div>
+        <div class="faq">
+          <h3>Is this the same as HTML escaping?</h3>
+          <p>No, and mixing them up is a common bug. Percent-encoding makes text safe inside a URL. HTML escaping makes text safe inside a page, so that a &lt; is not read as the start of a tag. They solve different problems and use different characters - if you need the second one, use the HTML entity encoder on this site.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=14"></script>
+  <script src="../js/tool-helpers.js?v=14"></script>
+  <script>window.CURRENT_TOOL = "url-encoder-decoder";</script>
+  <script src="../js/main.js?v=14"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input  = document.getElementById("input");
+    var output = document.getElementById("output");
+    var msg    = document.getElementById("msg");
+    var mode   = document.getElementById("mode");
+    var scope  = document.getElementById("scope");
+    var plus   = document.getElementById("optPlus");
+
+    /* ---- START: text into percent-encoding ---- */
+    /* The whole tool is this one choice. encodeURIComponent escapes the
+       reserved punctuation because it assumes the text is ONE VALUE going
+       into a URL; encodeURI leaves that punctuation alone because it assumes
+       the text IS a URL. Applying the first to a whole address turns
+       https:// into https%3A%2F%2F and breaks it. */
+    function encode(text, whole, plusForSpace) {
+      var out = whole ? encodeURI(text) : encodeURIComponent(text);
+      /* + for space belongs to form data only. In a path a plus is a literal
+         plus, so this is deliberately not offered for a whole URL. */
+      if (plusForSpace && !whole) { out = out.replace(/%20/g, "+"); }
+      return out;
+    }
+    /* ---- END: text into percent-encoding ---- */
+
+    /* ---- START: percent-encoding back into text ---- */
+    function decode(text, plusIsSpace) {
+      var work = plusIsSpace ? text.replace(/\+/g, " ") : text;
+      try {
+        return { ok: true, text: decodeURIComponent(work) };
+      } catch (e) {
+        /* decodeURIComponent throws on a lone % and on byte sequences that
+           are not valid UTF-8. Find the first one so the message can point
+           at it rather than just saying "invalid". */
+        var bad = work.match(/%(?![0-9A-Fa-f]{2})/);
+        return { ok: false, why: bad
+          ? "There is a % at position " + (bad.index + 1) +
+            " that is not followed by two hex digits."
+          : "This is not valid percent-encoding - the escaped bytes are not text." };
+      }
+    }
+    /* ---- END: percent-encoding back into text ---- */
+
+    /* ---- START: drawing the answer ---- */
+    function run() {
+      var encoding = mode.value === "encode";
+      var whole = scope.value === "whole";
+      var text = input.value;
+
+      /* + for spaces is form data, which is always a value, never a whole
+         address. Rather than silently ignoring the tick, take it away. */
+      plus.disabled = encoding && whole;
+
+      var result = "";
+      msg.className = "msg";
+
+      if (encoding) {
+        result = encode(text, whole, plus.checked);
+        if (!text) {
+          msg.textContent = "Type or paste something on the left.";
+        } else if (whole) {
+          msg.textContent = "Structure kept: : / ? # & = are left alone on purpose.";
+        } else if (/^[a-z][a-z0-9+.-]*:\/\//i.test(text)) {
+          /* Encoding a whole URL as a value is right when it is being carried
+             inside another URL, and wrong the rest of the time. The page
+             cannot know which, so it says what it did instead of choosing. */
+          msg.className = "msg msg--ok";
+          msg.textContent = "That looks like a whole URL. As a value its :// is escaped too, "
+                          + "which is right for a redirect parameter and wrong for a link.";
+        } else {
+          msg.textContent = "Safe to drop into a query string.";
+        }
+      } else {
+        var got = decode(text, plus.checked);
+        result = got.ok ? got.text : "";
+        if (!text) {
+          msg.textContent = "Paste an encoded value on the left.";
+        } else if (got.ok) {
+          msg.className = "msg msg--ok";
+          msg.textContent = "Decoded.";
+        } else {
+          msg.className = "msg msg--bad";
+          msg.textContent = got.why;
+        }
+      }
+
+      output.textContent = result;
+
+      /* How much actually had to be escaped - the number that tells you
+         whether you picked the right mode. */
+      var escapes = encoding
+        ? (result.match(/%[0-9A-Fa-f]{2}/g) || []).length
+        : (text.match(/%[0-9A-Fa-f]{2}/g) || []).length;
+
+      document.getElementById("cIn").textContent = formatNumber(text.length, 0);
+      document.getElementById("cOut").textContent = formatNumber(result.length, 0);
+      document.getElementById("cEsc").textContent = formatNumber(escapes, 0);
+    }
+    /* ---- END: drawing the answer ---- */
+
+    input.addEventListener("input", run);
+    mode.addEventListener("change", run);
+    scope.addEventListener("change", run);
+    plus.addEventListener("change", run);
+
+    document.getElementById("swapBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to send back"); return; }
+      input.value = output.textContent;
+      mode.value = mode.value === "encode" ? "decode" : "encode";
+      run();
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to copy"); return; }
+      copyText(output.textContent);
+    });
+
+    document.getElementById("dlBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to download"); return; }
+      downloadText(output.textContent, "url-encoded.txt");
+    });
+
+    run();
+  })();
+  </script>
+</body>
+</html>

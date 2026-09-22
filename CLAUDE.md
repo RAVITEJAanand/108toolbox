@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 51 of a planned 108 tools are built, tested and live.
+**Where it stands:** 56 of a planned 108 tools are built, tested and live.
 Phase 2 is finished; Phase 3 has started.
 
 ---
@@ -34,12 +34,12 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`51 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`56 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">51</span> tools live
-<span data-tool-count="remaining">57</span> on the way
+<span data-tool-count="live">56</span> tools live
+<span data-tool-count="remaining">52</span> on the way
 ```
 
 This used to be hand-typed in `index.html`, `tools.html` and `about.html`, and
@@ -55,6 +55,13 @@ span disagrees with the registry, and tells you the number it should be. It
 also fails if the spans disappear entirely, which would mean the markup was
 renamed and `main.js` had quietly stopped filling anything in.
 
+**And the same number in `ROADMAP.md`.** The **Built** column and the tick
+beside each slug rotted exactly the same way — the column read 45 while 51
+tools were live, so the one document that says what is left to do was
+overstating the work remaining. `check.py` 4g derives both from the registry.
+A tick that is wrong in either direction fails: one hides finished work, the
+other sends you to build something twice.
+
 ### 3. Bump `?v=` whenever you touch `css/` or `js/`
 
 Every page links its assets like this:
@@ -65,8 +72,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=13` → `?v=14` across all 61 pages (currently `?v=13`,
-287 occurrences), the template included.
+Find-and-replace `?v=14` → `?v=15` across all 66 pages (currently `?v=14`,
+312 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
 the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
@@ -97,7 +104,7 @@ python test_tools.py   RUNS the files    — every tool, in real Chrome,
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 51, not just the one you changed.** That is the
+**`test_tools.py` runs all 56, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -315,21 +322,23 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (51):** add-line-numbers, add-subtract-days, age-calculator,
-area-converter, average-calculator, binary-decimal-hex-converter,
-bmi-calculator, case-converter, character-frequency-counter,
+**Live (56):** add-line-numbers, add-subtract-days, age-calculator,
+area-converter, average-calculator, base64-encoder-decoder,
+binary-decimal-hex-converter, bmi-calculator, case-converter,
+character-frequency-counter, color-code-converter,
 compound-interest-calculator, cooking-measurement-converter,
 data-storage-converter, date-difference-calculator, days-until-countdown,
 discount-calculator, emi-calculator, find-and-replace, fraction-calculator,
-fuel-cost-calculator, gst-calculator, image-compressor, image-converter,
-json-formatter, leap-year-checker, lorem-ipsum-generator,
-margin-markup-calculator, text-to-morse, nato-phonetic-converter,
-number-to-words, password-generator, percentage-calculator,
-ratio-calculator, remove-duplicate-lines, remove-line-breaks, reverse-text,
-roman-numeral-converter, salary-calculator, shoe-size-converter,
-simple-interest-calculator, sip-calculator, sort-text-lines,
-speed-converter, temperature-converter, text-repeater, tip-calculator,
-unit-converter, timestamp-converter, slug-generator, week-number-calculator,
+fuel-cost-calculator, gst-calculator, html-encoder-decoder,
+image-compressor, image-converter, json-formatter, leap-year-checker,
+lorem-ipsum-generator, margin-markup-calculator, text-to-morse,
+nato-phonetic-converter, number-to-words, password-generator,
+percentage-calculator, ratio-calculator, remove-duplicate-lines,
+remove-line-breaks, reverse-text, roman-numeral-converter,
+salary-calculator, shoe-size-converter, simple-interest-calculator,
+sip-calculator, sort-text-lines, speed-converter, temperature-converter,
+text-repeater, tip-calculator, unit-converter, timestamp-converter,
+url-encoder-decoder, slug-generator, uuid-generator, week-number-calculator,
 whitespace-remover, word-counter.
 
 That count is checked: `check.py` fails if it drifts from the registry.

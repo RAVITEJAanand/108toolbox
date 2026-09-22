@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Base64 Encoder and Decoder — Free Online Tool</title>
+  <meta name="description" content="Encode text to Base64 or decode Base64 back to text, with URL-safe and wrapped output and full Unicode support. It all runs inside your browser.">
+  <link rel="canonical" href="https://108toolbox.in/tools/base64-encoder-decoder.html">
+
+  <meta property="og:title" content="Base64 Encoder and Decoder — Free Online Tool">
+  <meta property="og:description" content="Encode text to Base64 or decode Base64 back to text, with URL-safe and wrapped output and full Unicode support. It all runs inside your browser.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=14">
+  <link rel="stylesheet" href="../css/tool.css?v=14">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is Base64 encryption?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, and this is the mistake that matters. Base64 is an encoding, not a cipher: there is no key and no secret. Anyone who sees the string can paste it into a page like this one and read it back in a second. Never use it to hide a password, a token or anything private."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my Base64 longer than the text I put in?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because every three bytes become four characters, the result is about 33% larger, plus padding. That is the price of getting bytes through a channel that only accepts text, and it is why sending a large file as Base64 inside JSON is usually a bad idea."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is URL-safe Base64?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Standard Base64 uses + and /, and both mean something else in a URL: + can be read as a space and / separates path segments. URL-safe Base64 swaps them for - and _ and usually drops the = padding. JSON Web Tokens use exactly this variant, which is why a JWT has no plus signs in it."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does my Base64 end in one or two equals signs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "That is padding. Base64 works on groups of three bytes; if the data does not divide evenly, the last group is short and = marks how short. One = means the data ended one byte shy of a group, two = means two bytes shy. This page adds the padding back automatically when you decode, so you can paste a string that has had it stripped."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I decode a Base64 image or PDF here?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can paste it, but this is a text tool: it will tell you the data is not text rather than show you a wall of broken characters. It also reports how many bytes the data actually is, which is often the thing you wanted to know."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>Base64 Encoder & Decoder</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Base64 Encoder &amp; Decoder</h1>
+        <p>Turn text into Base64, or read Base64 back as text. Emoji and Indian
+           languages work, URL-safe output is one tick, and nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="mode">What do you want to do?</label>
+            <select id="mode">
+              <option value="encode">Encode &mdash; text into Base64</option>
+              <option value="decode">Decode &mdash; Base64 back into text</option>
+            </select>
+          </div>
+
+          <label class="panel__label" for="input">Your text</label>
+          <textarea id="input" placeholder="Paste text here, or paste Base64 to decode&hellip;">108 ToolBox</textarea>
+
+          <div class="check" style="margin-top:var(--s4)">
+            <input type="checkbox" id="optUrlSafe">
+            <label for="optUrlSafe">URL-safe alphabet &mdash; <code>-</code> and <code>_</code> instead of <code>+</code> and <code>/</code></label>
+          </div>
+          <div class="check">
+            <input type="checkbox" id="optWrap">
+            <label for="optWrap">Wrap the result at 76 characters (email style)</label>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="swapBtn">Send result back as input</button>
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+          <pre class="out mono" id="output" aria-live="polite"></pre>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+
+          <div class="stats stats--3" style="margin-top:var(--s4)">
+            <div class="stat"><span class="stat__num" id="cIn">0</span><span class="stat__label">Characters in</span></div>
+            <div class="stat"><span class="stat__num" id="cOut">0</span><span class="stat__label">Characters out</span></div>
+            <div class="stat"><span class="stat__num" id="cBytes">0</span><span class="stat__label">Bytes of data</span></div>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
+            <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Choose <strong>Encode</strong> to turn text into Base64, or
+              <strong>Decode</strong> to read Base64 back as text.</li>
+          <li>Paste into the left box. The result appears as you type &mdash;
+              there is no button to press.</li>
+          <li>Copy the result, or send it back as input to check that it
+              round-trips to exactly what you started with.</li>
+        </ol>
+
+        <h2>What Base64 is for</h2>
+        <p>Base64 exists because a lot of the internet was built to carry text,
+           not arbitrary bytes. An email body, a JSON field, a URL, an XML
+           attribute, a <code>data:</code> image inside a stylesheet &mdash; all
+           of them are text channels. Base64 takes any run of bytes and rewrites
+           it using 64 characters that survive every one of those channels
+           unharmed.</p>
+        <p>It works three bytes at a time. Three bytes are 24 bits; 24 bits split
+           evenly into four groups of six; and six bits can count to 64, which is
+           where the name comes from. That is also why the result is always about
+           a third longer than what went in, and why it often ends with one or
+           two <code>=</code> signs: those mark that the last group was not a
+           full three bytes.</p>
+        <p>This page encodes through UTF-8, so a rupee sign, an emoji or a line
+           of Telugu encodes and decodes back exactly as typed. The browser's own
+           <code>btoa()</code> cannot do that on its own &mdash; it refuses
+           anything above U+00FF &mdash; which is why so many pages quietly
+           mangle non-English text.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Is Base64 encryption?</h3>
+          <p>No, and this is the mistake that matters. Base64 is an encoding, not a cipher: there is no key and no secret. Anyone who sees the string can paste it into a page like this one and read it back in a second. Never use it to hide a password, a token or anything private.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is my Base64 longer than the text I put in?</h3>
+          <p>Because every three bytes become four characters, the result is about 33% larger, plus padding. That is the price of getting bytes through a channel that only accepts text, and it is why sending a large file as Base64 inside JSON is usually a bad idea.</p>
+        </div>
+        <div class="faq">
+          <h3>What is URL-safe Base64?</h3>
+          <p>Standard Base64 uses + and /, and both mean something else in a URL: + can be read as a space and / separates path segments. URL-safe Base64 swaps them for - and _ and usually drops the = padding. JSON Web Tokens use exactly this variant, which is why a JWT has no plus signs in it.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does my Base64 end in one or two equals signs?</h3>
+          <p>That is padding. Base64 works on groups of three bytes; if the data does not divide evenly, the last group is short and = marks how short. One = means the data ended one byte shy of a group, two = means two bytes shy. This page adds the padding back automatically when you decode, so you can paste a string that has had it stripped.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I decode a Base64 image or PDF here?</h3>
+          <p>You can paste it, but this is a text tool: it will tell you the data is not text rather than show you a wall of broken characters. It also reports how many bytes the data actually is, which is often the thing you wanted to know.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=14"></script>
+  <script src="../js/tool-helpers.js?v=14"></script>
+  <script>window.CURRENT_TOOL = "base64-encoder-decoder";</script>
+  <script src="../js/main.js?v=14"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input   = document.getElementById("input");
+    var output  = document.getElementById("output");
+    var msg     = document.getElementById("msg");
+    var mode    = document.getElementById("mode");
+    var urlSafe = document.getElementById("optUrlSafe");
+    var wrap    = document.getElementById("optWrap");
+
+    /* ---- START: turning text into Base64 ---- */
+    /* btoa() cannot be used on its own. It reads one byte per character and
+       throws on anything above U+00FF, so a rupee sign, an emoji or a Telugu
+       letter kills it. The text becomes UTF-8 bytes first, and each byte is
+       then handed to btoa as a character, which is what btoa really expects. */
+    function encode(text, safe, wrapLines) {
+      var bytes = new TextEncoder().encode(text);
+      var binary = "";
+      /* In chunks, because String.fromCharCode.apply blows the argument
+         limit on a big input and throws RangeError - which would look like a
+         bug on this page rather than a limit of the call. */
+      for (var i = 0; i < bytes.length; i += 0x2000) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x2000));
+      }
+      var b64 = btoa(binary);
+      if (safe) {
+        b64 = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+      }
+      if (wrapLines) {
+        var lines = [];
+        for (var j = 0; j < b64.length; j += 76) { lines.push(b64.slice(j, j + 76)); }
+        b64 = lines.join("\n");
+      }
+      return b64;
+    }
+    /* ---- END: turning text into Base64 ---- */
+
+    /* ---- START: turning Base64 back into text ---- */
+    function decode(text) {
+      /* Whitespace is never part of the data. Real Base64 arrives wrapped at
+         76 characters out of an email, or indented inside a JSON file, and a
+         tool that refused it would be refusing the normal case. Both
+         alphabets are accepted too - there is no way to paste the wrong
+         one. */
+      var clean = text.replace(/\s+/g, "").replace(/-/g, "+").replace(/_/g, "/");
+      if (!clean) { return { ok: true, text: "", bytes: 0 }; }
+
+      if (!/^[A-Za-z0-9+/]*={0,2}$/.test(clean)) {
+        return { ok: false,
+                 why: "That is not Base64 - it uses characters the alphabet does not have." };
+      }
+      /* URL-safe Base64 usually drops the padding, so put it back. */
+      while (clean.length % 4) { clean += "="; }
+
+      var binary;
+      try {
+        binary = atob(clean);
+      } catch (e) {
+        return { ok: false,
+                 why: "That is not valid Base64 - the length does not work out." };
+      }
+
+      var bytes = new Uint8Array(binary.length);
+      for (var i = 0; i < binary.length; i++) { bytes[i] = binary.charCodeAt(i); }
+
+      try {
+        /* fatal: true is the whole point. Left at its default, invalid bytes
+           come back as replacement characters and the page would show
+           confident rubbish instead of saying it cannot read this. */
+        return { ok: true,
+                 text: new TextDecoder("utf-8", { fatal: true }).decode(bytes),
+                 bytes: bytes.length };
+      } catch (e) {
+        return { ok: false, bytes: bytes.length,
+                 why: "This is " + bytes.length + " bytes of data that is not text - "
+                      + "probably a file such as an image." };
+      }
+    }
+    /* ---- END: turning Base64 back into text ---- */
+
+    /* ---- START: drawing the answer ---- */
+    function run() {
+      var encoding = mode.value === "encode";
+
+      /* Decoding accepts either alphabet and any wrapping, so the two options
+         have nothing to do. Greying them out says so without a sentence. */
+      urlSafe.disabled = !encoding;
+      wrap.disabled = !encoding;
+
+      var text = input.value;
+      var result, plainBytes;
+
+      if (encoding) {
+        result = encode(text, urlSafe.checked, wrap.checked);
+        plainBytes = new TextEncoder().encode(text).length;
+        output.textContent = result;
+        msg.className = "msg";
+        msg.textContent = text
+          ? "Base64 is not encryption - anyone holding this can turn it back."
+          : "Type or paste something on the left.";
+      } else {
+        var got = decode(text);
+        result = got.ok ? got.text : "";
+        plainBytes = got.bytes || 0;
+        output.textContent = result;
+        if (!text) {
+          msg.className = "msg";
+          msg.textContent = "Paste Base64 on the left.";
+        } else if (got.ok) {
+          msg.className = "msg msg--ok";
+          msg.textContent = "Decoded " + plainBytes + " bytes of text.";
+        } else {
+          msg.className = "msg msg--bad";
+          msg.textContent = got.why;
+        }
+      }
+
+      document.getElementById("cIn").textContent = formatNumber(text.length, 0);
+      document.getElementById("cOut").textContent = formatNumber(result.length, 0);
+      document.getElementById("cBytes").textContent = formatNumber(plainBytes, 0);
+    }
+    /* ---- END: drawing the answer ---- */
+
+    input.addEventListener("input", run);
+    mode.addEventListener("change", run);
+    urlSafe.addEventListener("change", run);
+    wrap.addEventListener("change", run);
+
+    /* ---- START: sending the result back round ---- */
+    /* The fastest way to trust an encoder is to watch it come back unchanged,
+       so this flips the mode and moves the result into the input box. */
+    document.getElementById("swapBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to send back"); return; }
+      input.value = output.textContent;
+      mode.value = mode.value === "encode" ? "decode" : "encode";
+      run();
+    });
+    /* ---- END: sending the result back round ---- */
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to copy"); return; }
+      copyText(output.textContent);
+    });
+
+    document.getElementById("dlBtn").addEventListener("click", function () {
+      if (!output.textContent) { showToast("Nothing to download"); return; }
+      downloadText(output.textContent, "base64.txt");
+    });
+
+    run();
+  })();
+  </script>
+</body>
+</html>

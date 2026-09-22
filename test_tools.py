@@ -2334,6 +2334,332 @@ T["shoe-size-converter"] = r"""
     finish();
 """
 
+T["base64-encoder-decoder"] = r"""
+  eq("108 ToolBox encodes to MTA4IFRvb2xCb3g=", out(), "MTA4IFRvb2xCb3g=");
+  eq("characters in", txt("cIn"), "11");
+  eq("characters out", txt("cOut"), "16");
+  eq("bytes of data", txt("cBytes"), "11");
+  has("and it says out loud that this is not encryption", txt("msg"), "not encryption");
+
+  /* Three bytes in, four characters out - the whole shape of Base64. */
+  set("input", "aaa");
+  eq("three bytes become four characters", out().length, 4);
+  eq("and need no padding", (out().match(/=/g) || []).length, 0);
+  set("input", "aaaa");
+  eq("four bytes need two groups, so eight characters", out().length, 8);
+  eq("and two padding characters mark the short one", (out().match(/=/g) || []).length, 2);
+
+  /* btoa() on its own throws on anything above U+00FF. This must not. */
+  set("input", String.fromCodePoint(0x1F600));
+  eq("an emoji encodes through UTF-8", out(), "8J+YgA==");
+  eq("which is four bytes", txt("cBytes"), "4");
+
+  set("input", String.fromCharCode(0xFF, 0xFE));
+  eq("a value whose Base64 contains a slash", out(), "w7/Dvg==");
+  tick("optUrlSafe", true);
+  eq("URL-safe swaps the slash and drops the padding", out(), "w7_Dvg");
+  tick("optUrlSafe", false);
+
+  set("input", String.fromCodePoint(0x1F600));
+  tick("optUrlSafe", true);
+  eq("and it swaps the plus as well", out(), "8J-YgA");
+  tick("optUrlSafe", false);
+
+  /* Wrapping, the way an email header does it. */
+  set("input", new Array(200).join("x"));
+  eq("199 bytes make 268 Base64 characters", out().length, 268);
+  tick("optWrap", true);
+  eq("wrapped into four lines", out().split("\n").length, 4);
+  eq("the first exactly 76 characters", out().split("\n")[0].length, 76);
+  eq("and the last one holding the remainder", out().split("\n")[3].length, 40);
+  tick("optWrap", false);
+
+  /* ---- decoding ---- */
+  set("mode", "decode");
+  eq("the alphabet option has nothing to do while decoding",
+     document.getElementById("optUrlSafe").disabled, true);
+  eq("nor does the wrapping option",
+     document.getElementById("optWrap").disabled, true);
+
+  set("input", "MTA4IFRvb2xCb3g=");
+  eq("decodes back to the text", out(), "108 ToolBox");
+  has("and says how much came out", txt("msg"), "11 bytes");
+
+  set("input", "MTA4 IFRv\nb2xC b3g=");
+  eq("whitespace in pasted Base64 is ignored", out(), "108 ToolBox");
+
+  set("input", "w7_Dvg");
+  eq("URL-safe with the padding stripped still decodes",
+     out(), String.fromCharCode(0xFF, 0xFE));
+
+  set("input", "@@@@");
+  has("characters outside the alphabet are refused", txt("msg"), "does not have");
+  eq("and nothing is printed", out(), "");
+
+  set("input", "A");
+  has("a length that cannot work is refused", txt("msg"), "length does not work out");
+
+  set("input", "//4=");
+  has("bytes that are not text are named as data", txt("msg"), "not text");
+  eq("and the size is still reported", txt("cBytes"), "2");
+
+  /* The fastest proof an encoder is right: watch it come back. */
+  set("mode", "encode");
+  set("input", "Hyderabad");
+  var encoded = out();
+  click("swapBtn");
+  eq("the swap button flips the mode", val("mode"), "decode");
+  eq("it carries the result across", val("input"), encoded);
+  eq("and the round trip is unchanged", out(), "Hyderabad");
+
+  set("input", "");
+  eq("an empty box prints nothing", out(), "");
+    finish();
+"""
+
+T["url-encoder-decoder"] = r"""
+  eq("the default value is encoded for a query string", out(),
+     "lunch%20box%20%26%20drinks%20%E2%80%94%2050%25%20off");
+  eq("escapes counted", txt("cEsc"), "11");
+  has("and it says where this is safe to go", txt("msg"), "query string");
+
+  tick("optPlus", true);
+  has("form style writes spaces as plus signs", out(), "lunch+box");
+  eq("and leaves no %20 behind", (out().match(/%20/g) || []).length, 0);
+  tick("optPlus", false);
+
+  /* The one decision this page exists for. */
+  set("input", "https://108toolbox.in/search?q=lunch box&page=2");
+  eq("as a value, even the :// is escaped", out(),
+     "https%3A%2F%2F108toolbox.in%2Fsearch%3Fq%3Dlunch%20box%26page%3D2");
+  has("and the page warns what that is for",
+      txt("msg"), "looks like a whole URL");
+
+  set("scope", "whole");
+  eq("as a whole URL only the space is escaped", out(),
+     "https://108toolbox.in/search?q=lunch%20box&page=2");
+  has("because the structure is left alone", txt("msg"), "left alone on purpose");
+  eq("plus-for-spaces has no meaning in a path",
+     document.getElementById("optPlus").disabled, true);
+  set("scope", "part");
+
+  /* Percent-encoding escapes UTF-8 bytes, not characters. */
+  set("input", String.fromCodePoint(0x20B9) + "500");
+  eq("a rupee sign is three escaped bytes", out(), "%E2%82%B9500");
+  eq("three escapes", txt("cEsc"), "3");
+
+  /* ---- decoding ---- */
+  set("mode", "decode");
+  set("input", "a+b%20c");
+  eq("a plus stays a plus unless you say otherwise", out(), "a+b c");
+  tick("optPlus", true);
+  eq("with form style on it is a space", out(), "a b c");
+  tick("optPlus", false);
+
+  set("input", "%E2%82%B9500");
+  eq("the rupee sign comes back whole", out(), String.fromCodePoint(0x20B9) + "500");
+
+  set("input", "100%");
+  has("a lone percent is found and located", txt("msg"), "position 4");
+  eq("and nothing is printed", out(), "");
+
+  set("input", "%FF");
+  has("escaped bytes that are not text are refused", txt("msg"), "not text");
+
+  set("input", "");
+  eq("an empty box prints nothing", out(), "");
+    finish();
+"""
+
+T["uuid-generator"] = r"""
+  var RE = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+  var list = out().split("\n");
+
+  eq("five UUIDs on load", list.length, 5);
+  eq("and the tile agrees", txt("cCount"), "5");
+  eq("36 characters each", txt("cLen"), "36");
+  eq("122 random bits", txt("cBits"), "122");
+  ok("every one is a valid version 4 UUID",
+     list.every(function (u) { return RE.test(u); }), list.join(" | "));
+  has("and it says where they were made", txt("msg"), "in this browser");
+
+  /* Six of the 128 bits are not random, and that is the point. */
+  eq("the version digit is always 4", list[0].charAt(14), "4");
+  ok("the variant digit is 8, 9, a or b",
+     "89ab".indexOf(list[0].charAt(19)) > -1, list[0]);
+
+  set("count", 100);
+  var many = out().split("\n");
+  eq("a hundred at once", many.length, 100);
+  var seen = {};
+  many.forEach(function (u) { seen[u] = 1; });
+  eq("and all hundred are different", Object.keys(seen).length, 100);
+  ok("all hundred are well formed",
+     many.every(function (u) { return RE.test(u); }), "one of them is not");
+
+  set("count", 500);
+  eq("too many is clamped", val("count"), "100");
+  set("count", 0);
+  eq("zero is clamped to one", val("count"), "1");
+  eq("and one line is printed", out().split("\n").length, 1);
+  has("the message reads for one", txt("msg"), "One fresh UUID");
+
+  tick("optUpper", true);
+  ok("uppercase leaves no small letters", !/[a-f]/.test(out()), out());
+  tick("optUpper", false);
+
+  tick("optNoDash", true);
+  eq("without hyphens it is 32 characters", out().length, 32);
+  eq("and the tile follows", txt("cLen"), "32");
+  tick("optNoDash", false);
+
+  tick("optBraces", true);
+  eq("braces on both ends",
+     out().charAt(0) + out().charAt(out().length - 1), "{}");
+  eq("which makes 38 characters", txt("cLen"), "38");
+  tick("optBraces", false);
+
+  /* Generate has to actually generate. */
+  var before = out();
+  click("genBtn");
+  ok("a second press gives a different UUID", out() !== before, "identical output");
+  ok("and it is still well formed", RE.test(out()), out());
+
+  click("clearBtn");
+  eq("clear empties the list", out(), "");
+  eq("and zeroes the count", txt("cCount"), "0");
+    finish();
+"""
+
+T["color-code-converter"] = r"""
+  eq("three formats listed", rows().length, 3);
+  has("the hex row", cell(0, 1), "#3b82f6");
+  has("the rgb row", cell(1, 1), "rgb(59, 130, 246)");
+  has("the hsl row", cell(2, 1), "hsl(217, 91%, 60%)");
+
+  near("contrast against white", txt("cWhite"), 3.68, 0.02);
+  near("contrast against black", txt("cBlack"), 5.71, 0.02);
+  near("relative luminance as a percentage", txt("cLum"), 23.6, 0.2);
+  has("black is the readable choice here", txt("msg"), "Black text is the readable choice");
+  has("and white is named as failing", txt("msg"), "White text fails AA");
+
+  /* Every syntax the browser knows has to land on the same colour. */
+  set("input", "rgb(59 130 246)");
+  has("the space-separated form is understood", cell(0, 1), "#3b82f6");
+  set("input", "rgb(59, 130, 246)");
+  has("and the comma form", cell(0, 1), "#3b82f6");
+  set("input", "hsl(217 91% 60%)");
+  has("hsl comes back as the same hsl", cell(2, 1), "hsl(217, 91%, 60%)");
+
+  set("input", "rebeccapurple");
+  has("a CSS colour name works", cell(0, 1), "#663399");
+  has("and gives its rgb", cell(1, 1), "rgb(102, 51, 153)");
+  set("input", "tomato");
+  has("so does another", cell(1, 1), "rgb(255, 99, 71)");
+
+  /* The two ends of the scale. */
+  set("input", "#ffffff");
+  near("white against black is the maximum 21", txt("cBlack"), 21, 0.01);
+  near("and against white it is 1", txt("cWhite"), 1, 0.01);
+  near("luminance is 100", txt("cLum"), 100, 0.1);
+  has("so black text is the choice", txt("msg"), "Black text is the readable choice");
+
+  set("input", "#000000");
+  near("black against white is 21", txt("cWhite"), 21, 0.01);
+  near("luminance is 0", txt("cLum"), 0, 0.01);
+  has("so white text is the choice", txt("msg"), "White text is the readable choice");
+
+  /* A three-digit hex is the six-digit one doubled. */
+  set("input", "#f00");
+  has("short hex expands", cell(0, 1), "#ff0000");
+  has("red is hue 0", cell(2, 1), "hsl(0, 100%, 50%)");
+  has("and the swatch is actually painted",
+      document.getElementById("swatch").style.background, "rgb(255, 0, 0)");
+
+  /* Alpha only shows up when there is alpha. */
+  set("input", "#3b82f680");
+  has("eight-digit hex keeps its alpha", cell(0, 1), "#3b82f680");
+  has("and rgb becomes rgba", cell(1, 1), "rgba(59, 130, 246, 0.5)");
+  has("and hsl becomes hsla", cell(2, 1), "hsla(217, 91%, 60%, 0.5)");
+
+  set("input", "not a colour");
+  has("nonsense is refused", txt("msg"), "not a colour this browser recognises");
+  has("and the table shows a dash", cell(0, 1), String.fromCharCode(0x2014));
+  eq("with the contrast zeroed", txt("cWhite"), "0");
+
+  set("input", "");
+  has("an empty box asks for a colour", txt("msg"), "Type a colour above");
+    finish();
+"""
+
+T["html-encoder-decoder"] = r"""
+  eq("the default markup is escaped", out(),
+     "&lt;a href=&quot;?a=1&amp;b=2&quot;&gt;Tom &amp; Jerry&#39;s &quot;big&quot; day&lt;/a&gt;");
+  eq("eleven entities written", txt("cEsc"), "11");
+  has("and it says what the result is for", txt("msg"), "show as text");
+
+  /* The ampersand must be escaped first, or you escape your own output. */
+  set("input", "&lt;");
+  eq("an entity in the input is escaped once, not twice", out(), "&amp;lt;");
+
+  tick("optQuotes", false);
+  set("input", "a \"b\" 'c' <d>");
+  eq("with quotes off only the markup characters go",
+     out(), "a \"b\" 'c' &lt;d&gt;");
+  tick("optQuotes", true);
+  eq("with quotes on the quotes go too",
+     out(), "a &quot;b&quot; &#39;c&#39; &lt;d&gt;");
+  has("and an apostrophe is numeric, never &apos;", out(), "&#39;");
+
+  /* A UTF-8 page does not need these escaped, so it does not do it. */
+  set("input", String.fromCodePoint(0x20B9) + "500");
+  eq("a rupee sign is left as itself by default",
+     out(), String.fromCodePoint(0x20B9) + "500");
+  eq("and nothing counts as escaped", txt("cEsc"), "0");
+  tick("optAll", true);
+  eq("and becomes a number only when asked", out(), "&#8377;500");
+
+  set("input", String.fromCodePoint(0x1F600));
+  eq("an emoji becomes one entity, not two broken halves",
+     out(), "&#128512;");
+  tick("optAll", false);
+
+  /* ---- decoding ---- */
+  set("mode", "decode");
+  eq("the encode options do nothing here",
+     document.getElementById("optQuotes").disabled, true);
+
+  set("input", "&lt;b&gt; &amp; &#39;x&#39; &hellip; &#x1F600;");
+  has("named entities decode", out(), "<b>");
+  has("decimal ones decode", out(), "'x'");
+  has("the ellipsis decodes", out(), String.fromCharCode(0x2026));
+  has("and hexadecimal ones too", out(), String.fromCodePoint(0x1F600));
+  has("seven of them", txt("msg"), "Decoded 7");
+
+  set("input", "&foo; &amp;");
+  eq("an unknown entity is left exactly as it was found", out(), "&foo; &");
+  has("and the page admits it", txt("msg"), "left 1");
+
+  /* A plain lookup would find these on the prototype and return a function. */
+  set("input", "&constructor; &toString;");
+  eq("prototype names are not entities", out(), "&constructor; &toString;");
+  has("both left alone", txt("msg"), "left 2");
+
+  set("input", "&#xD800;");
+  eq("a lone surrogate is not a character, so it is left alone",
+     out(), "&#xD800;");
+
+  set("mode", "encode");
+  set("input", "<p>Tom & Jerry</p>");
+  click("swapBtn");
+  eq("the swap flips to decode", val("mode"), "decode");
+  eq("and the round trip comes back unchanged", out(), "<p>Tom & Jerry</p>");
+
+  set("input", "");
+  eq("an empty box prints nothing", out(), "");
+    finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 
