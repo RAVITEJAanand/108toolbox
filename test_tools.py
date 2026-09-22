@@ -2216,6 +2216,124 @@ T["nato-phonetic-converter"] = r"""
     finish();
 """
 
+T["cooking-measurement-converter"] = r"""
+  /* Loads as 1 Indian cup (200 ml) of plain flour, density 0.52.
+     200 ml x 0.52 = 104 g. */
+  near("one Indian cup of flour in grams", txt("mainOut"), 104);
+  near("one cup is one cup", txt("oCup"), 1);
+  near("200 ml is 13.3 tablespoons", txt("oTbsp"), 13.3, 0.05);
+  near("200 ml is 40 teaspoons", txt("oTsp"), 40);
+
+  eq("nine units listed", rows().length, 9);
+  near("millilitres row", cell(3, 1), 200);
+  near("litres row", cell(4, 1), 0.2, 0.01);
+  near("fluid ounces row", cell(5, 1), 6.76, 0.02);
+  near("grams row", cell(6, 1), 104);
+  near("ounces by weight row", cell(8, 1), 3.67, 0.02);
+
+  /* The cup size is the whole point of the page: the same "1 cup" is a
+     different amount in an Indian and an American recipe. */
+  set("cupSize", "240");
+  near("one US cup of flour is about 125 g", txt("mainOut"), 125, 0.6);
+  near("and 240 ml", cell(3, 1), 240);
+  set("cupSize", "250");
+  near("one metric cup of flour is 130 g", txt("mainOut"), 130);
+  set("cupSize", "240");
+
+  /* Same volume, different ingredient, very different weight - the reason the
+     ingredient has to be chosen at all. */
+  set("ingredient", "sugar");
+  near("one US cup of sugar is about 204 g", txt("mainOut"), 204);
+  set("ingredient", "water");
+  near("one US cup of water is 240 g", txt("mainOut"), 240);
+  set("ingredient", "honey");
+  near("honey is heavier than water", txt("mainOut"), 341, 1);
+  set("ingredient", "flour");
+
+  /* Spoons are metric here: 15 ml and 5 ml. */
+  set("unit", "tbsp"); set("amount", 1);
+  near("one tablespoon is 15 ml", cell(3, 1), 15);
+  near("one tablespoon of flour is 7.8 g", txt("mainOut"), 7.8, 0.05);
+  set("unit", "tsp");
+  near("one teaspoon is 5 ml", cell(3, 1), 5);
+
+  /* Going the other way: grams in, cups out. */
+  set("unit", "g"); set("amount", 240);
+  near("240 g of flour is 1.92 US cups", txt("mainOut"), 1.92, 0.02);
+  has("and the headline says cups", txt("mainOut"), "cups");
+  set("ingredient", "water");
+  near("240 g of water is exactly one cup", txt("mainOut"), 1);
+
+  set("unit", "kg"); set("amount", 1);
+  near("a kilo of water is 1000 ml", cell(3, 1), 1000);
+
+  /* Scaling must be linear - two cups is twice one cup. */
+  set("unit", "cup"); set("ingredient", "flour"); set("amount", 2);
+  near("two cups is twice one cup", txt("mainOut"), 249.6, 1);
+
+  set("amount", 0);
+  has("zero is refused with a reason", txt("msg"), "above zero");
+  set("amount", 1);
+  has("and the normal note returns", txt("msg"), "approximate");
+    finish();
+"""
+
+T["shoe-size-converter"] = r"""
+  /* Loads as men's India/UK 8, which is US 9, EU 42, 26.5 cm. */
+  has("UK 8 is US 9", txt("mainOut"), "US 9");
+  has("and the label names the input", txt("mainLabel"), "India / UK 8");
+  eq("UK column", txt("oUk"), "8");
+  eq("US column", txt("oUs"), "9");
+  eq("EU column", txt("oEu"), "42");
+  has("foot length in cm", txt("oCm"), "26.5");
+  has("brands vary is the resting message", txt("msg"), "Brands vary");
+
+  eq("five rows around the match", rows().length, 5);
+
+  /* Every system must find the same row, since it is one shoe. */
+  set("system", "us"); set("size", 9);
+  has("US 9 comes back to UK 8", txt("mainOut"), "India / UK 8");
+  eq("EU is still 42", txt("oEu"), "42");
+
+  set("system", "eu"); set("size", 42);
+  has("EU 42 comes back to UK 8", txt("mainOut"), "India / UK 8");
+  eq("US is still 9", txt("oUs"), "9");
+
+  set("system", "cm"); set("size", 26.5);
+  has("26.5 cm comes back to UK 8", txt("mainOut"), "India / UK 8");
+  has("and the label says foot length", txt("mainLabel"), "26.5 cm long");
+
+  /* The women's chart is a different chart, not an offset of the same one. */
+  set("system", "uk"); set("gender", "women"); set("size", 5);
+  has("women's UK 5 is US 7", txt("mainOut"), "US 7");
+  eq("women's UK 5 is EU 38", txt("oEu"), "38");
+  has("women's UK 5 is 24 cm", txt("oCm"), "24");
+
+  set("gender", "men"); set("size", 5);
+  has("men's UK 5 is US 6, not US 7", txt("mainOut"), "US 6");
+
+  /* Half sizes and in-between sizes land on the nearest row, and say so. */
+  set("size", 8.5);
+  has("UK 8.5 is US 9.5", txt("mainOut"), "US 9.5");
+  set("size", 8.2);
+  has("an in-between size finds the nearest", txt("mainOut"), "US 9");
+  has("and admits it is not exact", txt("msg"), "No exact match");
+
+  /* Off the end of the chart must be said out loud, not silently clamped. */
+  set("size", 20);
+  has("far too large is flagged", txt("msg"), "outside the chart");
+  set("size", 1);
+  has("far too small is flagged", txt("msg"), "outside the chart");
+
+  set("size", 8);
+  has("and a real size clears it", txt("msg"), "Brands vary");
+
+  set("size", "");
+  has("an empty box asks for a size", txt("msg"), "Type a size");
+  eq("and the tiles reset", txt("oUk"), String.fromCharCode(0x2014));
+    finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 

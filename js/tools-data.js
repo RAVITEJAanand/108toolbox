@@ -342,6 +342,24 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "cooking-measurement-converter",
+    name: "Cooking Measurement Converter",
+    desc: "Cups, spoons, ml and grams per ingredient, with the 200 ml Indian cup.",
+    category: "Converter",
+    icon: "\u{1F963}",
+    keywords: ["cooking measurement converter", "cups to grams", "cup to ml", "indian cup 200ml", "tablespoon to ml", "flour cup to grams", "recipe converter", "baking conversion"],
+    popular: false
+  },
+  {
+    slug: "shoe-size-converter",
+    name: "Shoe Size Converter",
+    desc: "India, UK, US and EU shoe sizes with the foot length in centimetres.",
+    category: "Converter",
+    icon: "\u{1F45F}",
+    keywords: ["shoe size converter", "uk to us shoe size", "indian shoe size", "eu shoe size", "shoe size chart", "foot length cm"],
+    popular: false
+  },
+  {
     slug: "date-difference-calculator",
     name: "Date Difference Calculator",
     desc: "Days, weeks, months and working days between any two dates.",
