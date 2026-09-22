@@ -360,7 +360,8 @@
       return item;
     }
 
-    /* The answer depends only on the character, and a page of text holds a
+    /* ---- START: deciding once whether a character is punctuation ----
+       The answer depends only on the character, and a page of text holds a
        few dozen distinct ones - so each is decided once and remembered. Two
        regular expressions per character meant 400,000 of them on a long
        paste, all re-deciding the same seventy questions.
@@ -379,6 +380,7 @@
          rather than a list, so it works for text in any language. */
       return !/[a-zA-Z0-9]/.test(ch) && !/\s/.test(ch) && ch !== "";
     }
+    /* ---- END: deciding once whether a character is punctuation ---- */
 
     /* Count once, return a sorted array of [item, count] pairs */
     function tally(items) {

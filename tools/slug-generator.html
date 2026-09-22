@@ -361,12 +361,14 @@
       [0x0131, "i"]     /* dotless i */
     ];
 
-    /* Compiled once. new RegExp() inside the loop rebuilt all eight of these
-       on every keystroke, and compiling a pattern costs far more than running
-       it - the work was in the building, not the replacing. */
+    /* ---- START: the special letters, compiled once ----
+       new RegExp() inside the loop rebuilt all eight of these on every
+       keystroke, and compiling a pattern costs far more than running it -
+       the work was in the building, not the replacing. */
     var SPECIAL_RE = SPECIAL.map(function (pair) {
       return [new RegExp(String.fromCharCode(pair[0]), "gi"), pair[1]];
     });
+    /* ---- END: the special letters, compiled once ---- */
 
     function stripAccents(text) {
       SPECIAL_RE.forEach(function (pair) {
