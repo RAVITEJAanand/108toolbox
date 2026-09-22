@@ -16,6 +16,7 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).parent
+TARGET = 108          # the number in the name; what "on the way" counts down to
 problems = []
 notes = []
 
@@ -208,6 +209,33 @@ if claude.exists():
             fail("CLAUDE.md does not list the tool '%s'" % missing)
         if slugs <= named:
             ok("CLAUDE.md lists all %d tools" % len(slugs))
+
+# ---- 4e. The tool-count fallbacks match the registry -----------------------
+# main.js fills every data-tool-count span at runtime, so these numbers are
+# "only a fallback" - which is exactly why nobody notices when they rot. They
+# have now gone stale twice, the second time sitting at 25 while the registry
+# held 45. Everyone with JavaScript off, and every crawler that does not
+# render, read the wrong number on the homepage, the tools page and the about
+# page. A fallback nobody checks is just a wrong number with a delay on it.
+counts = {"live": len(slugs), "remaining": TARGET - len(slugs)}
+found_stale = False
+found_any = False
+
+for path in sorted(ROOT.glob("*.html")):
+    text = path.read_text(encoding="utf-8")
+    for kind, shown in re.findall(
+            r'<span data-tool-count="(live|remaining)">(\d+)</span>', text):
+        found_any = True
+        if int(shown) != counts[kind]:
+            found_stale = True
+            fail("%s shows '%s' for tools %s — the registry means %d"
+                 % (path.name, shown, kind, counts[kind]))
+
+if found_any and not found_stale:
+    ok("tool-count fallbacks all read %d live / %d to go"
+       % (counts["live"], counts["remaining"]))
+elif not found_any:
+    fail("no data-tool-count spans found — has the markup been renamed?")
 
 # ---- 5. No dead internal links --------------------------------------------
 for path in list(ROOT.glob("*.html")) + tool_pages():

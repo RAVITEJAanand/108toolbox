@@ -40,6 +40,14 @@ it went stale on the live site **twice** — the page said "15 tools live" while
 the grid underneath it showed 20. The number left in the HTML is only a
 fallback for the moment before JavaScript runs.
 
+**That fallback is now checked.** Calling it "only a fallback" is exactly why
+nobody noticed it rotting: it sat at 25 while the registry held 45, so every
+visitor with JavaScript off and every crawler that does not render read the
+wrong number on three pages. `check.py` now fails if any `data-tool-count`
+span disagrees with the registry, and tells you the number it should be. It
+also fails if the spans disappear entirely, which would mean the markup was
+renamed and `main.js` had quietly stopped filling anything in.
+
 ### 3. Bump `?v=` whenever you touch `css/` or `js/`
 
 Every page links its assets like this:
