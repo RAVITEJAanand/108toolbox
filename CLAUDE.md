@@ -57,10 +57,25 @@ Every page links its assets like this:
 ```
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
-returning visitor keeps the old stylesheet and swears nothing changed — this
-already happened once, with the redesign. Find-and-replace `?v=10` → `?v=11`
-across all 55 pages (currently `?v=10`, 267 occurrences). `check.py`
-understands the stamp.
+returning visitor keeps the old stylesheet and swears nothing changed.
+Find-and-replace `?v=10` → `?v=11` across all 55 pages (currently `?v=10`,
+267 occurrences), the template included.
+
+**This is checked now — it failed three times on memory alone.** The worst was
+the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
+so every page still asked for `tools-data.js?v=9`, the exact URL browsers
+already held with 45 tools in it. Both pages returned 200, the server served
+the new registry, `curl` reported 47 — and the site still looked untouched to
+anyone who had visited before, because their browser never asked. `curl` has
+no cache, which is exactly why verifying with it proved nothing.
+
+`assets.lock` holds the current stamp and a hash of every file in `css/` and
+`js/`. `check.py` fails if those files move and the stamp does not, and names
+the number to bump to. It also fails if pages disagree about the stamp, which
+is a half-finished find-and-replace and hands some visitors the new CSS with
+the old script. When you bump correctly, the lock updates itself — commit it
+with the change. The hash normalises line endings first, because Git rewrites
+LF to CRLF on checkout here and raw bytes would disagree between machines.
 
 ### 4. Two scripts, and you run BOTH, every time
 

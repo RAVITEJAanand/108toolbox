@@ -9,6 +9,7 @@ push a site with example.com still in the canonical tags.
   Mac/Linux: python3 check.py
 """
 
+import hashlib
 import html
 import json
 import pathlib
@@ -236,6 +237,71 @@ if found_any and not found_stale:
        % (counts["live"], counts["remaining"]))
 elif not found_any:
     fail("no data-tool-count spans found — has the markup been renamed?")
+
+# ---- 4f. css/ and js/ cannot change unless ?v= moves -----------------------
+# Rule 3 was the last thing on this site still guarded only by memory, and it
+# failed three times. The worst was the quietest: tools 46 and 47 were added
+# to js/tools-data.js without bumping the stamp, so every page still asked for
+# tools-data.js?v=9 - the exact URL browsers already held with 45 tools. The
+# pages returned 200, the server served the new registry, curl showed 47, and
+# the site still looked untouched to anyone who had visited before.
+#
+# So this check remembers. assets.lock stores the stamp and a hash of every
+# file in css/ and js/. If the files move and the stamp does not, that is a
+# failure, not a warning.
+#
+# The hash normalises line endings first. Git rewrites LF to CRLF on checkout
+# here, so hashing raw bytes would make the lock disagree with itself between
+# one machine and the next.
+def asset_fingerprint():
+    parts = []
+    for folder in ("css", "js"):
+        for f in sorted((ROOT / folder).glob("*.*")):
+            text = f.read_text(encoding="utf-8").replace("\r\n", "\n")
+            parts.append(f.name + "\0" + text)
+    return hashlib.sha256("\0".join(parts).encode("utf-8")).hexdigest()
+
+
+stamps = set()
+for page in list(ROOT.glob("*.html")) + sorted((ROOT / "tools").glob("*.html")):
+    stamps.update(re.findall(r'(?:href|src)="[^"]*\.(?:css|js)\?v=(\d+)"',
+                             page.read_text(encoding="utf-8")))
+
+lock_file = ROOT / "assets.lock"
+
+if len(stamps) > 1:
+    # A half-finished find-and-replace. Some visitors get the new CSS and the
+    # old script, which is worse than either on its own.
+    fail("pages disagree about the asset version: %s — finish the bump"
+         % ", ".join("?v=" + s for s in sorted(stamps, key=int)))
+elif not stamps:
+    fail("no ?v= stamps found on any page — has the cache-busting been removed?")
+else:
+    stamp = stamps.pop()
+    fingerprint = asset_fingerprint()
+
+    try:
+        lock = json.loads(lock_file.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        lock = None
+
+    if lock is None:
+        lock_file.write_text(
+            json.dumps({"version": stamp, "hash": fingerprint}, indent=2) + "\n",
+            encoding="utf-8")
+        ok("assets.lock created at ?v=%s — commit it" % stamp)
+    elif lock.get("hash") == fingerprint:
+        ok("css/ and js/ unchanged since ?v=%s" % lock.get("version"))
+    elif lock.get("version") != stamp:
+        lock_file.write_text(
+            json.dumps({"version": stamp, "hash": fingerprint}, indent=2) + "\n",
+            encoding="utf-8")
+        ok("css/ or js/ changed and ?v= moved %s to %s — assets.lock updated"
+           % (lock.get("version"), stamp))
+    else:
+        fail("css/ or js/ changed but ?v=%s did not move — bump every page to "
+             "?v=%d, or returning visitors keep the old file"
+             % (stamp, int(stamp) + 1))
 
 # ---- 5. No dead internal links --------------------------------------------
 for path in list(ROOT.glob("*.html")) + tool_pages():
