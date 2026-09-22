@@ -360,7 +360,21 @@
       return item;
     }
 
+    /* The answer depends only on the character, and a page of text holds a
+       few dozen distinct ones - so each is decided once and remembered. Two
+       regular expressions per character meant 400,000 of them on a long
+       paste, all re-deciding the same seventy questions.
+
+       Object.create(null) for the same reason as tally() below. */
+    var PUNCT = Object.create(null);
+
     function isPunctuation(ch) {
+      var known = PUNCT[ch];
+      if (known !== undefined) { return known; }
+      return (PUNCT[ch] = decidePunctuation(ch));
+    }
+
+    function decidePunctuation(ch) {
       /* Anything that is not a letter, a number or whitespace. Kept as a test
          rather than a list, so it works for text in any language. */
       return !/[a-zA-Z0-9]/.test(ch) && !/\s/.test(ch) && ch !== "";

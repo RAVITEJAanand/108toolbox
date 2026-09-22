@@ -333,16 +333,46 @@
     /* ---- START: writing text as Morse ----
        One space between letters, a forward slash between words. Anything with
        no Morse equivalent is counted rather than dropped in silence. */
+    /* Any whitespace at all separates two words, not just a plain space.
+       Kept as one compiled pattern, and only consulted for characters that
+       are not in the code table, which makes it rare. */
+    var WHITESPACE = /\s/;
+
     function encode(text) {
-      return text.toUpperCase().split(/\s+/).filter(function (w) {
-        return w !== "";
-      }).map(function (word) {
-        return word.split("").map(function (ch) {
-          if (CODE[ch]) return CODE[ch];
+      /* One pass, two arrays. The previous version chained split, map, filter
+         and join per word, which allocated five short-lived arrays for every
+         word in the text - over a hundred thousand of them on a long paste,
+         for an answer that needs none of them. */
+      var upper = text.toUpperCase();
+      var words = [];
+      var letters = [];
+
+      /* Runs one past the end, with a space as the sentinel, so the last word
+         is flushed by the same branch as every other word rather than by a
+         special case after the loop. */
+      for (var i = 0; i <= upper.length; i++) {
+        var code = i < upper.length ? upper.charCodeAt(i) : 32;
+
+        /* space, tab, line feed, carriage return */
+        if (code === 32 || code === 9 || code === 10 || code === 13) {
+          if (letters.length) { words.push(letters.join(" ")); letters = []; }
+          continue;
+        }
+
+        var ch = upper.charAt(i);
+        var symbol = CODE[ch];
+        if (symbol) {
+          letters.push(symbol);
+        } else if (WHITESPACE.test(ch)) {
+          /* A non-breaking space, an en space, an ideographic space: a
+             separator, and never an unknown character. */
+          if (letters.length) { words.push(letters.join(" ")); letters = []; }
+        } else {
           skipped++;
-          return "";
-        }).filter(function (s) { return s !== ""; }).join(" ");
-      }).filter(function (w) { return w !== ""; }).join(" / ");
+        }
+      }
+
+      return words.join(" / ");
     }
     /* ---- END: writing text as Morse ---- */
 

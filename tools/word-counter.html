@@ -319,6 +319,19 @@
   /* Average adult reads about 225 words per minute */
   var WPM = 225;
 
+  /* ---- START: the words too common to be interesting ---- */
+  /* Held as keys, not as a list. indexOf walks the whole list for every word
+     it does NOT find, which is most of them - on a thesis-length paste that
+     is about a million string comparisons for an answer one lookup gives.
+
+     Object.create(null) rather than {}: a plain object already answers to
+     "constructor" and "toString", so those two words would be skipped as if
+     they were "the". */
+  var SKIP = Object.create(null);
+  "the a an and or but if of to in on at for with is are was were be been it this that as by from"
+    .split(" ").forEach(function (w) { SKIP[w] = true; });
+  /* ---- END: the words too common to be interesting ---- */
+
   function countWords(text) {
     var trimmed = text.trim();
     if (trimmed === "") return 0;
@@ -347,10 +360,9 @@
     if (!words) return [];
 
     /* Skip the tiny connecting words; they are always the top five otherwise */
-    var skip = "the a an and or but if of to in on at for with is are was were be been it this that as by from".split(" ");
-    var tally = {};
+    var tally = Object.create(null);
     words.forEach(function (w) {
-      if (w.length < 3 || skip.indexOf(w) !== -1) return;
+      if (w.length < 3 || SKIP[w]) return;
       tally[w] = (tally[w] || 0) + 1;
     });
 
