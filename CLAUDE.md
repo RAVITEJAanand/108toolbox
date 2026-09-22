@@ -18,8 +18,15 @@ Phase 2 is finished; Phase 3 has started.
 
 1. Copy `tools/_template.html` → `tools/<slug>.html`, work through every `TODO`
 2. Add one object to `js/tools-data.js` — **the registry, the spine of the site**
+   — in its **A–Z place by the name on the card**, not at the bottom
 3. Add one `<url>` to `sitemap.xml`
 4. Run `python check.py`
+
+The array is read top to bottom, so it is kept in one order: A–Z by `name`,
+lowercased. `main.js` sorts the same way before it paints, so a tool dropped
+at the bottom still shows up in the right place — but then the file would be
+the only thing on the site telling a different story. `check.py` check 2c
+fails on an out-of-order array and names the tool it belongs after.
 
 `main.js`, `style.css` and the navbar are written to work untouched at 108
 tools. **If you find yourself editing `main.js` to add a tool, stop** — you
@@ -58,7 +65,7 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=12` → `?v=13` across all 59 pages (currently `?v=12`,
+Find-and-replace `?v=13` → `?v=14` across all 61 pages (currently `?v=13`,
 287 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
@@ -308,23 +315,22 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (51):** word-counter, case-converter, lorem-ipsum-generator,
-remove-duplicate-lines, find-and-replace, sort-text-lines,
-remove-line-breaks, whitespace-remover, reverse-text, text-repeater,
-add-line-numbers, slug-generator, character-frequency-counter,
-image-compressor, image-converter, percentage-calculator, age-calculator,
-emi-calculator, bmi-calculator, discount-calculator, tip-calculator,
-average-calculator, ratio-calculator, gst-calculator,
-simple-interest-calculator, compound-interest-calculator,
-fraction-calculator, margin-markup-calculator, area-converter,
-number-to-words, temperature-converter, date-difference-calculator,
-add-subtract-days, sip-calculator, unit-converter,
-binary-decimal-hex-converter, timestamp-converter, days-until-countdown,
-password-generator, json-formatter, roman-numeral-converter,
-data-storage-converter, speed-converter, leap-year-checker,
-week-number-calculator, salary-calculator, fuel-cost-calculator,
-text-to-morse, nato-phonetic-converter, cooking-measurement-converter,
-shoe-size-converter.
+**Live (51):** add-line-numbers, add-subtract-days, age-calculator,
+area-converter, average-calculator, binary-decimal-hex-converter,
+bmi-calculator, case-converter, character-frequency-counter,
+compound-interest-calculator, cooking-measurement-converter,
+data-storage-converter, date-difference-calculator, days-until-countdown,
+discount-calculator, emi-calculator, find-and-replace, fraction-calculator,
+fuel-cost-calculator, gst-calculator, image-compressor, image-converter,
+json-formatter, leap-year-checker, lorem-ipsum-generator,
+margin-markup-calculator, text-to-morse, nato-phonetic-converter,
+number-to-words, password-generator, percentage-calculator,
+ratio-calculator, remove-duplicate-lines, remove-line-breaks, reverse-text,
+roman-numeral-converter, salary-calculator, shoe-size-converter,
+simple-interest-calculator, sip-calculator, sort-text-lines,
+speed-converter, temperature-converter, text-repeater, tip-calculator,
+unit-converter, timestamp-converter, slug-generator, week-number-calculator,
+whitespace-remover, word-counter.
 
 That count is checked: `check.py` fails if it drifts from the registry.
 It read 30 while listing 40 for a whole batch, which is the same hand-typed

@@ -16,6 +16,23 @@
 const AT_ROOT = !window.location.pathname.includes("/tools/");
 const BASE = AT_ROOT ? "" : "../";
 
+/* ---- START: one A-Z order for every grid on the site ---- */
+/* check.py keeps tools-data.js itself in this order, so the file you read and
+   the page a visitor sees list the tools identically. The sort is repeated
+   here because a file can be edited by hand and a running page cannot: however
+   the array arrives, the grids, the search results and the related strips all
+   come out A-Z by the name printed on the card.
+
+   Compared lowercased, code point by code point - the same plain < that
+   check.py uses. localeCompare treats punctuation more kindly, but its answer
+   depends on the browser's locale data, and then no script could check it. */
+TOOLS.sort(function (a, b) {
+  const x = a.name.toLowerCase();
+  const y = b.name.toLowerCase();
+  return x < y ? -1 : x > y ? 1 : 0;
+});
+/* ---- END: one A-Z order for every grid on the site ---- */
+
 /* --------------------------------------------------------------------------
    Build the HTML for one card.
    The whole card is a single <a> so the entire rectangle is clickable
@@ -188,10 +205,23 @@ function renderRelated(containerId, currentSlug) {
   const me = TOOLS.find(function (t) { return t.slug === currentSlug; });
   if (!me) return;
 
-  let list = TOOLS.filter(function (t) {
-    return t.slug !== currentSlug && t.category === me.category;
-  });
-  /* If the category is thin, top up with anything else */
+  /* Walk forward from this tool through its own category, wrapping at the
+     end, instead of always taking the first three.
+
+     With one A-Z order that difference matters: "the first three calculators"
+     would put Age, Average and BMI at the foot of all sixteen calculator
+     pages, and the other thirteen would be linked from nowhere. Walking from
+     here gives every tool three different neighbours, so the whole shelf ends
+     up joined together. */
+  const family = TOOLS.filter(function (t) { return t.category === me.category; });
+  const start = family.findIndex(function (t) { return t.slug === currentSlug; });
+
+  let list = [];
+  for (let step = 1; step < family.length && list.length < 3; step++) {
+    list.push(family[(start + step) % family.length]);
+  }
+
+  /* A thin category cannot fill three on its own - top up with anything else */
   if (list.length < 3) {
     const extra = TOOLS.filter(function (t) {
       return t.slug !== currentSlug && list.indexOf(t) === -1;

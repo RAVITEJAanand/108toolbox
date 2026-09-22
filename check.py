@@ -92,6 +92,29 @@ else:
     if empty:
         ok("no tools yet in: %s (planned, so no chip is drawn)" % ", ".join(empty))
 
+# ---- 2c. The registry reads in the order the site draws --------------------
+# main.js sorts TOOLS A-Z by the name on the card before it paints anything,
+# so a tool appended to the bottom of the array still lands in the right place
+# on the page. The file would then be the one thing on the site telling a
+# different story than the site - 51 objects in the order they happened to be
+# written, which nobody can scan and every diff shuffles.
+#
+# So the file is held to the same order. The comparison is lowercased and code
+# point by code point, exactly what main.js does, so the two can never mean
+# different things by "A to Z".
+name_order = re.findall(r'name: "([^"]+)"', registry)
+ordered = sorted(name_order, key=str.lower)
+if name_order != ordered:
+    for earlier, later in zip(name_order, name_order[1:]):
+        if earlier.lower() > later.lower():
+            at = ordered.index(later)
+            where = ("the top of the array" if at == 0
+                     else "right after '%s'" % ordered[at - 1])
+            fail("tools-data.js: '%s' is out of A-Z order — it belongs %s"
+                 % (later, where))
+elif name_order:
+    ok("registry reads A-Z, the same order the grids draw")
+
 # ---- 3. Sitemap covers every tool -----------------------------------------
 sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
 missing_from_sitemap = [s for s in sorted(slugs) if "tools/%s.html" % s not in sitemap]

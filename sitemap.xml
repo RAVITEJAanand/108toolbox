@@ -42,7 +42,37 @@
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://108toolbox.in/tools/word-counter.html</loc>
+    <loc>https://108toolbox.in/tools/add-line-numbers.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/add-subtract-days.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/age-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/area-converter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/average-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/binary-decimal-hex-converter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/bmi-calculator.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -52,7 +82,62 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://108toolbox.in/tools/lorem-ipsum-generator.html</loc>
+    <loc>https://108toolbox.in/tools/character-frequency-counter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/compound-interest-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/cooking-measurement-converter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/data-storage-converter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/date-difference-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/days-until-countdown.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/discount-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/emi-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/find-and-replace.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/fraction-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/fuel-cost-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/gst-calculator.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -67,192 +152,7 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://108toolbox.in/tools/percentage-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/age-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/emi-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/password-generator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://108toolbox.in/tools/json-formatter.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/remove-duplicate-lines.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/find-and-replace.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/sort-text-lines.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/remove-line-breaks.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/whitespace-remover.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/reverse-text.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/text-repeater.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/add-line-numbers.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/slug-generator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/character-frequency-counter.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/bmi-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/discount-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/tip-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/average-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/ratio-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/gst-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/simple-interest-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/compound-interest-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/fraction-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/margin-markup-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/area-converter.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/number-to-words.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/temperature-converter.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/date-difference-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/add-subtract-days.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/sip-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/unit-converter.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/binary-decimal-hex-converter.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/timestamp-converter.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/days-until-countdown.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/roman-numeral-converter.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/data-storage-converter.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/speed-converter.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -262,17 +162,12 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://108toolbox.in/tools/week-number-calculator.html</loc>
+    <loc>https://108toolbox.in/tools/lorem-ipsum-generator.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://108toolbox.in/tools/salary-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://108toolbox.in/tools/fuel-cost-calculator.html</loc>
+    <loc>https://108toolbox.in/tools/margin-markup-calculator.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -287,12 +182,117 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://108toolbox.in/tools/cooking-measurement-converter.html</loc>
+    <loc>https://108toolbox.in/tools/number-to-words.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/password-generator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/percentage-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/ratio-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/remove-duplicate-lines.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/remove-line-breaks.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/reverse-text.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/roman-numeral-converter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/salary-calculator.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://108toolbox.in/tools/shoe-size-converter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/simple-interest-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/sip-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/sort-text-lines.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/speed-converter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/temperature-converter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/text-repeater.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/tip-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/unit-converter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/timestamp-converter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/slug-generator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/week-number-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/whitespace-remover.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/word-counter.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
