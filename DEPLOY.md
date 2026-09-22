@@ -166,13 +166,33 @@ That last box is what gives you the padlock. It can stay greyed out for up to
 
 Without this, Google may not find you for weeks.
 
-1. **search.google.com/search-console** → **Add property** → **URL prefix**
-2. Enter `https://108toolbox.in`
-3. Verify. Easiest here is the **TXT record** method, since you already have
-   GoDaddy DNS open: copy the TXT value Google gives you, add it in GoDaddy
-   DNS as Type `TXT`, Name `@`, then click Verify
+> **Already done** — verified 20 Sep 2026 as a Domain property. This step is
+> kept for the record, and for the next site.
+
+1. **search.google.com/search-console** → **Add property**
+2. Choose **Domain** — the left-hand box — not **URL prefix**. Enter just
+   `108toolbox.in`: no `https://`, no `www.`, no trailing slash.
+3. Verify with the TXT record Google gives you. With GoDaddy you can usually
+   let Google add it through its own integration; otherwise add it by hand as
+   Type `TXT`, Name `@`. Your `_dmarc` TXT sits under a different name, so the
+   two never clash.
 4. Once verified: **Sitemaps** in the left sidebar → enter `sitemap.xml` →
-   **Submit**
+   **Submit**. Just the filename — Google prefills the domain, and pasting the
+   full URL produces `https://108toolbox.in/https://108toolbox.in/sitemap.xml`
+   and fails.
+
+**Why Domain and not URL prefix.** A URL prefix property tracks exactly one
+spelling. To Google, `http://`, `https://`, `www.` and the bare domain are
+four separate properties, so the data splits four ways and pages look missing
+when they are simply filed elsewhere. A Domain property covers all four at
+once. It is the only reason it needs DNS rather than a file upload.
+
+**Reading the Sitemaps page.** *Status* is the part that matters: **Success**
+means Google parsed the file. *Discovered pages* is a snapshot from the last
+read, so it lags — it sat at 43 for a day while the live sitemap held 53,
+because ten tools shipped an hour after Google last looked. Not an error.
+Re-submitting the same `sitemap.xml` forces a fresh read if you do not want to
+wait.
 
 Repeat at **bing.com/webmasters** — two minutes, and it feeds DuckDuckGo and
 several AI search tools.
