@@ -176,10 +176,19 @@ Without this, Google may not find you for weeks.
    let Google add it through its own integration; otherwise add it by hand as
    Type `TXT`, Name `@`. Your `_dmarc` TXT sits under a different name, so the
    two never clash.
-4. Once verified: **Sitemaps** in the left sidebar → enter `sitemap.xml` →
-   **Submit**. Just the filename — Google prefills the domain, and pasting the
-   full URL produces `https://108toolbox.in/https://108toolbox.in/sitemap.xml`
-   and fails.
+4. Once verified: **Sitemaps** in the left sidebar → enter the **full URL** →
+   **Submit**:
+
+   ```
+   https://108toolbox.in/sitemap.xml
+   ```
+
+   On a **Domain** property this must be the whole address. The advice you see
+   everywhere — "just type `sitemap.xml`, Google fills in the rest" — is for a
+   **URL prefix** property, which has one fixed host to prefill. A Domain
+   property deliberately covers `http`, `https` and `www` at once, so there is
+   no single host to assume and the box rejects a bare filename with
+   *"Invalid sitemap address"*.
 
 **Why Domain and not URL prefix.** A URL prefix property tracks exactly one
 spelling. To Google, `http://`, `https://`, `www.` and the bare domain are
@@ -191,7 +200,7 @@ once. It is the only reason it needs DNS rather than a file upload.
 means Google parsed the file. *Discovered pages* is a snapshot from the last
 read, so it lags — it sat at 43 for a day while the live sitemap held 53,
 because ten tools shipped an hour after Google last looked. Not an error.
-Re-submitting the same `sitemap.xml` forces a fresh read if you do not want to
+Re-submitting the same full URL forces a fresh read if you do not want to
 wait.
 
 Repeat at **bing.com/webmasters** — two minutes, and it feeds DuckDuckGo and
