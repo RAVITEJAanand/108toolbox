@@ -58,8 +58,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed — this
-already happened once, with the redesign. Find-and-replace `?v=8` → `?v=9`
-across all 55 pages (currently `?v=9`, 257 occurrences). `check.py`
+already happened once, with the redesign. Find-and-replace `?v=10` → `?v=11`
+across all 55 pages (currently `?v=10`, 267 occurrences). `check.py`
 understands the stamp.
 
 ### 4. Two scripts, and you run BOTH, every time
