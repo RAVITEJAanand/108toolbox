@@ -392,6 +392,7 @@
     };
     /* ---- END: the unit tables ---- */
 
+    /* ---- START: reaching the page and its unit table ---- */
     function el(id) { return document.getElementById(id); }
 
     function currentKind() { return KINDS[el("kind").value]; }
@@ -402,6 +403,7 @@
       }
       return kind.units[0];
     }
+    /* ---- END: reaching the page and its unit table ---- */
 
     /* ---- START: formatting ----
        A millimetre and a mile live in the same list, so a fixed number of

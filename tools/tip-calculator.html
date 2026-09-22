@@ -358,6 +358,7 @@
     var TIMES = String.fromCharCode(0x00D7);
     var PLUS  = "+";
 
+    /* ---- START: reading the fields and printing money ---- */
     function num(el) {
       var n = parseFloat(el.value);
       return isNaN(n) ? 0 : n;
@@ -368,7 +369,9 @@
       var rounded = Math.round(value * 100) / 100;
       return formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
     }
+    /* ---- END: reading the fields and printing money ---- */
 
+    /* ---- START: the tip, the total and the split, and drawing them ---- */
     function run() {
       taxWrap.hidden = !optNoTax.checked;
 
@@ -418,6 +421,7 @@
         msg.className = "msg";
       }
     }
+    /* ---- END: the tip, the total and the split, and drawing them ---- */
 
     [bill, tip, people, tax].forEach(function (el) {
       el.addEventListener("input", run);

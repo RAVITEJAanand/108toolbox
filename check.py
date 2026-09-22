@@ -327,6 +327,81 @@ else:
              "?v=%d, or returning visitors keep the old file"
              % (stamp, int(stamp) + 1))
 
+# ---- 4h. Every function is inside a START/END pair -------------------------
+# Rule 9, which existed for months with nothing checking it. The owner asked
+# for the markers so that a bug report or an edit request lands on a findable
+# point: read the marker names down a file and you know which block to open,
+# without reading the code. That only works if it is true of EVERY block -
+# one unmarked function and you are back to reading the whole file.
+#
+# When this was first measured, 4 of 56 pages complied and 197 functions sat
+# outside any pair. They were marked in six batches; this keeps it that way.
+#
+# Nested helpers are ignored on purpose: a function declared inside another
+# one is already inside its parent's block, and timestamp-converter quite
+# legitimately declares fail() twice in two different scopes.
+FUNC_LINE = re.compile(r"^(\s*)function ([A-Za-z_$][\w$]*)\s*\(")
+MARK_START = re.compile(r"/\* ---- START: (.*?) ----")
+MARK_END = re.compile(r"/\* ---- END: (.*?) ----")
+
+rule9_bad = []
+for path in tool_pages():
+    body = re.search(r"<script data-tool>(.*?)\n  </script>",
+                     path.read_text(encoding="utf-8"), re.S)
+    if not body:
+        rule9_bad.append("%s has no <script data-tool>" % path.name)
+        continue
+    script = body.group(1)
+    lines = script.split("\n")
+
+    depths = [len(m.group(1)) for m in (FUNC_LINE.match(l) for l in lines) if m]
+    if not depths:
+        continue                      # a page with no functions of its own
+    top = min(depths)
+
+    starts = [(m.start(), m.group(1)) for m in MARK_START.finditer(script)]
+    ends = [(m.start(), m.group(1)) for m in MARK_END.finditer(script)]
+
+    # Pair each START with the first later END whose name matches it. The END
+    # label is allowed to be a shortened form of the START label, which is the
+    # convention already in the files.
+    spans, used = [], set()
+    for pos, name in starts:
+        for i, (epos, ename) in enumerate(ends):
+            if i in used or epos <= pos:
+                continue
+            if name.startswith(ename) or ename.startswith(name):
+                used.add(i)
+                spans.append((pos, epos))
+                break
+        else:
+            rule9_bad.append("%s: START '%s' is never closed" % (path.name, name))
+    for i, (_, ename) in enumerate(ends):
+        if i not in used:
+            rule9_bad.append("%s: END '%s' has no START" % (path.name, ename))
+
+    at, offsets = 0, []
+    for line in lines:
+        offsets.append(at)
+        at += len(line) + 1
+
+    for i, line in enumerate(lines):
+        m = FUNC_LINE.match(line)
+        if not m or len(m.group(1)) != top:
+            continue
+        here = offsets[i]
+        if not any(a <= here <= b for a, b in spans):
+            rule9_bad.append(
+                "%s: %s() is not inside a START/END pair — rule 9"
+                % (path.name, m.group(2)))
+
+for problem in rule9_bad[:12]:
+    fail(problem)
+if len(rule9_bad) > 12:
+    fail("...and %d more rule 9 problems" % (len(rule9_bad) - 12))
+if not rule9_bad:
+    ok("every function on every tool page is inside a START/END pair")
+
 # ---- 4g. ROADMAP.md agrees with the registry -------------------------------
 # The same rot as the tool counts, one file further out. The "Built" column
 # said 45 while 51 tools were live, and the ticks had not moved in three

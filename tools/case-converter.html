@@ -317,6 +317,7 @@
   var output = document.getElementById("output");
   var currentMode = "upper";
 
+  /* ---- START: breaking text into plain words to rebuild from ---- */
   /* Break any text into plain lowercase words, so every format starts from
      the same clean list. This is what makes camelCase work on "Hello World"
      AND on "hello_world". */
@@ -332,6 +333,7 @@
   function capitaliseFirst(word) {
     return word.charAt(0).toUpperCase() + word.slice(1);
   }
+  /* ---- END: breaking text into plain words to rebuild from ---- */
 
   /* Words that stay lowercase inside a title, unless they are first or last */
   var SMALL = "a an and as at but by for in nor of on or the to up via".split(" ");
@@ -378,10 +380,12 @@
     }
   };
 
+  /* ---- START: drawing every format at once ---- */
   function render() {
     var text = input.value;
     output.textContent = text ? convert[currentMode](text) : "";
   }
+  /* ---- END: drawing every format at once ---- */
 
   /* One listener on the container handles all eight buttons (event delegation).
      Add a ninth button and it works with no extra JavaScript. */

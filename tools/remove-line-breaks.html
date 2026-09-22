@@ -321,6 +321,7 @@
     var cOut   = document.getElementById("cOut");
     var cChars = document.getElementById("cChars");
 
+    /* ---- START: what goes between two joined lines ---- */
     /* Which separator goes between joined lines */
     function separator() {
       switch (mode.value) {
@@ -331,7 +332,9 @@
         default:       return " ";
       }
     }
+    /* ---- END: what goes between two joined lines ---- */
 
+    /* ---- START: joining one block into a single line ---- */
     /* Join one block of lines into a single line */
     function joinBlock(block) {
       var lines = block.split("\n");
@@ -341,7 +344,9 @@
       lines = lines.filter(function (l) { return l !== ""; });
       return lines.join(separator());
     }
+    /* ---- END: joining one block into a single line ---- */
 
+    /* ---- START: deciding which breaks to remove and which to keep ---- */
     function transform(text) {
       /* A word hyphenated across two lines: "infor-\nmation" -> "information".
          Done before anything else, while the line break is still there. */
@@ -372,11 +377,15 @@
 
       return joinBlock(text);
     }
+    /* ---- END: deciding which breaks to remove and which to keep ---- */
 
+    /* ---- START: counting the lines ---- */
     function countLines(text) {
       return text === "" ? 0 : text.split("\n").length;
     }
+    /* ---- END: counting the lines ---- */
 
+    /* ---- START: drawing the result ---- */
     function run() {
       /* Windows line endings first, or every line keeps an invisible \r */
       var text = input.value.replace(/\r\n?/g, "\n");
@@ -387,7 +396,9 @@
       cOut.textContent   = formatNumber(countLines(result));
       cChars.textContent = formatNumber(result.length);
     }
+    /* ---- END: drawing the result ---- */
 
+    /* ---- START: showing the separator box only in custom mode ---- */
     /* The separator box is only relevant in custom mode */
     function syncFields() {
       sepField.hidden = mode.value !== "custom";
@@ -396,6 +407,7 @@
       optParas.disabled = !joining;
       run();
     }
+    /* ---- END: showing the separator box only in custom mode ---- */
 
     input.addEventListener("input", run);
     sepBox.addEventListener("input", run);

@@ -317,18 +317,21 @@
   var asOfIn = document.getElementById("asOf");
   var msg    = document.getElementById("msg");
 
+  /* ---- START: putting a date into the box in the form it expects ---- */
   /* Turn a Date into the YYYY-MM-DD string a date input expects */
   function toInputValue(date) {
     var m = String(date.getMonth() + 1).padStart(2, "0");
     var d = String(date.getDate()).padStart(2, "0");
     return date.getFullYear() + "-" + m + "-" + d;
   }
+  /* ---- END: putting a date into the box in the form it expects ---- */
 
   var today = new Date();
   asOfIn.value = toInputValue(today);
   asOfIn.max   = toInputValue(new Date(today.getFullYear() + 100, 0, 1));
   dobIn.max    = toInputValue(today);
 
+  /* ---- START: clearing the panel and speaking to the visitor ---- */
   function setMessage(text, kind) {
     msg.textContent = text || "";
     msg.className = "msg" + (kind ? " msg--" + kind : "");
@@ -339,7 +342,9 @@
       document.getElementById(id).textContent = "\u2014";
     });
   }
+  /* ---- END: clearing the panel and speaking to the visitor ---- */
 
+  /* ---- START: adding whole months without falling off a short one ---- */
   /* Add whole months to a date, clamping to the end of a short month.
      31 January + 1 month = 28 or 29 February, which is the convention every
      calendar library and every legal definition of age uses. */
@@ -349,7 +354,9 @@
     moved.setDate(Math.min(date.getDate(), lastDay));
     return moved;
   }
+  /* ---- END: adding whole months without falling off a short one ---- */
 
+  /* ---- START: the calendar-correct age, years months and days ---- */
   /* Calendar-correct age.
 
      1. Guess the number of whole years and months from the year/month numbers.
@@ -376,7 +383,9 @@
     var days = Math.round((to - anchor) / 86400000);
     return { years: years, months: months, days: days };
   }
+  /* ---- END: the calendar-correct age, years months and days ---- */
 
+  /* ---- START: drawing the answer ---- */
   function calculate() {
     if (!dobIn.value) { blank(); setMessage("Enter your date of birth to begin."); return; }
     if (!asOfIn.value) { blank(); setMessage("Enter the date to measure against."); return; }
@@ -410,6 +419,7 @@
 
     setMessage("");
   }
+  /* ---- END: drawing the answer ---- */
 
   dobIn.addEventListener("input", calculate);
   asOfIn.addEventListener("input", calculate);

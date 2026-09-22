@@ -401,6 +401,7 @@
     var SCALE_MIN = 15;
     var SCALE_MAX = 40;
 
+    /* ---- START: where the healthy range sits on the scale ---- */
     function limits() {
       return optAsian.checked ? ASIAN : WHO;
     }
@@ -409,7 +410,9 @@
       var p = ((bmi - SCALE_MIN) / (SCALE_MAX - SCALE_MIN)) * 100;
       return Math.max(0, Math.min(100, p));
     }
+    /* ---- END: where the healthy range sits on the scale ---- */
 
+    /* ---- START: reading the height and weight in either unit ---- */
     /* Numbers straight from an input cannot be trusted: the field can be
        empty, or hold something that is not a number at all. */
     function num(el) {
@@ -424,7 +427,9 @@
       var inches = num(ft) * 12 + num(inch);
       return { m: inches * 0.0254, kilos: num(lb) * 0.45359237, imperial: true };
     }
+    /* ---- END: reading the height and weight in either unit ---- */
 
+    /* ---- START: naming the category a BMI falls in ---- */
     function label(bmi) {
       var L = limits();
       if (bmi < UNDER)   return ["Underweight", "msg msg--bad"];
@@ -432,7 +437,9 @@
       if (bmi < L.obese) return ["Overweight", "msg msg--bad"];
       return ["Obese", "msg msg--bad"];
     }
+    /* ---- END: naming the category a BMI falls in ---- */
 
+    /* ---- START: redrawing the coloured bar when the cutoffs move ---- */
     /* Redraw the coloured bar, because the Asian cutoffs move the borders */
     function drawSegments() {
       var L = limits();
@@ -444,7 +451,9 @@
       segOver.style.width   = (obese - over) + "%";
       segObese.style.width  = (100 - obese) + "%";
     }
+    /* ---- END: redrawing the coloured bar when the cutoffs move ---- */
 
+    /* ---- START: drawing the answer ---- */
     function run() {
       var metric = units.value === "metric";
       metricWrap.hidden   = !metric;
@@ -517,6 +526,7 @@
         toChange.textContent = amount + " " + direction;
       }
     }
+    /* ---- END: drawing the answer ---- */
 
     [cm, kg, ft, inch, lb].forEach(function (el) {
       el.addEventListener("input", run);

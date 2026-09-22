@@ -367,6 +367,7 @@
     var DIVIDE = String.fromCharCode(0x00F7);
     var PLUS   = String.fromCharCode(0x002B);
 
+    /* ---- START: reaching the page and printing money and percentages ---- */
     function el(id) { return document.getElementById(id); }
 
     /* An input can be empty or hold rubbish, so never trust .value directly */
@@ -389,7 +390,9 @@
       if (!isFinite(value)) return String.fromCharCode(0x2014);
       return value.toLocaleString(undefined, { maximumFractionDigits: 2 }) + "%";
     }
+    /* ---- END: reaching the page and printing money and percentages ---- */
 
+    /* ---- START: which slab is selected, including a custom rate ---- */
     /* The dropdown holds the slab; "custom" hands control to a second input.
        Clamped at zero because a negative rate is not a discount, it is a bug
        waiting to divide by something silly. */
@@ -398,7 +401,9 @@
       var r = chosen === "custom" ? num("customRate") : parseFloat(chosen);
       return Math.max(0, isNaN(r) ? 0 : r);
     }
+    /* ---- END: which slab is selected, including a custom rate ---- */
 
+    /* ---- START: the GST split and drawing the answer ---- */
     function run() {
       var amount    = num("amount");
       var rate      = currentRate();
@@ -451,6 +456,7 @@
         : "Half to the centre, half to the state. Together they come to " +
           money(tax) + ", the same as a single IGST line.";
     }
+    /* ---- END: the GST split and drawing the answer ---- */
 
     ["amount", "customRate"].forEach(function (id) {
       el(id).addEventListener("input", run);

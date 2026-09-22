@@ -334,20 +334,25 @@
       "line-order": "the last line comes first, nothing inside a line changes"
     };
 
+    /* ---- START: reversing characters without cutting an emoji in half ---- */
     /* Array.from walks the string by CHARACTER, not by UTF-16 code unit.
        That one choice is what keeps emoji whole: split("") would cut a
        two-unit emoji in half and then reverse the halves. */
     function reverseChars(text) {
       return Array.from(text).reverse().join("");
     }
+    /* ---- END: reversing characters without cutting an emoji in half ---- */
 
+    /* ---- START: reversing words while keeping the spacing ---- */
     /* Splitting on a capturing group keeps the separators in the array, so
        reversing puts the original spacing back between the words instead of
        flattening every gap to a single space. */
     function reverseWords(text) {
       return text.split(/([ \t]+)/).reverse().join("");
     }
+    /* ---- END: reversing words while keeping the spacing ---- */
 
+    /* ---- START: applying the chosen reversal ---- */
     function eachLine(text, fn) {
       return text.split("\n").map(fn).join("\n");
     }
@@ -362,7 +367,9 @@
         default:           return text;
       }
     }
+    /* ---- END: applying the chosen reversal ---- */
 
+    /* ---- START: drawing the result ---- */
     function run() {
       /* Windows line endings first. Otherwise every line keeps an invisible
          carriage return, and reversing moves it to the FRONT of the line. */
@@ -376,6 +383,7 @@
       cWords.textContent = formatNumber(words.length);
       cLines.textContent = formatNumber(text === "" ? 0 : text.split("\n").length);
     }
+    /* ---- END: drawing the result ---- */
 
     input.addEventListener("input", run);
     mode.addEventListener("change", run);

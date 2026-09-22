@@ -329,7 +329,9 @@
                   "July", "August", "September", "October", "November",
                   "December"];
 
+    /* ---- START: reaching the page ---- */
     function el(id) { return document.getElementById(id); }
+    /* ---- END: reaching the page ---- */
 
     /* ---- START: today, as a plain calendar day ----
        Local midnight, not UTC. The big number answers "what does my calendar
@@ -453,10 +455,12 @@
     }
     /* ---- END: the live ticker ---- */
 
+    /* ---- START: drawing the answer ---- */
     function run() {
       runCalendar();
       tick();
     }
+    /* ---- END: drawing the answer ---- */
 
     /* ---- START: wiring ---- */
     el("target").value = iso(new Date());

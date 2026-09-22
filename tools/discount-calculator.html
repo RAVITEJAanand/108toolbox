@@ -333,6 +333,7 @@
     var MINUS  = String.fromCharCode(0x2212);
     var EM_DASH = String.fromCharCode(0x2014);
 
+    /* ---- START: reaching the page and printing money and percentages ---- */
     function el(id) { return document.getElementById(id); }
 
     /* An input can be empty or hold rubbish, so never trust .value directly */
@@ -352,7 +353,9 @@
       var rounded = Math.round(value * 100) / 100;
       return formatNumber(rounded, rounded % 1 === 0 ? 0 : 2) + "%";
     }
+    /* ---- END: reaching the page and printing money and percentages ---- */
 
+    /* ---- START: the price after one discount ---- */
     /* ---- A: price after one discount ---- */
     function runA() {
       var price = num("a1");
@@ -367,7 +370,9 @@
         money(price) + " " + MINUS + " (" + money(price) + " " + TIMES + " " +
         pct(off) + ") = " + money(pay);
     }
+    /* ---- END: the price after one discount ---- */
 
+    /* ---- START: the original price, working backwards ---- */
     /* ---- B: original price, working backwards ---- */
     function runB() {
       var paid = num("b1");
@@ -388,7 +393,9 @@
         money(paid) + " " + DIVIDE + " " + formatNumber(1 - off / 100, 2) +
         " = " + money(original) + ", a saving of " + money(original - paid);
     }
+    /* ---- END: the original price, working backwards ---- */
 
+    /* ---- START: two discounts applied one after the other ---- */
     /* ---- C: two discounts, applied one after the other ---- */
     function runC() {
       var price  = num("c1");
@@ -412,8 +419,11 @@
         " = " + money(afterFirst) + ", then " + TIMES + " " +
         formatNumber(1 - second / 100, 2) + " = " + money(finalPrice);
     }
+    /* ---- END: two discounts applied one after the other ---- */
 
+    /* ---- START: drawing all three answers ---- */
     function run() { runA(); runB(); runC(); }
+    /* ---- END: drawing all three answers ---- */
 
     ["a1","a2","b1","b2","c1","c2","c3"].forEach(function (id) {
       el(id).addEventListener("input", run);

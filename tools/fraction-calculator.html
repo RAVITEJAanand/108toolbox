@@ -351,6 +351,7 @@
 
     var SIGNS = { add: PLUS, sub: MINUS, mul: TIMES, div: DIVIDE };
 
+    /* ---- START: reaching the page and reading whole numbers ---- */
     function el(id) { return document.getElementById(id); }
 
     /* Fractions are whole numbers all the way down, so parseInt, not
@@ -359,7 +360,9 @@
       var n = parseInt(el(id).value, 10);
       return isNaN(n) ? 0 : n;
     }
+    /* ---- END: reaching the page and reading whole numbers ---- */
 
+    /* ---- START: the greatest common divisor, Euclid's way ---- */
     /* Euclid, iterative. Always returns a positive number so it is safe to
        divide by even when the fraction is negative. */
     function gcd(a, b) {
@@ -372,7 +375,9 @@
       }
       return a || 1;
     }
+    /* ---- END: the greatest common divisor, Euclid's way ---- */
 
+    /* ---- START: turning a fraction into one shape and back ---- */
     /* A mixed number is turned into a single improper fraction first, because
        arithmetic on "two and a half" is where mistakes come from. A minus on
        the whole number makes the entire quantity negative. */
@@ -410,7 +415,9 @@
         ? sign + whole
         : sign + whole + " " + rest + "/" + f.d;
     }
+    /* ---- END: turning a fraction into one shape and back ---- */
 
+    /* ---- START: the main calculation ---- */
     function runMain() {
       var a = toImproper(int("aw"), int("an"), int("ad"));
       var b = toImproper(int("bw"), int("bn"), int("bd"));
@@ -476,7 +483,9 @@
 
       el("working").textContent = lines.join(NEWLINE);
     }
+    /* ---- END: the main calculation ---- */
 
+    /* ---- START: the simplify-only panel ---- */
     function runSimplify() {
       var n = int("sn");
       var d = int("sd");
@@ -500,8 +509,11 @@
       el("sGcd").textContent = String(g);
       el("sDec").textContent = formatNumber(n / d, 4);
     }
+    /* ---- END: the simplify-only panel ---- */
 
+    /* ---- START: drawing both answers ---- */
     function run() { runMain(); runSimplify(); }
+    /* ---- END: drawing both answers ---- */
 
     ["aw", "an", "ad", "bw", "bn", "bd", "sn", "sd"].forEach(function (id) {
       el(id).addEventListener("input", run);

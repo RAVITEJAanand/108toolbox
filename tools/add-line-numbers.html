@@ -363,17 +363,22 @@
        bare number with no separator after it is not numbering, it is content. */
     var EXISTING = /^\s*\[?\s*-?\d+\s*[.)\]:-]\s+/;
 
+    /* ---- START: the numbering style the visitor chose ---- */
     function affixes() {
       if (sep.value === "custom") return ["", sepCustom.value];
       return SEPARATORS[sep.value];
     }
+    /* ---- END: the numbering style the visitor chose ---- */
 
+    /* ---- START: reading a number input that may be empty or nonsense ---- */
     /* Number inputs can be empty or hold nonsense, so never trust .value */
     function intValue(el, fallback) {
       var n = parseInt(el.value, 10);
       return isNaN(n) ? fallback : n;
     }
+    /* ---- END: reading a number input that may be empty or nonsense ---- */
 
+    /* ---- START: lining the numbers up so the text stays in a column ---- */
     function pad(text, width) {
       /* A negative number keeps its sign in front: -007, not 0-07 */
       var negative = text.charAt(0) === "-";
@@ -381,7 +386,9 @@
       while (digits.length < width) digits = "0" + digits;
       return (negative ? "-" : "") + digits;
     }
+    /* ---- END: lining the numbers up so the text stays in a column ---- */
 
+    /* ---- START: numbering the lines and drawing the result ---- */
     function run() {
       customWrap.hidden = sep.value !== "custom";
 
@@ -433,6 +440,7 @@
       cNumbered.textContent = formatNumber(counted);
       cLast.textContent   = last === null ? EM_DASH : formatNumber(last);
     }
+    /* ---- END: numbering the lines and drawing the result ---- */
 
     input.addEventListener("input", run);
     [start, step, sepCustom].forEach(function (el) {

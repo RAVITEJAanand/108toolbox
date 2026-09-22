@@ -336,6 +336,7 @@
                       "at", "to", "for", "with", "by", "from", "is", "are",
                       "was", "were", "be", "as", "it", "its", "that", "this"];
 
+    /* ---- START: the accent marks, built from code points ---- */
     /* Combining accent marks live in U+0300 to U+036F. Built from code points
        rather than typed into a regex literal - see the note in
        whitespace-remover.html for the character that breaks a script outright.
@@ -344,6 +345,7 @@
       function esc(code) { return "\\u" + ("000" + code.toString(16)).slice(-4); }
       return new RegExp("[" + esc(from) + "-" + esc(to) + "]", "g");
     }
+    /* ---- END: the accent marks, built from code points ---- */
     var ACCENT_MARKS = rangeClass(0x0300, 0x036F);
 
     /* Letters that no accent rule covers: splitting them produces nothing to
@@ -370,6 +372,7 @@
     });
     /* ---- END: the special letters, compiled once ---- */
 
+    /* ---- START: turning accented letters into plain ones ---- */
     function stripAccents(text) {
       SPECIAL_RE.forEach(function (pair) {
         text = text.replace(pair[0], pair[1]);
@@ -379,7 +382,9 @@
          to delete: the accented letter is a single indivisible character. */
       return text.normalize("NFD").replace(ACCENT_MARKS, "");
     }
+    /* ---- END: turning accented letters into plain ones ---- */
 
+    /* ---- START: turning one title into one slug ---- */
     function slugify(title) {
       var separator = sep.value;
       var text = title;
@@ -426,7 +431,9 @@
 
       return words.join(separator);
     }
+    /* ---- END: turning one title into one slug ---- */
 
+    /* ---- START: drawing a slug for every line ---- */
     function run() {
       var text  = input.value.replace(/\r\n?/g, "\n");
       var lines = text.split("\n").filter(function (l) { return l.trim() !== ""; });
@@ -458,6 +465,7 @@
         msg.className = "msg";
       }
     }
+    /* ---- END: drawing a slug for every line ---- */
 
     input.addEventListener("input", run);
     maxLen.addEventListener("input", run);

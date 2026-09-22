@@ -304,31 +304,40 @@
     var optWord  = document.getElementById("optWord");
     var optRegex = document.getElementById("optRegex");
 
+    /* ---- START: making plain text match itself literally ---- */
     /* Turn plain text into a pattern that matches itself literally.
        Without this, searching for "1+1" or "(a)" would be read as regex
        syntax and either match the wrong thing or throw. */
     function escapeRegex(text) {
       return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
+    /* ---- END: making plain text match itself literally ---- */
 
+    /* ---- START: keeping a dollar sign literal in the replacement ---- */
     /* In a replacement string "$" is special ($1, $&, $$). Someone typing a
        price like "$5" means a literal dollar sign, so double it. */
     function escapeReplacement(text) {
       return text.replace(/\$/g, "$$$$");
     }
+    /* ---- END: keeping a dollar sign literal in the replacement ---- */
 
+    /* ---- START: building the pattern from the options ---- */
     function buildPattern(needle) {
       var source = optRegex.checked ? needle : escapeRegex(needle);
       if (optWord.checked) source = "\\b(?:" + source + ")\\b";
       /* g = every match, not just the first. i = ignore case. */
       return new RegExp(source, optCase.checked ? "g" : "gi");
     }
+    /* ---- END: building the pattern from the options ---- */
 
+    /* ---- START: speaking to the visitor ---- */
     function setStatus(text, kind) {
       status.textContent = text;
       status.className = "msg" + (kind ? " msg--" + kind : "");
     }
+    /* ---- END: speaking to the visitor ---- */
 
+    /* ---- START: doing the replacement and drawing the result ---- */
     function run() {
       var text = input.value;
       var needle = findBox.value;
@@ -367,6 +376,7 @@
         setStatus(formatNumber(hits) + (hits === 1 ? " replacement made." : " replacements made."), "ok");
       }
     }
+    /* ---- END: doing the replacement and drawing the result ---- */
 
     input.addEventListener("input", run);
     findBox.addEventListener("input", run);

@@ -349,6 +349,7 @@
     /* Long loans would otherwise build a table nobody scrolls through */
     var MAX_ROWS = 40;
 
+    /* ---- START: reaching the page and reading its numbers ---- */
     function el(id) { return document.getElementById(id); }
 
     function num(id) {
@@ -360,7 +361,9 @@
       var rounded = Math.round(value * 100) / 100;
       return RUPEE + formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
     }
+    /* ---- END: reaching the page and reading its numbers ---- */
 
+    /* ---- START: turning whatever unit was chosen into years ---- */
     /* Whatever unit was chosen, the sum needs years */
     function years() {
       var value = Math.max(0, num("period"));
@@ -369,7 +372,9 @@
       if (unit === "days")   return value / DAYS_IN_YEAR;
       return value;
     }
+    /* ---- END: turning whatever unit was chosen into years ---- */
 
+    /* ---- START: the year-by-year table ---- */
     function buildTable(principal, perYear, totalYears) {
       var body = el("rows");
       body.textContent = "";          /* clears every child in one go */
@@ -400,7 +405,9 @@
       }
       body.appendChild(fragment);
     }
+    /* ---- END: the year-by-year table ---- */
 
+    /* ---- START: drawing the answer ---- */
     function run() {
       var principal = Math.max(0, num("principal"));
       var rate      = Math.max(0, num("rate"));
@@ -425,6 +432,7 @@
 
       buildTable(principal, principal * rate / 100, t);
     }
+    /* ---- END: drawing the answer ---- */
 
     ["principal", "rate", "period"].forEach(function (id) {
       el(id).addEventListener("input", run);

@@ -309,6 +309,7 @@
     var cAfter  = document.getElementById("cAfter");
     var cSaved  = document.getElementById("cSaved");
 
+    /* ---- START: the characters that look like a space but are not one ---- */
     /* Characters that look like a space but are not one:
          00A0        non-breaking space (the Word and web-page classic)
          2000-200A   the typographic spaces (en, em, thin, hair...)
@@ -330,6 +331,7 @@
         return "\\u" + ("000" + code.toString(16)).slice(-4);
       }).join("") + "]", "g");
     }
+    /* ---- END: the characters that look like a space but are not one ---- */
 
     var spaceLike = [0x00A0, 0x1680, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000];
     for (var code = 0x2000; code <= 0x200A; code++) spaceLike.push(code);
@@ -337,6 +339,7 @@
     var INVISIBLE  = classFrom(spaceLike);
     var ZERO_WIDTH = classFrom([0x200B, 0x200C, 0x200D, 0xFEFF]);
 
+    /* ---- START: removing the whitespace the visitor asked to remove ---- */
     function transform(text) {
       /* Invisible first: everything after this assumes a space is a space */
       if (optInvisible.checked) {
@@ -364,7 +367,9 @@
 
       return text;
     }
+    /* ---- END: removing the whitespace the visitor asked to remove ---- */
 
+    /* ---- START: drawing the result ---- */
     function run() {
       /* Windows line endings first, or every line keeps an invisible \r */
       var text = input.value.replace(/\r\n?/g, "\n");
@@ -375,7 +380,9 @@
       cAfter.textContent  = formatNumber(result.length);
       cSaved.textContent  = formatNumber(text.length - result.length);
     }
+    /* ---- END: drawing the result ---- */
 
+    /* ---- START: greying out the finer options when they cannot apply ---- */
     /* "Remove every space" makes the three finer options meaningless.
        Grey them out rather than letting them look like they still apply. */
     function syncFields() {
@@ -384,6 +391,7 @@
       });
       run();
     }
+    /* ---- END: greying out the finer options when they cannot apply ---- */
 
     input.addEventListener("input", run);
     optAll.addEventListener("change", syncFields);

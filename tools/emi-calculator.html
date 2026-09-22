@@ -344,11 +344,14 @@
   var yearsIn  = document.getElementById("years");
   var msg      = document.getElementById("msg");
 
+  /* ---- START: speaking to the visitor ---- */
   function setMessage(text, kind) {
     msg.textContent = text || "";
     msg.className = "msg" + (kind ? " msg--" + kind : "");
   }
+  /* ---- END: speaking to the visitor ---- */
 
+  /* ---- START: the EMI formula itself ---- */
   /* The standard EMI formula:
 
          P x r x (1 + r)^n
@@ -363,7 +366,9 @@
     var growth = Math.pow(1 + r, months);
     return principal * r * growth / (growth - 1);
   }
+  /* ---- END: the EMI formula itself ---- */
 
+  /* ---- START: drawing the answer ---- */
   function calculate() {
     var principal = parseFloat(amountIn.value);
     var annual    = parseFloat(rateIn.value);
@@ -395,7 +400,9 @@
 
     buildSchedule(principal, annual, months, emi);
   }
+  /* ---- END: drawing the answer ---- */
 
+  /* ---- START: the year-by-year repayment schedule ---- */
   /* Walk month by month, but only write one row per year so the table stays readable */
   function buildSchedule(principal, annual, months, emi) {
     var r = annual / 12 / 100;
@@ -429,6 +436,7 @@
     }
     document.querySelector("#schedule tbody").innerHTML = rows.join("");
   }
+  /* ---- END: the year-by-year repayment schedule ---- */
 
   [amountIn, rateIn, yearsIn].forEach(function (el) {
     el.addEventListener("input", calculate);

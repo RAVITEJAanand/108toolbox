@@ -355,10 +355,12 @@
 
     var EM_DASH = String.fromCharCode(0x2014);
 
+    /* ---- START: naming a character that has no visible shape ---- */
     function label(item) {
       if (LABELS[item]) return LABELS[item];
       return item;
     }
+    /* ---- END: naming a character that has no visible shape ---- */
 
     /* ---- START: deciding once whether a character is punctuation ----
        The answer depends only on the character, and a page of text holds a
@@ -382,6 +384,7 @@
     }
     /* ---- END: deciding once whether a character is punctuation ---- */
 
+    /* ---- START: counting, then sorting by how often ---- */
     /* Count once, return a sorted array of [item, count] pairs */
     function tally(items) {
       /* Object.create(null) has no inherited properties, so a text containing
@@ -399,7 +402,9 @@
         return b[1] - a[1] || a[0].localeCompare(b[0]);
       });
     }
+    /* ---- END: counting, then sorting by how often ---- */
 
+    /* ---- START: splitting the text into the things being counted ---- */
     function collect(text) {
       if (mode.value === "words") {
         var words = text.split(/\s+/).filter(function (w) { return w !== ""; });
@@ -430,7 +435,9 @@
       }
       return chars;
     }
+    /* ---- END: splitting the text into the things being counted ---- */
 
+    /* ---- START: drawing the table ---- */
     function draw(pairs, total) {
       /* Build the rows off-screen and attach them once: one reflow instead
          of one per row, which is the difference on a long table. */
@@ -460,10 +467,12 @@
       rows.textContent = "";
       rows.appendChild(fragment);
     }
+    /* ---- END: drawing the table ---- */
 
     /* Keep the latest table around so the CSV buttons do not recount */
     var current = { pairs: [], total: 0 };
 
+    /* ---- START: the CSV download ---- */
     function toCSV() {
       var header = (mode.value === "words" ? "Word" : "Character") + ",Count,Share\n";
       return header + current.pairs.map(function (pair) {
@@ -474,7 +483,9 @@
         return '"' + item + '",' + pair[1] + "," + share.toFixed(2);
       }).join("\n");
     }
+    /* ---- END: the CSV download ---- */
 
+    /* ---- START: drawing everything at once ---- */
     function run() {
       var text = input.value.replace(/\r\n?/g, "\n");
       var items = collect(text);
@@ -499,6 +510,7 @@
         msg.className = "msg";
       }
     }
+    /* ---- END: drawing everything at once ---- */
 
     input.addEventListener("input", run);
     [mode, optCase, optSpaces, optPunct].forEach(function (el) {

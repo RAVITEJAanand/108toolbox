@@ -364,6 +364,7 @@
     var MINUS   = String.fromCharCode(0x2212);
     var EM_DASH = String.fromCharCode(0x2014);
 
+    /* ---- START: reaching the page and printing money and percentages ---- */
     function el(id) { return document.getElementById(id); }
 
     function num(id) {
@@ -383,11 +384,15 @@
       if (!isFinite(value)) return EM_DASH;
       return value.toLocaleString(undefined, { maximumFractionDigits: 2 }) + "%";
     }
+    /* ---- END: reaching the page and printing money and percentages ---- */
 
+    /* ---- START: the two conversions everyone gets backwards ---- */
     /* The two conversions everyone gets backwards */
     function markupToMargin(markup) { return 100 * markup / (100 + markup); }
     function marginToMarkup(margin) { return 100 * margin / (100 - margin); }
+    /* ---- END: the two conversions everyone gets backwards ---- */
 
+    /* ---- START: the price from a target margin ---- */
     /* ---- A: price from a target margin ---- */
     function runA() {
       var cost   = Math.max(0, num("a1"));
@@ -418,7 +423,9 @@
         formatNumber(margin / 100, 4) + ") = " + money(price) +
         ", keeping " + money(profit);
     }
+    /* ---- END: the price from a target margin ---- */
 
+    /* ---- START: the price from a target markup ---- */
     /* ---- B: price from a target markup ---- */
     function runB() {
       var cost   = Math.max(0, num("b1"));
@@ -435,7 +442,9 @@
         money(cost) + " " + TIMES + " " + formatNumber(1 + markup / 100, 4) +
         " = " + money(price) + ", keeping " + money(profit);
     }
+    /* ---- END: the price from a target markup ---- */
 
+    /* ---- START: both percentages from a cost and a real price ---- */
     /* ---- C: both percentages from a cost and a real price ---- */
     function runC() {
       var cost  = Math.max(0, num("c1"));
@@ -461,8 +470,11 @@
         : money(price) + " " + MINUS + " " + money(cost) + " = " +
           money(profit) + " of profit per unit";
     }
+    /* ---- END: both percentages from a cost and a real price ---- */
 
+    /* ---- START: drawing all three answers ---- */
     function run() { runA(); runB(); runC(); }
+    /* ---- END: drawing all three answers ---- */
 
     ["a1", "a2", "b1", "b2", "c1", "c2"].forEach(function (id) {
       el(id).addEventListener("input", run);

@@ -331,11 +331,14 @@
   var output = document.getElementById("output");
   var msg    = document.getElementById("msg");
 
+  /* ---- START: speaking to the visitor ---- */
   function setMessage(text, kind) {
     msg.innerHTML = text || "";
     msg.className = "msg" + (kind ? " msg--" + kind : "");
   }
+  /* ---- END: speaking to the visitor ---- */
 
+  /* ---- START: turning a character position into a line number ---- */
   /* Browsers report a character position, not a line. Convert it so the error
      message is actually useful on a 400-line file. */
   function positionToLine(text, position) {
@@ -344,7 +347,9 @@
     var column = position - upTo.lastIndexOf("\n");
     return { line: line, column: column };
   }
+  /* ---- END: turning a character position into a line number ---- */
 
+  /* ---- START: counting the keys and the depth of the parsed value ---- */
   /* Count every key and find the deepest nesting, walking the parsed object */
   function inspect(value, depth) {
     depth = depth || 1;
@@ -365,12 +370,16 @@
     }
     return { keys: keys, maxDepth: maxDepth };
   }
+  /* ---- END: counting the keys and the depth of the parsed value ---- */
 
+  /* ---- START: the indent the visitor chose ---- */
   function indentValue() {
     var choice = document.getElementById("indent").value;
     return choice === "tab" ? "\t" : parseInt(choice, 10);
   }
+  /* ---- END: the indent the visitor chose ---- */
 
+  /* ---- START: parsing, reformatting and drawing the result ---- */
   function run(mode) {
     var text = input.value.trim();
     if (text === "") {
@@ -418,6 +427,7 @@
         : "formatted with " + document.getElementById("indent").selectedOptions[0].text.toLowerCase()),
       "ok");
   }
+  /* ---- END: parsing, reformatting and drawing the result ---- */
 
   document.getElementById("beautifyBtn").addEventListener("click", function () { run("beautify"); });
   document.getElementById("minifyBtn").addEventListener("click",   function () { run("minify"); });

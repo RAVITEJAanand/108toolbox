@@ -347,6 +347,7 @@
     /* A hundred-year table helps nobody */
     var MAX_ROWS = 40;
 
+    /* ---- START: reaching the page and reading its numbers ---- */
     function el(id) { return document.getElementById(id); }
 
     function num(id) {
@@ -358,14 +359,18 @@
       var rounded = Math.round(value * 100) / 100;
       return RUPEE + formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
     }
+    /* ---- END: reaching the page and reading its numbers ---- */
 
+    /* ---- START: the compound interest formula itself ---- */
     /* A = P (1 + r/n)^(nt). Kept as its own function because every part of
        the page needs it: the headline, the table and the comparison. */
     function amountAfter(principal, rate, freq, t) {
       if (principal <= 0) return 0;
       return principal * Math.pow(1 + (rate / 100) / freq, freq * t);
     }
+    /* ---- END: the compound interest formula itself ---- */
 
+    /* ---- START: how long the money takes to double ---- */
     /* The exact doubling time, not the rule-of-72 approximation. At 0% the
        money never doubles, so there is no answer to give. */
     function yearsToDouble(rate, freq) {
@@ -374,7 +379,9 @@
       if (perPeriod <= 0) return null;
       return Math.log(2) / (freq * perPeriod);
     }
+    /* ---- END: how long the money takes to double ---- */
 
+    /* ---- START: the year-by-year table ---- */
     function buildTable(principal, rate, freq, totalYears) {
       var body = el("rows");
       body.textContent = "";          /* clears every child in one go */
@@ -404,7 +411,9 @@
       }
       body.appendChild(fragment);
     }
+    /* ---- END: the year-by-year table ---- */
 
+    /* ---- START: drawing the answer ---- */
     function run() {
       var principal = Math.max(0, num("principal"));
       var rate      = Math.max(0, num("rate"));
@@ -434,6 +443,7 @@
 
       buildTable(principal, rate, freq, t);
     }
+    /* ---- END: drawing the answer ---- */
 
     ["principal", "rate", "years"].forEach(function (id) {
       el(id).addEventListener("input", run);

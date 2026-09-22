@@ -352,6 +352,7 @@
 
     var MAX_YEARS = 50;
 
+    /* ---- START: reaching the page, reading its numbers and printing money ---- */
     function el(id) { return document.getElementById(id); }
 
     function num(id) {
@@ -364,6 +365,7 @@
       if (!isFinite(value)) return String.fromCharCode(0x2014);
       return RUPEE + formatNumber(Math.round(value), 0);
     }
+    /* ---- END: reaching the page, reading its numbers and printing money ---- */
 
     /* ---- START: simulating the SIP month by month ----
        Written as a loop rather than the closed-form annuity formula, because

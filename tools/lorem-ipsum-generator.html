@@ -327,6 +327,7 @@
 
   var CLASSIC_OPENER = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
 
+  /* ---- START: picking at random ---- */
   function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -334,7 +335,9 @@
   function randomWord() {
     return WORDS[randomInt(0, WORDS.length - 1)];
   }
+  /* ---- END: picking at random ---- */
 
+  /* ---- START: building one sentence ---- */
   /* One sentence: 8-18 words, a capital letter, a full stop, and sometimes a comma */
   function makeSentence() {
     var howMany = randomInt(8, 18);
@@ -349,7 +352,9 @@
     var sentence = words.join(" ");
     return sentence.charAt(0).toUpperCase() + sentence.slice(1) + ".";
   }
+  /* ---- END: building one sentence ---- */
 
+  /* ---- START: building one paragraph ---- */
   /* One paragraph: 3-6 sentences */
   function makeParagraph() {
     var howMany = randomInt(3, 6);
@@ -357,7 +362,9 @@
     for (var i = 0; i < howMany; i++) sentences.push(makeSentence());
     return sentences.join(" ");
   }
+  /* ---- END: building one paragraph ---- */
 
+  /* ---- START: drawing the requested amount ---- */
   function generate() {
     var unit    = document.getElementById("unit").value;
     var classic = document.getElementById("classic").checked;
@@ -394,6 +401,7 @@
 
     document.getElementById("output").textContent = text;
   }
+  /* ---- END: drawing the requested amount ---- */
 
   document.getElementById("genBtn").addEventListener("click", generate);
   document.getElementById("unit").addEventListener("change", generate);

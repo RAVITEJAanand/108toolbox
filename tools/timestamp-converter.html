@@ -365,6 +365,7 @@
        so the split is nowhere near any date a person will type. */
     var MILLISECOND_THRESHOLD = 100000000000;
 
+    /* ---- START: reaching the page and padding numbers ---- */
     function el(id) { return document.getElementById(id); }
 
     function pad(n, width) {
@@ -372,6 +373,7 @@
       while (s.length < (width || 2)) s = "0" + s;
       return (n < 0 ? "-" : "") + s;
     }
+    /* ---- END: reaching the page and padding numbers ---- */
 
     /* ---- START: printing a date in UTC ----
        Written out by hand rather than with toLocaleString, because that

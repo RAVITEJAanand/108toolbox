@@ -328,11 +328,14 @@
   var originalSize = 0;
   var resultBlob  = null;
 
+  /* ---- START: speaking to the visitor ---- */
   function setMessage(text, kind) {
     msg.textContent = text || "";
     msg.className = "msg" + (kind ? " msg--" + kind : "");
   }
+  /* ---- END: speaking to the visitor ---- */
 
+  /* ---- START: reading the chosen file into an image, without uploading it ---- */
   /* ---- Step 1: read the chosen file into an <img> we can draw ---- */
   function loadFile(file) {
     if (!file) return;
@@ -357,7 +360,9 @@
     };
     reader.readAsDataURL(file);
   }
+  /* ---- END: reading the chosen file into an image, without uploading it ---- */
 
+  /* ---- START: redrawing to a canvas and re-encoding at the chosen quality ---- */
   /* ---- Step 2: draw it to a canvas and re-encode at the chosen quality ---- */
   function compress() {
     if (!loadedImage) return;
@@ -395,6 +400,7 @@
 
     }, "image/jpeg", quality.value / 100);
   }
+  /* ---- END: redrawing to a canvas and re-encoding at the chosen quality ---- */
 
   /* ---- Events ---- */
   quality.addEventListener("input", function () {

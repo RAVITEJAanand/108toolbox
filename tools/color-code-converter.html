@@ -510,12 +510,14 @@
 
     input.addEventListener("input", run);
 
+    /* ---- START: copying one format to the clipboard ---- */
     function copier(which) {
       return function () {
         if (!current) { showToast("No colour to copy"); return; }
         copyText(current[which]);
       };
     }
+    /* ---- END: copying one format to the clipboard ---- */
     document.getElementById("copyHex").addEventListener("click", copier("hex"));
     document.getElementById("copyRgb").addEventListener("click", copier("rgb"));
     document.getElementById("copyHsl").addEventListener("click", copier("hsl"));

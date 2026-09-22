@@ -334,6 +334,7 @@
     var TIMES   = String.fromCharCode(0x00D7);
     var DIVIDE  = String.fromCharCode(0x00F7);
 
+    /* ---- START: reaching the page and reading its numbers ---- */
     function el(id) { return document.getElementById(id); }
 
     function num(id) {
@@ -345,7 +346,9 @@
       var rounded = Math.round(value * 100) / 100;
       return formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
     }
+    /* ---- END: reaching the page and reading its numbers ---- */
 
+    /* ---- START: the highest common factor, Euclid's way ---- */
     /* Euclid, iteratively. Recursion would be prettier and would also blow the
        stack on a pathological pair. */
     function hcf(a, b) {
@@ -358,7 +361,9 @@
       }
       return a;
     }
+    /* ---- END: the highest common factor, Euclid's way ---- */
 
+    /* ---- START: turning decimals into whole numbers so an HCF means something ---- */
     /* Decimals have to become whole numbers before an HCF means anything.
        Multiplying by a power of ten is capped so that 1.123456789 does not
        turn into a ratio of billions. */
@@ -372,7 +377,9 @@
       }
       return [Math.round(a * factor), Math.round(b * factor)];
     }
+    /* ---- END: turning decimals into whole numbers so an HCF means something ---- */
 
+    /* ---- START: simplifying a ratio ---- */
     /* ---- A: simplify ---- */
     function runA() {
       var a = num("a1");
@@ -401,7 +408,9 @@
       el("aPercent").textContent = formatNumber((a / (a + b)) * 100, 1) + "%";
       el("aHcf").textContent = formatNumber(divisor);
     }
+    /* ---- END: simplifying a ratio ---- */
 
+    /* ---- START: solving A to B as C is to what ---- */
     /* ---- B: solve A:B = C:? ---- */
     function runB() {
       var a = num("b1");
@@ -422,7 +431,9 @@
         formatNumber(c) + " " + DIVIDE + " " + formatNumber(a) + " = " +
         formatNumber(Math.round(d * 10000) / 10000, d % 1 === 0 ? 0 : 2);
     }
+    /* ---- END: solving A to B as C is to what ---- */
 
+    /* ---- START: splitting an amount in a ratio ---- */
     /* ---- C: split an amount ---- */
     function runC() {
       var amount = num("c1");
@@ -481,8 +492,11 @@
         msg.className = "msg msg--ok";
       }
     }
+    /* ---- END: splitting an amount in a ratio ---- */
 
+    /* ---- START: drawing all three answers ---- */
     function run() { runA(); runB(); runC(); }
+    /* ---- END: drawing all three answers ---- */
 
     ["a1","a2","b1","b2","b3","c1","c2"].forEach(function (id) {
       el(id).addEventListener("input", run);

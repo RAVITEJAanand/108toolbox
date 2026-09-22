@@ -310,6 +310,7 @@
     var cOut   = document.getElementById("cOut");
     var cDupes = document.getElementById("cDupes");
 
+    /* ---- START: the browser's own language-aware sorter ---- */
     /* Intl.Collator is the browser's own language-aware sorter.
        numeric:true is what makes "item2" come before "item10". */
     function collator() {
@@ -318,7 +319,9 @@
         sensitivity: optCase.checked ? "base" : "variant"
       });
     }
+    /* ---- END: the browser's own language-aware sorter ---- */
 
+    /* ---- START: sorting by the first number on each line ---- */
     /* Read the first number on a line: "12.5 kg" -> 12.5, "-3 C" -> -3.
        A line with no number returns NaN and gets pushed to the bottom. */
     function firstNumber(line) {
@@ -335,7 +338,9 @@
       if (isNaN(nb)) return -1;
       return descending ? nb - na : na - nb;
     }
+    /* ---- END: sorting by the first number on each line ---- */
 
+    /* ---- START: applying the chosen order ---- */
     function sortLines(lines) {
       var compare = collator().compare;
       var copy = lines.slice();          /* never sort the caller's array */
@@ -351,7 +356,9 @@
         default:         return copy;
       }
     }
+    /* ---- END: applying the chosen order ---- */
 
+    /* ---- START: drawing the result ---- */
     function run() {
       /* Windows line endings first, or every line keeps an invisible \r */
       var text = input.value.replace(/\r\n?/g, "\n");
@@ -392,6 +399,7 @@
       cOut.textContent   = formatNumber(sorted.length);
       cDupes.textContent = formatNumber(duplicates);
     }
+    /* ---- END: drawing the result ---- */
 
     input.addEventListener("input", run);
 

@@ -305,6 +305,7 @@
     var cOut  = document.getElementById("cOut");
     var cGone = document.getElementById("cGone");
 
+    /* ---- START: what makes two lines count as the same ---- */
     /* Two lines are "the same" when their keys match. The key is what the
        options change — the line itself is always returned untouched. */
     function keyFor(line) {
@@ -313,7 +314,9 @@
       if (optCase.checked) key = key.toLowerCase();
       return key;
     }
+    /* ---- END: what makes two lines count as the same ---- */
 
+    /* ---- START: removing the repeats and keeping the order ---- */
     function dedupe(lines) {
       var seen = {};                       /* key -> true, for first/last mode */
       var kept = [];
@@ -344,7 +347,9 @@
       });
       return kept;
     }
+    /* ---- END: removing the repeats and keeping the order ---- */
 
+    /* ---- START: drawing the result ---- */
     function run() {
       /* Windows line endings first, or every line keeps an invisible \r */
       var text = input.value.replace(/\r\n?/g, "\n");
@@ -361,6 +366,7 @@
       cOut.textContent   = formatNumber(kept.length);
       cGone.textContent  = formatNumber(lines.length - kept.length);
     }
+    /* ---- END: drawing the result ---- */
 
     /* One listener covers typing, pasting, cutting and undo */
     input.addEventListener("input", run);

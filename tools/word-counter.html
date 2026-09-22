@@ -330,6 +330,7 @@
   var SKIP = Object.create(null);
   "the a an and or but if of to in on at for with is are was were be been it this that as by from"
     .split(" ").forEach(function (w) { SKIP[w] = true; });
+  /* ---- START: the four counts ---- */
   /* ---- END: the words too common to be interesting ---- */
 
   function countWords(text) {
@@ -354,7 +355,9 @@
     /* A blank line separates paragraphs */
     return text.split(/\n\s*\n/).filter(function (p) { return p.trim() !== ""; }).length;
   }
+  /* ---- END: the four counts ---- */
 
+  /* ---- START: which words come up most often ---- */
   function topWords(text, howMany) {
     var words = text.toLowerCase().match(/[a-z0-9']+/g);
     if (!words) return [];
@@ -371,7 +374,9 @@
       .slice(0, howMany)
       .map(function (w) { return { word: w, count: tally[w] }; });
   }
+  /* ---- END: which words come up most often ---- */
 
+  /* ---- START: drawing every number at once ---- */
   function update() {
     var text = input.value;
     var words = countWords(text);
@@ -394,6 +399,7 @@
                  t.word + " &times;" + t.count + "</span>";
         }).join("");
   }
+  /* ---- END: drawing every number at once ---- */
 
   /* "input" fires for typing, pasting, cutting and undo — one listener covers all */
   input.addEventListener("input", update);

@@ -319,6 +319,7 @@
   <script data-tool>
   (function () {
     "use strict";
+  /* ---- START: reading the fields and printing a tidy number ---- */
   /* Read a number field safely. Returns null if it is empty or nonsense,
      so we can show a dash instead of NaN. */
   function num(id) {
@@ -337,7 +338,9 @@
     document.getElementById(outId).textContent = outText;
     document.getElementById(formulaId).innerHTML = formulaText;
   }
+  /* ---- END: reading the fields and printing a tidy number ---- */
 
+  /* ---- START: what is X percent of Y ---- */
   /* ---- A: what is X% of Y ---- */
   function calcA() {
     var percent = num("a1"), total = num("a2");
@@ -349,7 +352,9 @@
     set("aOut", "aFormula", tidy(answer),
         tidy(percent) + " &divide; 100 &times; " + tidy(total) + " = " + tidy(answer));
   }
+  /* ---- END: what is X percent of Y ---- */
 
+  /* ---- START: X is what percent of Y ---- */
   /* ---- B: X is what % of Y ---- */
   function calcB() {
     var part = num("b1"), whole = num("b2");
@@ -365,7 +370,9 @@
     set("bOut", "bFormula", tidy(answer) + "%",
         tidy(part) + " &divide; " + tidy(whole) + " &times; 100 = " + tidy(answer) + "%");
   }
+  /* ---- END: X is what percent of Y ---- */
 
+  /* ---- START: the percentage change between two numbers ---- */
   /* ---- C: percentage change ---- */
   function calcC() {
     var from = num("c1"), to = num("c2");
@@ -389,8 +396,11 @@
       "(" + tidy(to) + " &minus; " + tidy(from) + ") &divide; " + tidy(Math.abs(from)) +
       " &times; 100 = " + tidy(Math.abs(change)) + "% " + word;
   }
+  /* ---- END: the percentage change between two numbers ---- */
 
+  /* ---- START: drawing all three answers ---- */
   function calcAll() { calcA(); calcB(); calcC(); }
+  /* ---- END: drawing all three answers ---- */
 
   /* One loop wires every input instead of six separate listeners */
   ["a1", "a2", "b1", "b2", "c1", "c2"].forEach(function (id) {

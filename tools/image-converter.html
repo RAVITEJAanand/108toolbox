@@ -340,11 +340,14 @@
 
   var EXTENSION = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" };
 
+  /* ---- START: speaking to the visitor ---- */
   function setMessage(text, kind) {
     msg.textContent = text || "";
     msg.className = "msg" + (kind ? " msg--" + kind : "");
   }
+  /* ---- END: speaking to the visitor ---- */
 
+  /* ---- START: reading the chosen file into an image, without uploading it ---- */
   function loadFile(file) {
     if (!file) return;
     if (!file.type.startsWith("image/")) { setMessage("That is not an image file.", "bad"); return; }
@@ -366,7 +369,9 @@
     };
     reader.readAsDataURL(file);
   }
+  /* ---- END: reading the chosen file into an image, without uploading it ---- */
 
+  /* ---- START: redrawing to a canvas in the chosen format ---- */
   function convert() {
     if (!loadedImage) return;
 
@@ -411,12 +416,15 @@
 
     }, type, quality.value / 100);
   }
+  /* ---- END: redrawing to a canvas in the chosen format ---- */
 
+  /* ---- START: hiding the quality slider where it does nothing ---- */
   /* Hide the quality slider when PNG is picked — it does nothing there */
   function syncQualityVisibility() {
     document.getElementById("qualityField").style.display =
       format.value === "image/png" ? "none" : "block";
   }
+  /* ---- END: hiding the quality slider where it does nothing ---- */
 
   format.addEventListener("change", function () { syncQualityVisibility(); convert(); });
   quality.addEventListener("input", function () { document.getElementById("qVal").textContent = quality.value; convert(); });

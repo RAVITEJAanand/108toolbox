@@ -355,12 +355,14 @@
   (function () {
     "use strict";
 
+    /* ---- START: reaching the page and reading its numbers ---- */
     function el(id) { return document.getElementById(id); }
 
     function num(id) {
       var v = parseFloat(el(id).value);
       return isFinite(v) ? v : 0;
     }
+    /* ---- END: reaching the page and reading its numbers ---- */
 
     /* ---- START: how heavy each ingredient is for its volume ----
        Grams per millilitre. These are settled kitchen figures, but they are

@@ -340,10 +340,13 @@
     var EM_DASH = String.fromCharCode(0x2014);
     var MINUS   = String.fromCharCode(0x2212);
 
+    /* ---- START: reaching the output elements ---- */
     function out(id) { return document.getElementById(id); }
+    /* ---- END: reaching the output elements ---- */
 
     var current = { values: [] };
 
+    /* ---- START: reading numbers out of whatever was pasted ---- */
     /* Split on anything that is not part of a number. Keeping the minus sign
        and the decimal point means "-3.5" survives, while "kg" does not. */
     function parseNumbers(text) {
@@ -361,7 +364,9 @@
 
       return { values: values, skipped: skipped };
     }
+    /* ---- END: reading numbers out of whatever was pasted ---- */
 
+    /* ---- START: the statistics themselves ---- */
     /* The setting is a CEILING on decimals, not a demand for them. Forcing the
        count would print a sum of whole numbers as "85.00" and a mode of 7 as
        "7.00", which is noise: the mode is a value lifted straight out of the
@@ -408,7 +413,9 @@
       }, 0);
       return Math.sqrt(total / values.length);
     }
+    /* ---- END: the statistics themselves ---- */
 
+    /* ---- START: emptying the panel ---- */
     function blank() {
       ["mean","median","mode","range","sum","sd","min","max"].forEach(function (id) {
         out(id).textContent = EM_DASH;
@@ -417,7 +424,9 @@
       out("meanFormula").textContent = "the mean, or ordinary average";
       sorted.textContent = "";
     }
+    /* ---- END: emptying the panel ---- */
 
+    /* ---- START: drawing the answer ---- */
     function run() {
       var parsed = parseNumbers(input.value);
       var values = parsed.values;
@@ -477,6 +486,7 @@
       msg.textContent = notes.length ? notes.join("; ") + "." : "";
       msg.className = "msg";
     }
+    /* ---- END: drawing the answer ---- */
 
     input.addEventListener("input", run);
     places.addEventListener("change", run);

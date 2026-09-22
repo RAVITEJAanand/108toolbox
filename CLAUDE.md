@@ -173,6 +173,20 @@ function removeGst(total, rate) {
 
 Name the **job**, not the function — "recovering the base from a
 GST-inclusive total" is findable six months later; "removeGst helper" is not.
+
+**This is checked now.** The owner's reason for asking: when a bug is reported
+or a change is wanted, reading the marker names down a file tells you which
+block to open, without reading the code. That only works if it is true of
+**every** block — one unmarked function and you are back to reading the whole
+file.
+
+It was not true. When it was first measured, **4 of 56 pages complied and 197
+functions sat outside any pair**; 26 pages had no markers at all. They were
+marked in six batches and `check.py` check 4h now fails on an unmarked
+function, an unclosed START or an END with no START. Nested helpers are
+exempt — a function inside another function is already inside its parent's
+block, and `timestamp-converter` legitimately declares `fail()` twice in two
+scopes.
 Wrap a whole feature the same way when several functions serve one job, and
 nest the inner ones. `test_tools.py` shows the pattern at both levels.
 
