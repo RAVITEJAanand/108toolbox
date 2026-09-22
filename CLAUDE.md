@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 45 of a planned 108 tools are built, tested and live.
+**Where it stands:** 47 of a planned 108 tools are built, tested and live.
 Phase 2 is finished; Phase 3 has started.
 
 ---
@@ -27,12 +27,12 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`45 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`47 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">45</span> tools live
-<span data-tool-count="remaining">63</span> on the way
+<span data-tool-count="live">47</span> tools live
+<span data-tool-count="remaining">61</span> on the way
 ```
 
 This used to be hand-typed in `index.html`, `tools.html` and `about.html`, and
@@ -75,7 +75,7 @@ python test_tools.py   RUNS the files    — every tool, in real Chrome,
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 45, not just the one you changed.** That is the
+**`test_tools.py` runs all 47, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -293,7 +293,7 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (45):** word-counter, case-converter, lorem-ipsum-generator,
+**Live (47):** word-counter, case-converter, lorem-ipsum-generator,
 remove-duplicate-lines, find-and-replace, sort-text-lines,
 remove-line-breaks, whitespace-remover, reverse-text, text-repeater,
 add-line-numbers, slug-generator, character-frequency-counter,
@@ -307,7 +307,7 @@ add-subtract-days, sip-calculator, unit-converter,
 binary-decimal-hex-converter, timestamp-converter, days-until-countdown,
 password-generator, json-formatter, roman-numeral-converter,
 data-storage-converter, speed-converter, leap-year-checker,
-week-number-calculator.
+week-number-calculator, salary-calculator, fuel-cost-calculator.
 
 That count is checked: `check.py` fails if it drifts from the registry.
 It read 30 while listing 40 for a whole batch, which is the same hand-typed

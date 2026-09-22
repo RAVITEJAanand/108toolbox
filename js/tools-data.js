@@ -243,6 +243,24 @@ const TOOLS = [
     popular: true
   },
   {
+    slug: "salary-calculator",
+    name: "Salary Calculator",
+    desc: "Turn an annual CTC into your real monthly in-hand, component by component.",
+    category: "Calculator",
+    icon: "\u{1F4B8}",
+    keywords: ["salary calculator", "ctc to in hand", "take home salary", "in hand salary", "ctc calculator", "gross to net salary", "salary breakup", "basic hra pf"],
+    popular: false
+  },
+  {
+    slug: "fuel-cost-calculator",
+    name: "Fuel Cost Calculator",
+    desc: "What a trip costs in petrol or diesel, split per person and per month.",
+    category: "Calculator",
+    icon: "\u{26FD}",
+    keywords: ["fuel cost calculator", "petrol cost", "diesel cost", "trip cost calculator", "mileage cost", "fuel price per km", "commute cost"],
+    popular: false
+  },
+  {
     slug: "simple-interest-calculator",
     name: "Simple Interest Calculator",
     desc: "Interest on the principal only, with the total repayable and a yearly table.",

@@ -1954,6 +1954,140 @@ T["week-number-calculator"] = r"""
     finish();
 """
 
+T["salary-calculator"] = r"""
+  /* Default package: 12,00,000 CTC, basic 40%, metro, 12% PF, gratuity on,
+     200 professional tax, no TDS. Worked by hand:
+       basic     4,80,000      hra       2,40,000
+       pf          57,600      gratuity     23,088
+       special   3,99,312      gross    11,19,312
+       net      10,59,312  ->  88,276 a month */
+  near("default in-hand a month", txt("inHand"), 88276, 1);
+  near("default gross a month", txt("grossMonth"), 93276, 1);
+  near("default deducted a month", txt("cutMonth"), 5000, 1);
+  near("default in-hand a year", txt("inHandYear"), 1059312, 1);
+
+  eq("ten rows in the breakup", rows().length, 10);
+  near("basic is 40% of CTC", cell(0, 1), 480000);
+  near("HRA is half of basic in a metro", cell(1, 1), 240000);
+  near("special allowance balances the package", cell(2, 1), 399312, 1);
+  near("employer PF is 12% of basic", cell(3, 1), 57600);
+  near("gratuity is 4.81% of basic", cell(4, 1), 23088, 1);
+  near("gross excludes PF and gratuity", cell(5, 1), 1119312, 1);
+  near("take-home row matches the headline", cell(9, 1), 1059312, 1);
+  near("monthly column divides by twelve", cell(0, 2), 40000);
+
+  /* Non-metro drops HRA to 40% of basic, but HRA is inside CTC either way,
+     so take-home must not move - only the special allowance absorbs it. */
+  set("city", "nonmetro");
+  near("non-metro HRA", cell(1, 1), 192000);
+  near("special allowance absorbs the difference", cell(2, 1), 447312, 1);
+  near("take-home is unchanged by the HRA split", txt("inHand"), 88276, 1);
+  set("city", "metro");
+
+  /* A higher basic means more PF and gratuity, so LESS in hand. This is the
+     thing the page exists to show, so it is worth asserting. */
+  set("basicPct", 50);
+  near("50% basic raises employer PF", cell(3, 1), 72000);
+  near("50% basic raises gratuity", cell(4, 1), 28860, 1);
+  /* Gross 10,99,140 less PF 72,000 less professional tax 2,400 = 10,24,740,
+     or 85,395 a month - nearly 2,900 LESS than at 40% basic, on the same CTC.
+     That is the whole point of the page, so it is asserted rather than
+     explained. */
+  near("50% basic lowers take-home", txt("inHand"), 85395, 2);
+  set("basicPct", 40);
+
+  set("pfMode", "none");
+  near("no PF means no PF row", cell(3, 1), 0);
+  near("no PF raises take-home", txt("inHand"), 97876, 2);
+
+  set("pfMode", "capped");
+  near("capped PF is 1,800 a month", cell(3, 1), 21600);
+
+  set("pfMode", "percent");
+  tick("hasGratuity", false);
+  near("gratuity off zeroes the row", cell(4, 1), 0);
+  near("gratuity off raises gross", cell(5, 1), 1142400, 1);
+
+  tick("hasGratuity", true);
+  set("tds", 5000);
+  near("TDS cuts take-home directly", txt("inHand"), 83276, 1);
+  near("and shows in the deductions tile", txt("cutMonth"), 10000, 1);
+  set("tds", 0);
+
+  set("ptax", 0);
+  near("zero professional tax", txt("cutMonth"), 4800, 1);
+  set("ptax", 200);
+
+  /* An impossible basic must say so rather than print a negative row. */
+  set("basicPct", 95);
+  has("impossible basic is explained", txt("msg"), "too high");
+  set("basicPct", 40);
+  eq("and the warning clears", txt("msg"), "");
+
+  set("ctc", "");
+  near("an empty CTC does not crash", txt("inHand"), -200, 1);
+    finish();
+"""
+
+T["fuel-cost-calculator"] = r"""
+  /* Default journey: 20 km each way, return trip, 18 km/l, 105 a litre.
+     40 km / 18 = 2.2222 litres, x 105 = 233.33 for the trip. */
+  near("default trip cost", txt("tripCost"), 233, 1);
+  near("default litres", txt("litres"), 2.22, 0.01);
+  near("default cost per km", txt("perKm"), 5.83, 0.01);
+  near("one person pays the whole trip", txt("perPerson"), 233, 1);
+  has("the label says it is a return trip", txt("tripLabel"), "return");
+  has("and names the real distance", txt("tripLabel"), "40");
+
+  eq("three rows", rows().length, 3);
+  near("one trip litres", cell(0, 1), 2.22, 0.01);
+  near("one trip cost", cell(0, 2), 233, 1);
+  near("a month is 22 trips", cell(1, 2), 5133, 2);
+  near("a year is twelve months", cell(2, 2), 61600, 5);
+
+  /* Untick the return trip and everything must halve. */
+  tick("returnTrip", false);
+  near("one way halves the cost", txt("tripCost"), 117, 1);
+  near("one way halves the litres", txt("litres"), 1.11, 0.01);
+  near("cost per km is unchanged by direction", txt("perKm"), 5.83, 0.01);
+  has("the label drops the word return", txt("tripLabel"), "one trip of 20");
+  tick("returnTrip", true);
+
+  set("people", 4);
+  near("four people split the trip", txt("perPerson"), 58, 1);
+  near("but the trip itself costs the same", txt("tripCost"), 233, 1);
+  set("people", 1);
+
+  /* Better mileage, less fuel. 40 / 25 = 1.6 litres, x 105 = 168. */
+  set("mileage", 25);
+  near("better mileage cuts the cost", txt("tripCost"), 168, 1);
+  near("better mileage cuts the litres", txt("litres"), 1.60, 0.01);
+  set("mileage", 18);
+
+  set("price", 0);
+  near("free fuel costs nothing", txt("tripCost"), 0);
+  near("but the litres are still burnt", txt("litres"), 2.22, 0.01);
+  set("price", 105);
+
+  set("trips", 0);
+  near("no trips means no monthly cost", cell(1, 2), 0);
+  near("and no yearly cost", cell(2, 2), 0);
+  near("a single trip still costs the same", txt("tripCost"), 233, 1);
+  set("trips", 22);
+
+  /* Mileage of zero is a real thing to type on the way to typing 18. It must
+     explain itself rather than printing Infinity into every field. */
+  set("mileage", 0);
+  has("zero mileage is explained", txt("msg"), "above zero");
+  near("and nothing becomes Infinity", txt("tripCost"), 0);
+  set("mileage", 18);
+  eq("the warning clears", txt("msg"), "");
+
+  set("distance", "");
+  near("an empty distance does not crash", txt("tripCost"), 0);
+    finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 
