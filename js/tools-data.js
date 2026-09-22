@@ -324,6 +324,24 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "text-to-morse",
+    name: "Morse Code Translator",
+    desc: "Text to Morse and Morse back to text, punctuation included.",
+    category: "Converter",
+    icon: "\u{1F4FB}",
+    keywords: ["morse code", "text to morse", "morse to text", "morse translator", "morse decoder", "dots and dashes", "sos"],
+    popular: false
+  },
+  {
+    slug: "nato-phonetic-converter",
+    name: "NATO Phonetic Alphabet",
+    desc: "Spell a name or reference out loud so it cannot be misheard.",
+    category: "Converter",
+    icon: "\u{1F4DE}",
+    keywords: ["nato phonetic alphabet", "phonetic alphabet", "alfa bravo charlie", "spell on phone", "military alphabet", "aviation alphabet"],
+    popular: false
+  },
+  {
     slug: "date-difference-calculator",
     name: "Date Difference Calculator",
     desc: "Days, weeks, months and working days between any two dates.",

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Morse Code Translator — Text to Morse and Back</title>
+  <meta name="description" content="Translate text into Morse code and Morse code back into text, letters, numbers and punctuation included. Works instantly as you type, nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/text-to-morse.html">
+
+  <meta property="og:title" content="Morse Code Translator — Text to Morse and Back">
+  <meta property="og:description" content="Translate text into Morse code and Morse code back into text, letters, numbers and punctuation included. Works instantly as you type, nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=11">
+  <link rel="stylesheet" href="../css/tool.css?v=11">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How are spaces between words written in Morse code?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A single space separates letters and a forward slash separates words, which is the usual written convention. When Morse is sent as sound the gap between words is simply longer, but on paper a slash removes the guesswork."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it translate Morse code back into letters?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Switch the direction to Morse to text and paste the dots and dashes. It accepts dots and dashes, and also full stops and hyphens typed in their place, since those are what most keyboards produce."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does SOS look like one long run of symbols?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SOS is three dots, three dashes, three dots, and as a distress call it is sent as one unbroken sequence rather than three separate letters. Typed here as S O S you get the letter-by-letter form with gaps, which is the same signal written the ordinary way."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The translation happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
+        <span>Morse Code Translator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Morse Code Translator</h1>
+        <p>Turn writing into dots and dashes, or read dots and dashes back into
+           writing. Letters, numbers and punctuation. Nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Your text</label>
+          <textarea id="input" placeholder="Type anything&hellip;">SOS</textarea>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="direction">Direction</label>
+            <select id="direction">
+              <option value="encode">Text &rarr; Morse</option>
+              <option value="decode">Morse &rarr; text</option>
+            </select>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="swapBtn">Swap direction</button>
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+          <pre class="out mono" id="output"></pre>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+
+          <div class="stats stats--3" style="margin-top:var(--s4)">
+            <div class="stat"><span class="stat__num" id="cChars">0</span><span class="stat__label">Characters in</span></div>
+            <div class="stat"><span class="stat__num" id="cWords">0</span><span class="stat__label">Words</span></div>
+            <div class="stat"><span class="stat__num" id="cSkipped">0</span><span class="stat__label">Unsupported</span></div>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
+            <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Type or paste into the box on the left. The translation appears as
+              you type.</li>
+          <li>Use <strong>Direction</strong> to go the other way and read Morse
+              back into letters.</li>
+          <li><strong>Swap direction</strong> moves the result into the input box,
+              so you can check a translation by turning it straight back.</li>
+        </ol>
+
+        <h2>How Morse is written down</h2>
+        <p>Morse was built for sound, not paper, and the difference explains most
+          of the confusion. A dot is one unit of time, a dash is three. The gap
+          between two symbols inside a letter is one unit, the gap between
+          letters is three, and the gap between words is seven.</p>
+
+        <p>Written out, those gaps become punctuation. This page uses the common
+          convention: <strong>one space between letters</strong> and a
+          <strong>forward slash between words</strong>. So <code>HI THERE</code>
+          becomes <code>.... .. / - .... . .-. .</code>. Some books use a double
+          space instead of the slash; the slash is harder to misread.</p>
+
+        <p>Going the other way, the tool accepts full stops and hyphens as well as
+          the proper dot and dash characters, because that is what a keyboard
+          gives you. Anything it cannot recognise is counted in
+          <strong>Unsupported</strong> rather than silently dropped, so a
+          translation that comes back short tells you why.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How are spaces between words written in Morse code?</h3>
+          <p>A single space separates letters and a forward slash separates words, which is the usual written convention. When Morse is sent as sound the gap between words is simply longer, but on paper a slash removes the guesswork.</p>
+        </div>
+        <div class="faq">
+          <h3>Can it translate Morse code back into letters?</h3>
+          <p>Yes. Switch the direction to <strong>Morse → text</strong> and paste the dots and dashes. It accepts dots and dashes, and also full stops and hyphens typed in their place, since those are what most keyboards produce.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does SOS look like one long run of symbols?</h3>
+          <p>SOS is three dots, three dashes, three dots, and as a distress call it is sent as one unbroken sequence rather than three separate letters. Typed here as <code>SOS</code> you get the letter-by-letter form with gaps, which is the same signal written the ordinary way.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. The translation happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=11"></script>
+  <script src="../js/tool-helpers.js?v=11"></script>
+  <script>window.CURRENT_TOOL = "text-to-morse";</script>
+  <script src="../js/main.js?v=11"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    function el(id) { return document.getElementById(id); }
+
+    /* ---- START: the Morse alphabet ----
+       International Morse, as standardised by the ITU. Letters, digits and the
+       punctuation that is actually in the standard - no invented characters,
+       because a receiver would have no way to read them. */
+    var CODE = {
+      "A": ".-",    "B": "-...",  "C": "-.-.",  "D": "-..",   "E": ".",
+      "F": "..-.",  "G": "--.",   "H": "....",  "I": "..",    "J": ".---",
+      "K": "-.-",   "L": ".-..",  "M": "--",    "N": "-.",    "O": "---",
+      "P": ".--.",  "Q": "--.-",  "R": ".-.",   "S": "...",   "T": "-",
+      "U": "..-",   "V": "...-",  "W": ".--",   "X": "-..-",  "Y": "-.--",
+      "Z": "--..",
+      "0": "-----", "1": ".----", "2": "..---", "3": "...--", "4": "....-",
+      "5": ".....", "6": "-....", "7": "--...", "8": "---..", "9": "----.",
+      ".": ".-.-.-", ",": "--..--", "?": "..--..", "'": ".----.",
+      "!": "-.-.--", "/": "-..-.",  "(": "-.--.",  ")": "-.--.-",
+      "&": ".-...",  ":": "---...", ";": "-.-.-.", "=": "-...-",
+      "+": ".-.-.",  "-": "-....-", "_": "..--.-", "\"": ".-..-.",
+      "$": "...-..-", "@": ".--.-."
+    };
+
+    /* The reverse map is built from the forward one, so the two can never
+       disagree - a typo would break both directions at once and be caught. */
+    var LETTER = {};
+    Object.keys(CODE).forEach(function (ch) { LETTER[CODE[ch]] = ch; });
+    /* ---- END: the Morse alphabet ---- */
+
+    var skipped = 0;
+
+    /* ---- START: writing text as Morse ----
+       One space between letters, a forward slash between words. Anything with
+       no Morse equivalent is counted rather than dropped in silence. */
+    function encode(text) {
+      return text.toUpperCase().split(/\s+/).filter(function (w) {
+        return w !== "";
+      }).map(function (word) {
+        return word.split("").map(function (ch) {
+          if (CODE[ch]) return CODE[ch];
+          skipped++;
+          return "";
+        }).filter(function (s) { return s !== ""; }).join(" ");
+      }).filter(function (w) { return w !== ""; }).join(" / ");
+    }
+    /* ---- END: writing text as Morse ---- */
+
+    /* ---- START: reading Morse back into text ----
+       Keyboards produce full stops and hyphens far more readily than the real
+       dot and dash characters, so both are accepted and normalised first. */
+    function decode(morse) {
+      var cleaned = morse
+        .replace(/[·•∙]/g, ".")   /* middle dot, bullet */
+        .replace(/[‐-―−]/g, "-"); /* the various dashes */
+
+      return cleaned.split("/").map(function (word) {
+        return word.trim().split(/\s+/).filter(function (s) {
+          return s !== "";
+        }).map(function (symbol) {
+          if (LETTER[symbol]) return LETTER[symbol];
+          skipped++;
+          return "";
+        }).join("");
+      }).filter(function (w) { return w !== ""; }).join(" ");
+    }
+    /* ---- END: reading Morse back into text ---- */
+
+    /* ---- START: running the whole page ---- */
+    function run() {
+      var text = el("input").value;
+      var toMorse = el("direction").value === "encode";
+      skipped = 0;
+
+      var result = toMorse ? encode(text) : decode(text);
+      el("output").textContent = result;
+
+      el("cChars").textContent = formatNumber(text.length);
+      el("cWords").textContent = formatNumber(
+        text.trim() === "" ? 0 : text.trim().split(/\s+/).length);
+      el("cSkipped").textContent = formatNumber(skipped);
+
+      var box = el("msg");
+      if (skipped > 0) {
+        box.textContent = skipped === 1
+          ? "1 character has no Morse equivalent and was left out."
+          : skipped + " characters have no Morse equivalent and were left out.";
+        box.className = "msg msg--bad";
+      } else {
+        box.textContent = "";
+        box.className = "msg";
+      }
+    }
+
+    el("input").addEventListener("input", run);
+    el("direction").addEventListener("change", run);
+
+    /* Swap moves the result back into the input and flips the direction, which
+       is the quickest way to check a translation: turn it back and compare. */
+    el("swapBtn").addEventListener("click", function () {
+      el("input").value = el("output").textContent;
+      el("direction").value =
+        el("direction").value === "encode" ? "decode" : "encode";
+      run();
+    });
+
+    el("clearBtn").addEventListener("click", function () {
+      el("input").value = "";
+      run();
+      el("input").focus();
+    });
+
+    el("copyBtn").addEventListener("click", function () {
+      copyText(el("output").textContent);
+    });
+
+    el("dlBtn").addEventListener("click", function () {
+      if (!el("output").textContent) { showToast("Nothing to download"); return; }
+      downloadText(el("output").textContent, "morse.txt");
+    });
+
+    run();   /* run once so the page is correct on load */
+    /* ---- END: running the whole page ---- */
+  })();
+  </script>
+</body>
+</html>

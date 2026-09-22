@@ -2088,6 +2088,134 @@ T["fuel-cost-calculator"] = r"""
     finish();
 """
 
+T["text-to-morse"] = r"""
+  /* The page loads with SOS in the box: ... --- ... */
+  eq("SOS on load", out(), "... --- ...");
+  near("three characters counted", txt("cChars"), 3);
+  near("one word", txt("cWords"), 1);
+  near("nothing skipped", txt("cSkipped"), 0);
+
+  /* One space between letters, a slash between words. */
+  set("input", "HI THERE");
+  eq("two words are slash separated", out(), ".... .. / - .... . .-. .");
+  near("two words counted", txt("cWords"), 2);
+
+  set("input", "SOS 123");
+  eq("digits encode too", out(), "... --- ... / .---- ..--- ...--");
+
+  set("input", "A.");
+  eq("punctuation is in the standard", out(), ".- .-.-.-");
+
+  /* Case must not matter - Morse has no lower case. */
+  set("input", "hi");
+  eq("lower case encodes the same", out(), ".... ..");
+
+  /* Anything with no Morse equivalent is counted, not silently dropped. */
+  set("input", "A#B");
+  eq("the unsupported character is left out", out(), ".- -...");
+  near("and is counted", txt("cSkipped"), 1);
+  has("and the reason is on screen", txt("msg"), "no Morse equivalent");
+
+  set("input", "AB");
+  eq("the warning clears", txt("msg"), "");
+
+  /* ---- the other direction ---- */
+  set("direction", "decode");
+  set("input", ".... .. / - .... . .-. .");
+  eq("Morse reads back to text", out(), "HI THERE");
+
+  set("input", "... --- ...");
+  eq("SOS reads back", out(), "SOS");
+
+  /* A keyboard gives en dashes and the like; those must still decode. */
+  set("input", "." + String.fromCharCode(0x2013));
+  eq("an en dash counts as a dash", out(), "A");
+
+  set("input", "..... ..... .....");
+  eq("digits read back", out(), "555");
+
+  set("input", ".-.-.-.-.-.-");
+  near("an unreadable symbol is counted", txt("cSkipped"), 1);
+
+  /* Swap puts the result back in the box and flips the direction, so a
+     translation can be checked by turning it straight back. */
+  set("direction", "encode");
+  set("input", "HELLO");
+  eq("encoded", out(), ".... . .-.. .-.. ---");
+  click("swapBtn");
+  eq("swap flips the direction", val("direction"), "decode");
+  eq("swap feeds the result back in", val("input"), ".... . .-.. .-.. ---");
+  eq("and it decodes to what we started with", out(), "HELLO");
+
+  click("clearBtn");
+  eq("clear empties the output", out(), "");
+    finish();
+"""
+
+T["nato-phonetic-converter"] = r"""
+  var DASH = " " + String.fromCharCode(0x2014) + " ";
+
+  /* The page loads with PNR 7K4B2 and the letter shown beside each word. */
+  has("P becomes Papa", out(), "P" + DASH + "Papa");
+  has("N becomes November", out(), "N" + DASH + "November");
+  has("R becomes Romeo", out(), "R" + DASH + "Romeo");
+  has("K becomes Kilo", out(), "K" + DASH + "Kilo");
+  has("B becomes Bravo", out(), "B" + DASH + "Bravo");
+  has("7 becomes Seven", out(), "7" + DASH + "Seven");
+  has("the word break is marked", out(), "|");
+  near("five letters", txt("cLetters"), 5);
+  near("three digits", txt("cDigits"), 3);
+  near("nothing skipped", txt("cSkipped"), 0);
+
+  /* The ICAO spellings are deliberate and must not be "corrected". */
+  set("input", "AJX");
+  has("Alfa, not Alpha", out(), "Alfa");
+  has("Juliett with two t's", out(), "Juliett");
+  has("X-ray keeps its hyphen", out(), "X-ray");
+
+  /* Without the letter shown it is just the words, ready to read aloud. */
+  tick("optShowLetter", false);
+  set("input", "PNR 7K4B2");
+  eq("words only", out(),
+     "Papa November Romeo | Seven Kilo Four Bravo Two");
+
+  /* Aviation numbers only change three, four, five and nine. */
+  tick("optAviation", true);
+  set("input", "3459");
+  eq("aviation digits", out(), "Tree Fower Fife Niner");
+  tick("optAviation", false);
+  eq("plain digits", out(), "Three Four Five Nine");
+
+  /* Case must not matter. */
+  set("input", "abc");
+  eq("lower case still spells out", out(), "Alfa Bravo Charlie");
+
+  /* One per line, for reading a long reference without losing your place. */
+  tick("optLines", true);
+  set("input", "AB CD");
+  has("a line per character", out(), "Alfa\nBravo");
+  has("and a blank line between words", out(), "Bravo\n\nCharlie");
+  tick("optLines", false);
+
+  /* Anything with no agreed word is counted, not silently dropped. */
+  set("input", "A#B");
+  eq("the unsupported character is left out", out(), "Alfa Bravo");
+  near("and is counted", txt("cSkipped"), 1);
+  has("and the reason is on screen", txt("msg"), "no agreed word");
+
+  set("input", "AB");
+  eq("the warning clears", txt("msg"), "");
+
+  /* Leading and trailing spaces must not leave a dangling separator. */
+  set("input", "  AB  ");
+  eq("surrounding spaces are trimmed", out(), "Alfa Bravo");
+
+  click("clearBtn");
+  eq("clear empties the output", out(), "");
+  near("and zeroes the counts", txt("cLetters"), 0);
+    finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 
