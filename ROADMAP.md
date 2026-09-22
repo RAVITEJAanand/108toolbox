@@ -102,6 +102,63 @@ four real categories on purpose. Those links are searches (`tools.html?q=pdf`),
 so pointing them at an empty category is a dead link, not a preview. Add each
 one when its category gets its first tool.
 
+### Advertising, once 108 is reached
+
+The owner's decision, taken while the site stood at 56 tools: **advertising
+goes on when all 108 are live, and not before.** Until then the site carries
+no advertising of any kind.
+
+The awkward part is not the ad code. It is that this site currently *promises*
+there are no ads, in four different places, and one of them is on every single
+page. Turning ads on without rewriting those first would make the site lie to
+its visitors on the day it starts earning — so the promises are rewritten
+first, in their own commit, and only then does the ad code go in.
+
+**What has to change**
+
+| Where | What it says now |
+|---|---|
+| `index.html`, the hero line | "no ads &middot; no tracking" |
+| the footer, **all 66 pages** | "No sign-up, no ads, no file uploads." |
+| `privacy.html` section 7 | "There are **no advertisements on this site today**." |
+| `disclaimer.html` section 9 | "There are no advertisements on this site today." |
+
+`privacy.html` section 7 and `disclaimer.html` section 9 were written in
+advance for exactly this day: both already explain what a third-party ad
+provider would do, that its cookies belong to it and not to us, and where a
+visitor can turn personalised ads off. They need the tense changed, not a
+rewrite.
+
+**What stays true, and must not be quietly dropped**
+
+- "Your files never leave your device" — still true. An ad script cannot see
+  what is typed into a tool; the tools still run entirely in the browser.
+- "No sign-up", "no file uploads", "no watermark", "no limits" — all still true.
+- The "Free forever" card never claimed there were no ads, so it stands as is.
+
+So the honest replacements are shorter, not weaker: the footer becomes
+"No sign-up, no file uploads." and the hero line trades "no ads &middot; no
+tracking" for something that is still true, such as "nothing uploaded".
+
+**What AdSense will need from us**
+
+1. A privacy policy naming the third-party cookies — mostly written already.
+2. A consent mechanism for visitors in the EU and UK. Google requires a
+   certified CMP there, and an India-first site still gets that traffic.
+3. `ads.txt` at the site root. GitHub Pages serves it like any other file.
+4. Ad placement that cannot be mistaken for a tool control. Accidental clicks
+   are an AdSense policy violation, and on a site of buttons and output boxes
+   that is a real risk, not a formality.
+
+**What it costs, measured**
+
+A tool page today is **6 requests and 27 kB**, with **no third-party
+JavaScript at all**, and paints in about 220 ms. AdSense typically adds
+100-300 kB of third-party script and several more connections. It will be,
+by a wide margin, the heaviest thing on the site — roughly ten times
+everything else put together. That is the trade, and it is the owner's to
+make; it is written here so it is made with the number in front of us.
+
 ### Final shape at 108
 
 | Category | Tools | Built |

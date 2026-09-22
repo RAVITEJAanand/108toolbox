@@ -134,6 +134,15 @@ touches a server, a third-party API, or someone else's content.
 The homepage says "no tracking". If analytics are ever wanted, use Plausible,
 Umami or Cloudflare Web Analytics — or drop the claim. Not both.
 
+**Advertising is the same rule, and it is already decided.** The owner wants
+ads on once all 108 tools are live, and not before. The site currently
+promises "no ads" in the hero, in the footer of all 66 pages, in
+`privacy.html` section 7 and in `disclaimer.html` section 9. Those promises
+get rewritten **first, in their own commit**, before a single line of ad code
+is added — otherwise the site starts lying to visitors on the day it starts
+earning. The full checklist, including what stays true and what AdSense
+requires, is in `ROADMAP.md` under "Advertising, once 108 is reached".
+
 ### 8. Never name another website on the site
 
 Not a comparison, not a "better than X", not a link, **not one letter**. The
