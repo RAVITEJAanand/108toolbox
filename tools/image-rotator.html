@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Rotate an Image Online — Turn and Flip, Free</title>
+  <meta name="description" content="Rotate a photo left or right, turn it upside down, or flip it like a mirror. It happens in your browser, so the picture is never uploaded anywhere.">
+  <link rel="canonical" href="https://108toolbox.in/tools/image-rotator.html">
+
+  <meta property="og:title" content="Rotate an Image Online — Turn and Flip, Free">
+  <meta property="og:description" content="Rotate a photo left or right, turn it upside down, or flip it like a mirror. It happens in your browser, so the picture is never uploaded anywhere.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=15">
+  <link rel="stylesheet" href="../css/tool.css?v=15">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is my photo uploaded anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Your browser reads the file, draws it turned onto a canvas and hands the result back to you. Nothing is sent to any server, so there is no upload to wait for and no copy of your photo anywhere but your own device."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does rotating lose any quality?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A turn of 90 or 180 degrees moves whole pixels around and loses nothing in itself. But saving the result re-encodes the file, and for a JPEG that costs a little quality every time. One rotation is invisible; rotating and saving the same JPEG twenty times is not. A PNG is lossless and never suffers from this."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my photo sideways in the first place?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because the camera stored it the way the sensor saw it and added a note about how the phone was held. Apps that read the note show it upright; apps that ignore it show it on its side. Rotating here writes the turn into the picture itself, so the note stops mattering."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I rotate by something other than 90 degrees?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not here. A free angle has to invent pixels along every edge and leaves corners that must be cropped or filled, which makes it a different job with different decisions. Quarter turns and mirrors are exact, and they cover almost every reason a photo needs turning."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do the buttons stack up?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Each press adds to what is already there, so two rights make an upside-down picture and a flip on top of a rotation gives both. The tiles show exactly where you are, and Reset puts it back to the original."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
+        <span>Image Rotator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Image Rotator &amp; Flipper</h1>
+        <p>Turn a sideways photo the right way up, or flip it like a mirror.
+           Every step happens in this page &mdash; the file never leaves your
+           device.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">1. Choose an image</span>
+
+          <label class="drop" id="drop" for="file">
+            <span class="drop__big" aria-hidden="true">&#128260;</span>
+            <p><strong>Click to choose</strong> or drag an image here</p>
+            <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; nothing is uploaded</p>
+            <input type="file" id="file" accept="image/*">
+          </label>
+
+          <span class="panel__label" style="margin-top:var(--s4)">2. Turn it</span>
+          <div class="btn-row">
+            <button class="btn btn--ghost" type="button" id="rotLeft">&#8634; Left 90&deg;</button>
+            <button class="btn btn--ghost" type="button" id="rotRight">&#8635; Right 90&deg;</button>
+            <button class="btn btn--ghost" type="button" id="rot180">Upside down</button>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s4)">3. Or mirror it</span>
+          <div class="btn-row">
+            <button class="btn btn--ghost" type="button" id="flipH">Flip left to right</button>
+            <button class="btn btn--ghost" type="button" id="flipV">Flip top to bottom</button>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Download</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+          <div class="preview" id="preview"></div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sAngle">0&deg;</span><span class="stat__label">Rotation</span></div>
+            <div class="stat"><span class="stat__num" id="sFlip">None</span><span class="stat__label">Mirror</span></div>
+            <div class="stat"><span class="stat__num" id="sDims">&mdash;</span><span class="stat__label">Size</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Choose an image, or drag one onto the box.</li>
+          <li>Press the turns and mirrors you want. They stack, so two rights
+              make an upside-down photo, and the preview always shows where you
+              have got to.</li>
+          <li>Download when it looks right.</li>
+        </ol>
+
+        <h2>Rotating and mirroring are not the same thing</h2>
+        <p>A rotation turns the whole picture about its centre; everything that
+           was in it is still in it, just at a different angle. A mirror flip
+           swaps left for right, which looks almost identical on a landscape but
+           reverses every piece of writing in the photo and moves a parting in
+           someone's hair to the other side.</p>
+        <p>That matters more than it sounds. A flipped photo of a document, a
+           number plate or a shop sign is unreadable, and a flipped photo of a
+           person often looks subtly wrong to anyone who knows them. If the
+           picture merely came out sideways, you want a rotation.</p>
+
+        <h2>Why a sideways photo happens at all</h2>
+        <p>Phone cameras almost always record the picture the same way round and
+           add a small note to the file saying which way the phone was held. Most
+           apps read that note and turn the photo for you. Some do not, and the
+           picture arrives on its side &mdash; not because it was saved wrongly,
+           but because the note was ignored.</p>
+        <p>Rotating it here writes the turn into the pixels themselves, so every
+           program will show it the same way from then on.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Is my photo uploaded anywhere?</h3>
+          <p>No. Your browser reads the file, draws it turned onto a canvas and hands the result back to you. Nothing is sent to any server, so there is no upload to wait for and no copy of your photo anywhere but your own device.</p>
+        </div>
+        <div class="faq">
+          <h3>Does rotating lose any quality?</h3>
+          <p>A turn of 90 or 180 degrees moves whole pixels around and loses nothing in itself. But saving the result re-encodes the file, and for a JPEG that costs a little quality every time. One rotation is invisible; rotating and saving the same JPEG twenty times is not. A PNG is lossless and never suffers from this.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is my photo sideways in the first place?</h3>
+          <p>Because the camera stored it the way the sensor saw it and added a note about how the phone was held. Apps that read the note show it upright; apps that ignore it show it on its side. Rotating here writes the turn into the picture itself, so the note stops mattering.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I rotate by something other than 90 degrees?</h3>
+          <p>Not here. A free angle has to invent pixels along every edge and leaves corners that must be cropped or filled, which makes it a different job with different decisions. Quarter turns and mirrors are exact, and they cover almost every reason a photo needs turning.</p>
+        </div>
+        <div class="faq">
+          <h3>Do the buttons stack up?</h3>
+          <p>Yes. Each press adds to what is already there, so two rights make an upside-down picture and a flip on top of a rotation gives both. The tiles show exactly where you are, and Reset puts it back to the original.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=15"></script>
+  <script src="../js/tool-helpers.js?v=15"></script>
+  <script>window.CURRENT_TOOL = "image-rotator";</script>
+  <script src="../js/main.js?v=15"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var fileInput = document.getElementById("file");
+    var drop      = document.getElementById("drop");
+    var preview   = document.getElementById("preview");
+    var dlBtn     = document.getElementById("dlBtn");
+    var msg       = document.getElementById("msg");
+
+    var loaded = null;
+    var originalName = "image";
+    var originalType = "image/png";
+    var resultBlob = null;
+
+    /* The whole state of the tool: a quarter turn and two mirrors. */
+    var angle = 0;
+    var flipX = false;
+    var flipY = false;
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: reading the chosen file into an image, without uploading it ---- */
+    function loadFile(file) {
+      if (!file) { return; }
+      if (!file.type || file.type.indexOf("image/") !== 0) {
+        setMessage("That is not an image file.", "bad");
+        return;
+      }
+
+      originalName = file.name.replace(/\.[^.]+$/, "");
+      originalType = (file.type === "image/jpeg" || file.type === "image/webp")
+        ? file.type : "image/png";
+
+      var reader = new FileReader();
+      reader.onload = function () {
+        var img = new Image();
+        img.onload = function () {
+          loaded = img;
+          angle = 0; flipX = false; flipY = false;
+          render();
+        };
+        img.onerror = function () { setMessage("That image could not be read.", "bad"); };
+        img.src = reader.result;            /* a data: URL, entirely local */
+      };
+      reader.readAsDataURL(file);
+    }
+    /* ---- END: reading the chosen file into an image, without uploading it ---- */
+
+    /* ---- START: describing the state in words ---- */
+    function describeFlip() {
+      if (flipX && flipY) { return "Both"; }
+      if (flipX) { return "Left-right"; }
+      if (flipY) { return "Top-bottom"; }
+      return "None";
+    }
+    /* ---- END: describing the state in words ---- */
+
+    /* ---- START: drawing the image turned and mirrored ---- */
+    function render() {
+      if (!loaded) { return; }
+
+      var w = loaded.naturalWidth, h = loaded.naturalHeight;
+      /* A quarter turn swaps the canvas dimensions. Forgetting this is what
+         crops the sides off a rotated photo. */
+      var quarter = angle === 90 || angle === 270;
+
+      var canvas = document.createElement("canvas");
+      canvas.width = quarter ? h : w;
+      canvas.height = quarter ? w : h;
+
+      var ctx = canvas.getContext("2d");
+      /* Work from the middle of the canvas: rotation and mirroring both act
+         about the origin, so moving the origin to the centre first is what
+         keeps the picture centred instead of swinging off the edge. */
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(angle * Math.PI / 180);
+      ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1);
+      ctx.drawImage(loaded, -w / 2, -h / 2);
+
+      document.getElementById("sAngle").textContent = angle + String.fromCharCode(0x00B0);
+      document.getElementById("sFlip").textContent = describeFlip();
+      document.getElementById("sDims").textContent =
+        canvas.width + " " + String.fromCharCode(0x00D7) + " " + canvas.height;
+
+      canvas.toBlob(function (blob) {
+        if (!blob) { setMessage("This browser could not produce the image.", "bad"); return; }
+        resultBlob = blob;
+
+        preview.innerHTML = "";
+        var img = new Image();
+        img.src = URL.createObjectURL(blob);
+        img.alt = "Rotated preview";
+        preview.appendChild(img);
+
+        dlBtn.disabled = false;
+        setMessage(angle === 0 && !flipX && !flipY
+          ? "This is the original, untouched. Use the buttons to turn it."
+          : "Ready. Turned in your browser; nothing was uploaded.",
+          angle === 0 && !flipX && !flipY ? "" : "ok");
+      }, originalType, 0.92);
+    }
+    /* ---- END: drawing the image turned and mirrored ---- */
+
+    /* ---- START: the turns and mirrors themselves ---- */
+    function turn(by) {
+      /* Kept inside 0-359 so the tile never reads 450 degrees. */
+      angle = (angle + by + 360) % 360;
+      render();
+    }
+
+    function mirror(axis) {
+      if (axis === "x") { flipX = !flipX; } else { flipY = !flipY; }
+      render();
+    }
+    /* ---- END: the turns and mirrors themselves ---- */
+
+    /* ---- START: wiring ---- */
+    fileInput.addEventListener("change", function () { loadFile(fileInput.files[0]); });
+    document.getElementById("rotLeft").addEventListener("click", function () { turn(-90); });
+    document.getElementById("rotRight").addEventListener("click", function () { turn(90); });
+    document.getElementById("rot180").addEventListener("click", function () { turn(180); });
+    document.getElementById("flipH").addEventListener("click", function () { mirror("x"); });
+    document.getElementById("flipV").addEventListener("click", function () { mirror("y"); });
+
+    ["dragenter", "dragover"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.add("is-over");
+      });
+    });
+    ["dragleave", "drop"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.remove("is-over");
+      });
+    });
+    drop.addEventListener("drop", function (e) { loadFile(e.dataTransfer.files[0]); });
+
+    dlBtn.addEventListener("click", function () {
+      if (!resultBlob) { return; }
+      var ext = originalType === "image/jpeg" ? "jpg"
+              : originalType === "image/webp" ? "webp" : "png";
+      downloadBlob(resultBlob, originalName + "-rotated." + ext);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      angle = 0; flipX = false; flipY = false;
+      if (loaded) { render(); return; }
+      resultBlob = null;
+      fileInput.value = "";
+      preview.innerHTML = "";
+      document.getElementById("sAngle").textContent = "0" + String.fromCharCode(0x00B0);
+      document.getElementById("sFlip").textContent = "None";
+      document.getElementById("sDims").textContent = String.fromCharCode(0x2014);
+      dlBtn.disabled = true;
+      setMessage("");
+    });
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Image Resizer — Resize JPG, PNG and WebP Online</title>
+  <meta name="description" content="Resize an image by pixels or by percentage, with the aspect ratio locked so nothing is squashed. The picture is never uploaded — it stays in your browser.">
+  <link rel="canonical" href="https://108toolbox.in/tools/image-resizer.html">
+
+  <meta property="og:title" content="Image Resizer — Resize JPG, PNG and WebP Online">
+  <meta property="og:description" content="Resize an image by pixels or by percentage, with the aspect ratio locked so nothing is squashed. The picture is never uploaded — it stays in your browser.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=15">
+  <link rel="stylesheet" href="../css/tool.css?v=15">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is my photo uploaded to a server?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The file is read by your own browser, drawn onto a canvas at the new size, and handed back to you. Nothing is sent anywhere, which also means very large images work fine here and there is no queue and no size limit beyond what your own device can hold."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will resizing make the file smaller?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Usually, and often dramatically - halving both sides means a quarter of the pixels. The exact saving depends on the format and the picture, so the file size of the result is shown before you download it."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does the format change?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. A PNG comes back a PNG and a JPEG comes back a JPEG, because changing the format silently would be a surprise. A JPEG is re-encoded when it is resized, which costs a little quality - unavoidable for any tool that changes the pixels. Use the image converter if you want a different format."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does my enlarged image look blurry?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because enlarging cannot add detail that the original never recorded. The browser fills the new pixels by blending neighbours, which is the best anyone can do without inventing things. If you need a large sharp image, you need a larger original."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I resize several images at once?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not here - this page handles one at a time, on purpose, so that you see each result before you keep it. Doing it one by one also means you can give each image the size it actually needs rather than one setting for all of them."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
+        <span>Image Resizer</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Image Resizer</h1>
+        <p>Give an image a new width and height, or shrink it by a percentage.
+           The file never leaves your device &mdash; the resizing happens in this
+           page.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">1. Choose an image</span>
+
+          <label class="drop" id="drop" for="file">
+            <span class="drop__big" aria-hidden="true">&#128444;</span>
+            <p><strong>Click to choose</strong> or drag an image here</p>
+            <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; nothing is uploaded</p>
+            <input type="file" id="file" accept="image/*">
+          </label>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="mode">2. How do you want to size it?</label>
+            <select id="mode">
+              <option value="px">By pixels</option>
+              <option value="percent">By percentage</option>
+            </select>
+          </div>
+
+          <div id="pxWrap">
+            <div class="field">
+              <label for="width">Width in pixels</label>
+              <input type="number" id="width" min="1" max="10000" step="1">
+            </div>
+            <div class="field">
+              <label for="height">Height in pixels</label>
+              <input type="number" id="height" min="1" max="10000" step="1">
+            </div>
+            <div class="check">
+              <input type="checkbox" id="lockRatio" checked>
+              <label for="lockRatio">Keep the shape (lock the aspect ratio)</label>
+            </div>
+          </div>
+
+          <div class="field" id="pctWrap" hidden>
+            <label for="percent">Percentage of the original</label>
+            <input type="number" id="percent" min="1" max="400" step="1" value="50">
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Download resized</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+          <div class="preview" id="preview"></div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sOriginal">&mdash;</span><span class="stat__label">Original</span></div>
+            <div class="stat"><span class="stat__num" id="sNew">&mdash;</span><span class="stat__label">New size</span></div>
+            <div class="stat"><span class="stat__num" id="sBytes">&mdash;</span><span class="stat__label">File size</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Choose an image, or drag one onto the box. It is read by this page
+              and never sent anywhere.</li>
+          <li>Type a new width, or switch to percentage and pick one. With the
+              shape locked, the other side follows on its own.</li>
+          <li>Download the result. The original file on your device is untouched.</li>
+        </ol>
+
+        <h2>Why the locked shape matters</h2>
+        <p>An image has a ratio between its width and its height, and changing
+           only one of them stretches everything in it. Faces go wide, circles
+           become ovals, text leans. It is the single most common thing that goes
+           wrong when people resize by hand, and it is why the lock is on by
+           default here.</p>
+        <p>If you genuinely need a different shape &mdash; a square thumbnail from
+           a wide photo &mdash; unlock it and you will get exactly the numbers you
+           typed, squashing included. Cropping is usually the better answer,
+           because it keeps everything the right shape and simply shows less of
+           it.</p>
+
+        <h2>Making an image bigger</h2>
+        <p>You can enlarge here, but be clear about what happens: the browser
+           invents the new pixels by blending the ones around them. It cannot add
+           detail that was never captured. A 200-pixel-wide photo blown up to
+           2,000 pixels will be 2,000 pixels of blur, and no tool on any website
+           changes that &mdash; the information is simply not in the file.</p>
+        <p>Shrinking is the opposite: it throws information away, which is why a
+           smaller copy always looks clean and why a resized photo is usually a
+           much smaller file as well.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Is my photo uploaded to a server?</h3>
+          <p>No. The file is read by your own browser, drawn onto a canvas at the new size, and handed back to you. Nothing is sent anywhere, which also means very large images work fine here and there is no queue and no size limit beyond what your own device can hold.</p>
+        </div>
+        <div class="faq">
+          <h3>Will resizing make the file smaller?</h3>
+          <p>Usually, and often dramatically - halving both sides means a quarter of the pixels. The exact saving depends on the format and the picture, so the file size of the result is shown before you download it.</p>
+        </div>
+        <div class="faq">
+          <h3>Does the format change?</h3>
+          <p>No. A PNG comes back a PNG and a JPEG comes back a JPEG, because changing the format silently would be a surprise. A JPEG is re-encoded when it is resized, which costs a little quality - unavoidable for any tool that changes the pixels. Use the image converter if you want a different format.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does my enlarged image look blurry?</h3>
+          <p>Because enlarging cannot add detail that the original never recorded. The browser fills the new pixels by blending neighbours, which is the best anyone can do without inventing things. If you need a large sharp image, you need a larger original.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I resize several images at once?</h3>
+          <p>Not here - this page handles one at a time, on purpose, so that you see each result before you keep it. Doing it one by one also means you can give each image the size it actually needs rather than one setting for all of them.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=15"></script>
+  <script src="../js/tool-helpers.js?v=15"></script>
+  <script>window.CURRENT_TOOL = "image-resizer";</script>
+  <script src="../js/main.js?v=15"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var fileInput = document.getElementById("file");
+    var drop      = document.getElementById("drop");
+    var mode      = document.getElementById("mode");
+    var widthIn   = document.getElementById("width");
+    var heightIn  = document.getElementById("height");
+    var lock      = document.getElementById("lockRatio");
+    var percent   = document.getElementById("percent");
+    var preview   = document.getElementById("preview");
+    var dlBtn     = document.getElementById("dlBtn");
+    var msg       = document.getElementById("msg");
+
+    var loaded = null;
+    var originalName = "image";
+    var originalType = "image/png";
+    var resultBlob = null;
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: reading the chosen file into an image, without uploading it ---- */
+    function loadFile(file) {
+      if (!file) { return; }
+      if (!file.type || file.type.indexOf("image/") !== 0) {
+        setMessage("That is not an image file.", "bad");
+        return;
+      }
+
+      originalName = file.name.replace(/\.[^.]+$/, "");
+      /* The output keeps the input's format. Anything exotic becomes a PNG,
+         which is lossless, rather than a JPEG, which would throw detail away
+         without being asked to. */
+      originalType = (file.type === "image/jpeg" || file.type === "image/webp")
+        ? file.type : "image/png";
+
+      var reader = new FileReader();
+      reader.onload = function () {
+        var img = new Image();
+        img.onload = function () {
+          loaded = img;
+          document.getElementById("sOriginal").textContent =
+            img.naturalWidth + " " + String.fromCharCode(0x00D7) + " " + img.naturalHeight;
+          widthIn.value = img.naturalWidth;
+          heightIn.value = img.naturalHeight;
+          render();
+        };
+        img.onerror = function () { setMessage("That image could not be read.", "bad"); };
+        img.src = reader.result;            /* a data: URL, entirely local */
+      };
+      reader.readAsDataURL(file);
+    }
+    /* ---- END: reading the chosen file into an image, without uploading it ---- */
+
+    /* ---- START: working out the size that was asked for ---- */
+    function targetSize() {
+      if (!loaded) { return null; }
+      var ow = loaded.naturalWidth, oh = loaded.naturalHeight;
+
+      if (mode.value === "percent") {
+        var p = Number(percent.value);
+        if (!isFinite(p) || p <= 0) { return null; }
+        return { w: Math.max(1, Math.round(ow * p / 100)),
+                 h: Math.max(1, Math.round(oh * p / 100)) };
+      }
+
+      var w = Math.round(Number(widthIn.value));
+      var h = Math.round(Number(heightIn.value));
+      if (!isFinite(w) || w < 1 || !isFinite(h) || h < 1) { return null; }
+      return { w: w, h: h };
+    }
+    /* ---- END: working out the size that was asked for ---- */
+
+    /* ---- START: keeping the shape while one side is typed ---- */
+    /* Only the box being typed in drives the other one. Making both follow
+       each other turns every keystroke into a fight between the two. */
+    function followWidth() {
+      if (!loaded || !lock.checked) { render(); return; }
+      var w = Number(widthIn.value);
+      if (isFinite(w) && w > 0) {
+        heightIn.value = Math.max(1, Math.round(w * loaded.naturalHeight / loaded.naturalWidth));
+      }
+      render();
+    }
+
+    function followHeight() {
+      if (!loaded || !lock.checked) { render(); return; }
+      var h = Number(heightIn.value);
+      if (isFinite(h) && h > 0) {
+        widthIn.value = Math.max(1, Math.round(h * loaded.naturalWidth / loaded.naturalHeight));
+      }
+      render();
+    }
+    /* ---- END: keeping the shape while one side is typed ---- */
+
+    /* ---- START: redrawing at the new size ---- */
+    function render() {
+      if (!loaded) { return; }
+      var size = targetSize();
+      if (!size) {
+        setMessage("Type a size above zero.", "bad");
+        dlBtn.disabled = true;
+        return;
+      }
+
+      var canvas = document.createElement("canvas");
+      canvas.width = size.w;
+      canvas.height = size.h;
+      var ctx = canvas.getContext("2d");
+      /* The browser's own smoothing. Turning it off gives hard pixel edges,
+         which is right for pixel art and wrong for everything else. */
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(loaded, 0, 0, size.w, size.h);
+
+      document.getElementById("sNew").textContent =
+        size.w + " " + String.fromCharCode(0x00D7) + " " + size.h;
+
+      canvas.toBlob(function (blob) {
+        if (!blob) { setMessage("This browser could not produce the image.", "bad"); return; }
+        resultBlob = blob;
+
+        preview.innerHTML = "";
+        var img = new Image();
+        img.src = URL.createObjectURL(blob);
+        img.alt = "Resized preview";
+        preview.appendChild(img);
+
+        document.getElementById("sBytes").textContent = formatBytes(blob.size);
+        dlBtn.disabled = false;
+
+        var bigger = size.w > loaded.naturalWidth || size.h > loaded.naturalHeight;
+        var squashed = lock.checked ? false : Math.abs(
+          (size.w / size.h) - (loaded.naturalWidth / loaded.naturalHeight)) > 0.01;
+
+        if (bigger) {
+          setMessage("Enlarging cannot add detail the original never had - "
+                   + "the new pixels are blends of the ones around them.", "bad");
+        } else if (squashed) {
+          setMessage("The shape is unlocked, so this is stretched compared with "
+                   + "the original.", "bad");
+        } else {
+          setMessage("Ready. Resized in your browser; nothing was uploaded.", "ok");
+        }
+      }, originalType, 0.92);
+    }
+    /* ---- END: redrawing at the new size ---- */
+
+    /* ---- START: showing only the controls the chosen mode uses ---- */
+    function syncMode() {
+      var byPixels = mode.value === "px";
+      document.getElementById("pxWrap").hidden = !byPixels;
+      document.getElementById("pctWrap").hidden = byPixels;
+      render();
+    }
+    /* ---- END: showing only the controls the chosen mode uses ---- */
+
+    /* ---- START: wiring ---- */
+    fileInput.addEventListener("change", function () { loadFile(fileInput.files[0]); });
+    widthIn.addEventListener("input", followWidth);
+    heightIn.addEventListener("input", followHeight);
+    percent.addEventListener("input", render);
+    lock.addEventListener("change", render);
+    mode.addEventListener("change", syncMode);
+
+    ["dragenter", "dragover"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.add("is-over");
+      });
+    });
+    ["dragleave", "drop"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.remove("is-over");
+      });
+    });
+    drop.addEventListener("drop", function (e) { loadFile(e.dataTransfer.files[0]); });
+
+    dlBtn.addEventListener("click", function () {
+      if (!resultBlob) { return; }
+      var ext = originalType === "image/jpeg" ? "jpg"
+              : originalType === "image/webp" ? "webp" : "png";
+      downloadBlob(resultBlob, originalName + "-resized." + ext);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      loaded = null; resultBlob = null;
+      fileInput.value = "";
+      preview.innerHTML = "";
+      ["sOriginal", "sNew", "sBytes"].forEach(function (id) {
+        document.getElementById(id).textContent = String.fromCharCode(0x2014);
+      });
+      widthIn.value = ""; heightIn.value = "";
+      dlBtn.disabled = true;
+      setMessage("");
+    });
+    /* ---- END: wiring ---- */
+
+    syncMode();
+  })();
+  </script>
+</body>
+</html>

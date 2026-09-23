@@ -252,6 +252,33 @@ const TOOLS = [
     popular: true
   },
   {
+    slug: "image-resizer",
+    name: "Image Resizer",
+    desc: "Resize by pixels or percentage, with the shape locked so nothing stretches.",
+    category: "Image",
+    icon: "\u{2194}\u{FE0F}",
+    keywords: ["image resizer", "resize image", "resize photo", "change image size", "image size converter", "resize jpg", "resize png", "photo resizer"],
+    popular: false
+  },
+  {
+    slug: "image-rotator",
+    name: "Image Rotator & Flipper",
+    desc: "Turn a sideways photo upright, or mirror it, without uploading anything.",
+    category: "Image",
+    icon: "\u{1F503}",
+    keywords: ["rotate image", "image rotator", "flip image", "mirror image", "rotate photo online", "turn picture sideways", "rotate jpg"],
+    popular: false
+  },
+  {
+    slug: "image-to-base64",
+    name: "Image to Base64",
+    desc: "A data URI for CSS, HTML or Markdown, with the size cost shown up front.",
+    category: "Image",
+    icon: "\u{1F4C3}",
+    keywords: ["image to base64", "base64 image", "data uri", "image data url", "png to base64", "base64 encode image", "inline image css"],
+    popular: false
+  },
+  {
     slug: "json-formatter",
     name: "JSON Formatter & Validator",
     desc: "Beautify or minify JSON and see exactly where the error is.",
@@ -331,6 +358,15 @@ const TOOLS = [
     icon: "\u{1F4CA}",
     keywords: ["percentage", "percent of", "percent increase", "percent decrease", "discount"],
     popular: true
+  },
+  {
+    slug: "image-placeholder-generator",
+    name: "Placeholder Image Generator",
+    desc: "A labelled placeholder at any size, drawn here so your mockup calls no one.",
+    category: "Image",
+    icon: "\u{1F533}",
+    keywords: ["placeholder image", "placeholder generator", "dummy image", "mockup image", "grey box image", "image placeholder png"],
+    popular: false
   },
   {
     slug: "ratio-calculator",
@@ -429,6 +465,15 @@ const TOOLS = [
     category: "Converter",
     icon: "\u{1F3CE}\u{FE0F}",
     keywords: ["kmh to mph", "mph to kmh", "m/s to km/h", "knots to mph", "running pace", "min per km", "pace converter"],
+    popular: false
+  },
+  {
+    slug: "svg-to-png",
+    name: "SVG to PNG Converter",
+    desc: "Export an SVG as a PNG at any size, because an SVG has no size of its own.",
+    category: "Image",
+    icon: "\u{1F58C}\u{FE0F}",
+    keywords: ["svg to png", "convert svg", "svg converter", "export svg as png", "svg to image", "vector to png", "svg raster"],
     popular: false
   },
   {

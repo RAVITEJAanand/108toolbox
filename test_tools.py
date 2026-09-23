@@ -2660,6 +2660,235 @@ T["html-encoder-decoder"] = r"""
     finish();
 """
 
+T["image-resizer"] = r"""
+  var X = " " + String.fromCharCode(0x00D7) + " ";
+  var DASH = String.fromCharCode(0x2014);
+
+  makeImage("file", 200, 200, function () {
+    waitFor("a 200x200 image is read and redrawn",
+      function () { return txt("sBytes") !== DASH && txt("sBytes").length > 1; },
+      function () {
+        eq("the original size is reported", txt("sOriginal"), "200" + X + "200");
+        eq("the width box is filled in", val("width"), "200");
+        eq("the height box too", val("height"), "200");
+
+        /* The locked shape is the whole point: one box drives the other. */
+        set("width", 100);
+        eq("height follows the width", val("height"), "100");
+        eq("and the new size says so", txt("sNew"), "100" + X + "100");
+
+        set("height", 40);
+        eq("it works the other way too", val("width"), "40");
+
+        /* Unlocked, the numbers are taken exactly as typed. */
+        tick("lockRatio", false);
+        set("width", 100);
+        eq("the height is left alone now", val("height"), "40");
+        eq("so the output is stretched", txt("sNew"), "100" + X + "40");
+        tick("lockRatio", true);
+
+        /* By percentage, half of 200 is 100. */
+        set("mode", "percent");
+        set("percent", 50);
+        eq("half size", txt("sNew"), "100" + X + "100");
+        set("percent", 25);
+        eq("a quarter", txt("sNew"), "50" + X + "50");
+
+        set("percent", 0);
+        has("zero is refused with a reason", txt("msg"), "above zero");
+
+        set("percent", 200);
+        eq("double is allowed", txt("sNew"), "400" + X + "400");
+        waitFor("but it says enlarging cannot add detail",
+          function () { return txt("msg").indexOf("cannot add detail") > -1; },
+          function () {
+            click("resetBtn");
+            eq("reset clears the original size", txt("sOriginal"), DASH);
+            eq("and disables the download",
+               document.getElementById("dlBtn").disabled, true);
+            finish();
+          });
+      });
+  });
+"""
+
+T["image-rotator"] = r"""
+  var X = " " + String.fromCharCode(0x00D7) + " ";
+
+  /* A rectangle, not a square: a quarter turn has to swap the sides, and a
+     square would hide it if it did not. */
+  makeImage("file", 200, 100, function () {
+    waitFor("a 200x100 image is read",
+      function () { return txt("sDims").indexOf("200") > -1; },
+      function () {
+        eq("it starts unturned", txt("sAngle"), "0" + String.fromCharCode(0x00B0));
+        eq("with no mirror", txt("sFlip"), "None");
+        eq("at its own size", txt("sDims"), "200" + X + "100");
+
+        click("rotRight");
+        has("a quarter turn right", txt("sAngle"), "90");
+        eq("swaps the sides", txt("sDims"), "100" + X + "200");
+
+        click("rotRight");
+        has("twice is upside down", txt("sAngle"), "180");
+        eq("and the sides are back", txt("sDims"), "200" + X + "100");
+
+        click("rotLeft");
+        has("then left once is 90 again", txt("sAngle"), "90");
+
+        /* 0 minus 90 must be 270, not -90. */
+        click("resetBtn");
+        click("rotLeft");
+        has("turning left from zero reads 270", txt("sAngle"), "270");
+
+        click("resetBtn");
+        click("flipH");
+        eq("a left-right mirror", txt("sFlip"), "Left-right");
+        click("flipV");
+        eq("both mirrors", txt("sFlip"), "Both");
+        click("flipH");
+        eq("and back to one", txt("sFlip"), "Top-bottom");
+
+        click("rot180");
+        has("mirrors and turns stack", txt("sAngle"), "180");
+        eq("the mirror survives the turn", txt("sFlip"), "Top-bottom");
+
+        click("resetBtn");
+        eq("reset clears the angle", txt("sAngle"), "0" + String.fromCharCode(0x00B0));
+        eq("and the mirrors", txt("sFlip"), "None");
+        finish();
+      });
+  });
+"""
+
+T["image-to-base64"] = r"""
+  var DASH = String.fromCharCode(0x2014);
+
+  makeImage("file", 60, 60, function () {
+    waitFor("the image is encoded",
+      function () { return txt("output").length > 50; },
+      function () {
+        has("it is a PNG data URI", txt("output"), "data:image/png;base64,");
+        ok("the file size is reported", txt("sBytes") !== DASH, txt("sBytes"));
+        ok("so is the text length", txt("sChars") !== DASH, txt("sChars"));
+        has("and the growth as a percentage", txt("sGrowth"), "%");
+
+        var raw = txt("output");
+
+        set("snippet", "css");
+        has("CSS wraps it in a background-image", txt("output"), "background-image: url(");
+        has("and keeps the data URI", txt("output"), "data:image/png;base64,");
+
+        set("snippet", "html");
+        has("HTML wraps it in an img tag", txt("output"), "<img src=");
+
+        set("snippet", "md");
+        ok("Markdown starts with the image marker",
+           txt("output").indexOf("![](") === 0, txt("output").slice(0, 12));
+
+        set("snippet", "raw");
+        eq("and the bare form comes back unchanged", txt("output"), raw);
+
+        /* A 60x60 PNG is small, so the page should say inlining is fine. */
+        has("it judges a small image worth inlining", txt("msg"), "good size to inline");
+
+        click("resetBtn");
+        eq("reset empties the output", txt("output"), "");
+        eq("and the tiles", txt("sBytes"), DASH);
+        finish();
+      });
+  });
+"""
+
+T["svg-to-png"] = r"""
+  var X = " " + String.fromCharCode(0x00D7) + " ";
+
+  /* The worked example is 120x120 and the page opens at 2x. */
+  waitFor("the example SVG is drawn at 2x",
+    function () { return txt("sDims") === "240" + X + "240"; },
+    function () {
+      has("and it says it stayed local", txt("msg"), "nothing was uploaded");
+      ok("the PNG has a weight", txt("sBytes").length > 1, txt("sBytes"));
+      ok("a preview appeared",
+         document.querySelectorAll("#preview img").length > 0);
+
+      set("scale", "1");
+      waitFor("1x is the size written in the SVG",
+        function () { return txt("sDims") === "120" + X + "120"; },
+        function () {
+          set("scale", "4");
+          waitFor("4x is four times that",
+            function () { return txt("sDims") === "480" + X + "480"; },
+            function () {
+
+              /* No width or height, only a viewBox - still has a size. */
+              set("input", '<svg xmlns="http://www.w3.org/2000/svg" ' +
+                           'viewBox="0 0 50 20"><rect width="50" height="20" ' +
+                           'fill="#000"/></svg>');
+              waitFor("a viewBox alone gives the size",
+                function () { return txt("sDims") === "200" + X + "80"; },
+                function () {
+
+                  set("input", "hello, not an svg");
+                  has("plain text is refused", txt("msg"), "does not contain an <svg> tag");
+                  eq("and the download is disabled",
+                     document.getElementById("dlBtn").disabled, true);
+
+                  set("input", '<svg xmlns="http://www.w3.org/2000/svg">' +
+                               '<rect width="10" height="10"/></svg>');
+                  has("an SVG with no size at all says so", txt("msg"), "no size to work from");
+
+                  click("clearBtn");
+                  has("clearing asks for input again", txt("msg"), "Paste some SVG");
+                  finish();
+                });
+            });
+        });
+    });
+"""
+
+T["image-placeholder-generator"] = r"""
+  var X = " " + String.fromCharCode(0x00D7) + " ";
+
+  waitFor("the default placeholder is drawn",
+    function () { return txt("sBytes").length > 1 &&
+                         txt("sBytes") !== String.fromCharCode(0x2014); },
+    function () {
+      eq("at the default size", txt("sDims"), "800" + X + "600");
+      eq("which is four by three", txt("sRatio"), "4:3");
+      has("and it says nothing was fetched", txt("msg"), "calls no one");
+
+      /* The ratio is the interesting arithmetic: 1600x900 must read 16:9. */
+      set("pw", 1600); set("ph", 900);
+      eq("sixteen by nine", txt("sRatio"), "16:9");
+      set("pw", 100); set("ph", 100);
+      eq("a square is one to one", txt("sRatio"), "1:1");
+      set("pw", 1000); set("ph", 300);
+      eq("ten by three", txt("sRatio"), "10:3");
+
+      /* An awkward pair has no readable whole-number form, so it gives up
+         honestly and shows the decimal instead of 617:438. */
+      set("pw", 617); set("ph", 438);
+      has("an awkward ratio falls back to a decimal", txt("sRatio"), ":1");
+
+      set("pw", 0);
+      has("zero is refused with a reason", txt("msg"), "above zero");
+      set("pw", 800); set("ph", 600);
+
+      /* Over the cap it clamps rather than failing in the canvas. */
+      set("pw", 9000);
+      eq("too large is clamped to 4000", txt("sDims"), "4000" + X + "600");
+
+      click("resetBtn");
+      waitFor("reset returns to the default",
+        function () { return txt("sDims") === "800" + X + "600"; },
+        function () {
+          eq("with the default colour back", val("bg"), "#e2e8f0");
+          finish();
+        });
+    });
+"""
+
 # ===== END: the test bodies ================================================
 
 

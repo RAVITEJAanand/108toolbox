@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Placeholder Image Generator — Any Size, Free</title>
+  <meta name="description" content="Make a placeholder image at any size, with your own colours and label, and download it as a PNG or JPG. Drawn in your browser, so your mockup stays private.">
+  <link rel="canonical" href="https://108toolbox.in/tools/image-placeholder-generator.html">
+
+  <meta property="og:title" content="Placeholder Image Generator — Any Size, Free">
+  <meta property="og:description" content="Make a placeholder image at any size, with your own colours and label, and download it as a PNG or JPG. Drawn in your browser, so your mockup stays private.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=15">
+  <link rel="stylesheet" href="../css/tool.css?v=15">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does this send anything to a server?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The image is drawn by your own browser onto a canvas and handed straight back to you. That is the main reason to use a downloaded placeholder rather than one loaded from elsewhere - a mockup full of remote images tells that server about everyone who opens it."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What size should I use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The size the real picture will be, at the resolution it will be shown. If a card image is 400 by 300 on the page, make the placeholder 400 by 300 - or 800 by 600 if you are checking how it looks on a high-resolution screen."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "PNG or JPG?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "PNG for a crisp flat colour, which is what this draws, and it will be a very small file. Choose JPG when you want the placeholder to weigh something like the photo that will replace it, so your page-weight numbers during testing are not misleading."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I leave the label off?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Type a space in the label box and you get a plain block of colour. The dimensions are there by default because a mockup full of unlabelled grey boxes tells whoever builds it nothing about what belongs in them."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is there a limit of 4000 pixels?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because past that a canvas starts to fail in different ways in different browsers, and a placeholder that large has no real use. If you genuinely need something enormous, make it at a quarter size and scale it up - it is a flat colour, so nothing is lost."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
+        <span>Placeholder Image Generator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Placeholder Image Generator</h1>
+        <p>Make a grey box of exactly the size you need, labelled with its own
+           dimensions. Drawn here in the page, so your mockup never calls out to
+           anyone else's server.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="pw">Width in pixels</label>
+            <input type="number" id="pw" min="1" max="4000" step="1" value="800">
+          </div>
+          <div class="field">
+            <label for="ph">Height in pixels</label>
+            <input type="number" id="ph" min="1" max="4000" step="1" value="600">
+          </div>
+
+          <div class="field">
+            <label for="label">Label (leave empty for the size)</label>
+            <input type="text" id="label" placeholder="800 &times; 600">
+          </div>
+
+          <div class="field">
+            <label for="bg">Background</label>
+            <input type="color" id="bg" value="#e2e8f0" style="height:44px;padding:4px">
+          </div>
+          <div class="field">
+            <label for="fg">Text colour</label>
+            <input type="color" id="fg" value="#475569" style="height:44px;padding:4px">
+          </div>
+
+          <div class="field">
+            <label for="fmt">Format</label>
+            <select id="fmt">
+              <option value="image/png">PNG</option>
+              <option value="image/jpeg">JPG</option>
+            </select>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="dlBtn">Download</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+          <div class="preview" id="preview"></div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sDims">&mdash;</span><span class="stat__label">Size</span></div>
+            <div class="stat"><span class="stat__num" id="sRatio">&mdash;</span><span class="stat__label">Aspect ratio</span></div>
+            <div class="stat"><span class="stat__num" id="sBytes">&mdash;</span><span class="stat__label">File weight</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Type the width and height you need. The label fills itself in with
+              those numbers unless you write your own.</li>
+          <li>Change the colours if the default grey is too quiet, or too
+              loud.</li>
+          <li>Download it as a PNG, or as a JPG if you want to feel a realistic
+              photo weight in your layout.</li>
+        </ol>
+
+        <h2>What a placeholder is for</h2>
+        <p>A layout behaves differently when there is something in it. Leave a
+           hole where a photograph will go and the text around it sits wrongly,
+           the page is the wrong height, and nobody can tell whether the design
+           works. Drop in a grey box of exactly the right size and everything
+           falls into place &mdash; and because it is labelled with its own
+           dimensions, anyone looking at the mockup knows what is supposed to go
+           there.</p>
+        <p>The label matters more than it looks. A page full of unlabelled grey
+           boxes tells a developer nothing; a page of boxes that each say
+           <code>1200 &times; 400</code> tells them exactly what to ask the
+           photographer for.</p>
+
+        <h2>Why draw it here instead of linking to one</h2>
+        <p>The usual way to get a placeholder is to point an <code>img</code> tag
+           at some other website that draws one for you. It works, and it has two
+           costs that are easy to miss.</p>
+        <p>The first is that every person who opens your mockup quietly tells
+           that server about it &mdash; their address, the page they were on, and
+           when. A private design review stops being private. The second is that
+           the mockup only works while that service does. Plenty of images in
+           plenty of old projects are now broken boxes because a free service
+           went away.</p>
+        <p>A downloaded file has neither problem. It sits in your project, it
+           works offline, and it will still be there in five years.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Does this send anything to a server?</h3>
+          <p>No. The image is drawn by your own browser onto a canvas and handed straight back to you. That is the main reason to use a downloaded placeholder rather than one loaded from elsewhere - a mockup full of remote images tells that server about everyone who opens it.</p>
+        </div>
+        <div class="faq">
+          <h3>What size should I use?</h3>
+          <p>The size the real picture will be, at the resolution it will be shown. If a card image is 400 by 300 on the page, make the placeholder 400 by 300 - or 800 by 600 if you are checking how it looks on a high-resolution screen.</p>
+        </div>
+        <div class="faq">
+          <h3>PNG or JPG?</h3>
+          <p>PNG for a crisp flat colour, which is what this draws, and it will be a very small file. Choose JPG when you want the placeholder to weigh something like the photo that will replace it, so your page-weight numbers during testing are not misleading.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I leave the label off?</h3>
+          <p>Type a space in the label box and you get a plain block of colour. The dimensions are there by default because a mockup full of unlabelled grey boxes tells whoever builds it nothing about what belongs in them.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is there a limit of 4000 pixels?</h3>
+          <p>Because past that a canvas starts to fail in different ways in different browsers, and a placeholder that large has no real use. If you genuinely need something enormous, make it at a quarter size and scale it up - it is a flat colour, so nothing is lost.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=15"></script>
+  <script src="../js/tool-helpers.js?v=15"></script>
+  <script>window.CURRENT_TOOL = "image-placeholder-generator";</script>
+  <script src="../js/main.js?v=15"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var pw    = document.getElementById("pw");
+    var ph    = document.getElementById("ph");
+    var label = document.getElementById("label");
+    var bg    = document.getElementById("bg");
+    var fg    = document.getElementById("fg");
+    var fmt   = document.getElementById("fmt");
+    var preview = document.getElementById("preview");
+    var msg   = document.getElementById("msg");
+
+    var resultBlob = null;
+    var TIMES = String.fromCharCode(0x00D7);
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: reading a size box safely ---- */
+    function size(el) {
+      var n = Math.round(Number(el.value));
+      if (!isFinite(n) || n < 1) { return null; }
+      return Math.min(4000, n);
+    }
+    /* ---- END: reading a size box safely ---- */
+
+    /* ---- START: the aspect ratio in its simplest whole numbers ---- */
+    /* 1600x900 is far more useful written as 16:9 than as 1.78, and the only
+       way there is the greatest common divisor. */
+    function ratio(w, h) {
+      var a = w, b = h;
+      while (b) { var t = b; b = a % b; a = t; }
+      if (!a) { return TIMES; }
+      var rw = w / a, rh = h / a;
+      /* Past about 30 the "simplest" form stops being readable - 617:438 tells
+         nobody anything - so the decimal is kinder. */
+      if (rw > 30 || rh > 30) { return (w / h).toFixed(2) + ":1"; }
+      return rw + ":" + rh;
+    }
+    /* ---- END: the aspect ratio in its simplest whole numbers ---- */
+
+    /* ---- START: drawing the placeholder ---- */
+    function render() {
+      var w = size(pw), h = size(ph);
+      if (!w || !h) {
+        setMessage("Type a width and height above zero.", "bad");
+        return;
+      }
+
+      var canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = bg.value;
+      ctx.fillRect(0, 0, w, h);
+
+      var text = label.value !== "" ? label.value : w + " " + TIMES + " " + h;
+      if (text.trim() !== "") {
+        /* The text scales with the box, so a 100px thumbnail and a 2000px
+           banner are both readable. Clamped at both ends: tiny text is
+           pointless and huge text runs off the sides. */
+        var fontSize = Math.max(10, Math.min(w, h) / 8);
+        ctx.fillStyle = fg.value;
+        ctx.font = "600 " + fontSize + "px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        /* If it still does not fit, shrink until it does rather than letting
+           it run off the edge. */
+        while (ctx.measureText(text).width > w * 0.9 && fontSize > 8) {
+          fontSize -= 1;
+          ctx.font = "600 " + fontSize + "px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+        }
+        ctx.fillText(text, w / 2, h / 2);
+      }
+
+      document.getElementById("sDims").textContent = w + " " + TIMES + " " + h;
+      document.getElementById("sRatio").textContent = ratio(w, h);
+
+      canvas.toBlob(function (blob) {
+        if (!blob) { setMessage("This browser could not produce the image.", "bad"); return; }
+        resultBlob = blob;
+
+        preview.innerHTML = "";
+        var img = new Image();
+        img.src = URL.createObjectURL(blob);
+        img.alt = "Placeholder preview";
+        preview.appendChild(img);
+
+        document.getElementById("sBytes").textContent = formatBytes(blob.size);
+        setMessage("Ready. Drawn in your browser - this image calls no one.", "ok");
+      }, fmt.value, 0.9);
+    }
+    /* ---- END: drawing the placeholder ---- */
+
+    /* ---- START: wiring ---- */
+    [pw, ph, label, bg, fg].forEach(function (el) {
+      el.addEventListener("input", render);
+    });
+    fmt.addEventListener("change", render);
+
+    document.getElementById("dlBtn").addEventListener("click", function () {
+      if (!resultBlob) { showToast("Nothing to download"); return; }
+      var ext = fmt.value === "image/jpeg" ? "jpg" : "png";
+      downloadBlob(resultBlob, "placeholder-" + size(pw) + "x" + size(ph) + "." + ext);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      pw.value = 800; ph.value = 600; label.value = "";
+      bg.value = "#e2e8f0"; fg.value = "#475569";
+      fmt.value = "image/png";
+      render();
+    });
+    /* ---- END: wiring ---- */
+
+    render();
+  })();
+  </script>
+</body>
+</html>

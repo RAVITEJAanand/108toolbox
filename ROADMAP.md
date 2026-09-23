@@ -166,12 +166,12 @@ make; it is written here so it is made with the number in front of us.
 | Calculator | 20 | 16 |
 | Developer | 18 | 7 |
 | Text | 16 | 13 |
-| Image | 14 | 2 |
+| Image | 14 | 7 |
 | Converter | 14 | 13 |
 | PDF | 10 | 0 |
 | Date & Time | 8 | 5 |
 | Random | 8 | 0 |
-| **Total** | **108** | **56** |
+| **Total** | **108** | **61** |
 
 ---
 
@@ -207,11 +207,11 @@ matches, so do not rename them later. ✅ = already live.
 |---|---|---|
 | 1 | `image-compressor` ✅ | medium |
 | 2 | `image-converter` ✅ | medium |
-| 3 | `image-resizer` | easy |
-| 4 | `image-rotator` | easy |
-| 5 | `image-to-base64` | easy |
-| 6 | `svg-to-png` | easy |
-| 7 | `image-placeholder-generator` | easy |
+| 3 | `image-resizer` ✅ | easy |
+| 4 | `image-rotator` ✅ | easy |
+| 5 | `image-to-base64` ✅ | easy |
+| 6 | `svg-to-png` ✅ | easy |
+| 7 | `image-placeholder-generator` ✅ | easy |
 | 8 | `image-color-picker` | medium — canvas pixel read |
 | 9 | `image-cropper` | medium — the drag handles are the hard part |
 | 10 | `favicon-generator` | medium — multi-size export |
