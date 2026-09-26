@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>CSV to JSON — Handles Quoted Commas</title>
+  <meta name="description" content="Convert CSV to JSON with a parser that understands quoted fields, commas inside them and line breaks. Number detection is off by default, and it explains why.">
+  <link rel="canonical" href="https://108toolbox.in/tools/csv-to-json.html">
+
+  <meta property="og:title" content="CSV to JSON — Handles Quoted Commas">
+  <meta property="og:description" content="Convert CSV to JSON with a parser that understands quoted fields, commas inside them and line breaks. Number detection is off by default, and it explains why.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=19">
+  <link rel="stylesheet" href="../css/tool.css?v=19">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why is my phone number wrong?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Number detection is on and it removed the leading zero, because 09876543210 as a number is 9876543210. Untick that box - text is never wrong. This page refuses to convert leading-zero values even when detection is on, for exactly this reason."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it handle a comma inside a field?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, as long as the field is in quotation marks, which is what the CSV convention requires. \"Sharma, Priya\" stays one field. So does a line break inside quotes."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What if my file has no header row?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Untick 'first row holds the column names' and each row becomes an array of values instead of an object. Leaving it ticked on a file with no header turns your first row of data into the column names."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Two of my columns have the same name. What happens?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The second one gets a number added - city becomes city2 - because an object cannot have the same key twice and the second value would otherwise replace the first without saying so."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a row limit?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Nothing fixed, but everything is held in memory and shown on screen, so a file of hundreds of thousands of rows will make the tab slow. A few tens of thousands is comfortable."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>CSV to JSON</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>CSV to JSON Converter</h1>
+        <p>Paste a CSV and get JSON. The separator is worked out for you, quoted
+           fields are read properly, and nothing is quietly turned into a number
+           unless you ask.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">CSV</label>
+          <textarea id="input" class="mono" spellcheck="false">name,city,phone,pin
+"Sharma, Priya",Hyderabad,09876543210,500081
+Ravi,Chennai,09123456789,600001
+"Anjali ""Anu""",Pune,09998887776,411001</textarea>
+
+          <div class="field" style="margin-top:var(--s3)">
+            <label for="delim">Separator</label>
+            <select id="delim">
+              <option value="auto" selected>Work it out for me</option>
+              <option value=",">Comma</option>
+              <option value=";">Semicolon</option>
+              <option value="\t">Tab</option>
+              <option value="|">Pipe</option>
+            </select>
+          </div>
+
+          <label class="check"><input type="checkbox" id="headers" checked> First row holds the column names</label>
+          <label class="check"><input type="checkbox" id="typed"> Turn numbers and true/false into real values</label>
+          <label class="check"><input type="checkbox" id="pretty" checked> Lay the JSON out over several lines</label>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="dlBtn">Download .json</button>
+            <button class="btn btn--ghost"   type="button" id="copyBtn">Copy</button>
+            <button class="btn btn--danger"  type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">JSON</span>
+          <pre class="out mono" id="output" aria-live="polite"></pre>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sRows">&mdash;</span><span class="stat__label">Rows</span></div>
+            <div class="stat"><span class="stat__num" id="sCols">&mdash;</span><span class="stat__label">Columns</span></div>
+            <div class="stat"><span class="stat__num" id="sSep">&mdash;</span><span class="stat__label">Separator</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Paste the CSV, or open the file in a text editor and copy it
+              in.</li>
+          <li>Leave the separator on automatic unless it guesses wrong.</li>
+          <li>Read the note below before ticking the number box.</li>
+        </ol>
+
+        <h2>Why you cannot just split on commas</h2>
+        <p>The first line of the example is <code>"Sharma, Priya"</code>. Split
+           that on commas and you get two columns where there should be one,
+           every later column shifts left by one, and the row is quietly
+           wrong &mdash; not broken enough to notice, just wrong.</p>
+        <p>A real CSV parser tracks whether it is inside quotation marks. Inside
+           them, a comma is text. A doubled quotation mark is one literal
+           quotation mark, which is how <code>Anjali ""Anu""</code> comes back
+           out as <code>Anjali "Anu"</code>. A line break inside quotes is part
+           of the field, not the end of the row. This page does all of that,
+           which is the whole reason to use it rather than a one-line split.</p>
+
+        <h2>The number box, and why it is off</h2>
+        <p>Turning <code>1299</code> into a number is obviously right. The
+           trouble is everything that only looks like a number.</p>
+        <ul>
+          <li>A phone number <code>09876543210</code> becomes
+              <code>9876543210</code>. The leading zero is gone and so is the
+              number.</li>
+          <li>A postcode or an order reference beginning with zero loses
+              it the same way.</li>
+          <li>An identifier longer than about sixteen digits cannot be held
+              exactly at all, and the last digits change.</li>
+          <li><code>1e5</code>, a perfectly good product code, becomes
+              100000.</li>
+        </ul>
+        <p>Every one of those is silent. So the default here is to leave
+           everything as text, which is never wrong, and let you turn detection
+           on when you know your columns. When it is on, this page still
+           refuses to convert anything with a leading zero, for the reason
+           above.</p>
+
+        <h2>What happens to awkward headers</h2>
+        <p>An empty heading becomes <code>column2</code>, numbered by position.
+           A heading that appears twice gets a number added to the second one,
+           because a JSON object cannot hold the same key twice and the second
+           would silently swallow the first.</p>
+        <p>With the header box unticked, every row becomes an array instead of
+           an object and nothing is named. That is the right choice when the
+           file genuinely has no header row &mdash; otherwise your first row of
+           real data disappears into the column names.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Why is my phone number wrong?</h3>
+          <p>Number detection is on and it removed the leading zero, because 09876543210 as a number is 9876543210. Untick that box - text is never wrong. This page refuses to convert leading-zero values even when detection is on, for exactly this reason.</p>
+        </div>
+        <div class="faq">
+          <h3>Can it handle a comma inside a field?</h3>
+          <p>Yes, as long as the field is in quotation marks, which is what the CSV convention requires. &quot;Sharma, Priya&quot; stays one field. So does a line break inside quotes.</p>
+        </div>
+        <div class="faq">
+          <h3>What if my file has no header row?</h3>
+          <p>Untick &#x27;first row holds the column names&#x27; and each row becomes an array of values instead of an object. Leaving it ticked on a file with no header turns your first row of data into the column names.</p>
+        </div>
+        <div class="faq">
+          <h3>Two of my columns have the same name. What happens?</h3>
+          <p>The second one gets a number added - city becomes city2 - because an object cannot have the same key twice and the second value would otherwise replace the first without saying so.</p>
+        </div>
+        <div class="faq">
+          <h3>Is there a row limit?</h3>
+          <p>Nothing fixed, but everything is held in memory and shown on screen, so a file of hundreds of thousands of rows will make the tab slow. A few tens of thousands is comfortable.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=19"></script>
+  <script src="../js/tool-helpers.js?v=19"></script>
+  <script>window.CURRENT_TOOL = "csv-to-json";</script>
+  <script src="../js/main.js?v=19"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input   = document.getElementById("input");
+    var delim   = document.getElementById("delim");
+    var headers = document.getElementById("headers");
+    var typed   = document.getElementById("typed");
+    var pretty  = document.getElementById("pretty");
+    var output  = document.getElementById("output");
+    var msg     = document.getElementById("msg");
+    var DASH    = String.fromCharCode(0x2014);
+
+    var lastJson = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: working out the separator ----
+       Counted on the FIRST LINE ONLY, and only outside quotation marks. A
+       count over the whole file would be swayed by commas inside people's
+       names and addresses, which is precisely the case this page exists to
+       get right. */
+    function sniff(text) {
+      var line = text.split("\n")[0] || "";
+      var best = ",", bestCount = -1;
+      [",", ";", "\t", "|"].forEach(function (candidate) {
+        var count = 0, inQuotes = false;
+        for (var i = 0; i < line.length; i++) {
+          var ch = line.charAt(i);
+          if (ch === '"') { inQuotes = !inQuotes; continue; }
+          if (!inQuotes && ch === candidate) { count += 1; }
+        }
+        if (count > bestCount) { bestCount = count; best = candidate; }
+      });
+      return bestCount > 0 ? best : ",";
+    }
+    /* ---- END: working out the separator ---- */
+
+    /* ---- START: a real CSV parser, not a split ----
+       The whole difference between this page and a one-liner. Inside quotes a
+       separator is ordinary text, a doubled quotation mark is one literal
+       quotation mark, and a line break belongs to the field rather than
+       ending the row. */
+    function parse(text, sep) {
+      var rows = [], row = [], value = "", inQuotes = false;
+      var i = 0;
+      while (i < text.length) {
+        var ch = text.charAt(i);
+
+        if (inQuotes) {
+          if (ch === '"') {
+            if (text.charAt(i + 1) === '"') { value += '"'; i += 2; continue; }
+            inQuotes = false; i += 1; continue;
+          }
+          value += ch; i += 1; continue;
+        }
+
+        if (ch === '"') { inQuotes = true; i += 1; continue; }
+        if (ch === sep) { row.push(value); value = ""; i += 1; continue; }
+        if (ch === "\r") { i += 1; continue; }
+        if (ch === "\n") {
+          row.push(value); rows.push(row);
+          row = []; value = ""; i += 1; continue;
+        }
+        value += ch; i += 1;
+      }
+      if (value !== "" || row.length) { row.push(value); rows.push(row); }
+      return rows;
+    }
+    /* ---- END: a real CSV parser, not a split ---- */
+
+    /* ---- START: turning a cell into a value, carefully ----
+       Only when asked, and never for anything with a leading zero. A phone
+       number, a postcode and an order reference all begin with one, and all
+       three are destroyed silently by the obvious version of this function -
+       the damage is invisible until somebody tries to ring the number. */
+    function coerce(cell) {
+      if (!typed.checked) { return cell; }
+      var text = cell.trim();
+      if (text === "") { return ""; }
+      if (text === "true") { return true; }
+      if (text === "false") { return false; }
+      if (text === "null") { return null; }
+      if (/^0[0-9]/.test(text)) { return cell; }
+      if (/^[+-]?(\d+\.?\d*|\.\d+)$/.test(text)) {
+        var n = Number(text);
+        /* Past this, digits change without warning. Text is kinder. */
+        if (Math.abs(n) > 9007199254740991) { return cell; }
+        return n;
+      }
+      return cell;
+    }
+    /* ---- END: turning a cell into a value, carefully ---- */
+
+    /* ---- START: column names that a JSON object can actually hold ----
+       An object cannot hold the same key twice: the second quietly replaces
+       the first and a column disappears. Empty headings are named by position
+       so they can still be referred to. */
+    function nameColumns(first) {
+      var used = Object.create(null);
+      return first.map(function (raw, index) {
+        var name = raw.trim() === "" ? "column" + (index + 1) : raw.trim();
+        if (used["k" + name]) {
+          used["k" + name] += 1;
+          name = name + used["k" + name];
+        } else {
+          used["k" + name] = 1;
+        }
+        return name;
+      });
+    }
+    /* ---- END: column names that a JSON object can actually hold ---- */
+
+    /* ---- START: the conversion ---- */
+    function convert() {
+      var text = input.value.replace(/^\uFEFF/, "");   /* Excel's byte mark */
+      if (text.trim() === "") {
+        output.textContent = "";
+        lastJson = "";
+        document.getElementById("sRows").textContent = DASH;
+        document.getElementById("sCols").textContent = DASH;
+        document.getElementById("sSep").textContent = DASH;
+        document.getElementById("dlBtn").disabled = true;
+        setMessage("Paste some CSV on the left.");
+        return;
+      }
+
+      var sep = delim.value === "auto" ? sniff(text)
+              : delim.value === "\\t" ? "\t" : delim.value;
+      document.getElementById("sSep").textContent =
+        sep === "\t" ? "tab" : sep === "," ? "comma"
+        : sep === ";" ? "semicolon" : sep;
+
+      var rows = parse(text, sep);
+      if (!rows.length) {
+        setMessage("Nothing could be read from that.", "bad");
+        return;
+      }
+
+      var result, columnCount;
+      if (headers.checked) {
+        var names = nameColumns(rows[0]);
+        columnCount = names.length;
+        result = rows.slice(1).map(function (row) {
+          var obj = {};
+          for (var i = 0; i < names.length; i++) {
+            obj[names[i]] = coerce(row[i] === undefined ? "" : row[i]);
+          }
+          return obj;
+        });
+      } else {
+        columnCount = rows[0].length;
+        result = rows.map(function (row) { return row.map(coerce); });
+      }
+
+      lastJson = JSON.stringify(result, null, pretty.checked ? 2 : 0);
+      output.textContent = lastJson;
+
+      document.getElementById("sRows").textContent = formatNumber(result.length, 0);
+      document.getElementById("sCols").textContent = formatNumber(columnCount, 0);
+      document.getElementById("dlBtn").disabled = false;
+
+      var ragged = rows.filter(function (row) {
+        return row.length !== columnCount;
+      }).length;
+
+      if (ragged) {
+        setMessage(result.length + " rows. " + ragged + " line"
+                 + (ragged === 1 ? " does" : "s do") + " not have "
+                 + columnCount + " fields - check for an unclosed quotation "
+                 + "mark, which swallows everything after it.", "bad");
+      } else if (typed.checked) {
+        setMessage(result.length + " rows. Numbers converted - anything with a "
+                 + "leading zero was left as text on purpose, so phone numbers "
+                 + "and postcodes survive.", "ok");
+      } else {
+        setMessage(result.length + " rows, every value kept as text. Tick the "
+                 + "box above if you want real numbers.", "ok");
+      }
+    }
+    /* ---- END: the conversion ---- */
+
+    /* ---- START: wiring ---- */
+    [input, delim, headers, typed, pretty].forEach(function (el) {
+      el.addEventListener("input", convert);
+      el.addEventListener("change", convert);
+    });
+
+    document.getElementById("dlBtn").addEventListener("click", function () {
+      if (!lastJson) { showToast("Nothing to download"); return; }
+      downloadText(lastJson, "data.json", "application/json");
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastJson) { showToast("Nothing to copy"); return; }
+      copyText(lastJson);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      convert();
+      input.focus();
+    });
+    /* ---- END: wiring ---- */
+
+    convert();
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>JWT Decoder — Read a Token In Your Browser</title>
+  <meta name="description" content="Decode a JSON Web Token and read its header, payload and expiry time. Runs entirely in your browser, and is honest about not verifying the signature.">
+  <link rel="canonical" href="https://108toolbox.in/tools/jwt-decoder.html">
+
+  <meta property="og:title" content="JWT Decoder — Read a Token In Your Browser">
+  <meta property="og:description" content="Decode a JSON Web Token and read its header, payload and expiry time. Runs entirely in your browser, and is honest about not verifying the signature.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=19">
+  <link rel="stylesheet" href="../css/tool.css?v=19">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is my token sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. It is split and decoded by JavaScript in your own browser and nothing is uploaded. That is worth caring about here more than on most pages, because a live token often grants access to an account."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does it not check whether the token is valid?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because checking the signature needs the server's secret key, and no website should ever ask you to type that in. The page tells you what the token says; only your server can tell you whether it is genuine."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I edit the payload and re-sign it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not here, and that is deliberate. Changing a claim breaks the signature, and producing a new valid signature requires the key. A tool that offered it would be asking for your key."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is the expiry date wrong by decades?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Almost always because something wrote milliseconds where the specification says seconds, or the other way round. The claims exp, iat and nbf are all in seconds since 1970."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does 'alg: none' mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It means the token carries no signature. It is part of the standard, and it is also how a well-known attack works - strip the signature and hope the server accepts it. If you see it on a token that should be signed, that is worth investigating."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>JWT Decoder</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>JWT Decoder</h1>
+        <p>Paste a token and read what is inside it. Nothing is sent anywhere
+           &mdash; which matters more for this tool than for most, because a
+           token is often the key to somebody's account.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Token</label>
+          <textarea id="input" class="mono" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.&hellip;"></textarea>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="sampleBtn">Load an example</button>
+            <button class="btn btn--ghost"   type="button" id="copyBtn">Copy payload</button>
+            <button class="btn btn--danger"  type="button" id="clearBtn">Clear</button>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Header</span>
+          <pre class="out mono" id="headerOut" style="min-height:90px" aria-live="polite"></pre>
+
+          <span class="panel__label" style="margin-top:var(--s4)">Payload</span>
+          <pre class="out mono" id="payloadOut" aria-live="polite"></pre>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sAlg">&mdash;</span><span class="stat__label">Algorithm</span></div>
+            <div class="stat"><span class="stat__num" id="sState">&mdash;</span><span class="stat__label">Expiry</span></div>
+            <div class="stat"><span class="stat__num" id="sParts">&mdash;</span><span class="stat__label">Parts</span></div>
+          </div>
+
+          <pre class="out mono" id="timesOut" style="min-height:70px" aria-live="polite"></pre>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Paste the token. It is the long string with two full stops in
+              it, often sent as <code>Authorization: Bearer &hellip;</code>.</li>
+          <li>Read the header and payload. Any date-like claim is also printed
+              in words underneath.</li>
+        </ol>
+
+        <h2>A token is not encrypted. It is only encoded.</h2>
+        <p>This surprises people, and it is the single most important thing to
+           understand about JWTs. The middle section of a token is ordinary
+           Base64 text. Anybody holding the token &mdash; a browser extension,
+           a log file, someone reading over your shoulder &mdash; can read
+           every claim inside it without any key at all. This page is not
+           breaking anything; it is doing what any two lines of code can
+           do.</p>
+        <p>So never put anything in a JWT that the holder should not see. No
+           internal notes, no other people's details, no secrets. The signature
+           stops the token being <em>altered</em>. It does nothing to stop it
+           being <em>read</em>.</p>
+
+        <h2>This page does not verify the signature, on purpose</h2>
+        <p>Verifying would mean you typing the server's secret key into a
+           website. That is a worse idea than anything this page could tell
+           you, and no honest tool should ask for it. So the signature is shown
+           as present or absent and nothing more.</p>
+        <p>Which means: <strong>a token that decodes here is not a valid
+           token</strong>. It is a well-formed one. Anyone can write any claims
+           they like, encode them, and this page will display them neatly.
+           Only your server, holding the key, can say whether a token is
+           real.</p>
+
+        <h2>Two things worth checking by eye</h2>
+        <p>If the header says <code>"alg": "none"</code>, be suspicious. It is
+           a legitimate part of the specification and also the shape of a
+           classic attack, where a token is stripped of its signature and
+           handed to a server that forgets to insist on one.</p>
+        <p>And the time claims &mdash; <code>exp</code>, <code>iat</code>,
+           <code>nbf</code> &mdash; are counted in <em>seconds</em> since 1970,
+           not milliseconds. Code that mixes the two is the most common JWT bug
+           there is, and it fails in a memorable way: a token that expires in
+           the year 56000, or one that expired before it was issued.</p>
+
+        <h2>Should you paste a real token anywhere?</h2>
+        <p>Not as a habit. This page reads the token in your own browser and
+           sends nothing, so it is safe here. But most decoders on the web look
+           exactly like this one and you cannot tell from the outside which
+           ones post your token to a server. A live token is usually enough to
+           act as you. Use an expired one, or a test one, when you can.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Is my token sent anywhere?</h3>
+          <p>No. It is split and decoded by JavaScript in your own browser and nothing is uploaded. That is worth caring about here more than on most pages, because a live token often grants access to an account.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does it not check whether the token is valid?</h3>
+          <p>Because checking the signature needs the server&#x27;s secret key, and no website should ever ask you to type that in. The page tells you what the token says; only your server can tell you whether it is genuine.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I edit the payload and re-sign it?</h3>
+          <p>Not here, and that is deliberate. Changing a claim breaks the signature, and producing a new valid signature requires the key. A tool that offered it would be asking for your key.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is the expiry date wrong by decades?</h3>
+          <p>Almost always because something wrote milliseconds where the specification says seconds, or the other way round. The claims exp, iat and nbf are all in seconds since 1970.</p>
+        </div>
+        <div class="faq">
+          <h3>What does &#x27;alg: none&#x27; mean?</h3>
+          <p>It means the token carries no signature. It is part of the standard, and it is also how a well-known attack works - strip the signature and hope the server accepts it. If you see it on a token that should be signed, that is worth investigating.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=19"></script>
+  <script src="../js/tool-helpers.js?v=19"></script>
+  <script>window.CURRENT_TOOL = "jwt-decoder";</script>
+  <script src="../js/main.js?v=19"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input      = document.getElementById("input");
+    var headerOut  = document.getElementById("headerOut");
+    var payloadOut = document.getElementById("payloadOut");
+    var timesOut   = document.getElementById("timesOut");
+    var msg        = document.getElementById("msg");
+    var DASH       = String.fromCharCode(0x2014);
+
+    var lastPayload = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: base64url, which is not quite base64 ----
+       Two characters differ so that a token is safe inside a URL, and the
+       padding is dropped. Both have to be put back before atob will touch it.
+
+       The TextDecoder step is the part most decoders get wrong: atob returns
+       one character per BYTE, so a name with an accent or a Telugu word comes
+       out as mojibake. The bytes have to be reassembled and read as UTF-8. */
+    function decodeSegment(segment) {
+      var padded = segment.replace(/-/g, "+").replace(/_/g, "/");
+      while (padded.length % 4 !== 0) { padded += "="; }
+
+      var binary = atob(padded);
+      var bytes = new Uint8Array(binary.length);
+      for (var i = 0; i < binary.length; i++) { bytes[i] = binary.charCodeAt(i); }
+      return new TextDecoder("utf-8").decode(bytes);
+    }
+    /* ---- END: base64url, which is not quite base64 ---- */
+
+    /* ---- START: a seconds-since-1970 claim, in words ----
+       The specification says seconds. A great deal of code writes
+       milliseconds, which is why a date here sometimes lands in the year
+       56000 - so an obviously impossible year is named rather than printed
+       with a straight face. */
+    function whenIs(seconds) {
+      if (typeof seconds !== "number" || !isFinite(seconds)) { return null; }
+      var date = new Date(seconds * 1000);
+      if (isNaN(date.getTime())) { return null; }
+      var year = date.getUTCFullYear();
+      if (year > 3000) {
+        return date.toUTCString() + "  <- far in the future; this looks like "
+             + "milliseconds written where seconds belong";
+      }
+      return date.toUTCString();
+    }
+    /* ---- END: a seconds-since-1970 claim, in words ---- */
+
+    /* ---- START: clearing every output at once ---- */
+    function blank(message, kind) {
+      headerOut.textContent = "";
+      payloadOut.textContent = "";
+      timesOut.textContent = "";
+      lastPayload = "";
+      document.getElementById("sAlg").textContent = DASH;
+      document.getElementById("sState").textContent = DASH;
+      document.getElementById("sParts").textContent = DASH;
+      setMessage(message, kind);
+    }
+    /* ---- END: clearing every output at once ---- */
+
+    /* ---- START: reading the token ---- */
+    function decode() {
+      var token = input.value.trim().replace(/^Bearer\s+/i, "");
+      if (token === "") {
+        blank("Paste a token on the left.");
+        return;
+      }
+
+      var parts = token.split(".");
+      document.getElementById("sParts").textContent = parts.length;
+      if (parts.length !== 3) {
+        blank("A JWT has three parts separated by full stops. This has "
+            + parts.length + ".", "bad");
+        document.getElementById("sParts").textContent = parts.length;
+        return;
+      }
+
+      var header, payload;
+      try {
+        header = JSON.parse(decodeSegment(parts[0]));
+        payload = JSON.parse(decodeSegment(parts[1]));
+      } catch (e) {
+        blank("The parts are not readable as Base64-encoded JSON. Check that "
+            + "the whole token was copied.", "bad");
+        return;
+      }
+
+      /* textContent throughout: the token belongs to whoever pasted it and
+         must never be treated as markup. */
+      headerOut.textContent = JSON.stringify(header, null, 2);
+      payloadOut.textContent = JSON.stringify(payload, null, 2);
+      lastPayload = payloadOut.textContent;
+
+      var alg = header && header.alg ? String(header.alg) : "?";
+      document.getElementById("sAlg").textContent = alg;
+
+      var lines = [];
+      [["iat", "Issued at"], ["nbf", "Not valid before"], ["exp", "Expires"]]
+        .forEach(function (pair) {
+          var when = whenIs(payload[pair[0]]);
+          if (when) { lines.push(pair[1] + ": " + when); }
+        });
+      timesOut.textContent = lines.length
+        ? lines.join("\n")
+        : "No iat, nbf or exp claim in this token.";
+
+      var now = Math.floor(Date.now() / 1000);
+      if (typeof payload.exp !== "number") {
+        document.getElementById("sState").textContent = "none";
+      } else if (payload.exp < now) {
+        document.getElementById("sState").textContent = "expired";
+      } else {
+        var hours = Math.round((payload.exp - now) / 3600);
+        document.getElementById("sState").textContent =
+          hours >= 1 ? "in " + hours + "h" : "under 1h";
+      }
+
+      if (alg.toLowerCase() === "none") {
+        setMessage("This token says alg: none, which means it carries no "
+                 + "signature at all. That is part of the standard and also "
+                 + "how a well-known attack works.", "bad");
+      } else if (parts[2] === "") {
+        setMessage("Decoded. The signature section is empty.", "bad");
+      } else {
+        setMessage("Decoded in your browser. This does not mean the token is "
+                 + "valid - the signature was not checked, and checking it "
+                 + "would need your server's secret key.", "ok");
+      }
+    }
+    /* ---- END: reading the token ---- */
+
+    /* ---- START: an example token, built here rather than pasted in ----
+       Built at load time so its expiry is always an hour from now. A token
+       frozen into the page would be permanently expired, which would teach
+       the wrong lesson on the very first look. */
+    function encodeSegment(obj) {
+      var bytes = new TextEncoder().encode(JSON.stringify(obj));
+      var binary = "";
+      for (var i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    }
+
+    function sampleToken() {
+      var now = Math.floor(Date.now() / 1000);
+      return encodeSegment({ alg: "HS256", typ: "JWT" }) + "." +
+             encodeSegment({
+               sub: "1234567890",
+               name: "Priya Sharma",
+               role: "editor",
+               iat: now,
+               exp: now + 3600
+             }) + ".not-a-real-signature";
+    }
+    /* ---- END: an example token, built here rather than pasted in ---- */
+
+    /* ---- START: wiring ---- */
+    input.addEventListener("input", decode);
+
+    document.getElementById("sampleBtn").addEventListener("click", function () {
+      input.value = sampleToken();
+      decode();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastPayload) { showToast("Nothing to copy"); return; }
+      copyText(lastPayload);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      decode();
+      input.focus();
+    });
+    /* ---- END: wiring ---- */
+
+    decode();
+  })();
+  </script>
+</body>
+</html>

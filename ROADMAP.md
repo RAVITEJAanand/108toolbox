@@ -227,14 +227,14 @@ make; it is written here so it is made with the number in front of us.
 | Category | Tools | Built |
 |---|---|---|
 | Calculator | 20 | 16 |
-| Developer | 18 | 7 |
+| Developer | 18 | 12 |
 | Text | 16 | 13 |
 | Image | 14 | 7 |
 | Converter | 14 | 13 |
 | PDF | 10 | 0 |
 | Date & Time | 8 | 5 |
 | Random | 8 | 6 |
-| **Total** | **108** | **67** |
+| **Total** | **108** | **72** |
 
 ---
 
@@ -319,12 +319,12 @@ matches, so do not rename them later. ✅ = already live.
 | 5 | `html-encoder-decoder` ✅ | easy |
 | 6 | `uuid-generator` ✅ | easy — `crypto.randomUUID()` |
 | 7 | `color-code-converter` ✅ | easy — HEX / RGB / HSL |
-| 8 | `hash-generator` | medium — Web Crypto, SHA-256/384/512 |
-| 9 | `jwt-decoder` | medium — decode and display only, never verify |
-| 10 | `regex-tester` | medium — live match highlighting |
+| 8 | `hash-generator` ✅ | medium — Web Crypto, SHA-256/384/512 |
+| 9 | `jwt-decoder` ✅ | medium — decode and display only, never verify |
+| 10 | `regex-tester` ✅ | medium — live match highlighting |
 | 11 | `cron-expression-parser` | medium — "at 05:00 every Monday" |
-| 12 | `json-to-csv` | medium |
-| 13 | `csv-to-json` | medium |
+| 12 | `json-to-csv` ✅ | medium |
+| 13 | `csv-to-json` ✅ | medium |
 | 14 | `html-minifier` | medium |
 | 15 | `css-minifier` | medium |
 | 16 | `sql-formatter` | hard |
@@ -473,7 +473,7 @@ Libraries you will actually need:
 | `qrcode` | MIT | `qr-code-generator` |
 | `JsBarcode` | MIT | `barcode-generator` |
 | `marked` + `DOMPurify` | MIT | `markdown-previewer` |
-| `PapaParse` | MIT | `csv-to-json`, `json-to-csv` |
+| `PapaParse` | MIT | `csv-to-json`, `json-to-csv` ✅ |
 | `Terser` | BSD-2 | `js-minifier` |
 
 `DOMPurify` is not optional next to `marked` — rendering someone's markdown

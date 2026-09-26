@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Regex Tester — Live Matches, Groups, Traps</title>
+  <meta name="description" content="Test a regular expression against your text with live highlighting and captured groups. Warns about the patterns that can freeze a browser tab.">
+  <link rel="canonical" href="https://108toolbox.in/tools/regex-tester.html">
+
+  <meta property="og:title" content="Regex Tester — Live Matches, Groups, Traps">
+  <meta property="og:description" content="Test a regular expression against your text with live highlighting and captured groups. Warns about the patterns that can freeze a browser tab.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=19">
+  <link rel="stylesheet" href="../css/tool.css?v=19">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do I include the slashes around the pattern?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Type just the pattern itself - if you have /\\d+/g from somewhere else, type \\d+ here and tick the g flag."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why do I only get one match?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The g flag is off. Without it a regular expression stops at the first match by design. It is on by default here for exactly that reason."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the red empty markers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Matches of zero length. Your pattern is able to match nothing, so it matches nothing at every position. It is legal and it is usually not what you wanted - and in your own code it is the classic cause of a loop that never ends."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "The page froze. What happened?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A pattern with a repeat inside a repeat, run against text that nearly matches. JavaScript cannot interrupt a regular expression once it starts, so the tab stops until it finishes. Reload and simplify the pattern - the same pattern would do the same thing to a server."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does it support lookbehind and named groups?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, both, because the test runs in your own browser and uses its regular expression engine. Named groups are shown by name in the match list."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>Regex Tester</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Regex Tester</h1>
+        <p>Write a pattern, see what it matches as you type. Groups are listed
+           for every match, and the two traps that catch everyone &mdash; empty
+           matches and patterns that hang &mdash; are called out.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <style>
+        .rx-hl { white-space: pre-wrap; word-break: break-word; }
+        .rx-hl mark {
+          background: var(--primary-soft);
+          color: inherit;
+          border-radius: 3px;
+          padding: 1px 2px;
+          box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 35%, transparent);
+        }
+        .rx-hl mark.rx-empty { padding: 0 1px; background: var(--danger, #ef4444); }
+      </style>
+
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="pattern">Pattern</label>
+            <input type="text" id="pattern" class="mono" spellcheck="false"
+                   value="(\w+)@(\w+)\.in\b">
+          </div>
+
+          <div class="field">
+            <label>Flags</label>
+            <label class="check"><input type="checkbox" id="fG" checked> <code>g</code> &mdash; find them all, not just the first</label>
+            <label class="check"><input type="checkbox" id="fI"> <code>i</code> &mdash; ignore capitals</label>
+            <label class="check"><input type="checkbox" id="fM"> <code>m</code> &mdash; ^ and $ match each line</label>
+            <label class="check"><input type="checkbox" id="fS"> <code>s</code> &mdash; . also matches a line break</label>
+            <label class="check"><input type="checkbox" id="fU"> <code>u</code> &mdash; full Unicode</label>
+          </div>
+
+          <label class="panel__label" for="text" style="margin-top:var(--s3)">Test text</label>
+          <textarea id="text" class="mono" spellcheck="false">Write to priya@108toolbox.in or to ravi@toolbox.in.
+The old address arun@oldserver.invalid no longer works.</textarea>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="copyBtn">Copy matches</button>
+            <button class="btn btn--danger" type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Highlighted</span>
+          <div class="out mono rx-hl" id="highlight" aria-live="polite"></div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sMatches">&mdash;</span><span class="stat__label">Matches</span></div>
+            <div class="stat"><span class="stat__num" id="sGroups">&mdash;</span><span class="stat__label">Groups each</span></div>
+            <div class="stat"><span class="stat__num" id="sTime">&mdash;</span><span class="stat__label">Took</span></div>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s3)">Matches and groups</span>
+          <pre class="out mono" id="matchList" style="min-height:120px" aria-live="polite"></pre>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Type the pattern <em>without</em> the surrounding slashes.</li>
+          <li>Tick the flags you need. <code>g</code> is on because without it
+              you only ever see the first match, which confuses everyone
+              once.</li>
+          <li>Matches are highlighted above and listed below with whatever
+              each group captured.</li>
+        </ol>
+
+        <h2>The empty match, which is not a bug</h2>
+        <p>A pattern like <code>\d*</code> can match nothing at all, and
+           nothing is a perfectly good match &mdash; there is an empty string
+           between every pair of characters. So a pattern that can match
+           nothing matches everywhere, once per position, and the list fills up
+           with matches you cannot see.</p>
+        <p>Those are marked in red here rather than hidden, because the same
+           thing in your own code is an infinite loop: a search that finds an
+           empty match at position 5 and then starts again from position 5 will
+           never move. Every regex engine makes you handle this by hand.</p>
+
+        <h2>The pattern that freezes the tab</h2>
+        <p>Some patterns take longer than the age of the universe on inputs
+           only thirty characters long. The classic shape is a repeat inside a
+           repeat &mdash; <code>(a+)+b</code>, or <code>(\s*,)*$</code>.
+           Against text that <em>nearly</em> matches, the engine tries every
+           possible way of splitting the input before admitting defeat, and the
+           number of ways doubles with every character.</p>
+        <p>This page times every run and warns you when a pattern has that
+           shape. It cannot stop one that has already started: JavaScript runs a
+           regular expression to the end with everything else paused, so a bad
+           pattern freezes the whole tab, here and anywhere else. If this page
+           stops responding, that is what happened, and it is worth knowing
+           because the same pattern on a server is a way to take the server
+           down.</p>
+
+        <h2>The example, and the <code></code> in it</h2>
+        <p>The pattern above ends with <code></code>, a word boundary. Take
+           it off and a third match appears: <code>\.in</code> happily matches
+           the <code>.in</code> sitting inside <code>.invalid</code>, so an
+           address that should not match does. It is a small thing that causes
+           a lot of quiet wrongness &mdash; a pattern for <code>cat</code>
+           finding it inside <code>category</code>, a pattern for a currency
+           code finding it inside a word.</p>
+
+        <h2>Flags, in one line each</h2>
+        <p><code>g</code> find every match instead of stopping at the first.
+           <code>i</code> treat capitals and small letters as the same.
+           <code>m</code> make <code>^</code> and <code>$</code> mean the start
+           and end of each <em>line</em> rather than of the whole text.
+           <code>s</code> let <code>.</code> match a line break, which it
+           normally refuses to do. <code>u</code> handle characters outside the
+           basic set properly, which matters the moment there is an emoji or an
+           Indian language in the text.</p>
+
+        <h2>Your text stays here</h2>
+        <p>The pattern and the text are both used by JavaScript in this page.
+           Nothing is uploaded, which is the reason to use a page like this on
+           a real log file rather than a made-up sample.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Do I include the slashes around the pattern?</h3>
+          <p>No. Type just the pattern itself - if you have /\d+/g from somewhere else, type \d+ here and tick the g flag.</p>
+        </div>
+        <div class="faq">
+          <h3>Why do I only get one match?</h3>
+          <p>The g flag is off. Without it a regular expression stops at the first match by design. It is on by default here for exactly that reason.</p>
+        </div>
+        <div class="faq">
+          <h3>What are the red empty markers?</h3>
+          <p>Matches of zero length. Your pattern is able to match nothing, so it matches nothing at every position. It is legal and it is usually not what you wanted - and in your own code it is the classic cause of a loop that never ends.</p>
+        </div>
+        <div class="faq">
+          <h3>The page froze. What happened?</h3>
+          <p>A pattern with a repeat inside a repeat, run against text that nearly matches. JavaScript cannot interrupt a regular expression once it starts, so the tab stops until it finishes. Reload and simplify the pattern - the same pattern would do the same thing to a server.</p>
+        </div>
+        <div class="faq">
+          <h3>Does it support lookbehind and named groups?</h3>
+          <p>Yes, both, because the test runs in your own browser and uses its regular expression engine. Named groups are shown by name in the match list.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=19"></script>
+  <script src="../js/tool-helpers.js?v=19"></script>
+  <script>window.CURRENT_TOOL = "regex-tester";</script>
+  <script src="../js/main.js?v=19"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var pattern   = document.getElementById("pattern");
+    var text      = document.getElementById("text");
+    var highlight = document.getElementById("highlight");
+    var matchList = document.getElementById("matchList");
+    var msg       = document.getElementById("msg");
+    var DASH      = String.fromCharCode(0x2014);
+
+    var FLAGS = [["fG", "g"], ["fI", "i"], ["fM", "m"], ["fS", "s"], ["fU", "u"]];
+    var MAX_MATCHES = 5000;
+    var lastList = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: the shape of a pattern that can hang ----
+       A repeat wrapped in another repeat. Against text that nearly matches,
+       the engine tries every way of dividing the input, and the number of
+       ways doubles per character - thirty characters is already too many.
+
+       This is a warning, never a refusal. Plenty of patterns of this shape
+       are perfectly safe on the text they are actually used against, and
+       guessing on the visitor's behalf would be worse than telling them. */
+    function looksExplosive(source) {
+      return /\([^()]*[+*][^()]*\)\s*[+*]/.test(source)
+          || /\[[^\]]*\][+*]\s*[+*]/.test(source);
+    }
+    /* ---- END: the shape of a pattern that can hang ---- */
+
+    /* ---- START: collecting the matches ----
+       The lastIndex nudge is the whole reason this is a hand-written loop.
+       A pattern able to match nothing returns a zero-length match and leaves
+       lastIndex where it was, so the next call finds the same nothing in the
+       same place, forever. Moving on by one character is what every engine
+       makes you do by hand. */
+    function collect(re, subject) {
+      var found = [];
+      if (!re.global) {
+        var one = re.exec(subject);
+        if (one) { found.push(one); }
+        return found;
+      }
+      re.lastIndex = 0;
+      var m;
+      while ((m = re.exec(subject)) !== null) {
+        found.push(m);
+        if (m.index === re.lastIndex) { re.lastIndex += 1; }
+        if (found.length >= MAX_MATCHES) { break; }
+      }
+      return found;
+    }
+    /* ---- END: collecting the matches ---- */
+
+    /* ---- START: painting the highlight ----
+       Built as markup, so rule 11 applies: every piece of the visitor's text
+       goes through escapeHtml on its way in. The walk is done over the
+       ORIGINAL string and each piece escaped separately, because escaping
+       first would move every offset the matches refer to. */
+    function paint(subject, found) {
+      var html = "";
+      var at = 0;
+      for (var i = 0; i < found.length; i++) {
+        var start = found[i].index;
+        var end = start + found[i][0].length;
+        if (start < at) { continue; }
+        html += escapeHtml(subject.slice(at, start));
+        if (end === start) {
+          html += '<mark class="rx-empty" title="empty match"></mark>';
+        } else {
+          html += "<mark>" + escapeHtml(subject.slice(start, end)) + "</mark>";
+        }
+        at = end;
+      }
+      html += escapeHtml(subject.slice(at));
+      highlight.innerHTML = html;
+    }
+    /* ---- END: painting the highlight ---- */
+
+    /* ---- START: listing what each group caught ---- */
+    function describe(found) {
+      var lines = [];
+      for (var i = 0; i < found.length && i < 200; i++) {
+        var m = found[i];
+        lines.push((i + 1) + ". at " + m.index + "  " +
+                   (m[0] === "" ? "(empty match)" : JSON.stringify(m[0])));
+        for (var g = 1; g < m.length; g++) {
+          lines.push("     group " + g + ": " +
+                     (m[g] === undefined ? "(did not take part)" : JSON.stringify(m[g])));
+        }
+        if (m.groups) {
+          Object.keys(m.groups).forEach(function (name) {
+            lines.push("     " + name + ": " +
+                       (m.groups[name] === undefined
+                        ? "(did not take part)" : JSON.stringify(m.groups[name])));
+          });
+        }
+      }
+      if (found.length > 200) {
+        lines.push("... and " + (found.length - 200) + " more, not listed.");
+      }
+      return lines.join("\n");
+    }
+    /* ---- END: listing what each group caught ---- */
+
+    /* ---- START: running the test ---- */
+    function run() {
+      var source = pattern.value;
+      var subject = text.value;
+
+      var flags = "";
+      FLAGS.forEach(function (pair) {
+        if (document.getElementById(pair[0]).checked) { flags += pair[1]; }
+      });
+
+      if (source === "") {
+        highlight.textContent = subject;
+        matchList.textContent = "";
+        lastList = "";
+        document.getElementById("sMatches").textContent = DASH;
+        document.getElementById("sGroups").textContent = DASH;
+        document.getElementById("sTime").textContent = DASH;
+        setMessage("Type a pattern above.");
+        return;
+      }
+
+      var re;
+      try {
+        re = new RegExp(source, flags);
+      } catch (e) {
+        highlight.textContent = subject;
+        matchList.textContent = "";
+        document.getElementById("sMatches").textContent = DASH;
+        setMessage("That is not a valid pattern: " + e.message, "bad");
+        return;
+      }
+
+      var started = performance.now();
+      var found = collect(re, subject);
+      var took = performance.now() - started;
+
+      paint(subject, found);
+      lastList = describe(found);
+      matchList.textContent = found.length
+        ? lastList : "Nothing matched.";
+
+      document.getElementById("sMatches").textContent = formatNumber(found.length, 0);
+      document.getElementById("sGroups").textContent =
+        found.length ? Math.max(0, found[0].length - 1) : DASH;
+      document.getElementById("sTime").textContent =
+        took < 1 ? "under 1 ms" : Math.round(took) + " ms";
+
+      var empties = 0;
+      for (var i = 0; i < found.length; i++) {
+        if (found[i][0] === "") { empties += 1; }
+      }
+
+      if (found.length >= MAX_MATCHES) {
+        setMessage("Stopped at " + MAX_MATCHES + " matches. There are more.",
+                   "bad");
+      } else if (empties) {
+        setMessage(empties + " match" + (empties === 1 ? "" : "es")
+                 + " of zero length, shown in red. Your pattern can match "
+                 + "nothing, so it matches nothing everywhere - in code that "
+                 + "is the classic loop that never ends.", "bad");
+      } else if (took > 120) {
+        setMessage("That took " + Math.round(took) + " ms on this short text. "
+                 + "On a longer one it could take very much longer.", "bad");
+      } else if (looksExplosive(source)) {
+        setMessage("Careful: this pattern has a repeat inside a repeat. On "
+                 + "text that nearly matches, that shape can take effectively "
+                 + "forever and will freeze whatever is running it.", "bad");
+      } else if (!found.length) {
+        setMessage("Valid pattern, but nothing in the text matched it.");
+      } else {
+        setMessage(found.length + " match" + (found.length === 1 ? "" : "es")
+                 + " in " + (took < 1 ? "under a millisecond" : Math.round(took) + " ms")
+                 + ".", "ok");
+      }
+    }
+    /* ---- END: running the test ---- */
+
+    /* ---- START: wiring ---- */
+    pattern.addEventListener("input", run);
+    text.addEventListener("input", run);
+    FLAGS.forEach(function (pair) {
+      document.getElementById(pair[0]).addEventListener("change", run);
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastList) { showToast("Nothing to copy"); return; }
+      copyText(lastList);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      pattern.value = "";
+      text.value = "";
+      FLAGS.forEach(function (pair) {
+        document.getElementById(pair[0]).checked = pair[1] === "g";
+      });
+      run();
+      pattern.focus();
+    });
+    /* ---- END: wiring ---- */
+
+    run();
+  })();
+  </script>
+</body>
+</html>

@@ -153,6 +153,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "csv-to-json",
+    name: "CSV to JSON",
+    desc: "A real CSV parser: quoted commas, doubled quotes and line breaks survive.",
+    category: "Developer",
+    icon: "\u{1F4C4}",
+    keywords: ["csv to json", "convert csv to json", "csv parser", "csv json converter", "excel to json", "csv to array"],
+    popular: false
+  },
+  {
     slug: "data-storage-converter",
     name: "Data Storage Converter",
     desc: "Bytes, KB, MB, GB and TB, with the 1024-based units kept separate.",
@@ -306,6 +315,24 @@ const TOOLS = [
     popular: true
   },
   {
+    slug: "json-to-csv",
+    name: "JSON to CSV",
+    desc: "Flatten a JSON array into a spreadsheet that opens properly in Excel.",
+    category: "Developer",
+    icon: "\u{1F4CA}",
+    keywords: ["json to csv", "convert json to csv", "json to excel", "json to spreadsheet", "json csv converter", "export json as csv"],
+    popular: false
+  },
+  {
+    slug: "jwt-decoder",
+    name: "JWT Decoder",
+    desc: "Read the header, payload and expiry of a token without sending it anywhere.",
+    category: "Developer",
+    icon: "\u{1F3AB}",
+    keywords: ["jwt decoder", "decode jwt", "json web token", "jwt parser", "read jwt", "jwt payload", "decode bearer token"],
+    popular: false
+  },
+  {
     slug: "leap-year-checker",
     name: "Leap Year Checker",
     desc: "Is it a leap year? The answer, and which of the three rules decided it.",
@@ -423,6 +450,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "regex-tester",
+    name: "Regex Tester",
+    desc: "Live highlighting, captured groups, and a warning for patterns that hang.",
+    category: "Developer",
+    icon: "\u{1F50D}",
+    keywords: ["regex tester", "regular expression tester", "test regex", "regex online", "regex match", "regex checker", "regexp tester"],
+    popular: false
+  },
+  {
     slug: "remove-duplicate-lines",
     name: "Remove Duplicate Lines",
     desc: "Delete repeated lines from any list and keep the original order.",
@@ -465,6 +501,15 @@ const TOOLS = [
     category: "Calculator",
     icon: "\u{1F4B8}",
     keywords: ["salary calculator", "ctc to in hand", "take home salary", "in hand salary", "ctc calculator", "gross to net salary", "salary breakup", "basic hra pf"],
+    popular: false
+  },
+  {
+    slug: "hash-generator",
+    name: "SHA Hash Generator",
+    desc: "SHA-256, 384, 512 or SHA-1 of text or a file, computed in your browser.",
+    category: "Developer",
+    icon: "\u{1F513}",
+    keywords: ["hash generator", "sha256 generator", "sha256 hash", "checksum", "file hash", "sha512", "sha1 hash", "hash text online"],
     popular: false
   },
   {

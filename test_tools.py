@@ -3309,6 +3309,280 @@ T["username-generator"] = r"""
   finish();
 """
 
+T["hash-generator"] = r"""
+  /* Published test vectors, computed with Python's hashlib, not with this
+     page - a hash tool agreeing with itself proves nothing. */
+  var FOX256 = "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592";
+  var FOX1   = "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12";
+  var ABC256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
+  var ABC384 = "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7";
+  var ABC512 = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f";
+  var TELUGU = String.fromCharCode(0x0C39, 0x0C32, 0x0C4B);
+  var TEL256 = "3a6430b444174ccd2a9818fa3026854a09d9cf23025e22e4efe7b1f8de4d9f5d";
+
+  function once(label, want, then) {
+    waitFor(label, function () { return txt("output") === want; }, then);
+  }
+
+  /* crypto.subtle is asynchronous, so every step has to wait for its answer. */
+  once("SHA-256 of the fox sentence is the published vector", FOX256, function () {
+    eq("the algorithm tile", txt("sAlgo"), "SHA-256");
+    eq("the length tile", txt("sBits"), "256 bits");
+    eq("hashed from text, not a file", txt("sSource"), "text");
+
+    set("algo", "SHA-1");
+    once("SHA-1 of the same sentence", FOX1, function () {
+      eq("forty hex characters", txt("output").length, 40);
+      has("and SHA-1 is called broken", txt("msg"), "broken");
+
+      set("algo", "SHA-256");
+      set("input", "abc");
+      once("SHA-256 of abc", ABC256, function () {
+        set("algo", "SHA-384");
+        once("SHA-384 of abc", ABC384, function () {
+          set("algo", "SHA-512");
+          once("SHA-512 of abc", ABC512, function () {
+            eq("128 hex characters", txt("output").length, 128);
+            eq("and the tile says so", txt("sBits"), "512 bits");
+
+            set("algo", "SHA-256");
+            tick("upper", true);
+            once("capitals when asked for", ABC256.toUpperCase(), function () {
+              tick("upper", false);
+
+              /* UTF-8 bytes, not character codes. Getting this wrong gives a
+                 hash that disagrees with every other tool on earth, and only
+                 for people whose language is not English. */
+              set("input", TELUGU);
+              once("Telugu text hashes as UTF-8 bytes", TEL256, function () {
+                set("input", "");
+                waitFor("an empty box asks for input",
+                  function () { return txt("msg").indexOf("Type something") > -1; },
+                  function () {
+                    eq("and the output is cleared", txt("output"), "");
+                    click("resetBtn");
+                    eq("reset returns to SHA-256", val("algo"), "SHA-256");
+                    finish();
+                  });
+              });
+            });
+          });
+        });
+      });
+    });
+  });
+"""
+
+T["jwt-decoder"] = r"""
+  function b64(obj) {
+    var bytes = new TextEncoder().encode(JSON.stringify(obj));
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) { bin += String.fromCharCode(bytes[i]); }
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+
+  click("sampleBtn");
+  has("the header carries the algorithm", txt("headerOut"), "HS256");
+  has("the payload carries the name", txt("payloadOut"), "Priya Sharma");
+  eq("three parts", txt("sParts"), "3");
+  eq("the algorithm tile", txt("sAlg"), "HS256");
+  has("issued-at is printed in words", txt("timesOut"), "Issued at");
+  has("and so is the expiry", txt("timesOut"), "Expires");
+  ok("the example is not already expired", txt("sState") !== "expired", txt("sState"));
+  has("it says the signature was never checked",
+      txt("msg"), "signature was not checked");
+
+  set("input", "abc.def");
+  has("two parts is not a JWT", txt("msg"), "three parts");
+  eq("and the count is shown", txt("sParts"), "2");
+
+  set("input", "aaa.bbb.ccc");
+  has("three unreadable parts are reported", txt("msg"), "not readable");
+
+  set("input", b64({ alg: "none", typ: "JWT" }) + "." + b64({ sub: "1" }) + ".");
+  eq("alg none reaches the tile", txt("sAlg"), "none");
+  has("and is called out as an attack shape", txt("msg"), "alg: none");
+
+  /* The specification says seconds. A great deal of code writes milliseconds. */
+  set("input", b64({ alg: "HS256" }) + "." + b64({ exp: 1700000000000 }) + ".sig");
+  has("a year-56000 expiry is explained, not printed straight",
+      txt("timesOut"), "milliseconds");
+
+  /* atob alone returns one character per byte, which mangles every alphabet
+     but English. This is the step most decoders skip. */
+  var name = String.fromCharCode(0x0C30, 0x0C35, 0x0C3F);
+  set("input", b64({ alg: "HS256" }) + "." + b64({ name: name }) + ".sig");
+  has("a Telugu claim decodes correctly", txt("payloadOut"), name);
+
+  set("input", "Bearer " + b64({ alg: "HS256" }) + "." + b64({ sub: "x" }) + ".sig");
+  eq("a Bearer prefix is stripped", txt("sAlg"), "HS256");
+
+  /* A token is somebody's key; it must never be treated as markup. */
+  set("input", b64({ alg: "HS256" }) + "." + b64({ n: "<iframe onload=zq>" }) + ".sig");
+  ok("a tag inside a claim stays text",
+     document.querySelectorAll("#payloadOut iframe").length === 0);
+  has("and is shown to the visitor as characters",
+      txt("payloadOut"), "<iframe");
+
+  click("clearBtn");
+  has("clearing asks for a token", txt("msg"), "Paste a token");
+  finish();
+"""
+
+T["regex-tester"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+  function marks(sel) { return document.querySelectorAll("#highlight " + sel).length; }
+
+  /* Opens on an email pattern over two lines of sample text. */
+  eq("two addresses match", num("sMatches"), 2);
+  eq("the pattern has two groups", txt("sGroups"), "2");
+  has("the first group caught the name", txt("matchList"), "priya");
+  has("the second caught the domain", txt("matchList"), "108toolbox");
+  eq("both are highlighted", marks("mark"), 2);
+
+  /* The word boundary is the lesson: without it, .in matches inside
+     .invalid and an address that should not match does. */
+  set("pattern", "(\\w+)@(\\w+)\\.in");
+  eq("without the boundary a third address matches", num("sMatches"), 3);
+  set("pattern", "(\\w+)@(\\w+)\\.in\\b");
+  eq("with it, back to two", num("sMatches"), 2);
+
+  tick("fG", false);
+  eq("without the g flag only the first is found", num("sMatches"), 1);
+  tick("fG", true);
+
+  set("pattern", "PRIYA");
+  eq("capitals matter by default", num("sMatches"), 0);
+  tick("fI", true);
+  eq("until the i flag is ticked", num("sMatches"), 1);
+  tick("fI", false);
+
+  /* A pattern able to match nothing matches nothing everywhere. */
+  set("pattern", "\\d*");
+  has("zero-length matches are called out", txt("msg"), "zero length");
+  ok("and drawn as empty markers", marks("mark.rx-empty") > 0);
+
+  set("pattern", "(unclosed");
+  has("an invalid pattern is reported", txt("msg"), "not a valid pattern");
+
+  /* Warned about, never refused - plenty of such patterns are fine in use. */
+  set("pattern", "(a+)+b");
+  set("text", "aaaaaaaa");
+  has("a repeat inside a repeat is warned about",
+      txt("msg"), "repeat inside a repeat");
+
+  /* The highlight is built as markup, so the visitor's text must be escaped
+     on the way in. This is rule 11 at the one place on the site that has to
+     build HTML out of what somebody typed. */
+  set("pattern", "span");
+  set("text", "<span onclick=zq>hello</span>");
+  eq("the pattern still matches inside markup-looking text", num("sMatches"), 2);
+  eq("but nothing became a real element", marks("span"), 0);
+  ok("the angle brackets are shown as characters",
+     document.getElementById("highlight").textContent.indexOf("<span") === 0,
+     document.getElementById("highlight").textContent.slice(0, 40));
+
+  click("resetBtn");
+  has("reset asks for a pattern", txt("msg"), "Type a pattern");
+  finish();
+"""
+
+T["json-to-csv"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+  function lines() { return txt("output").split("\r\n"); }
+
+  eq("three rows from the example", num("sRows"), 3);
+  eq("five columns once the order is flattened", num("sCols"), 5);
+  eq("the header row names them", lines()[0],
+     "name,city,order.id,order.total,note");
+  eq("a comma inside a value is quoted, not split",
+     lines()[2].slice(0, 10), '"Ravi, Jr"');
+  has("the row missing a note is explained, not dropped",
+      txt("msg"), "some cells are empty");
+
+  set("input", '[{"a":"say \\"hi\\""}]');
+  eq("an inner quotation mark is doubled", lines()[1], '"say ""hi""' + '"');
+
+  set("input", '[{"a":1,"b":2}]');
+  set("delim", ";");
+  eq("semicolons when asked for", lines()[0], "a;b");
+  set("delim", ",");
+
+  set("input", '[{"a":{"b":1}}]');
+  eq("nesting becomes a dotted column", lines()[0], "a.b");
+  tick("flatten", false);
+  eq("unflattened it is one column", lines()[0], "a");
+  eq("holding the JSON, quoted properly", lines()[1], '"{""b"":1}"');
+  tick("flatten", true);
+
+  set("input", '[{"a":"line\\nbreak"}]');
+  ok("a line break inside a value forces quotes",
+     lines()[1].charAt(0) === '"', lines()[1]);
+
+  set("input", '{"x":1,"y":2}');
+  eq("a lone object becomes one row", num("sRows"), 1);
+
+  set("input", "[]");
+  has("an empty array has nothing to convert", txt("msg"), "nothing to put");
+
+  set("input", "{nope}");
+  has("invalid JSON is reported", txt("msg"), "not valid JSON");
+
+  click("clearBtn");
+  has("clearing asks for JSON", txt("msg"), "Paste some JSON");
+  finish();
+"""
+
+T["csv-to-json"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+  function parsed() { return JSON.parse(txt("output")); }
+
+  eq("three rows from the example", num("sRows"), 3);
+  eq("four columns", num("sCols"), 4);
+  eq("the separator was worked out", txt("sSep"), "comma");
+
+  var rows = parsed();
+  eq("a comma inside quotes stays one field", rows[0].name, "Sharma, Priya");
+  eq("a doubled quotation mark becomes one", rows[2].name, 'Anjali "Anu"');
+  eq("the phone keeps its leading zero", rows[0].phone, "09876543210");
+  has("and it says everything was kept as text", txt("msg"), "kept as text");
+
+  tick("typed", true);
+  rows = parsed();
+  eq("a plain number becomes a number", rows[0].pin, 500081);
+  eq("but a leading zero is never touched", rows[0].phone, "09876543210");
+  has("and the page explains why", txt("msg"), "leading zero");
+  tick("typed", false);
+
+  set("input", 'a,b\n"one\ntwo",3');
+  rows = parsed();
+  eq("a line break inside quotes does not end the row", rows.length, 1);
+  eq("it belongs to the value", rows[0].a, "one\ntwo");
+
+  set("input", "city,city\nPune,Nashik");
+  rows = parsed();
+  eq("a repeated heading is numbered", rows[0].city2, "Nashik");
+  eq("so the first column survives", rows[0].city, "Pune");
+
+  set("input", "1,2\n3,4");
+  tick("headers", false);
+  rows = parsed();
+  eq("with no header row, rows are arrays", rows[0].length, 2);
+  eq("and no row is eaten by the headings", rows.length, 2);
+  tick("headers", true);
+
+  set("input", "a;b\n1;2");
+  eq("semicolons are detected", txt("sSep"), "semicolon");
+
+  set("input", "a,b,c\n1,2");
+  has("a short line is reported rather than reshaped",
+      txt("msg"), "not have 3 fields");
+
+  click("clearBtn");
+  has("clearing asks for CSV", txt("msg"), "Paste some CSV");
+  finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 
