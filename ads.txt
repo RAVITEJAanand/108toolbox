@@ -1,0 +1,5 @@
+# Authorised sellers for 108toolbox.in (IAB ads.txt).
+# This file proves who may sell advertising on this domain.
+# It contains no code and shows no advertisements.
+
+google.com, pub-2468238593433239, DIRECT, f08c47fec0942fa0

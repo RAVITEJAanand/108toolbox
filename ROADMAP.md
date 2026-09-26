@@ -119,7 +119,7 @@ first, in their own commit, and only then does the ad code go in.
 | Where | What it says now |
 |---|---|
 | `index.html`, the hero line | "no ads &middot; no tracking" |
-| the footer, **all 66 pages** | "No sign-up, no ads, no file uploads." |
+| the footer, **all 71 pages** | "No sign-up, no ads, no file uploads." |
 | `privacy.html` section 7 | "There are **no advertisements on this site today**." |
 | `disclaimer.html` section 9 | "There are no advertisements on this site today." |
 
@@ -146,6 +146,11 @@ tracking" for something that is still true, such as "nothing uploaded".
 2. A consent mechanism for visitors in the EU and UK. Google requires a
    certified CMP there, and an India-first site still gets that traffic.
 3. `ads.txt` at the site root. GitHub Pages serves it like any other file.
+   **Done already** — published at 61 tools so the AdSense account could
+   verify it owns the domain. It is a text file naming the publisher id;
+   it carries no code and cannot draw an advertisement. Verifying
+   ownership is not the same as requesting review, and neither is the
+   same as turning ads on.
 4. Ad placement that cannot be mistaken for a tool control. Accidental clicks
    are an AdSense policy violation, and on a site of buttons and output boxes
    that is a real risk, not a formality.
