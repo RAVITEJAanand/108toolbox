@@ -330,8 +330,9 @@
   var SKIP = Object.create(null);
   "the a an and or but if of to in on at for with is are was were be been it this that as by from"
     .split(" ").forEach(function (w) { SKIP[w] = true; });
-  /* ---- START: the four counts ---- */
   /* ---- END: the words too common to be interesting ---- */
+
+  /* ---- START: the four counts ---- */
 
   function countWords(text) {
     var trimmed = text.trim();

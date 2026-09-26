@@ -402,6 +402,60 @@ if len(rule9_bad) > 12:
 if not rule9_bad:
     ok("every function on every tool page is inside a START/END pair")
 
+# ---- 4i. The markers must nest, never cross --------------------------------
+# 4h pairs each START with the first LATER END whose label matches, so a
+# crossed pair satisfies it completely: both markers find a partner, and every
+# function still lands inside something. Two pages were crossed exactly that
+# way and 4h passed them both -
+#
+#     /* ---- START: the alphabet ... ---- */     <- opened here
+#     /* ---- END: drawing random numbers ---- */ <- closes the block ABOVE
+#
+# both of them pages the speed work had edited: a block was inserted, and the
+# END belonging to the block above ended up below the START of the block
+# beside it. Every marker was present and every marker pointed at the wrong
+# place, which is worse than having none - rule 9 exists so that a name read
+# at a glance can be trusted.
+#
+# Nesting IS allowed and is used on purpose: roman-numeral-converter marks one
+# tricky paragraph inside a larger block. Crossing is what this forbids, and
+# stack discipline tells the two apart without banning either.
+cross_bad = []
+for path in tool_pages():
+    body = re.search(r"<script data-tool>(.*?)\n  </script>",
+                     path.read_text(encoding="utf-8"), re.S)
+    if not body:
+        continue
+    script = body.group(1)
+    marks = sorted(
+        [(m.start(), 0, m.group(1)) for m in MARK_START.finditer(script)] +
+        [(m.start(), 1, m.group(1)) for m in MARK_END.finditer(script)])
+
+    stack = []
+    for _, kind, label in marks:
+        if kind == 0:
+            stack.append(label)
+            continue
+        if not stack:
+            cross_bad.append("%s: END '%s' closes nothing" % (path.name, label))
+            continue
+        opened = stack.pop()
+        # The END label is allowed to be a shortened form of the START label,
+        # which is the convention already in the files.
+        if not (opened.startswith(label) or label.startswith(opened)):
+            cross_bad.append(
+                "%s: END '%s' crosses START '%s' \u2014 the markers interleave "
+                "instead of nesting" % (path.name, label, opened))
+    for label in stack:
+        cross_bad.append("%s: START '%s' is never closed" % (path.name, label))
+
+for problem in cross_bad[:12]:
+    fail(problem)
+if len(cross_bad) > 12:
+    fail("...and %d more crossed markers" % (len(cross_bad) - 12))
+if not cross_bad:
+    ok("no START/END pair crosses another \u2014 the markers nest cleanly")
+
 # ---- 4g. ROADMAP.md agrees with the registry -------------------------------
 # The same rot as the tool counts, one file further out. The "Built" column
 # said 45 while 51 tools were live, and the ticks had not moved in three
