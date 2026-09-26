@@ -180,7 +180,7 @@ tracking" for something that is still true, such as "nothing uploaded".
 |---|---|
 | Domain added to AdSense | done |
 | Ownership verified | done, 26 Sep 2026, by `ads.txt` |
-| Review requested | requested 26 Sep 2026, at 61 tools |
+| Review requested | 26 Sep 2026, 08:49, at 61 tools — "Getting ready" |
 | Ad code on the site | **not done, and not until 108** |
 | Ads serving | **not until 108** |
 
@@ -196,6 +196,15 @@ reason is worth more now than at 108. A live pre-flight was run first: all 70
 pages HTTP 200, all five policy pages linked from every page, no placeholder
 wording anywhere, every page mobile-ready and indexable, and every tool page
 over 300 words (median 708).
+
+Worth writing down, because it was not obvious beforehand: **`ads.txt` alone
+was enough to request the review.** AdSense never asked for the code snippet,
+so the site went into review with no third-party JavaScript on it at all.
+Anyone doing this again does not need to paste the ad library to be reviewed
+— which matters, because that snippet is the thing that can start serving
+advertisements on its own.
+
+Google says a few days, and 2–4 weeks in some cases.
 
 The one thing on the homepage that reads as unfinished is the hero line,
 `47 on the way`. It stays. The site is *called* 108 ToolBox and the headline
