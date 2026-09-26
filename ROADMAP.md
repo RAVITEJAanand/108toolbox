@@ -155,6 +155,36 @@ tracking" for something that is still true, such as "nothing uploaded".
    are an AdSense policy violation, and on a site of buttons and output boxes
    that is a real risk, not a formality.
 
+**Where the AdSense account stands**
+
+| Step | State |
+|---|---|
+| Domain added to AdSense | done |
+| Ownership verified | done, 26 Sep 2026, by `ads.txt` |
+| Review requested | requested 26 Sep 2026, at 61 tools |
+| Ad code on the site | **not done, and not until 108** |
+| Ads serving | **not until 108** |
+
+Ownership was verified with `ads.txt` rather than the AdSense code snippet on
+purpose: the snippet *is* the ad library, and with Auto ads on it can place
+advertisements the moment a site is approved. `ads.txt` cannot. Approval is
+therefore safe to hold: it expires from nothing, and nothing appears on the
+site until the snippet goes in.
+
+Review was requested at 61 of 108 rather than waiting, because approval takes
+calendar time that runs in parallel with building the rest, and a rejection
+reason is worth more now than at 108. A live pre-flight was run first: all 70
+pages HTTP 200, all five policy pages linked from every page, no placeholder
+wording anywhere, every page mobile-ready and indexable, and every tool page
+over 300 words (median 708).
+
+The one thing on the homepage that reads as unfinished is the hero line,
+`47 on the way`. It stays. The site is *called* 108 ToolBox and the headline
+says "108 free tools" - that line is what explains why 61 are live, and
+removing it would make the headline look overstated instead of explained.
+AdSense's "under construction" rule is about unfinished pages, and there are
+none.
+
 **What it costs, measured**
 
 A tool page today is **6 requests and 27 kB**, with **no third-party
