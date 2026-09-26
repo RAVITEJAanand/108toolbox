@@ -81,3 +81,24 @@ function formatNumber(value, decimals) {
     maximumFractionDigits: decimals === undefined ? 0 : decimals
   });
 }
+
+/* Make a string safe to put inside HTML.
+
+   Needed wherever a message is built as markup — because it carries a
+   <strong> or a <br> — and part of that message came from the visitor.
+
+   This was not hypothetical. json-formatter printed the browser's own
+   JSON.parse error into an innerHTML message, and V8 quotes a piece of the
+   input back inside that error. Pasting `<iframe onload=...>` therefore put
+   a real iframe on the page and its handler ran. Eighteen characters.
+
+   The rule that follows: if it is going into innerHTML and it did not come
+   from this repository, it goes through here first. */
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}

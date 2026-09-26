@@ -788,6 +788,20 @@ T["json-formatter"] = r"""
     click("beautifyBtn");
     ok("depth is measured", txt("sDepth") !== "0", txt("sDepth"));
     ok("keys are counted", txt("sKeys") !== "0", txt("sKeys"));
+
+    /* The message box is built as markup so it can carry a <strong> and a
+       <br>, and the browser's own JSON.parse error quotes a piece of the
+       input back inside it. Eighteen characters used to be enough to put a
+       live iframe on this page. security.py attacks every tool for this;
+       this keeps the specific one honest in the fast suite too. */
+    set("input", "<iframe onload=zq>");
+    click("beautifyBtn");
+    var box = document.getElementById("msg");
+    ok("a pasted tag stays text and never becomes an element",
+       box.querySelectorAll("iframe, svg, img, object, script").length === 0,
+       box.innerHTML.slice(0, 120));
+    ok("and the visitor still sees what they typed, as characters",
+       box.textContent.indexOf("<iframe") > -1, box.textContent.slice(0, 90));
     finish();
 """
 

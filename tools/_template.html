@@ -37,9 +37,15 @@
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
 
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=16">
-  <link rel="stylesheet" href="../css/tool.css?v=16">
+  <link rel="stylesheet" href="../css/style.css?v=17">
+  <link rel="stylesheet" href="../css/tool.css?v=17">
 
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
@@ -277,10 +283,10 @@
 
   <!-- Shared scripts, in order. TODO: set CURRENT_TOOL to your slug —
        it is what draws the "Related tools" strip above. -->
-  <script src="../js/tools-data.js?v=16"></script>
-  <script src="../js/tool-helpers.js?v=16"></script>
+  <script src="../js/tools-data.js?v=17"></script>
+  <script src="../js/tool-helpers.js?v=17"></script>
   <script>window.CURRENT_TOOL = "TODO-slug";</script>
-  <script src="../js/main.js?v=16"></script>
+  <script src="../js/main.js?v=17"></script>
 
   <!-- ===== This tool's own logic. The only part that differs per tool. =====
        Wrapped in (function(){ ... })() so its variables cannot clash with

@@ -72,7 +72,7 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=16` → `?v=17` across all 77 pages (currently `?v=16`,
+Find-and-replace `?v=17` → `?v=18` across all 77 pages (currently `?v=17`,
 367 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
@@ -91,13 +91,16 @@ the old script. When you bump correctly, the lock updates itself — commit it
 with the change. The hash normalises line endings first, because Git rewrites
 LF to CRLF on checkout here and raw bytes would disagree between machines.
 
-### 4. Two scripts, and you run BOTH, every time
+### 4. Three scripts, and you run all three before a deploy
 
 ```
 python check.py        reads the files   — markup, titles, meta, canonicals,
                                            JSON-LD, the registry, links
 python test_tools.py   RUNS the files    — every tool, in real Chrome,
                                            driving the real controls
+python security.py     ATTACKS the files — hostile text in every box, every
+                                           button pressed, every page checked
+                                           for a script error or a CSP block
 ```
 
 `check.py` never executes a line of JavaScript. A tool that throws on the
@@ -110,8 +113,20 @@ a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
 while you work: `python test_tools.py gst-calculator`.
 
-Adding a tool means adding its test body to `T` in `test_tools.py`. Both
-scripts green, then push.
+`security.py` exists because neither of the others asks what happens when the
+text is hostile. `json-formatter` printed the browser's own `JSON.parse` error
+into an `innerHTML` message box, and V8 quotes a piece of the input back inside
+that error — so pasting `<iframe onload=zq>`, eighteen characters, put a live
+iframe on the page and ran its handler. Both other scripts were green. A
+machine typing an attack into every box found it in one pass, and found it on
+exactly one page out of sixty-seven.
+
+It needs Chrome and takes about a minute. `check.py` and `test_tools.py` run
+every time; `security.py` runs before a deploy that touched any tool's own
+code, and always when a tool is added.
+
+Adding a tool means adding its test body to `T` in `test_tools.py`. All three
+green, then push.
 
 ### 5. Never type a `\uXXXX` escape into a tool's `<script>`
 
@@ -189,6 +204,33 @@ block, and `timestamp-converter` legitimately declares `fail()` twice in two
 scopes.
 Wrap a whole feature the same way when several functions serve one job, and
 nest the inner ones. `test_tools.py` shows the pattern at both levels.
+
+### 11. Anything going into `innerHTML` that the visitor wrote gets escaped
+
+`textContent` is the default and always the right answer when the output is
+plain. Use `innerHTML` only when the message genuinely carries markup — a
+`<strong>` or a `<br>` — and then put every value that came from outside this
+repository through `escapeHtml()` in `js/tool-helpers.js`.
+
+"Came from outside" is wider than it looks. It is not only the textarea. It
+is anything downstream of it, and the one that actually bit was the browser's
+own error object:
+
+```js
+catch (error) {
+  setMessage("Invalid JSON. " + error.message + ...);   // error.message
+}                                                       // quotes the input back
+```
+
+Numbers you computed are safe. A word list you wrote is safe. A string that
+passed through the visitor's keyboard, or through any library that echoes it,
+is not — however well filtered it looks. `word-counter` was safe only because
+a regex sixty lines away happened to strip every dangerous character; it is
+escaped now anyway, because that is not a property anyone would think to
+preserve while editing the regex.
+
+`security.py` enforces this by attacking, not by reading, so a new tool is
+covered the moment it exists.
 
 ### 10. Every tool page carries the check-the-result notice
 
