@@ -117,6 +117,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "coin-flip",
+    name: "Coin Flip",
+    desc: "Heads or tails, plus the longest streak and what streak is actually normal.",
+    category: "Random",
+    icon: "\u{1FA99}",
+    keywords: ["coin flip", "flip a coin", "heads or tails", "coin toss", "virtual coin", "flip a coin 100 times", "random heads tails"],
+    popular: false
+  },
+  {
     slug: "color-code-converter",
     name: "Color Code Converter",
     desc: "HEX, RGB and HSL for any colour, with a swatch and contrast checking.",
@@ -168,6 +177,15 @@ const TOOLS = [
     category: "Date & Time",
     icon: "\u{23F3}",
     keywords: ["days until", "countdown", "how many days until", "days since", "countdown timer", "days left"],
+    popular: false
+  },
+  {
+    slug: "dice-roller",
+    name: "Dice Roller",
+    desc: "Roll any dice, from d4 to d100, with a modifier and drop-lowest.",
+    category: "Random",
+    icon: "\u{1F3B0}",
+    keywords: ["dice roller", "roll dice", "d20 roller", "virtual dice", "roll a die", "2d6", "dnd dice roller", "online dice"],
     popular: false
   },
   {
@@ -369,6 +387,33 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "random-list-shuffler",
+    name: "Random List Shuffler",
+    desc: "Shuffle a list with Fisher-Yates, not the sort trick that is not random.",
+    category: "Random",
+    icon: "\u{1F500}",
+    keywords: ["list shuffler", "shuffle list", "randomize list", "random order", "shuffle names", "randomise a list", "random line order"],
+    popular: false
+  },
+  {
+    slug: "random-number-generator",
+    name: "Random Number Generator",
+    desc: "Draw numbers in any range, with or without repeats, and no modulo bias.",
+    category: "Random",
+    icon: "\u{1F3B2}",
+    keywords: ["random number generator", "random number", "pick a random number", "number picker", "rng", "random number between", "random numbers without repeats", "lottery number generator"],
+    popular: false
+  },
+  {
+    slug: "random-picker",
+    name: "Random Picker",
+    desc: "Draw winners from a list, with an optional seed so anyone can check it.",
+    category: "Random",
+    icon: "\u{1F3AF}",
+    keywords: ["random picker", "random name picker", "pick a winner", "giveaway picker", "raffle picker", "random winner generator", "random name selector"],
+    popular: false
+  },
+  {
     slug: "ratio-calculator",
     name: "Ratio Calculator",
     desc: "Simplify a ratio, solve a proportion, or split an amount by ratio.",
@@ -537,6 +582,15 @@ const TOOLS = [
     category: "Text",
     icon: "\u{1F517}",
     keywords: ["slug generator", "url slug", "permalink generator", "seo friendly url", "slugify"],
+    popular: false
+  },
+  {
+    slug: "username-generator",
+    name: "Username Generator",
+    desc: "Username ideas from real words, with the pool size shown up front.",
+    category: "Random",
+    icon: "\u{1F464}",
+    keywords: ["username generator", "random username", "username ideas", "nickname generator", "handle generator", "gamertag generator", "cool username"],
     popular: false
   },
   {

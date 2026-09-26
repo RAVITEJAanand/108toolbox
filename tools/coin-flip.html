@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Coin Flip — Heads or Tails, Plus the Streaks</title>
+  <meta name="description" content="Flip one coin or ten thousand. Shows heads, tails and the longest streak, with what streak length is actually normal for that many flips.">
+  <link rel="canonical" href="https://108toolbox.in/tools/coin-flip.html">
+
+  <meta property="og:title" content="Coin Flip — Heads or Tails, Plus the Streaks">
+  <meta property="og:description" content="Flip one coin or ten thousand. Shows heads, tails and the longest streak, with what streak length is actually normal for that many flips.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=16">
+  <link rel="stylesheet" href="../css/tool.css?v=16">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is this really 50-50?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Each flip is one bit straight from your browser's cryptographic generator, and two divides evenly into its range, so neither side is favoured by even a fraction. An actual metal coin is measurably less fair than this."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "I got eight heads in a row. Is it broken?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Almost certainly not. In a few hundred flips a streak of eight is unremarkable. The page prints the typical streak length for the number of flips you asked for, so you can compare rather than guess."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "After several heads, is a tail more likely?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The next flip is 50-50 no matter what came before, because nothing about the coin or the generator remembers the earlier flips. Expecting a correction is the gambler's fallacy."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use it to decide something important?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For anything contested, flip once and record your screen. The randomness is sound, but a web page cannot prove to another person that you did not keep flipping until you liked the answer."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is the sequence hidden for a single flip?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because a one-character sequence tells you nothing you cannot already see in the big result. It appears as soon as you ask for more than one flip."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=random">Random</a><span>&rsaquo;</span>
+        <span>Coin Flip</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Coin Flip</h1>
+        <p>Heads or tails, settled. Flip many at once and it also shows the
+           longest streak &mdash; the thing people are most likely to mistake
+           for a rigged coin.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="howMany">How many flips</label>
+            <input type="number" id="howMany" min="1" max="10000" step="1" value="1">
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="flipBtn">Flip</button>
+            <button class="btn btn--ghost"   type="button" id="copyBtn">Copy</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+
+          <div class="result">
+            <span class="result__num" id="bigResult">&mdash;</span>
+            <span class="result__label" id="bigLabel">Press Flip</span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sHeads">&mdash;</span><span class="stat__label">Heads</span></div>
+            <div class="stat"><span class="stat__num" id="sTails">&mdash;</span><span class="stat__label">Tails</span></div>
+            <div class="stat"><span class="stat__num" id="sRun">&mdash;</span><span class="stat__label">Longest streak</span></div>
+          </div>
+
+          <pre class="out mono" id="output" aria-live="polite" hidden></pre>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Leave it at one flip to settle an argument.</li>
+          <li>Or ask for a hundred, or ten thousand, to see how a fair coin
+              actually behaves over a run.</li>
+        </ol>
+
+        <h2>The streak is the interesting number</h2>
+        <p>Flip a coin a hundred times and you will almost certainly get six or
+           seven of the same side in a row somewhere. People see that and
+           conclude the coin is loaded, or that the generator is broken. It is
+           neither. Long streaks are not a flaw in randomness; they are a
+           <em>requirement</em> of it.</p>
+        <p>A rough rule: in <em>n</em> flips, the longest streak tends to be
+           about as long as the number of times you can halve <em>n</em> before
+           reaching one. A hundred flips, about six or seven. A thousand flips,
+           about ten. This page prints what is typical next to what you
+           actually got, so you can see whether your run was unusual or
+           ordinary.</p>
+        <p>The opposite mistake is more common still. After five heads, a tail
+           is <strong>not</strong> more likely. The coin has no memory of the
+           five flips and no obligation to even things up. That belief is old
+           enough to have a name &mdash; the gambler's fallacy &mdash; and it is
+           what casinos are built on.</p>
+
+        <h2>A digital coin is fairer than a real one</h2>
+        <p>A real coin flip is not quite 50&ndash;50. Research into how coins
+           actually tumble found that a flipped coin lands on the same face it
+           started from about 51% of the time, because the coin wobbles around
+           an axis rather than turning cleanly end over end. A very large study
+           of hundreds of thousands of real flips found the same small bias.</p>
+        <p>Spinning a coin on a table is far worse: the slightly heavier rim on
+           one side can push it well away from even. So if you want an honestly
+           fair coin, a page like this beats the thing in your pocket. Both are
+           fine for choosing who goes first.</p>
+
+        <h2>Where the randomness comes from</h2>
+        <p>Every flip comes from <code>crypto.getRandomValues</code>, the
+           generator your browser uses for encryption keys, and each random
+           number it hands over supplies thirty-two flips &mdash; one per bit.
+           There is no bias to correct here, because two divides evenly into the
+           generator's range. That is not true for a six-sided die, which is
+           why the dice page has to work a little harder.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Is this really 50-50?</h3>
+          <p>Yes. Each flip is one bit straight from your browser&#x27;s cryptographic generator, and two divides evenly into its range, so neither side is favoured by even a fraction. An actual metal coin is measurably less fair than this.</p>
+        </div>
+        <div class="faq">
+          <h3>I got eight heads in a row. Is it broken?</h3>
+          <p>Almost certainly not. In a few hundred flips a streak of eight is unremarkable. The page prints the typical streak length for the number of flips you asked for, so you can compare rather than guess.</p>
+        </div>
+        <div class="faq">
+          <h3>After several heads, is a tail more likely?</h3>
+          <p>No. The next flip is 50-50 no matter what came before, because nothing about the coin or the generator remembers the earlier flips. Expecting a correction is the gambler&#x27;s fallacy.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I use it to decide something important?</h3>
+          <p>For anything contested, flip once and record your screen. The randomness is sound, but a web page cannot prove to another person that you did not keep flipping until you liked the answer.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is the sequence hidden for a single flip?</h3>
+          <p>Because a one-character sequence tells you nothing you cannot already see in the big result. It appears as soon as you ask for more than one flip.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=16"></script>
+  <script src="../js/tool-helpers.js?v=16"></script>
+  <script>window.CURRENT_TOOL = "coin-flip";</script>
+  <script src="../js/main.js?v=16"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var howMany = document.getElementById("howMany");
+    var output  = document.getElementById("output");
+    var msg     = document.getElementById("msg");
+    var DASH    = String.fromCharCode(0x2014);
+
+    var lastSequence = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: one random bit per flip ----
+       A coin needs one bit, and a 32-bit random number holds thirty-two of
+       them. Spending a whole number on one flip would mean ten thousand
+       trips into the browser's generator for a ten-thousand-flip run; taking
+       the bits one at a time means about three hundred.
+
+       There is no bias to remove here, unlike the number and dice pages: two
+       divides exactly into 2^32, so every bit is already an even 50-50. */
+    var POOL = new Uint32Array(64);
+    var wordAt = POOL.length;
+    var bitsLeft = 0;
+    var current = 0;
+
+    function randomBit() {
+      if (bitsLeft === 0) {
+        if (wordAt >= POOL.length) {
+          crypto.getRandomValues(POOL);
+          wordAt = 0;
+        }
+        current = POOL[wordAt++];
+        bitsLeft = 32;
+      }
+      var bit = current & 1;
+      current = current >>> 1;
+      bitsLeft -= 1;
+      return bit;
+    }
+    /* ---- END: one random bit per flip ---- */
+
+    /* ---- START: the streak length that is ordinary for n flips ----
+       The longest run in n flips is close to how many times n can be halved
+       before it reaches one - log base two. Printed so that a run of seven in
+       a hundred flips reads as normal, which it is, rather than as evidence
+       of a broken coin. */
+    function typicalRun(n) {
+      if (n < 2) { return 1; }
+      return Math.max(2, Math.round(Math.log(n) / Math.LN2));
+    }
+    /* ---- END: the streak length that is ordinary for n flips ---- */
+
+    /* ---- START: the longest run of the same side ---- */
+    function longestRun(sequence) {
+      var best = 0, run = 0, previous = "";
+      for (var i = 0; i < sequence.length; i++) {
+        var side = sequence.charAt(i);
+        run = side === previous ? run + 1 : 1;
+        previous = side;
+        if (run > best) { best = run; }
+      }
+      return best;
+    }
+    /* ---- END: the longest run of the same side ---- */
+
+    /* ---- START: the sequence, in blocks of ten ----
+       An unbroken wall of two thousand letters cannot be read or counted.
+       Ten to a block and ten blocks to a line is the shape people can
+       actually find their place in. */
+    function layout(sequence) {
+      var lines = [];
+      for (var i = 0; i < sequence.length; i += 100) {
+        var chunk = sequence.slice(i, i + 100);
+        var blocks = [];
+        for (var j = 0; j < chunk.length; j += 10) {
+          blocks.push(chunk.slice(j, j + 10));
+        }
+        lines.push(blocks.join(" "));
+      }
+      return lines.join("\n");
+    }
+    /* ---- END: the sequence, in blocks of ten ---- */
+
+    /* ---- START: the flip itself ---- */
+    function flip() {
+      var n = Math.round(Number(howMany.value));
+      if (!isFinite(n) || n < 1) {
+        setMessage("Ask for at least one flip.", "bad");
+        return;
+      }
+      if (n > 10000) {
+        setMessage("Ten thousand flips at a time is the limit here.", "bad");
+        return;
+      }
+
+      var sequence = "";
+      var heads = 0;
+      for (var i = 0; i < n; i++) {
+        if (randomBit()) { sequence += "H"; heads += 1; }
+        else { sequence += "T"; }
+      }
+      var tails = n - heads;
+      var run = longestRun(sequence);
+      lastSequence = sequence;
+
+      document.getElementById("sHeads").textContent = formatNumber(heads, 0);
+      document.getElementById("sTails").textContent = formatNumber(tails, 0);
+      document.getElementById("sRun").textContent = String(run);
+
+      if (n === 1) {
+        document.getElementById("bigResult").textContent = heads ? "Heads" : "Tails";
+        document.getElementById("bigLabel").textContent = "One flip";
+        output.hidden = true;
+        output.textContent = "";
+        setMessage("");
+        return;
+      }
+
+      document.getElementById("bigResult").textContent = heads + " : " + tails;
+      document.getElementById("bigLabel").textContent = "Heads : Tails";
+      output.hidden = false;
+      output.textContent = layout(sequence);
+
+      var typical = typicalRun(n);
+      var verdict;
+      if (run > typical + 3) {
+        verdict = "That streak of " + run + " is on the long side; for " + n
+                + " flips about " + typical + " is typical. Still well within "
+                + "what a fair coin does.";
+      } else if (run < typical - 2) {
+        verdict = "A longest streak of only " + run + " is short for " + n
+                + " flips - about " + typical + " is typical.";
+      } else {
+        verdict = "A streak of " + run + " is just what a fair coin does over "
+                + n + " flips; about " + typical + " is typical.";
+      }
+      setMessage(verdict, "ok");
+    }
+    /* ---- END: the flip itself ---- */
+
+    /* ---- START: wiring ---- */
+    document.getElementById("flipBtn").addEventListener("click", flip);
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastSequence) { showToast("Flip something first"); return; }
+      copyText(lastSequence);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      howMany.value = 1;
+      lastSequence = "";
+      document.getElementById("bigResult").textContent = DASH;
+      document.getElementById("bigLabel").textContent = "Press Flip";
+      document.getElementById("sHeads").textContent = DASH;
+      document.getElementById("sTails").textContent = DASH;
+      document.getElementById("sRun").textContent = DASH;
+      output.hidden = true;
+      output.textContent = "";
+      setMessage("");
+    });
+
+    howMany.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { flip(); }
+    });
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

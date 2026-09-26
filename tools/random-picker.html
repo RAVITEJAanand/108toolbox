@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Random Picker — Fair, Repeatable Draws</title>
+  <meta name="description" content="Pick winners from a list of names. Add a seed and anyone can repeat your exact draw and check it, which is what makes a public giveaway checkable.">
+  <link rel="canonical" href="https://108toolbox.in/tools/random-picker.html">
+
+  <meta property="og:title" content="Random Picker — Fair, Repeatable Draws">
+  <meta property="og:description" content="Pick winners from a list of names. Add a seed and anyone can repeat your exact draw and check it, which is what makes a public giveaway checkable.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=16">
+  <link rel="stylesheet" href="../css/tool.css?v=16">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Can the same person be picked twice?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Winners are drawn without replacement, like names out of a hat, so asking for three winners gives you three different entries. Tick off 'one entry per person' as well if your list has the same name typed more than once."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What exactly does the seed do?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It replaces unpredictable randomness with repeatable randomness. The same list and the same seed always give the same winners, so anybody can run the draw again and confirm your result. Change a single character of either and the winners change completely."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does a seed make the draw less fair?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Every entry still has the same chance. What changes is secrecy, not fairness - a seeded draw can be reproduced by anyone who knows the seed, which is the whole point of using one."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I run a giveaway nobody can argue with?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Publish the entry list, and say in advance which future public number will be the seed - a lottery draw, a match score, anything you cannot control. Afterwards, anyone can paste the same list and seed here and get the same winners."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does the order of my list change the result?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, for a seeded draw: the same names in a different order with the same seed give different winners. So publish the list in the exact order you will use, or sort it alphabetically and say so."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=random">Random</a><span>&rsaquo;</span>
+        <span>Random Picker</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Random Picker</h1>
+        <p>Paste your entries and draw. Leave the seed empty for a fresh random
+           draw, or set one so that anybody can repeat the same draw and see
+           that you did not fish for a winner.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Entries, one per line</label>
+          <textarea id="input" spellcheck="false" placeholder="One name per line&hellip;">Anil
+Bhavana
+Charan
+Divya
+Eshwar
+Farhan
+Gayatri
+Harsha</textarea>
+
+          <label class="check"><input type="checkbox" id="dropBlank" checked> Ignore blank lines</label>
+          <label class="check"><input type="checkbox" id="dropDupes" checked> One entry per person</label>
+
+          <div class="field" style="margin-top:var(--s3)">
+            <label for="winners">How many winners</label>
+            <input type="number" id="winners" min="1" max="10000" step="1" value="1">
+          </div>
+
+          <div class="field">
+            <label for="seed">Seed (optional &mdash; makes the draw repeatable)</label>
+            <input type="text" id="seed" placeholder="e.g. a lottery number announced later">
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="pickBtn">Pick</button>
+            <button class="btn btn--ghost"   type="button" id="copyBtn">Copy</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+
+          <div class="result">
+            <span class="result__num" id="bigWinner">&mdash;</span>
+            <span class="result__label" id="bigLabel">Press Pick</span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sEntries">&mdash;</span><span class="stat__label">Entries</span></div>
+            <div class="stat"><span class="stat__num" id="sWinners">&mdash;</span><span class="stat__label">Winners</span></div>
+            <div class="stat"><span class="stat__num" id="sChance">&mdash;</span><span class="stat__label">Each one's chance</span></div>
+          </div>
+
+          <pre class="out mono" id="output" aria-live="polite"></pre>
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Paste your entries, one per line.</li>
+          <li>Say how many winners you need.</li>
+          <li>Press Pick. Nobody can win twice &mdash; the draw is without
+              replacement, the way a real hat works.</li>
+        </ol>
+
+        <h2>The problem with a random picker, and the fix</h2>
+        <p>Here is the awkward truth about every random picker on the web,
+           including this one: the randomness is easy and the <em>trust</em> is
+           hard. Nothing stops somebody pressing the button eleven times until
+           their friend's name appears, and a screenshot of the winner proves
+           nothing at all about how many draws came before it.</p>
+        <p>That is what the seed box is for. Type anything into it and the draw
+           stops being unpredictable and becomes <strong>repeatable</strong>:
+           the same list with the same seed always produces exactly the same
+           winners, in the same order, for anybody who tries it. Publish your
+           list and your seed and every entrant can check the result
+           themselves.</p>
+
+        <h2>Making that actually mean something</h2>
+        <p>A seed only proves anything if you could not have chosen it to suit
+           the answer. Two ways to get that right:</p>
+        <ul>
+          <li><strong>Commit first.</strong> Post the entry list and the seed
+              publicly before you draw, then draw.</li>
+          <li><strong>Borrow a number nobody controls.</strong> Announce the
+              list and say the seed will be tomorrow's national lottery
+              numbers, or the closing score of a named match. You cannot know
+              it in advance and neither can anyone else, and afterwards
+              everyone can verify.</li>
+        </ul>
+        <p>The second is what serious giveaways do, and it costs you nothing
+           but a sentence in the announcement.</p>
+
+        <h2>Leave the seed empty for an ordinary draw</h2>
+        <p>With no seed the numbers come from
+           <code>crypto.getRandomValues</code>, the generator your browser uses
+           for encryption keys, with the leftover values discarded so every
+           entry is exactly as likely as every other. That is the right choice
+           for deciding who makes the tea. It is repeatable by nobody,
+           including you.</p>
+        <p>A seeded draw uses a small deterministic generator instead. It is
+           even-handed and perfectly good for a draw, but it is not secret: the
+           point is precisely that anyone holding the seed can reproduce it.
+           Do not use a seeded draw where the result needs to be
+           unpredictable to the person holding the seed.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Can the same person be picked twice?</h3>
+          <p>No. Winners are drawn without replacement, like names out of a hat, so asking for three winners gives you three different entries. Tick off &#x27;one entry per person&#x27; as well if your list has the same name typed more than once.</p>
+        </div>
+        <div class="faq">
+          <h3>What exactly does the seed do?</h3>
+          <p>It replaces unpredictable randomness with repeatable randomness. The same list and the same seed always give the same winners, so anybody can run the draw again and confirm your result. Change a single character of either and the winners change completely.</p>
+        </div>
+        <div class="faq">
+          <h3>Does a seed make the draw less fair?</h3>
+          <p>No. Every entry still has the same chance. What changes is secrecy, not fairness - a seeded draw can be reproduced by anyone who knows the seed, which is the whole point of using one.</p>
+        </div>
+        <div class="faq">
+          <h3>How do I run a giveaway nobody can argue with?</h3>
+          <p>Publish the entry list, and say in advance which future public number will be the seed - a lottery draw, a match score, anything you cannot control. Afterwards, anyone can paste the same list and seed here and get the same winners.</p>
+        </div>
+        <div class="faq">
+          <h3>Does the order of my list change the result?</h3>
+          <p>Yes, for a seeded draw: the same names in a different order with the same seed give different winners. So publish the list in the exact order you will use, or sort it alphabetically and say so.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=16"></script>
+  <script src="../js/tool-helpers.js?v=16"></script>
+  <script>window.CURRENT_TOOL = "random-picker";</script>
+  <script src="../js/main.js?v=16"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input     = document.getElementById("input");
+    var dropBlank = document.getElementById("dropBlank");
+    var dropDupes = document.getElementById("dropDupes");
+    var winners   = document.getElementById("winners");
+    var seed      = document.getElementById("seed");
+    var output    = document.getElementById("output");
+    var msg       = document.getElementById("msg");
+    var DASH      = String.fromCharCode(0x2014);
+
+    var lastText = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: the unpredictable source ---- */
+    var POOL = new Uint32Array(256);
+    var poolNext = POOL.length;
+
+    function cryptoWord() {
+      if (poolNext >= POOL.length) {
+        crypto.getRandomValues(POOL);
+        poolNext = 0;
+      }
+      return POOL[poolNext++];
+    }
+    /* ---- END: the unpredictable source ---- */
+
+    /* ---- START: the repeatable source ----
+       A seeded draw has to land on the same winners on somebody else's
+       computer, months later, in a different browser - otherwise publishing
+       the seed proves nothing. So it cannot use the browser's own generator,
+       which is unpredictable by design.
+
+       FNV-1a turns the typed seed into a 32-bit number; mulberry32 turns that
+       into a stream. Both are small, fixed and identical everywhere, which is
+       exactly the property being bought. Neither is cryptographic, and they
+       are not being asked to be: the seed is meant to be published. */
+    function hashSeed(text) {
+      var h = 2166136261;
+      for (var i = 0; i < text.length; i++) {
+        h = h ^ text.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return h >>> 0;
+    }
+
+    function mulberry32(state) {
+      return function () {
+        state = (state + 1831565813) >>> 0;
+        var z = state;
+        z = Math.imul(z ^ (z >>> 15), z | 1);
+        z = z ^ (z + Math.imul(z ^ (z >>> 7), z | 61));
+        return ((z ^ (z >>> 14)) >>> 0);
+      };
+    }
+    /* ---- END: the repeatable source ---- */
+
+    /* ---- START: a whole number in [0, span), with the bias removed ----
+       Same rejection loop for both sources, so a seeded draw is exactly as
+       even-handed as an unseeded one. Only where the words come from differs. */
+    function makeBelow(source) {
+      return function (span) {
+        if (span <= 1) { return 0; }
+        var limit = Math.floor(4294967296 / span) * span;
+        var value;
+        do {
+          value = source();
+        } while (value >= limit);
+        return value % span;
+      };
+    }
+    /* ---- END: a whole number in [0, span), with the bias removed ---- */
+
+    /* ---- START: turning the pasted text into entries ---- */
+    function readEntries() {
+      var lines = input.value.split("\n");
+      var items = [];
+      var seen = Object.create(null);
+
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        if (dropBlank.checked && line.trim() === "") { continue; }
+        if (dropDupes.checked) {
+          var key = "k" + line.trim().toLowerCase();
+          if (seen[key]) { continue; }
+          seen[key] = true;
+        }
+        items.push(line.trim() === "" ? line : line.trim());
+      }
+      return items;
+    }
+    /* ---- END: turning the pasted text into entries ---- */
+
+    /* ---- START: drawing the winners, without replacement ----
+       A partial Fisher-Yates over a copy of the list. Nobody can come out
+       twice, because a name that has been placed is never looked at again -
+       which is what "out of a hat" means and what people expect. */
+    function drawWinners(entries, howMany, below) {
+      var pool = entries.slice();
+      var picked = [];
+      for (var i = 0; i < howMany; i++) {
+        var j = i + below(pool.length - i);
+        var swap = pool[i]; pool[i] = pool[j]; pool[j] = swap;
+        picked.push(pool[i]);
+      }
+      return picked;
+    }
+    /* ---- END: drawing the winners, without replacement ---- */
+
+    /* ---- START: the draw itself ---- */
+    function pick() {
+      var entries = readEntries();
+      var howMany = Math.round(Number(winners.value));
+
+      if (!entries.length) {
+        setMessage("Paste some entries on the left, one per line.");
+        return;
+      }
+      if (!isFinite(howMany) || howMany < 1) {
+        setMessage("Pick at least one winner.", "bad");
+        return;
+      }
+      if (howMany > entries.length) {
+        setMessage("There are only " + entries.length + " entries, so "
+                 + howMany + " different winners cannot be drawn from them.",
+                   "bad");
+        return;
+      }
+
+      var text = seed.value.trim();
+      var seeded = text !== "";
+      var below = makeBelow(seeded ? mulberry32(hashSeed(text)) : cryptoWord);
+
+      var picked = drawWinners(entries, howMany, below);
+
+      var numbered = [];
+      for (var i = 0; i < picked.length; i++) {
+        numbered.push((i + 1) + ". " + picked[i]);
+      }
+      lastText = numbered.join("\n");
+      output.textContent = lastText;
+
+      document.getElementById("bigWinner").textContent =
+        howMany === 1 ? picked[0] : formatNumber(howMany, 0) + " winners";
+      document.getElementById("bigLabel").textContent =
+        howMany === 1 ? "Winner" : "Listed below in the order drawn";
+
+      document.getElementById("sEntries").textContent = formatNumber(entries.length, 0);
+      document.getElementById("sWinners").textContent = formatNumber(howMany, 0);
+      document.getElementById("sChance").textContent =
+        formatNumber(howMany / entries.length * 100, 1) + "%";
+
+      setMessage(seeded
+        ? "Seeded draw. Anyone with this list and the seed " + JSON.stringify(text)
+          + " gets exactly these winners - which is what makes it checkable."
+        : "Unseeded draw, from your browser's cryptographic generator. Nobody "
+          + "can repeat it, including you.", "ok");
+    }
+    /* ---- END: the draw itself ---- */
+
+    /* ---- START: wiring ---- */
+    document.getElementById("pickBtn").addEventListener("click", pick);
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastText) { showToast("Pick someone first"); return; }
+      copyText(lastText);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      input.value = "";
+      dropBlank.checked = true;
+      dropDupes.checked = true;
+      winners.value = 1;
+      seed.value = "";
+      lastText = "";
+      output.textContent = "";
+      document.getElementById("bigWinner").textContent = DASH;
+      document.getElementById("bigLabel").textContent = "Press Pick";
+      document.getElementById("sEntries").textContent = DASH;
+      document.getElementById("sWinners").textContent = DASH;
+      document.getElementById("sChance").textContent = DASH;
+      setMessage("");
+      input.focus();
+    });
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

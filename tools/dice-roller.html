@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Dice Roller — d6, d20 and Any Die You Need</title>
+  <meta name="description" content="Roll any number of dice with any number of sides, with a modifier and drop-lowest. Shows every die, the total, and which total is actually likeliest.">
+  <link rel="canonical" href="https://108toolbox.in/tools/dice-roller.html">
+
+  <meta property="og:title" content="Dice Roller — d6, d20 and Any Die You Need">
+  <meta property="og:description" content="Roll any number of dice with any number of sides, with a modifier and drop-lowest. Shows every die, the total, and which total is actually likeliest.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=16">
+  <link rel="stylesheet" href="../css/tool.css?v=16">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What does 2d6+3 mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Two dice with six sides each, added together, then three added on top. Set 'how many dice' to 2, sides to 6, and the modifier to 3. The possible range becomes 5 to 15."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is a 20 on a d20 as likely as any other number?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, exactly as likely - one in twenty. It is only when you add dice together that the totals stop being even. A single die of any size is flat."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is 7 so common with two dice?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because there are six different pairs that add up to 7 and only one pair that adds to 2. More ways to make a total means that total comes up more often. Seven is the peak for two six-sided dice."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is 'drop the lowest' for?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Rolling character statistics in tabletop games, usually as 4d6 drop the lowest. It shifts the likely result upward without changing the highest possible roll. The dropped die is shown struck through so you can check it."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I roll dice with an odd number of sides?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - anything from 2 to 1000 sides, including 3, 7 or 137. Physical dice have to be a shape that lands fairly, which is why real sets stop at a handful of numbers. A digital die has no such limit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=random">Random</a><span>&rsaquo;</span>
+        <span>Dice Roller</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Dice Roller</h1>
+        <p>Roll d6, d20, or a die with any number of sides you like. Every die is
+           shown, not just the total &mdash; and the total is never as evenly
+           spread as people expect.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="count">How many dice</label>
+            <input type="number" id="count" min="1" max="1000" step="1" value="2">
+          </div>
+          <div class="field">
+            <label for="sides">Sides on each die</label>
+            <input type="number" id="sides" min="2" max="1000" step="1" value="6">
+            <div class="btn-row" style="margin-top:var(--s2)">
+              <button class="btn btn--ghost" type="button" data-die="4">d4</button>
+              <button class="btn btn--ghost" type="button" data-die="6">d6</button>
+              <button class="btn btn--ghost" type="button" data-die="8">d8</button>
+              <button class="btn btn--ghost" type="button" data-die="10">d10</button>
+              <button class="btn btn--ghost" type="button" data-die="12">d12</button>
+              <button class="btn btn--ghost" type="button" data-die="20">d20</button>
+              <button class="btn btn--ghost" type="button" data-die="100">d100</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="modifier">Add to the total (can be negative)</label>
+            <input type="number" id="modifier" step="1" value="0">
+          </div>
+
+          <label class="check"><input type="checkbox" id="dropLowest"> Drop the lowest die</label>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="rollBtn">Roll</button>
+            <button class="btn btn--ghost"   type="button" id="copyBtn">Copy</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Result</span>
+
+          <div class="result">
+            <span class="result__num" id="bigTotal">&mdash;</span>
+            <span class="result__label" id="bigLabel">Press Roll</span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sRange">&mdash;</span><span class="stat__label">Possible range</span></div>
+            <div class="stat"><span class="stat__num" id="sLikely">&mdash;</span><span class="stat__label">Likeliest total</span></div>
+            <div class="stat"><span class="stat__num" id="sKept">&mdash;</span><span class="stat__label">Dice counted</span></div>
+          </div>
+
+          <pre class="out mono" id="output" aria-live="polite"></pre>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Say how many dice and how many sides. The buttons cover the usual
+              tabletop set; the box takes anything from 2 to 1000.</li>
+          <li>Add a modifier if your game asks for one &mdash;
+              <code>2d6+3</code> means two six-sided dice plus three.</li>
+          <li><strong>Drop the lowest</strong> is the character-building roll:
+              four dice, throw away the worst, keep the rest.</li>
+        </ol>
+
+        <h2>Two dice are not one big die</h2>
+        <p>One six-sided die is even: each face has the same one-in-six chance.
+           Two dice added together are not even at all, and this surprises
+           people every time. There are six ways to make seven &mdash; 1+6,
+           2+5, 3+4, 4+3, 5+2, 6+1 &mdash; and exactly one way to make two.
+           So seven turns up six times as often as snake eyes.</p>
+        <p>Add more dice and the effect gets stronger. With three dice the
+           middle totals dominate and the extremes almost vanish. This is why
+           the page prints the <strong>likeliest total</strong> beside the
+           range: the range tells you what is possible, and that number tells
+           you what to actually expect.</p>
+        <p>It matters at the table. A game that asks for 3d6 is not asking for
+           a number from 3 to 18 with equal chances; it is asking for something
+           near 10 or 11, with 3 and 18 as rare events. Designers pick dice
+           precisely for that shape.</p>
+
+        <h2>Why every die is shown</h2>
+        <p>A total alone hides what happened, and plenty of rules care about the
+           individual dice rather than the sum &mdash; a natural 20, a critical
+           on any die, doubles, or a rule that rerolls ones. So each die is
+           printed, and when you drop the lowest, the one that was dropped is
+           marked rather than silently removed.</p>
+
+        <h2>Where the randomness comes from</h2>
+        <p>Each die comes from <code>crypto.getRandomValues</code>, and there is
+           a small honest detail here. Six does not divide evenly into the
+           generator's range, so simply taking the remainder would make low
+           faces very slightly likelier than high ones. The few leftover
+           values are thrown away and redrawn instead, which makes each face
+           exactly as likely as the others.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>What does 2d6+3 mean?</h3>
+          <p>Two dice with six sides each, added together, then three added on top. Set &#x27;how many dice&#x27; to 2, sides to 6, and the modifier to 3. The possible range becomes 5 to 15.</p>
+        </div>
+        <div class="faq">
+          <h3>Is a 20 on a d20 as likely as any other number?</h3>
+          <p>Yes, exactly as likely - one in twenty. It is only when you add dice together that the totals stop being even. A single die of any size is flat.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is 7 so common with two dice?</h3>
+          <p>Because there are six different pairs that add up to 7 and only one pair that adds to 2. More ways to make a total means that total comes up more often. Seven is the peak for two six-sided dice.</p>
+        </div>
+        <div class="faq">
+          <h3>What is &#x27;drop the lowest&#x27; for?</h3>
+          <p>Rolling character statistics in tabletop games, usually as 4d6 drop the lowest. It shifts the likely result upward without changing the highest possible roll. The dropped die is shown struck through so you can check it.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I roll dice with an odd number of sides?</h3>
+          <p>Yes - anything from 2 to 1000 sides, including 3, 7 or 137. Physical dice have to be a shape that lands fairly, which is why real sets stop at a handful of numbers. A digital die has no such limit.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=16"></script>
+  <script src="../js/tool-helpers.js?v=16"></script>
+  <script>window.CURRENT_TOOL = "dice-roller";</script>
+  <script src="../js/main.js?v=16"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var count    = document.getElementById("count");
+    var sides    = document.getElementById("sides");
+    var modifier = document.getElementById("modifier");
+    var dropLowest = document.getElementById("dropLowest");
+    var output   = document.getElementById("output");
+    var msg      = document.getElementById("msg");
+    var DASH     = String.fromCharCode(0x2014);
+
+    var lastText = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: drawing random numbers in batches ---- */
+    var POOL = new Uint32Array(256);
+    var poolNext = POOL.length;
+
+    function randomWord() {
+      if (poolNext >= POOL.length) {
+        crypto.getRandomValues(POOL);
+        poolNext = 0;
+      }
+      return POOL[poolNext++];
+    }
+    /* ---- END: drawing random numbers in batches ---- */
+
+    /* ---- START: one fair face, with the bias removed ----
+       Six does not divide evenly into 2^32. Taking the remainder alone would
+       leave faces 1 and 2 very slightly likelier than 5 and 6, so the handful
+       of values in the leftover tail are thrown away and redrawn. */
+    function roll(faces) {
+      var limit = Math.floor(4294967296 / faces) * faces;
+      var value;
+      do {
+        value = randomWord();
+      } while (value >= limit);
+      return (value % faces) + 1;
+    }
+    /* ---- END: one fair face, with the bias removed ---- */
+
+    /* ---- START: the total that turns up most often ----
+       Adding dice stops the totals being even: with two six-sided dice there
+       are six ways to make seven and one way to make two. The peak sits at
+       the middle of the range, which is n * (faces + 1) / 2. When that lands
+       between two whole numbers, both are equally the peak - and a single die
+       has no peak at all, because every face is equally likely. */
+    function likeliest(n, faces, mod) {
+      if (n === 1) { return "even"; }
+      var twice = n * (faces + 1);
+      if (twice % 2 === 0) { return String(twice / 2 + mod); }
+      return ((twice - 1) / 2 + mod) + " or " + ((twice + 1) / 2 + mod);
+    }
+    /* ---- END: the total that turns up most often ---- */
+
+    /* ---- START: reading the boxes, and saying what is wrong ---- */
+    function readSettings() {
+      var n = Math.round(Number(count.value));
+      var faces = Math.round(Number(sides.value));
+      var mod = Math.round(Number(modifier.value) || 0);
+
+      if (!isFinite(n) || n < 1) { return { error: "Roll at least one die." }; }
+      if (n > 1000) { return { error: "A thousand dice at a time is the limit here." }; }
+      if (!isFinite(faces) || faces < 2) {
+        return { error: "A die needs at least two sides." };
+      }
+      if (faces > 1000) { return { error: "A thousand sides is the limit here." }; }
+      if (dropLowest.checked && n < 2) {
+        return { error: "Dropping the lowest of one die would leave nothing to "
+                      + "count. Roll two or more." };
+      }
+      return { count: n, faces: faces, mod: mod };
+    }
+    /* ---- END: reading the boxes, and saying what is wrong ---- */
+
+    /* ---- START: the roll itself ---- */
+    function rollAll() {
+      var s = readSettings();
+      if (s.error) { setMessage(s.error, "bad"); return; }
+
+      var dice = new Array(s.count);
+      for (var i = 0; i < s.count; i++) { dice[i] = roll(s.faces); }
+
+      /* The lowest die is marked, not removed - a rule that drops a die still
+         wants you to be able to see what it was. */
+      var droppedAt = -1;
+      if (dropLowest.checked) {
+        droppedAt = 0;
+        for (var j = 1; j < dice.length; j++) {
+          if (dice[j] < dice[droppedAt]) { droppedAt = j; }
+        }
+      }
+
+      var total = s.mod;
+      var kept = 0;
+      var shown = [];
+      for (var k = 0; k < dice.length; k++) {
+        if (k === droppedAt) {
+          shown.push("(" + dice[k] + ")");
+        } else {
+          total += dice[k];
+          kept += 1;
+          shown.push(String(dice[k]));
+        }
+      }
+
+      var low = kept * 1 + s.mod;
+      var high = kept * s.faces + s.mod;
+
+      document.getElementById("bigTotal").textContent = formatNumber(total, 0);
+      document.getElementById("bigLabel").textContent =
+        s.count + "d" + s.faces
+        + (s.mod > 0 ? " + " + s.mod : s.mod < 0 ? " - " + Math.abs(s.mod) : "")
+        + (droppedAt > -1 ? ", lowest dropped" : "");
+
+      document.getElementById("sRange").textContent = low + " to " + high;
+      var peak = likeliest(kept, s.faces, s.mod);
+      document.getElementById("sLikely").textContent =
+        peak === "even" ? "all equal" : peak;
+      document.getElementById("sKept").textContent =
+        kept + (droppedAt > -1 ? " of " + s.count : "");
+
+      var body = shown.join("  ");
+      lastText = body + "\n\nTotal: " + total;
+      output.textContent = body;
+
+      if (peak === "even") {
+        setMessage("One die, so every number from " + low + " to " + high
+                 + " is equally likely.", "ok");
+      } else {
+        setMessage("Possible " + low + " to " + high + ", but totals bunch "
+                 + "around " + peak + " - adding dice together is never even. "
+                 + (droppedAt > -1
+                    ? "The die in brackets was dropped." : ""), "ok");
+      }
+    }
+    /* ---- END: the roll itself ---- */
+
+    /* ---- START: wiring ---- */
+    document.getElementById("rollBtn").addEventListener("click", rollAll);
+
+    Array.prototype.forEach.call(
+      document.querySelectorAll("[data-die]"), function (btn) {
+        btn.addEventListener("click", function () {
+          sides.value = btn.getAttribute("data-die");
+          rollAll();
+        });
+      });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastText) { showToast("Roll something first"); return; }
+      copyText(lastText);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      count.value = 2; sides.value = 6; modifier.value = 0;
+      dropLowest.checked = false;
+      lastText = "";
+      output.textContent = "";
+      document.getElementById("bigTotal").textContent = DASH;
+      document.getElementById("bigLabel").textContent = "Press Roll";
+      document.getElementById("sRange").textContent = DASH;
+      document.getElementById("sLikely").textContent = DASH;
+      document.getElementById("sKept").textContent = DASH;
+      setMessage("");
+    });
+
+    [count, sides, modifier].forEach(function (el) {
+      el.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { rollAll(); }
+      });
+    });
+    dropLowest.addEventListener("change", rollAll);
+    /* ---- END: wiring ---- */
+
+    rollAll();
+  })();
+  </script>
+</body>
+</html>

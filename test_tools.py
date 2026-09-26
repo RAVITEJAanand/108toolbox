@@ -2889,6 +2889,412 @@ T["image-placeholder-generator"] = r"""
     });
 """
 
+T["random-number-generator"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+  function lines() {
+    return txt("output").split("\n").filter(function (s) { return s !== ""; });
+  }
+
+  /* The page draws once on load. */
+  eq("one number on load", lines().length, 1);
+  ok("and it sits inside the default range",
+     Number(lines()[0]) >= 1 && Number(lines()[0]) <= 100, lines()[0]);
+
+  set("lo", 1); set("hi", 6); set("howMany", 200);
+  click("drawBtn");
+  eq("two hundred draws give two hundred numbers", lines().length, 200);
+  var all = lines().map(Number);
+  var outside = all.filter(function (v) {
+    return v < 1 || v > 6 || v !== Math.round(v);
+  });
+  eq("every one is a whole number from 1 to 6", outside.length, 0);
+  ok("repeats happen when they are allowed", new Set(all).size < all.length);
+  eq("and all six faces turned up over 200 draws", new Set(all).size, 6);
+
+  /* No repeats, taking the WHOLE range - the shuffle path. */
+  set("lo", 1); set("hi", 5); set("howMany", 5);
+  tick("unique", true);
+  click("drawBtn");
+  eq("five different numbers from a range of five",
+     lines().map(Number).sort(function (a, b) { return a - b; }).join(","),
+     "1,2,3,4,5");
+
+  /* No repeats, taking a few from a wide range - the rejection path. */
+  set("lo", 1); set("hi", 1000000); set("howMany", 50);
+  click("drawBtn");
+  eq("fifty drawn from a million", lines().length, 50);
+  eq("and all fifty are different", new Set(lines()).size, 50);
+
+  set("lo", 1); set("hi", 4); set("howMany", 6);
+  click("drawBtn");
+  has("six different numbers out of four is refused", txt("msg"), "cannot all");
+
+  tick("unique", false);
+  set("lo", 100); set("hi", 1); set("howMany", 3);
+  click("drawBtn");
+  has("a backwards range is swapped, not refused", txt("msg"), "from 1 to 100");
+
+  set("lo", 7); set("hi", 7); set("howMany", 3);
+  click("drawBtn");
+  eq("a range of one gives that number every time", lines().join(","), "7,7,7");
+  eq("the lowest tile agrees", num("sLow"), 7);
+  eq("and so does the highest", num("sHigh"), 7);
+
+  set("lo", 1); set("hi", 1000); set("howMany", 40);
+  tick("sorted", true);
+  click("drawBtn");
+  var sorted = lines().map(Number);
+  var descents = 0;
+  for (var i = 1; i < sorted.length; i++) {
+    if (sorted[i] < sorted[i - 1]) { descents += 1; }
+  }
+  eq("sorted means sorted", descents, 0);
+  eq("the count tile matches", num("sCount"), 40);
+
+  set("howMany", 0);
+  click("drawBtn");
+  has("zero numbers is refused", txt("msg"), "at least one");
+
+  click("resetBtn");
+  eq("reset empties the list", txt("output"), "");
+  eq("and clears the tiles", txt("sCount"), String.fromCharCode(0x2014));
+  finish();
+"""
+
+T["coin-flip"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+
+  click("flipBtn");
+  ok("one flip lands on one side or the other",
+     txt("bigResult") === "Heads" || txt("bigResult") === "Tails",
+     txt("bigResult"));
+  eq("the two counts add up to the one flip",
+     num("sHeads") + num("sTails"), 1);
+  eq("one flip is a streak of one", num("sRun"), 1);
+  ok("the sequence stays hidden for a single flip",
+     document.getElementById("output").hidden === true);
+
+  set("howMany", 500);
+  click("flipBtn");
+  eq("five hundred flips are all accounted for",
+     num("sHeads") + num("sTails"), 500);
+  ok("neither side ran away with it - 500 flips land near half",
+     num("sHeads") > 175 && num("sHeads") < 325, txt("sHeads"));
+  ok("the sequence appears once there is more than one flip",
+     document.getElementById("output").hidden === false);
+  eq("the big result is the heads-to-tails split",
+     txt("bigResult"), num("sHeads") + " : " + num("sTails"));
+
+  var seq = txt("output").replace(/[^HT]/g, "");
+  eq("the printed sequence holds every flip", seq.length, 500);
+  eq("and counts the same heads as the tile",
+     seq.split("H").length - 1, num("sHeads"));
+
+  ok("a streak of at least two appears in 500 flips",
+     num("sRun") >= 2, txt("sRun"));
+  ok("and nowhere near the whole run", num("sRun") < 40, txt("sRun"));
+  has("the verdict says what is typical", txt("msg"), "typical");
+
+  set("howMany", 0);
+  click("flipBtn");
+  has("zero flips is refused", txt("msg"), "at least one");
+
+  set("howMany", 10001);
+  click("flipBtn");
+  has("past the limit is refused", txt("msg"), "limit");
+
+  click("resetBtn");
+  eq("reset clears the big result",
+     txt("bigResult"), String.fromCharCode(0x2014));
+  eq("and the box is put away", document.getElementById("output").hidden, true);
+  finish();
+"""
+
+T["dice-roller"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+  function dice() {
+    return txt("output").split(/\s+/).filter(function (s) { return s !== ""; });
+  }
+  function sum(list) {
+    return list.reduce(function (a, b) { return a + b; }, 0);
+  }
+
+  /* The page opens on 2d6 and rolls once. */
+  eq("two dice are printed", dice().length, 2);
+  eq("the possible range of 2d6", txt("sRange"), "2 to 12");
+  eq("seven is the likeliest total", txt("sLikely"), "7");
+  ok("the total sits inside the range",
+     num("bigTotal") >= 2 && num("bigTotal") <= 12, txt("bigTotal"));
+  eq("and the total is the sum of the dice shown",
+     sum(dice().map(Number)), num("bigTotal"));
+
+  /* One die is flat - there is no peak, and the page says so. */
+  set("count", 1);
+  click("rollBtn");
+  eq("one die has no likeliest face", txt("sLikely"), "all equal");
+  eq("its range is just the faces", txt("sRange"), "1 to 6");
+  has("and the message says every number is equally likely",
+      txt("msg"), "equally likely");
+
+  /* Three dice bunch harder, and the peak falls between two whole numbers. */
+  set("count", 3);
+  click("rollBtn");
+  eq("3d6 can be 3 to 18", txt("sRange"), "3 to 18");
+  eq("with two equally likeliest totals", txt("sLikely"), "10 or 11");
+
+  /* A modifier moves the range and the peak together. */
+  set("count", 2); set("modifier", 3);
+  click("rollBtn");
+  eq("2d6+3 ranges 5 to 15", txt("sRange"), "5 to 15");
+  eq("and peaks at ten", txt("sLikely"), "10");
+  has("the label reads as an addition", txt("bigLabel"), "2d6 + 3");
+
+  set("modifier", -2);
+  click("rollBtn");
+  eq("a negative modifier works too", txt("sRange"), "0 to 10");
+  has("and reads as a subtraction", txt("bigLabel"), "2d6 - 2");
+
+  /* The quick-pick buttons set the sides and reroll. */
+  set("modifier", 0);
+  document.querySelector('[data-die="20"]').click();
+  eq("the d20 button sets twenty sides", val("sides"), "20");
+  eq("so two of them can reach forty", txt("sRange"), "2 to 40");
+
+  /* Drop the lowest: four rolled, three counted, the dropped one still shown. */
+  set("count", 4); set("sides", 6);
+  click("rollBtn");
+  eq("nothing is dropped yet", txt("sKept"), "4");
+  tick("dropLowest", true);
+  eq("three of the four are counted", txt("sKept"), "3 of 4");
+  eq("but four dice are still printed", dice().length, 4);
+  var bracketed = dice().filter(function (d) { return d.charAt(0) === "("; });
+  var kept = dice().filter(function (d) { return d.charAt(0) !== "("; }).map(Number);
+  eq("exactly one die is in brackets", bracketed.length, 1);
+  eq("the total counts only the three kept", sum(kept), num("bigTotal"));
+  var dropped = Number(bracketed[0].replace(/[()]/g, ""));
+  ok("and the dropped die is the lowest of the four",
+     dropped <= Math.min.apply(null, kept),
+     dropped + " dropped, kept " + kept.join(","));
+  eq("the range now covers three dice, not four", txt("sRange"), "3 to 18");
+
+  set("count", 1);
+  click("rollBtn");
+  has("dropping the lowest of one die is refused",
+      txt("msg"), "nothing to count");
+
+  tick("dropLowest", false);
+  set("sides", 1);
+  click("rollBtn");
+  has("a one-sided die is refused", txt("msg"), "at least two sides");
+
+  click("resetBtn");
+  eq("reset returns to two dice", val("count"), "2");
+  eq("six sides", val("sides"), "6");
+  eq("and no modifier", val("modifier"), "0");
+  finish();
+"""
+
+T["random-list-shuffler"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+  function lines() {
+    return txt("output").split("\n").filter(function (s) { return s !== ""; });
+  }
+
+  /* Eight names are in the box when the page opens, shuffled once already. */
+  eq("all eight come out", lines().length, 8);
+  eq("the lines-in tile agrees", num("sIn"), 8);
+  eq("nothing was skipped", num("sSkipped"), 0);
+  eq("the same eight names, no more and no fewer",
+     lines().slice().sort().join("|"),
+     val("input").split("\n").slice().sort().join("|"));
+
+  /* Five shuffles of eight items all landing on one order would be a
+     one-in-forty-thousand coincidence, four times over. */
+  var orders = {};
+  for (var i = 0; i < 5; i++) {
+    click("shuffleBtn");
+    orders[lines().join("|")] = true;
+  }
+  ok("shuffling again gives a different order",
+     Object.keys(orders).length > 1,
+     Object.keys(orders).length + " distinct orders in 5 shuffles");
+
+  /* Keeping the first few turns a shuffle into a fair draw. */
+  set("takeFirst", 3);
+  click("shuffleBtn");
+  eq("three kept", lines().length, 3);
+  eq("the items-out tile says three", num("sOut"), 3);
+  has("which the page calls a fair draw", txt("msg"), "fair draw");
+
+  set("takeFirst", 0);
+  set("input", "a\n\nb\n\nc");
+  click("shuffleBtn");
+  eq("blank lines are dropped by default", lines().length, 3);
+  eq("and counted as skipped", num("sSkipped"), 2);
+
+  tick("dropBlank", false);
+  click("shuffleBtn");
+  eq("kept when asked for", num("sSkipped"), 0);
+
+  tick("dropBlank", true);
+  set("input", "x\ny\nx\nz\ny");
+  click("shuffleBtn");
+  eq("duplicates stay unless asked about", lines().length, 5);
+  tick("dropDupes", true);
+  click("shuffleBtn");
+  eq("and go when they are", lines().length, 3);
+  eq("two of the five were repeats", num("sSkipped"), 2);
+
+  set("input", "only one");
+  click("shuffleBtn");
+  has("one item has one possible order",
+      txt("msg"), "only one possible order");
+
+  set("input", "");
+  click("shuffleBtn");
+  has("an empty box asks for a list", txt("msg"), "Paste a list");
+  eq("and the output is cleared", txt("output"), "");
+  finish();
+"""
+
+T["random-picker"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+  function names() {
+    return txt("output").split("\n")
+      .filter(function (s) { return s !== ""; })
+      .map(function (s) { return s.replace(/^[0-9]+\.\s*/, ""); });
+  }
+
+  click("pickBtn");
+  eq("one winner", names().length, 1);
+  eq("the winners tile agrees", num("sWinners"), 1);
+  eq("eight entries were counted", num("sEntries"), 8);
+  has("each had a one-in-eight chance", txt("sChance"), "12.5");
+  ok("the winner is one of the entries",
+     val("input").split("\n").indexOf(txt("bigWinner")) > -1, txt("bigWinner"));
+  has("an unseeded draw says nobody can repeat it", txt("msg"), "Nobody");
+
+  /* Nobody wins twice: ask for all of them and you get a permutation. */
+  set("winners", 8);
+  click("pickBtn");
+  eq("eight winners from eight entries", names().length, 8);
+  eq("every entry appears exactly once",
+     names().slice().sort().join("|"),
+     val("input").split("\n").slice().sort().join("|"));
+
+  set("winners", 9);
+  click("pickBtn");
+  has("nine winners out of eight is refused", txt("msg"), "only 8 entries");
+
+  /* The seed is the whole point, and it is deterministic. */
+  set("winners", 8);
+  set("seed", "diwali-2026");
+  click("pickBtn");
+  var firstDraw = txt("output");
+  click("pickBtn");
+  eq("the same list and seed draw the same winners again",
+     txt("output"), firstDraw);
+  has("and the seed is named so it can be published",
+      txt("msg"), "diwali-2026");
+  eq("a seeded draw is still a permutation",
+     names().slice().sort().join("|"),
+     val("input").split("\n").slice().sort().join("|"));
+
+  set("seed", "diwali-2027");
+  click("pickBtn");
+  ok("one character of seed changes the whole draw",
+     txt("output") !== firstDraw, "the two seeds gave identical orders");
+
+  set("seed", "");
+  set("winners", 1);
+  set("input", "Solo");
+  click("pickBtn");
+  eq("a single entry always wins", txt("bigWinner"), "Solo");
+  has("at a hundred per cent", txt("sChance"), "100");
+
+  set("input", "Ravi\nravi\nRAVI");
+  click("pickBtn");
+  eq("one name in three capitalisations counts once", num("sEntries"), 1);
+  tick("dropDupes", false);
+  click("pickBtn");
+  eq("unless repeats are allowed to stand", num("sEntries"), 3);
+
+  set("input", "");
+  click("pickBtn");
+  has("an empty list asks for entries", txt("msg"), "Paste some entries");
+  finish();
+"""
+
+T["username-generator"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+  function ideas() {
+    return txt("output").split("\n").filter(function (s) { return s !== ""; });
+  }
+  function all(re) {
+    return ideas().every(function (n) { return re.test(n); });
+  }
+
+  /* Opens as twelve lowercase describing-word-plus-thing names. */
+  eq("twelve ideas", ideas().length, 12);
+  eq("the tile agrees", num("sMade"), 12);
+  eq("sixty-four adjectives by sixty-four nouns", num("sPool"), 4096);
+  eq("all twelve are different", new Set(ideas()).size, 12);
+  ok("lowercase letters only", all(/^[a-z]+$/), txt("output"));
+  ok("none is over the length limit", num("sLongest") <= 20, txt("sLongest"));
+  has("it is honest about what it cannot check", txt("msg"), "cannot check");
+
+  set("sep", "_");
+  ok("an underscore joins the two words", all(/^[a-z]+_[a-z]+$/), txt("output"));
+
+  set("letters", "caps");
+  ok("capitalised means both words start upper",
+     all(/^[A-Z][a-z]+_[A-Z][a-z]+$/), txt("output"));
+
+  set("letters", "lower");
+  set("shape", "nounnoun");
+  ok("two nouns are never the same noun twice",
+     ideas().every(function (n) {
+       var half = n.split("_");
+       return half.length === 2 && half[0] !== half[1];
+     }), txt("output"));
+  eq("sixty-four squared", num("sPool"), 4096);
+
+  set("sep", "");
+  set("shape", "adjnoun");
+  set("digits", "2");
+  ok("two digits on the end, never a leading zero",
+     all(/^[a-z]+[1-9][0-9]$/), txt("output"));
+  eq("ninety two-digit numbers multiply the pool", num("sPool"), 368640);
+
+  set("digits", "1");
+  ok("a single digit may be a zero", all(/^[a-z]+[0-9]$/), txt("output"));
+  eq("ten of them, so ten times the pool", num("sPool"), 40960);
+
+  set("digits", "0");
+  set("shape", "noun");
+  eq("one word only is a pool of sixty-four", num("sPool"), 64);
+  ok("and every idea is one word", all(/^[a-z]+$/), txt("output"));
+
+  /* Nothing can fit: the shortest noun is four letters and four digits
+     make eight, against a limit of six. */
+  set("digits", "4");
+  set("maxLen", 6);
+  click("genBtn");
+  has("an impossible limit says so plainly", txt("msg"), "longer than 6");
+  eq("and nothing is offered", txt("output"), "");
+
+  set("maxLen", 20);
+  set("howMany", 0);
+  click("genBtn");
+  has("asking for none is refused", txt("msg"), "at least one");
+
+  click("resetBtn");
+  eq("reset returns to the opening shape", val("shape"), "adjnoun");
+  eq("with no digits", val("digits"), "0");
+  eq("and twelve ideas again", ideas().length, 12);
+  finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 

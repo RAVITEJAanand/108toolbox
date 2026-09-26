@@ -233,8 +233,8 @@ make; it is written here so it is made with the number in front of us.
 | Converter | 14 | 13 |
 | PDF | 10 | 0 |
 | Date & Time | 8 | 5 |
-| Random | 8 | 0 |
-| **Total** | **108** | **61** |
+| Random | 8 | 6 |
+| **Total** | **108** | **67** |
 
 ---
 
@@ -413,12 +413,12 @@ the footer and becomes the entire reason to pick this site.
 
 | # | Slug | Difficulty |
 |---|---|---|
-| 1 | `random-number-generator` | easy |
-| 2 | `coin-flip` | easy |
-| 3 | `dice-roller` | easy |
-| 4 | `random-list-shuffler` | easy |
-| 5 | `random-picker` | medium — name / winner picker |
-| 6 | `username-generator` | easy |
+| 1 | `random-number-generator` ✅ | easy |
+| 2 | `coin-flip` ✅ | easy |
+| 3 | `dice-roller` ✅ | easy |
+| 4 | `random-list-shuffler` ✅ | easy |
+| 5 | `random-picker` ✅ | medium — name / winner picker |
+| 6 | `username-generator` ✅ | easy |
 | 7 | `qr-code-generator` | medium — needs a small library |
 | 8 | `barcode-generator` | medium — needs a small library |
 

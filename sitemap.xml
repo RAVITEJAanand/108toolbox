@@ -92,6 +92,11 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://108toolbox.in/tools/coin-flip.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://108toolbox.in/tools/color-code-converter.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -118,6 +123,11 @@
   </url>
   <url>
     <loc>https://108toolbox.in/tools/days-until-countdown.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/dice-roller.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -232,6 +242,21 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://108toolbox.in/tools/random-list-shuffler.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/random-number-generator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/random-picker.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://108toolbox.in/tools/ratio-calculator.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -323,6 +348,11 @@
   </url>
   <url>
     <loc>https://108toolbox.in/tools/slug-generator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/username-generator.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>

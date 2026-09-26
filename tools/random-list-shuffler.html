@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>List Shuffler — A Genuinely Random Order</title>
+  <meta name="description" content="Shuffle any list into a genuinely random order using Fisher-Yates, not the sort trick that looks random and is not. Trims blanks and duplicates too.">
+  <link rel="canonical" href="https://108toolbox.in/tools/random-list-shuffler.html">
+
+  <meta property="og:title" content="List Shuffler — A Genuinely Random Order">
+  <meta property="og:description" content="Shuffle any list into a genuinely random order using Fisher-Yates, not the sort trick that looks random and is not. Trims blanks and duplicates too.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=16">
+  <link rel="stylesheet" href="../css/tool.css?v=16">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why not just use the sort trick?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because a sort assumes its comparisons are consistent and a random comparison is not, so the order you get depends on the sorting algorithm rather than on chance. It is measurably uneven, and differently uneven in different browsers. Fisher-Yates is barely longer and is actually correct."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I pick winners instead of reordering?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Shuffle the whole list and keep the first few, using the box above. That is a genuinely fair draw - every entry had the same chance of landing in the top spots."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does it keep my blank lines?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not by default, because a blank line is almost never an item you meant to include. Untick 'ignore blank lines' if the gaps matter to you and they will be shuffled along with everything else."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What counts as a duplicate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "An identical line once the spaces at each end are removed. 'Anil' and 'anil ' are treated as different, because names and codes often differ meaningfully in capitals and the page should not guess otherwise."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a limit on list length?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A hundred thousand lines, which is far past anything a person reads. Very long lists shuffle instantly, because the work grows in step with the list rather than faster."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=random">Random</a><span>&rsaquo;</span>
+        <span>List Shuffler</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Random List Shuffler</h1>
+        <p>Paste a list, get it back in a random order. Every possible order is
+           equally likely &mdash; which is not true of the one-line trick most
+           pages use.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Your list, one item per line</label>
+          <textarea id="input" spellcheck="false" placeholder="Paste your list here&hellip;">Anil
+Bhavana
+Charan
+Divya
+Eshwar
+Farhan
+Gayatri
+Harsha</textarea>
+
+          <label class="check"><input type="checkbox" id="dropBlank" checked> Ignore blank lines</label>
+          <label class="check"><input type="checkbox" id="dropDupes"> Remove duplicates</label>
+
+          <div class="field" style="margin-top:var(--s3)">
+            <label for="takeFirst">Keep only the first few (0 for all)</label>
+            <input type="number" id="takeFirst" min="0" max="100000" step="1" value="0">
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="shuffleBtn">Shuffle</button>
+            <button class="btn btn--ghost"   type="button" id="copyBtn">Copy</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Shuffled</span>
+          <pre class="out mono" id="output" aria-live="polite"></pre>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sIn">&mdash;</span><span class="stat__label">Lines in</span></div>
+            <div class="stat"><span class="stat__num" id="sOut">&mdash;</span><span class="stat__label">Items out</span></div>
+            <div class="stat"><span class="stat__num" id="sSkipped">&mdash;</span><span class="stat__label">Skipped</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Paste your list with one item per line.</li>
+          <li>Press Shuffle. Press it again for a different order.</li>
+          <li><strong>Keep only the first few</strong> turns a shuffle into a
+              draw: shuffle thirty names and keep three and you have picked
+              three at random, fairly.</li>
+        </ol>
+
+        <h2>The one-line shuffle that does not work</h2>
+        <p>Search for how to shuffle a list and the first answer you will find
+           is one line long:</p>
+        <p><code>list.sort(function () { return Math.random() - 0.5; })</code></p>
+        <p>It looks random, it runs, and it is wrong. A sort works by asking
+           &ldquo;does A come before B?&rdquo; and it assumes the answer is
+           consistent: if A beats B and B beats C, then A beats C. A random
+           answer breaks that promise, so the sort is working from contradictory
+           information and the order it lands on depends on the internal
+           details of the sorting algorithm rather than on chance.</p>
+        <p>The result is measurably uneven &mdash; some orders come up far more
+           often than others, and items often drift only a little from where
+           they started. Exactly how it is uneven changes from browser to
+           browser, which is worse than a bias you can at least predict. Run it
+           a few thousand times and count: the lopsidedness is obvious.</p>
+
+        <h2>What this page does instead</h2>
+        <p>Fisher-Yates, which is the correct answer and is barely longer. Walk
+           the list from the end; for each position, pick one of the items not
+           yet placed and swap it in. Each item has exactly one chance to land
+           in each spot, so all possible orders are equally likely.</p>
+        <p>The random numbers come from <code>crypto.getRandomValues</code>,
+           with the leftover values thrown away so that no position is even
+           fractionally favoured. Fair shuffle, fair numbers.</p>
+
+        <h2>A shuffle of a long list is a big number</h2>
+        <p>Ten items can be arranged 3,628,800 ways. Twenty items can be
+           arranged in more ways than there are grains of sand on Earth. You
+           will never see the same shuffle twice on any list worth shuffling,
+           and there is no need to press the button repeatedly hoping for
+           something &ldquo;more random&rdquo; &mdash; the first one already
+           was.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Why not just use the sort trick?</h3>
+          <p>Because a sort assumes its comparisons are consistent and a random comparison is not, so the order you get depends on the sorting algorithm rather than on chance. It is measurably uneven, and differently uneven in different browsers. Fisher-Yates is barely longer and is actually correct.</p>
+        </div>
+        <div class="faq">
+          <h3>How do I pick winners instead of reordering?</h3>
+          <p>Shuffle the whole list and keep the first few, using the box above. That is a genuinely fair draw - every entry had the same chance of landing in the top spots.</p>
+        </div>
+        <div class="faq">
+          <h3>Does it keep my blank lines?</h3>
+          <p>Not by default, because a blank line is almost never an item you meant to include. Untick &#x27;ignore blank lines&#x27; if the gaps matter to you and they will be shuffled along with everything else.</p>
+        </div>
+        <div class="faq">
+          <h3>What counts as a duplicate?</h3>
+          <p>An identical line once the spaces at each end are removed. &#x27;Anil&#x27; and &#x27;anil &#x27; are treated as different, because names and codes often differ meaningfully in capitals and the page should not guess otherwise.</p>
+        </div>
+        <div class="faq">
+          <h3>Is there a limit on list length?</h3>
+          <p>A hundred thousand lines, which is far past anything a person reads. Very long lists shuffle instantly, because the work grows in step with the list rather than faster.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=16"></script>
+  <script src="../js/tool-helpers.js?v=16"></script>
+  <script>window.CURRENT_TOOL = "random-list-shuffler";</script>
+  <script src="../js/main.js?v=16"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input     = document.getElementById("input");
+    var dropBlank = document.getElementById("dropBlank");
+    var dropDupes = document.getElementById("dropDupes");
+    var takeFirst = document.getElementById("takeFirst");
+    var output    = document.getElementById("output");
+    var msg       = document.getElementById("msg");
+    var DASH      = String.fromCharCode(0x2014);
+
+    var lastText = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: drawing random numbers in batches ---- */
+    var POOL = new Uint32Array(256);
+    var poolNext = POOL.length;
+
+    function randomWord() {
+      if (poolNext >= POOL.length) {
+        crypto.getRandomValues(POOL);
+        poolNext = 0;
+      }
+      return POOL[poolNext++];
+    }
+    /* ---- END: drawing random numbers in batches ---- */
+
+    /* ---- START: a whole number in [0, span), with the bias removed ----
+       A shuffle is only fair if the position it picks is picked evenly. Taking
+       the remainder alone would tilt every swap very slightly towards the low
+       positions, so the leftover tail is redrawn. */
+    function below(span) {
+      if (span <= 1) { return 0; }
+      var limit = Math.floor(4294967296 / span) * span;
+      var value;
+      do {
+        value = randomWord();
+      } while (value >= limit);
+      return value % span;
+    }
+    /* ---- END: a whole number in [0, span), with the bias removed ---- */
+
+    /* ---- START: Fisher-Yates, the shuffle that is actually uniform ----
+       Not list.sort(random), which is the answer everyone finds first and is
+       wrong: a sort assumes its comparisons are consistent, and a random
+       comparison is not, so the order depends on the sorting algorithm. This
+       walks from the end and swaps each position with one of the places not
+       yet settled. Every item gets exactly one chance at every position, so
+       all orders are equally likely. */
+    function shuffle(items) {
+      for (var i = items.length - 1; i > 0; i--) {
+        var j = below(i + 1);
+        var swap = items[i];
+        items[i] = items[j];
+        items[j] = swap;
+      }
+      return items;
+    }
+    /* ---- END: Fisher-Yates, the shuffle that is actually uniform ---- */
+
+    /* ---- START: turning the pasted text into a list ---- */
+    function readList() {
+      var lines = input.value.split("\n");
+      var total = lines.length;
+      var items = [];
+      var seen = Object.create(null);
+      var skipped = 0;
+
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        if (dropBlank.checked && line.trim() === "") { skipped += 1; continue; }
+
+        if (dropDupes.checked) {
+          /* Prefixed so that a line reading "constructor" or "toString" is not
+             mistaken for something the object already answers to. */
+          var key = "k" + line.trim();
+          if (seen[key]) { skipped += 1; continue; }
+          seen[key] = true;
+        }
+        items.push(line);
+      }
+      return { items: items, total: total, skipped: skipped };
+    }
+    /* ---- END: turning the pasted text into a list ---- */
+
+    /* ---- START: the shuffle itself ---- */
+    function run() {
+      var read = readList();
+
+      if (read.total > 100000) {
+        setMessage("That is over a hundred thousand lines, which is the limit "
+                 + "here.", "bad");
+        return;
+      }
+      if (!read.items.length) {
+        output.textContent = "";
+        lastText = "";
+        document.getElementById("sIn").textContent = DASH;
+        document.getElementById("sOut").textContent = DASH;
+        document.getElementById("sSkipped").textContent = DASH;
+        setMessage("Paste a list on the left, one item per line.");
+        return;
+      }
+
+      var items = shuffle(read.items.slice());
+
+      var keep = Math.round(Number(takeFirst.value) || 0);
+      var trimmed = false;
+      if (keep > 0 && keep < items.length) {
+        items = items.slice(0, keep);
+        trimmed = true;
+      }
+
+      lastText = items.join("\n");
+      output.textContent = lastText;
+
+      document.getElementById("sIn").textContent = formatNumber(read.total, 0);
+      document.getElementById("sOut").textContent = formatNumber(items.length, 0);
+      document.getElementById("sSkipped").textContent = formatNumber(read.skipped, 0);
+
+      if (trimmed) {
+        setMessage("Shuffled " + read.items.length + " items and kept the first "
+                 + items.length + " - a fair draw, because every item had the "
+                 + "same chance of landing in those places.", "ok");
+      } else if (items.length === 1) {
+        setMessage("One item, so there is only one possible order.", "ok");
+      } else {
+        setMessage("Shuffled with Fisher-Yates, so every possible order was "
+                 + "equally likely. Press Shuffle again for another.", "ok");
+      }
+    }
+    /* ---- END: the shuffle itself ---- */
+
+    /* ---- START: wiring ---- */
+    document.getElementById("shuffleBtn").addEventListener("click", run);
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastText) { showToast("Shuffle something first"); return; }
+      copyText(lastText);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      input.value = "";
+      dropBlank.checked = true;
+      dropDupes.checked = false;
+      takeFirst.value = 0;
+      lastText = "";
+      run();
+      input.focus();
+    });
+    /* ---- END: wiring ---- */
+
+    run();
+  })();
+  </script>
+</body>
+</html>
