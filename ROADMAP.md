@@ -122,12 +122,31 @@ first, in their own commit, and only then does the ad code go in.
 | the footer, **all 71 pages** | "No sign-up, no ads, no file uploads." |
 | `privacy.html` section 7 | "There are **no advertisements on this site today**." |
 | `disclaimer.html` section 9 | "There are no advertisements on this site today." |
+| `privacy.html` section 6 | "There is no cookie banner here because there is nothing to consent to." |
+| `privacy.html` section 8 | "we do not track you across websites" |
 
 `privacy.html` section 7 and `disclaimer.html` section 9 were written in
 advance for exactly this day: both already explain what a third-party ad
 provider would do, that its cookies belong to it and not to us, and where a
 visitor can turn personalised ads off. They need the tense changed, not a
 rewrite.
+
+Sections 6 and 8 were missed the first time this list was written, and they
+are the two that would contradict themselves the loudest:
+
+- **Section 6** says there is no cookie banner *because there is nothing to
+  consent to*. The moment a consent message is published, a banner appears for
+  visitors in the EU and UK - so the page would be denying the existence of the
+  thing on the visitor's screen.
+- **Section 8** says "we do not track you across websites". Personalised
+  AdSense does precisely that, through the provider rather than through us.
+  Section 7 explains it honestly; section 8 flatly denies it. Both cannot
+  stand.
+
+Worth a second look at the same time: **section 10**, "We do not sell or share
+your data". That stays true in the plain sense, but "share" has a specific
+meaning under GDPR and the US state privacy laws that can cover serving
+personalised advertising. Not a claim to change blind - a claim to check.
 
 **What stays true, and must not be quietly dropped**
 
