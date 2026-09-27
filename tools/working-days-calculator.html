@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Working Days Calculator — Your Weekend, Your Holidays</title>
+  <meta name="description" content="Count the working days between two dates, with the weekend you actually have and the holidays you actually get. Both ends of the range are included.">
+  <link rel="canonical" href="https://108toolbox.in/tools/working-days-calculator.html">
+
+  <meta property="og:title" content="Working Days Calculator — Your Weekend, Your Holidays">
+  <meta property="og:description" content="Count the working days between two dates, with the weekend you actually have and the holidays you actually get. Both ends of the range are included.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=21">
+  <link rel="stylesheet" href="../css/tool.css?v=21">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does the end date count?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Monday to Friday is five working days, not four. If you want the days between two dates without counting the last one, take one off the answer."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why do I have to type the holidays myself?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because no built-in list would be right for you. Public holidays differ by country, by state, by religion and by employer, and several move each year. A wrong list gives you a wrong answer that looks completely plausible."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What if a holiday falls on a Sunday?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It is counted once. The day was already not a working day, so removing it again would undercount. The 'holidays used' tile shows how many of the dates you gave actually made a difference."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I count a Friday-Saturday weekend?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - untick Saturday and Sunday and tick Friday and Saturday. Any combination works, including none at all if you want every calendar day counted."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is a half-day Saturday supported?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, and pretending otherwise would be worse. A day here is either a working day or not. If you work alternate Saturdays, count with Saturday as a working day and subtract the ones you have off as 'holidays'."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=date">Date & Time</a><span>&rsaquo;</span>
+        <span>Working Days Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Working Days Calculator</h1>
+        <p>Count the working days between two dates &mdash; with <em>your</em>
+           weekend, not an assumed one, and the holidays your office actually
+           closes for.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="from">From</label>
+            <input type="date" id="from">
+          </div>
+          <div class="field">
+            <label for="to">To (this day counts too)</label>
+            <input type="date" id="to">
+          </div>
+
+          <div class="field">
+            <label>Which days are your weekend</label>
+            <label class="check"><input type="checkbox" id="d1"> Monday</label>
+            <label class="check"><input type="checkbox" id="d2"> Tuesday</label>
+            <label class="check"><input type="checkbox" id="d3"> Wednesday</label>
+            <label class="check"><input type="checkbox" id="d4"> Thursday</label>
+            <label class="check"><input type="checkbox" id="d5"> Friday</label>
+            <label class="check"><input type="checkbox" id="d6" checked> Saturday</label>
+            <label class="check"><input type="checkbox" id="d0" checked> Sunday</label>
+          </div>
+
+          <div class="field">
+            <label for="holidays">Holidays, one date a line (2026-01-26)</label>
+            <textarea id="holidays" class="mono" spellcheck="false" style="min-height:110px"></textarea>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="copyBtn">Copy the summary</button>
+            <button class="btn btn--danger" type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <div class="result">
+            <span class="result__num" id="bigWorking">&mdash;</span>
+            <span class="result__label">Working days</span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sTotal">&mdash;</span><span class="stat__label">Days in all</span></div>
+            <div class="stat"><span class="stat__num" id="sWeekend">&mdash;</span><span class="stat__label">Weekend days</span></div>
+            <div class="stat"><span class="stat__num" id="sHolidays">&mdash;</span><span class="stat__label">Holidays used</span></div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><span class="stat__num" id="sWeeks">&mdash;</span><span class="stat__label">Working weeks</span></div>
+            <div class="stat"><span class="stat__num" id="sHours">&mdash;</span><span class="stat__label">At 8 hours a day</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>Both ends are included</h2>
+        <p>Monday to Friday of the same week is five working days here, not
+           four. That is what people mean when they ask, and it is the
+           commonest disagreement between two tools that both look right.</p>
+
+        <h2>Your weekend is not everybody's weekend</h2>
+        <p>Saturday and Sunday are ticked because that is the most common
+           arrangement, not because it is the only one. Much of the Middle East
+           works Sunday to Thursday and takes Friday and Saturday. Plenty of
+           shops close on a Monday instead. Some people work a four-day week,
+           and a great many in India work a half-day Saturday that a tool like
+           this cannot represent at all.</p>
+        <p>So the days are yours to choose. Untick them all and you are
+           counting every calendar day minus the holidays, which is also a
+           legitimate question.</p>
+
+        <h2>Holidays have to come from you</h2>
+        <p>There is no list this page could ship that would be right. India
+           alone has national holidays, different state holidays, holidays that
+           move with the moon, and a list every company edits for itself.
+           Guessing would be worse than asking, because a wrong holiday list is
+           invisible &mdash; the number simply comes out slightly wrong and
+           looks perfectly reasonable.</p>
+        <p>Paste them one date a line as <code>2026-01-26</code>. A holiday
+           that lands on your weekend is not counted twice, which is the other
+           thing tools quietly get wrong: the day was already not a working
+           day.</p>
+
+        <h2>What the numbers below are for</h2>
+        <p>Working weeks is the count divided by five, which is how people
+           talk about project time. The hours figure assumes an eight-hour day
+           and is there for invoicing and estimating &mdash; it is arithmetic,
+           not advice, and your own day may well be seven and a half.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Does the end date count?</h3>
+          <p>Yes. Monday to Friday is five working days, not four. If you want the days between two dates without counting the last one, take one off the answer.</p>
+        </div>
+        <div class="faq">
+          <h3>Why do I have to type the holidays myself?</h3>
+          <p>Because no built-in list would be right for you. Public holidays differ by country, by state, by religion and by employer, and several move each year. A wrong list gives you a wrong answer that looks completely plausible.</p>
+        </div>
+        <div class="faq">
+          <h3>What if a holiday falls on a Sunday?</h3>
+          <p>It is counted once. The day was already not a working day, so removing it again would undercount. The &#x27;holidays used&#x27; tile shows how many of the dates you gave actually made a difference.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I count a Friday-Saturday weekend?</h3>
+          <p>Yes - untick Saturday and Sunday and tick Friday and Saturday. Any combination works, including none at all if you want every calendar day counted.</p>
+        </div>
+        <div class="faq">
+          <h3>Is a half-day Saturday supported?</h3>
+          <p>No, and pretending otherwise would be worse. A day here is either a working day or not. If you work alternate Saturdays, count with Saturday as a working day and subtract the ones you have off as &#x27;holidays&#x27;.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=21"></script>
+  <script src="../js/tool-helpers.js?v=21"></script>
+  <script>window.CURRENT_TOOL = "working-days-calculator";</script>
+  <script src="../js/main.js?v=21"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var fromEl = document.getElementById("from");
+    var toEl   = document.getElementById("to");
+    var holidaysEl = document.getElementById("holidays");
+    var msg    = document.getElementById("msg");
+    var DASH   = String.fromCharCode(0x2014);
+
+    var DAY_IDS = ["d0", "d1", "d2", "d3", "d4", "d5", "d6"];
+    var DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                     "Friday", "Saturday"];
+    var MAX_DAYS = 40000;          /* a little over a century */
+    var summary = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: a date box read in UTC, never local ----
+       Everything here is done in UTC. A local Date crosses a daylight-saving
+       boundary in some countries and a range comes out a day short - a bug
+       that appears twice a year and only for some visitors. */
+    function parse(value) {
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
+      if (!m) { return null; }
+      var y = parseInt(m[1], 10), mo = parseInt(m[2], 10), d = parseInt(m[3], 10);
+      var date = new Date(Date.UTC(y, mo - 1, d));
+      if (date.getUTCMonth() !== mo - 1 || date.getUTCDate() !== d) { return null; }
+      return date;
+    }
+
+    function iso(date) { return date.toISOString().slice(0, 10); }
+    /* ---- END: a date box read in UTC, never local ---- */
+
+    /* ---- START: the holiday list, as the visitor typed it ---- */
+    function holidaySet() {
+      var set = Object.create(null);
+      var bad = 0;
+      holidaysEl.value.split("\n").forEach(function (line) {
+        var text = line.trim();
+        if (text === "") { return; }
+        var date = parse(text);
+        if (!date) { bad += 1; return; }
+        set["d" + iso(date)] = true;
+      });
+      return { set: set, bad: bad };
+    }
+    /* ---- END: the holiday list, as the visitor typed it ---- */
+
+    /* ---- START: which days of the week are off ---- */
+    function weekendDays() {
+      var off = Object.create(null);
+      for (var i = 0; i < 7; i++) {
+        if (document.getElementById(DAY_IDS[i]).checked) { off["w" + i] = true; }
+      }
+      return off;
+    }
+    /* ---- END: which days of the week are off ---- */
+
+    /* ---- START: the count ---- */
+    function count() {
+      var from = parse(fromEl.value);
+      var to = parse(toEl.value);
+
+      if (!from || !to) {
+        ["bigWorking", "sTotal", "sWeekend", "sHolidays", "sWeeks", "sHours"]
+          .forEach(function (id) { document.getElementById(id).textContent = DASH; });
+        summary = "";
+        setMessage("Choose both dates.");
+        return;
+      }
+      if (to < from) {
+        setMessage("The second date is before the first. Swap them.", "bad");
+        return;
+      }
+
+      var total = Math.round((to - from) / 86400000) + 1;   /* both ends count */
+      if (total > MAX_DAYS) {
+        setMessage("That range is over a century long.", "bad");
+        return;
+      }
+
+      var off = weekendDays();
+      var holidays = holidaySet();
+
+      var working = 0, weekend = 0, used = 0;
+      var cursor = new Date(from.getTime());
+      for (var i = 0; i < total; i++) {
+        var isWeekend = off["w" + cursor.getUTCDay()] === true;
+        if (isWeekend) {
+          weekend += 1;
+        } else if (holidays.set["d" + iso(cursor)]) {
+          /* Counted once. A holiday landing on a weekend was already not a
+             working day, and subtracting it again is the quiet way these
+             tools come out wrong. */
+          used += 1;
+        } else {
+          working += 1;
+        }
+        cursor = new Date(cursor.getTime() + 86400000);
+      }
+
+      document.getElementById("bigWorking").textContent = formatNumber(working, 0);
+      document.getElementById("sTotal").textContent = formatNumber(total, 0);
+      document.getElementById("sWeekend").textContent = formatNumber(weekend, 0);
+      document.getElementById("sHolidays").textContent = formatNumber(used, 0);
+      document.getElementById("sWeeks").textContent = formatNumber(working / 5, 1);
+      document.getElementById("sHours").textContent = formatNumber(working * 8, 0);
+
+      var offNames = [];
+      for (var d = 0; d < 7; d++) {
+        if (off["w" + d]) { offNames.push(DAY_NAMES[d]); }
+      }
+
+      summary = working + " working days from " + iso(from) + " to " + iso(to)
+              + " (" + total + " days in all, " + weekend + " weekend, "
+              + used + " holidays).";
+
+      if (holidays.bad) {
+        setMessage(holidays.bad + " holiday line" + (holidays.bad === 1 ? "" : "s")
+                 + " could not be read - they need to look like 2026-01-26.",
+                   "bad");
+      } else if (!offNames.length) {
+        setMessage("No weekend is ticked, so every day counts except the "
+                 + "holidays you listed.", "ok");
+      } else {
+        setMessage("Both ends counted. Weekend: " + offNames.join(" and ")
+                 + ".", "ok");
+      }
+    }
+    /* ---- END: the count ---- */
+
+    /* ---- START: wiring ---- */
+    [fromEl, toEl, holidaysEl].forEach(function (el) {
+      el.addEventListener("input", count);
+      el.addEventListener("change", count);
+    });
+    DAY_IDS.forEach(function (id) {
+      document.getElementById(id).addEventListener("change", count);
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!summary) { showToast("Nothing to copy"); return; }
+      copyText(summary);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      setToday();
+      holidaysEl.value = "";
+      DAY_IDS.forEach(function (id, index) {
+        document.getElementById(id).checked = index === 0 || index === 6;
+      });
+      count();
+    });
+
+    /* Opening on today and a month ahead means the page answers something
+       the moment it loads, rather than showing two empty boxes. */
+    function setToday() {
+      var now = new Date();
+      var start = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+      var end = new Date(start.getTime());
+      end.setUTCMonth(end.getUTCMonth() + 1);
+      fromEl.value = iso(start);
+      toEl.value = iso(end);
+    }
+    /* ---- END: wiring ---- */
+
+    setToday();
+    count();
+  })();
+  </script>
+</body>
+</html>

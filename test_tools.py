@@ -3787,6 +3787,295 @@ T["sql-formatter"] = r"""
   finish();
 """
 
+T["readability-score"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+
+  /* The sample opens with one very long sentence and three short ones, so
+     the warning about long sentences should be the one showing. */
+  has("the longest sentence is named", txt("msg"), "longest sentence");
+  eq("averaging 9.8 words a sentence", txt("sPerSentence"), "9.8");
+  ok("the worst-sentence list is filled", txt("worst").length > 40, txt("worst"));
+  has("with a word count against each", txt("worst"), "words -");
+
+  /* Arithmetic that can be checked by hand: 11 words, 4 sentences, and
+     every word one syllable. */
+  set("input", "The cat sat. The dog ran. The bird flew. Rain fell.");
+  eq("eleven words", num("sWords"), 11);
+  eq("four sentences", num("sSentences"), 4);
+  eq("2.8 words a sentence", txt("sPerSentence"), "2.8");
+  eq("one syllable each", txt("sPerWord"), "1.00");
+  eq("which is off the top of the scale", txt("bigScore"), "100.0");
+  has("and reads as very easy", txt("bigBand"), "Very easy");
+
+  /* Under ten words the score would be noise, so it is not given. */
+  set("input", "Too short.");
+  has("a very short text is refused a score", txt("msg"), "at least ten words");
+  eq("and the tiles are blank", txt("bigScore"), String.fromCharCode(0x2014));
+
+  set("input", "");
+  has("an empty box says the same", txt("msg"), "at least ten words");
+
+  click("clearBtn");
+  eq("clearing empties the box", val("input"), "");
+  finish();
+"""
+
+T["text-diff-checker"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+  function marks(sel) { return document.querySelectorAll("#output " + sel).length; }
+
+  /* The sample changes one line and adds one. */
+  eq("two lines added", num("sAdded"), 2);
+  eq("one line removed", num("sRemoved"), 1);
+  eq("three unchanged", num("sSame"), 3);
+  eq("the additions are marked", marks(".df-add"), 2);
+  eq("and so are the removals", marks(".df-del"), 1);
+
+  /* An edited line is one removal and one addition - there is no third kind. */
+  set("left", "one\ntwo\nthree");
+  set("right", "one\nTWO\nthree");
+  eq("an edit shows as an addition", num("sAdded"), 1);
+  eq("and a removal", num("sRemoved"), 1);
+
+  tick("optCase", true);
+  eq("ignoring capitals makes it vanish", num("sAdded"), 0);
+  has("and the page says the raw text still differs", txt("msg"), "raw text is not identical");
+  tick("optCase", false);
+
+  /* The invisible difference this page CAN see. */
+  set("left", "alpha\nbeta");
+  set("right", "alpha \nbeta");
+  eq("a trailing space is a real difference", num("sAdded"), 1);
+  tick("optTrail", true);
+  eq("until it is ignored", num("sAdded"), 0);
+  tick("optTrail", false);
+
+  tick("optShow", true);
+  has("showing invisibles marks the spaces", txt("output"), String.fromCharCode(0x00B7));
+  tick("optShow", false);
+
+  set("left", "same");
+  set("right", "same");
+  has("identical text is called identical", txt("msg"), "identical");
+
+  /* Somebody's document must never become markup. */
+  set("left", "<iframe onload=zq>");
+  set("right", "plain");
+  eq("a tag in the text does not become an element", marks("iframe"), 0);
+  has("it is shown as characters", txt("output"), "<iframe");
+
+  set("left", "a\nb\nc");
+  set("right", "");
+  eq("emptying one side removes every line", num("sRemoved"), 3);
+
+  click("swapBtn");
+  eq("swapping turns removals into additions", num("sAdded"), 3);
+
+  click("clearBtn");
+  has("clearing asks for both versions", txt("msg"), "Paste a version");
+  finish();
+"""
+
+T["text-to-speech"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+
+  /* Voices come from the machine, so a test machine may have none. Both
+     paths have to be right, and the no-voice path is the one that has to
+     explain itself rather than looking broken. */
+  var count = num("sVoices");
+
+  if (count === 0) {
+    has("with no voices it says where voices come from",
+        txt("msg"), "come from your device");
+    ok("and the speak button is disabled",
+       document.getElementById("speakBtn").disabled === true);
+    has("the list explains instead of being blank",
+        txt("voiceList"), "come from your device");
+  } else {
+    var lines = txt("voiceList").split("\n").filter(function (s) { return s !== ""; });
+    eq("every voice is listed", lines.length, count);
+    ok("and each is marked local or network",
+       lines.every(function (l) { return /^\[(local|network)\] /.test(l); }), lines[0]);
+    ok("the tile says where the chosen one runs",
+       txt("sWhere") === "on this device" || txt("sWhere") === "uses the internet",
+       txt("sWhere"));
+  }
+
+  /* These work with or without a voice. */
+  eq("the character count matches the text",
+     num("sLength"), val("input").length);
+  set("input", "Hello there");
+  eq("and follows it", num("sLength"), 11);
+
+  set("rate", "1.6");
+  eq("the speed label follows the slider", txt("rateOut"), "1.6");
+  set("pitch", "0.4");
+  eq("and so does the pitch label", txt("pitchOut"), "0.4");
+
+  ok("pause and stop start out unavailable",
+     document.getElementById("pauseBtn").disabled === true &&
+     document.getElementById("stopBtn").disabled === true);
+  finish();
+"""
+
+T["working-days-calculator"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+
+  /* Monday 5 January 2026 to Friday 9 January 2026. */
+  set("from", "2026-01-05");
+  set("to", "2026-01-09");
+  eq("Monday to Friday is five working days", num("bigWorking"), 5);
+  eq("and five days in all - both ends count", num("sTotal"), 5);
+  eq("with no weekend in between", num("sWeekend"), 0);
+  eq("one working week", txt("sWeeks"), "1.0");
+  eq("forty hours at eight a day", num("sHours"), 40);
+
+  /* Out to the Sunday. */
+  set("to", "2026-01-11");
+  eq("seven calendar days", num("sTotal"), 7);
+  eq("still five working days", num("bigWorking"), 5);
+  eq("two of them a weekend", num("sWeekend"), 2);
+
+  /* A holiday on a working day costs a working day. */
+  set("holidays", "2026-01-07");
+  eq("the holiday is taken off", num("bigWorking"), 4);
+  eq("and counted as used", num("sHolidays"), 1);
+
+  /* A holiday on a Sunday was already not a working day. */
+  set("holidays", "2026-01-07\n2026-01-11");
+  eq("a holiday on a weekend changes nothing", num("bigWorking"), 4);
+  eq("and is not counted twice", num("sHolidays"), 1);
+
+  set("holidays", "not a date");
+  has("an unreadable holiday line is reported", txt("msg"), "could not be read");
+  set("holidays", "");
+
+  /* A Friday-Saturday weekend, which is normal in much of the world. */
+  tick("d0", false);
+  tick("d5", true);
+  eq("a Friday-Saturday weekend, as much of the world has", num("sWeekend"), 2);
+  has("the message names both days", txt("msg"), "Friday and Saturday");
+
+  tick("d5", false); tick("d6", false);
+  eq("with no weekend every day is a working day", num("bigWorking"), 7);
+  has("and the page says so", txt("msg"), "No weekend is ticked");
+
+  set("from", "2026-02-01");
+  set("to", "2026-01-01");
+  has("a backwards range is refused", txt("msg"), "Swap them");
+
+  click("resetBtn");
+  eq("reset puts the weekend back", num("sWeekend") >= 0, true);
+  finish();
+"""
+
+T["stopwatch-timer"] = r"""
+  eq("it opens stopped at zero", txt("display"), "00:00.00");
+  eq("and says so", txt("sState"), "ready");
+  ok("lap is not available yet",
+     document.getElementById("lapBtn").disabled === true);
+
+  click("startBtn");
+  eq("starting says running", txt("sState"), "running");
+  eq("and the button becomes stop", txt("startBtn"), "Stop");
+  has("the message explains why a background tab is safe",
+      txt("msg"), "lose you any time");
+
+  waitFor("the clock moves",
+    function () { return txt("display") !== "00:00.00"; },
+    function () {
+      click("lapBtn");
+      eq("a lap is recorded", txt("sLaps"), "1");
+      ok("with a split and a total", txt("laps").indexOf("total") > -1, txt("laps"));
+      click("lapBtn");
+      eq("and another", txt("sLaps"), "2");
+      ok("the fastest is marked",
+         txt("laps").indexOf("fastest") > -1, txt("laps"));
+
+      click("startBtn");
+      eq("stopping says stopped", txt("sState"), "stopped");
+      var frozen = txt("display");
+      var since = Date.now();
+
+      waitFor("time passes while it is stopped",
+        function () { return Date.now() - since > 300; },
+        function () {
+          eq("and the display has not moved", txt("display"), frozen);
+
+          click("resetBtn");
+          eq("reset returns to zero", txt("display"), "00:00.00");
+          eq("clears the laps", txt("sLaps"), "0");
+          eq("and says ready", txt("sState"), "ready");
+
+          /* Countdown, one second, so the test does not sit waiting. */
+          set("mode", "countdown");
+          eq("the label changes", txt("displayLabel"), "Countdown");
+          set("mins", 0);
+          set("secs", 1);
+          click("startBtn");
+          waitFor("a one-second countdown finishes",
+            function () { return txt("sState") === "finished"; },
+            function () {
+              eq("and lands exactly on zero", txt("display"), "00:00.00");
+              has("saying so", txt("msg"), "Time is up");
+
+              click("resetBtn");
+              set("mins", 0); set("secs", 0);
+              click("startBtn");
+              has("a zero countdown is refused", txt("msg"), "Set a time");
+              finish();
+            }, 8000);
+        }, 4000);
+    }, 4000);
+"""
+
+T["time-zone-converter"] = r"""
+  /* A fixed date, so daylight saving is a fact rather than a variable. */
+  set("zone", "Asia/Kolkata");
+  set("date", "2026-01-15");
+  set("time", "09:00");
+  eq("9am in India is 03:30 UTC", txt("sUtc"), "03:30");
+  eq("and India is always five and a half hours ahead", txt("sOffset"), "UTC+05:30");
+  has("the list names the zone, not a city", txt("output"), "Asia/Kolkata");
+  has("and marks where the visitor is", txt("output"), "where you are");
+  has("India keeps one offset all year, and the page says so",
+      txt("msg"), "same offset all year");
+
+  set("date", "2026-07-15");
+  eq("still 03:30 in July", txt("sUtc"), "03:30");
+
+  /* Britain moves its clocks; India does not. This is the whole point. */
+  set("zone", "Europe/London");
+  set("date", "2026-01-15");
+  eq("9am in London in January is 09:00 UTC", txt("sUtc"), "09:00");
+  eq("offset zero", txt("sOffset"), "UTC+00:00");
+  has("and the page warns the date matters", txt("msg"), "changes its clocks");
+
+  set("date", "2026-07-15");
+  eq("9am in London in July is 08:00 UTC", txt("sUtc"), "08:00");
+  eq("an hour ahead in summer", txt("sOffset"), "UTC+01:00");
+
+  set("zone", "America/New_York");
+  set("date", "2026-01-15");
+  eq("9am in New York in January is 14:00 UTC", txt("sUtc"), "14:00");
+  set("date", "2026-07-15");
+  eq("and 13:00 in July", txt("sUtc"), "13:00");
+
+  set("zone", "UTC");
+  set("date", "2026-03-10");
+  set("time", "00:00");
+  eq("midnight UTC does not roll the date", txt("sUtc"), "00:00");
+
+  var rows = txt("output").split("\n").filter(function (s) { return s !== ""; });
+  ok("every major zone is listed", rows.length >= 15, rows.length + " rows");
+  ok("each row carries an offset",
+     rows.every(function (r) { return r.indexOf("UTC") > -1; }), rows[0]);
+
+  click("nowBtn");
+  ok("using now fills in today", val("date").length === 10, val("date"));
+  finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 

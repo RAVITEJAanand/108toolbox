@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Readability Score — Flesch, and What It Misses</title>
+  <meta name="description" content="Score your writing with Flesch Reading Ease and grade level, see the sentences dragging it down, and read an honest account of what the number cannot see.">
+  <link rel="canonical" href="https://108toolbox.in/tools/readability-score.html">
+
+  <meta property="og:title" content="Readability Score — Flesch, and What It Misses">
+  <meta property="og:description" content="Score your writing with Flesch Reading Ease and grade level, see the sentences dragging it down, and read an honest account of what the number cannot see.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=21">
+  <link rel="stylesheet" href="../css/tool.css?v=21">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What score should I aim for?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Around 60 to 70 for anything a general audience reads, which is roughly grade 8. Official and academic writing sits far lower and is not necessarily wrong for its readers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does another site give me a different score?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because syllable counting is a guess. English spelling does not reliably tell you how a word sounds, so every tool uses slightly different rules and lands on slightly different numbers. Treat the score as a band, not a measurement."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is a low score always bad?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Technical writing often has to use long words, and shortening them would lose the meaning. A low score means 'this will be hard work to read', which is sometimes a fair price and sometimes a warning."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I cheat it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Easily, and that is worth knowing. Splitting every sentence and swapping in short words raises the score whether or not the writing improves. The number is a prompt to look, not a target to hit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What counts as a sentence?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Text ending in a full stop, question mark or exclamation mark. Abbreviations with full stops in them will be miscounted as sentence endings, which nudges the score - another reason to read the number loosely."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
+        <span>Readability Score</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Readability Score</h1>
+        <p>A reading-ease score for your text, the grade level that goes with
+           it, and &mdash; more useful than either &mdash; the exact sentences
+           making it hard.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Your text</label>
+          <textarea id="input" spellcheck="false">Notwithstanding the aforementioned considerations, the implementation of the proposed methodology necessitates a comprehensive evaluation of the organisational infrastructure prior to the commencement of any substantive operational modifications.
+
+We looked at it first. Then we changed it. It works now.</textarea>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="copyBtn">Copy the summary</button>
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <div class="result">
+            <span class="result__num" id="bigScore">&mdash;</span>
+            <span class="result__label" id="bigBand">Flesch Reading Ease</span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sGrade">&mdash;</span><span class="stat__label">School grade</span></div>
+            <div class="stat"><span class="stat__num" id="sPerSentence">&mdash;</span><span class="stat__label">Words a sentence</span></div>
+            <div class="stat"><span class="stat__num" id="sPerWord">&mdash;</span><span class="stat__label">Syllables a word</span></div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><span class="stat__num" id="sWords">&mdash;</span><span class="stat__label">Words</span></div>
+            <div class="stat"><span class="stat__num" id="sSentences">&mdash;</span><span class="stat__label">Sentences</span></div>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s3)">The sentences costing you the most</span>
+          <pre class="out mono" id="worst" style="min-height:110px" aria-live="polite"></pre>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>What the number means</h2>
+        <p>Flesch Reading Ease runs from about 0 to 100, and higher is easier.
+           It is built from two things only: how long your sentences are, and
+           how many syllables your words have.</p>
+        <ul>
+          <li><strong>90&ndash;100</strong> very easy &mdash; a young child
+              could read it</li>
+          <li><strong>60&ndash;70</strong> plain English &mdash; what most
+              newspapers aim at, and a good target for anything public</li>
+          <li><strong>30&ndash;50</strong> difficult &mdash; academic or
+              official writing</li>
+          <li><strong>under 30</strong> very difficult &mdash; a degree helps</li>
+        </ul>
+        <p>The grade beside it is the American school year needed to read the
+           text comfortably. Grade 8 is roughly a thirteen-year-old, and is the
+           usual advice for writing meant for everybody.</p>
+
+        <h2>What the number cannot see</h2>
+        <p>It counts syllables and full stops. It does not read. So it does not
+           know whether your text is <em>clear</em>, only whether it is
+           <em>short</em>.</p>
+        <p>You can get a perfect score out of nonsense: chop every sentence in
+           two, replace long words with short ones, and the number climbs while
+           the meaning falls apart. Treat it as a smoke alarm, not a
+           judge &mdash; a low score is a reason to reread, never a reason to
+           start hacking sentences in half.</p>
+        <p>It also has nothing to say about technical writing. A page about
+           haemoglobin has to say haemoglobin, and no rewording makes that word
+           shorter. A specification full of necessary long words will score
+           badly and be exactly as clear as it should be.</p>
+
+        <h2>Why the sentence list matters more</h2>
+        <p>The single number tells you there is a problem somewhere. The list
+           underneath tells you where. Almost always a handful of very long
+           sentences are dragging the whole text down, and splitting those
+           three sentences does more than rewriting every other word on the
+           page.</p>
+
+        <h2>Syllables are counted by a rule of thumb</h2>
+        <p>English spelling has no reliable relationship to its sounds, so
+           there is no way to count syllables exactly without a dictionary of
+           every word. This page uses the usual set of rules &mdash; count the
+           vowel groups, drop a silent <code>e</code>, and so on &mdash; and
+           gets most words right and some words wrong. Every readability tool
+           does the same thing, which is why two of them rarely agree
+           exactly.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>What score should I aim for?</h3>
+          <p>Around 60 to 70 for anything a general audience reads, which is roughly grade 8. Official and academic writing sits far lower and is not necessarily wrong for its readers.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does another site give me a different score?</h3>
+          <p>Because syllable counting is a guess. English spelling does not reliably tell you how a word sounds, so every tool uses slightly different rules and lands on slightly different numbers. Treat the score as a band, not a measurement.</p>
+        </div>
+        <div class="faq">
+          <h3>Is a low score always bad?</h3>
+          <p>No. Technical writing often has to use long words, and shortening them would lose the meaning. A low score means &#x27;this will be hard work to read&#x27;, which is sometimes a fair price and sometimes a warning.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I cheat it?</h3>
+          <p>Easily, and that is worth knowing. Splitting every sentence and swapping in short words raises the score whether or not the writing improves. The number is a prompt to look, not a target to hit.</p>
+        </div>
+        <div class="faq">
+          <h3>What counts as a sentence?</h3>
+          <p>Text ending in a full stop, question mark or exclamation mark. Abbreviations with full stops in them will be miscounted as sentence endings, which nudges the score - another reason to read the number loosely.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=21"></script>
+  <script src="../js/tool-helpers.js?v=21"></script>
+  <script>window.CURRENT_TOOL = "readability-score";</script>
+  <script src="../js/main.js?v=21"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input = document.getElementById("input");
+    var worst = document.getElementById("worst");
+    var msg   = document.getElementById("msg");
+    var DASH  = String.fromCharCode(0x2014);
+
+    var summary = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: syllables, by rule of thumb ----
+       There is no exact way to do this without a dictionary of every English
+       word, because English spelling does not reliably say how a word sounds.
+       These are the usual rules: count the vowel groups, drop a silent e,
+       ignore a leading y. They are right most of the time and wrong often
+       enough that the score should be read as a band, not a measurement. */
+    function syllables(word) {
+      var w = word.toLowerCase().replace(/[^a-z]/g, "");
+      if (!w) { return 0; }
+      if (w.length <= 3) { return 1; }
+
+      w = w.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, "");
+      w = w.replace(/^y/, "");
+      var groups = w.match(/[aeiouy]{1,2}/g);
+      return groups ? groups.length : 1;
+    }
+    /* ---- END: syllables, by rule of thumb ---- */
+
+    /* ---- START: cutting the text into sentences ----
+       A full stop, question mark or exclamation mark ends one. Abbreviations
+       carrying full stops are counted as endings too, which is wrong and is
+       what every tool of this kind does - worth knowing when the number looks
+       surprising. */
+    function sentencesOf(text) {
+      return text.split(/[.!?]+[\s"')\]]*/)
+        .map(function (s) { return s.trim(); })
+        .filter(function (s) { return s !== ""; });
+    }
+
+    function wordsOf(text) {
+      return text.match(/[A-Za-z'-]+/g) || [];
+    }
+    /* ---- END: cutting the text into sentences ---- */
+
+    /* ---- START: the band a score falls into ---- */
+    function band(score) {
+      if (score >= 90) { return "Very easy"; }
+      if (score >= 80) { return "Easy"; }
+      if (score >= 70) { return "Fairly easy"; }
+      if (score >= 60) { return "Plain English"; }
+      if (score >= 50) { return "Fairly difficult"; }
+      if (score >= 30) { return "Difficult"; }
+      return "Very difficult";
+    }
+    /* ---- END: the band a score falls into ---- */
+
+    /* ---- START: measuring ---- */
+    function measure() {
+      var text = input.value;
+      var words = wordsOf(text);
+      var sentences = sentencesOf(text);
+
+      if (words.length < 10 || !sentences.length) {
+        ["bigScore", "sGrade", "sPerSentence", "sPerWord", "sWords", "sSentences"]
+          .forEach(function (id) { document.getElementById(id).textContent = DASH; });
+        document.getElementById("bigBand").textContent = "Flesch Reading Ease";
+        worst.textContent = "";
+        summary = "";
+        setMessage("Write or paste at least ten words - a score from fewer "
+                 + "than that would be noise.");
+        return;
+      }
+
+      var totalSyllables = 0;
+      for (var i = 0; i < words.length; i++) {
+        totalSyllables += syllables(words[i]);
+      }
+
+      var perSentence = words.length / sentences.length;
+      var perWord = totalSyllables / words.length;
+
+      /* The two Flesch formulas, unchanged since 1948 and 1975. */
+      var ease = 206.835 - 1.015 * perSentence - 84.6 * perWord;
+      var grade = 0.39 * perSentence + 11.8 * perWord - 15.59;
+
+      var shown = Math.max(0, Math.min(100, ease));
+
+      document.getElementById("bigScore").textContent = formatNumber(shown, 1);
+      document.getElementById("bigBand").textContent =
+        band(shown) + " - Flesch Reading Ease";
+      document.getElementById("sGrade").textContent =
+        grade < 1 ? "under 1" : formatNumber(Math.max(1, grade), 1);
+      document.getElementById("sPerSentence").textContent = formatNumber(perSentence, 1);
+      document.getElementById("sPerWord").textContent = formatNumber(perWord, 2);
+      document.getElementById("sWords").textContent = formatNumber(words.length, 0);
+      document.getElementById("sSentences").textContent = formatNumber(sentences.length, 0);
+
+      /* The list is the actionable part. One number says there is a problem;
+         these say where it is. */
+      var ranked = sentences.map(function (s) {
+        return { text: s, count: wordsOf(s).length };
+      }).sort(function (a, b) { return b.count - a.count; }).slice(0, 3);
+
+      worst.textContent = ranked.map(function (s, n) {
+        var short = s.text.length > 110 ? s.text.slice(0, 110) + "..." : s.text;
+        return (n + 1) + ". " + s.count + " words - " + short;
+      }).join("\n\n");
+
+      summary = "Flesch Reading Ease " + formatNumber(shown, 1) + " (" + band(shown)
+              + "), grade " + formatNumber(Math.max(1, grade), 1) + ", "
+              + words.length + " words in " + sentences.length + " sentences.";
+
+      /* 25, not 30: plain-English guidance puts an average sentence at
+         15 to 20 words and treats anything past 25 as worth looking at. */
+      if (ranked[0] && ranked[0].count > 25) {
+        setMessage("Your longest sentence is " + ranked[0].count + " words. "
+                 + "Splitting the three below will move this score further "
+                 + "than rewording anything else.", "bad");
+      } else if (shown >= 60) {
+        setMessage("Plain English or better. The score cannot tell whether it "
+                 + "is clear, only that it is not long-winded.", "ok");
+      } else {
+        setMessage("Hard going by the numbers. That is sometimes right - "
+                 + "technical writing has to use the words it has to use.", "ok");
+      }
+    }
+    /* ---- END: measuring ---- */
+
+    /* ---- START: wiring ---- */
+    input.addEventListener("input", measure);
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!summary) { showToast("Nothing to copy"); return; }
+      copyText(summary);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      measure();
+      input.focus();
+    });
+    /* ---- END: wiring ---- */
+
+    measure();
+  })();
+  </script>
+</body>
+</html>

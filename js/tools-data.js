@@ -477,6 +477,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "readability-score",
+    name: "Readability Score",
+    desc: "Flesch score, grade level, and the exact sentences dragging it down.",
+    category: "Text",
+    icon: "\u{1F4D6}",
+    keywords: ["readability score", "flesch reading ease", "reading level", "readability checker", "grade level text", "how readable is my text"],
+    popular: false
+  },
+  {
     slug: "regex-tester",
     name: "Regex Tester",
     desc: "Live highlighting, captured groups, and a warning for patterns that hang.",
@@ -594,6 +603,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "stopwatch-timer",
+    name: "Stopwatch and Timer",
+    desc: "Laps and countdowns that stay accurate when the tab is in the background.",
+    category: "Date & Time",
+    icon: "\u{23F1}",
+    keywords: ["stopwatch", "online timer", "countdown timer", "lap timer", "pomodoro timer", "timer online", "stopwatch with laps"],
+    popular: false
+  },
+  {
     slug: "svg-to-png",
     name: "SVG to PNG Converter",
     desc: "Export an SVG as a PNG at any size, because an SVG has no size of its own.",
@@ -612,12 +630,39 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "text-diff-checker",
+    name: "Text Diff Checker",
+    desc: "Compare two versions line by line, including the differences you cannot see.",
+    category: "Text",
+    icon: "\u{1F500}",
+    keywords: ["text diff", "compare text", "diff checker", "text comparison", "find differences between texts", "compare two files"],
+    popular: false
+  },
+  {
     slug: "text-repeater",
     name: "Text Repeater",
     desc: "Repeat any word, line or block of text as many times as you want.",
     category: "Text",
     icon: "\u{1F501}",
     keywords: ["text repeater", "repeat text", "copy text multiple times", "duplicate text", "repeat word"],
+    popular: false
+  },
+  {
+    slug: "text-to-speech",
+    name: "Text to Speech",
+    desc: "Read text aloud with your device's own voices, and see which stay local.",
+    category: "Text",
+    icon: "\u{1F509}",
+    keywords: ["text to speech", "read aloud", "tts", "text reader", "speech synthesis", "read my text out loud"],
+    popular: false
+  },
+  {
+    slug: "time-zone-converter",
+    name: "Time Zone Converter",
+    desc: "Convert a time for a particular date, so daylight saving comes out right.",
+    category: "Date & Time",
+    icon: "\u{1F30D}",
+    keywords: ["time zone converter", "timezone converter", "convert time zones", "world clock", "what time is it in", "ist to est", "meeting time zones"],
     popular: false
   },
   {
@@ -709,5 +754,14 @@ const TOOLS = [
     icon: "\u{1F4DD}",
     keywords: ["word count", "character count", "letter counter", "essay length", "reading time"],
     popular: true
+  },
+  {
+    slug: "working-days-calculator",
+    name: "Working Days Calculator",
+    desc: "Working days between two dates, with your weekend and your holidays.",
+    category: "Date & Time",
+    icon: "\u{1F4BC}",
+    keywords: ["working days calculator", "business days", "working days between dates", "count weekdays", "business day calculator", "how many working days"],
+    popular: false
   }
 ];

@@ -228,13 +228,13 @@ make; it is written here so it is made with the number in front of us.
 |---|---|---|
 | Calculator | 20 | 16 |
 | Developer | 18 | 16 |
-| Text | 16 | 13 |
+| Text | 16 | 16 |
 | Image | 14 | 7 |
 | Converter | 14 | 13 |
 | PDF | 10 | 0 |
-| Date & Time | 8 | 5 |
+| Date & Time | 8 | 8 |
 | Random | 8 | 6 |
-| **Total** | **108** | **76** |
+| **Total** | **108** | **82** |
 
 ---
 
@@ -260,9 +260,9 @@ matches, so do not rename them later. ✅ = already live.
 | 11 | `add-line-numbers` ✅ | easy |
 | 12 | `slug-generator` ✅ | easy |
 | 13 | `character-frequency-counter` ✅ | easy |
-| 14 | `readability-score` | medium — Flesch formula, explain the number |
-| 15 | `text-diff-checker` | medium — line diff, colour the changes |
-| 16 | `text-to-speech` | medium — browser `speechSynthesis`, no API, no cost |
+| 14 | `readability-score` ✅ | medium — Flesch formula, explain the number |
+| 15 | `text-diff-checker` ✅ | medium — line diff, colour the changes |
+| 16 | `text-to-speech` ✅ | medium — browser `speechSynthesis`, no API, no cost |
 
 ### Image (14) — all canvas, nothing uploaded
 
@@ -405,9 +405,9 @@ the footer and becomes the entire reason to pick this site.
 | 3 | `leap-year-checker` ✅ | easy |
 | 4 | `week-number-calculator` ✅ | easy |
 | 5 | `days-until-countdown` ✅ | easy |
-| 6 | `working-days-calculator` | medium — holidays are the tricky bit |
-| 7 | `stopwatch-timer` | medium |
-| 8 | `time-zone-converter` | medium — `Intl.DateTimeFormat`, no library |
+| 6 | `working-days-calculator` ✅ | medium — holidays are the tricky bit |
+| 7 | `stopwatch-timer` ✅ | medium |
+| 8 | `time-zone-converter` ✅ | medium — `Intl.DateTimeFormat`, no library |
 
 ### Random (8)
 

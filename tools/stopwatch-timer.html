@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Stopwatch and Timer — Accurate in a Background Tab</title>
+  <meta name="description" content="A stopwatch with laps and a countdown timer that stay accurate even when the tab is hidden, because they read the clock instead of counting ticks.">
+  <link rel="canonical" href="https://108toolbox.in/tools/stopwatch-timer.html">
+
+  <meta property="og:title" content="Stopwatch and Timer — Accurate in a Background Tab">
+  <meta property="og:description" content="A stopwatch with laps and a countdown timer that stay accurate even when the tab is hidden, because they read the clock instead of counting ticks.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=21">
+  <link rel="stylesheet" href="../css/tool.css?v=21">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does it keep running if I switch to another tab?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, and it stays accurate. It reads the clock rather than counting its own ticks, so a browser slowing the page down in the background cannot make it lose time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will it make a sound when the countdown ends?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It tries, and browsers permit it because you pressed start. What no web page can guarantee is a sound from a tab that is hidden or a phone that is locked. For anything that truly matters, set a phone alarm as well."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How precise is it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "To a hundredth of a second, which is as fine as this is worth reading. The clock underneath is better than that, but a person pressing a button is not - your reaction time is a tenth of a second on a good day."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are my laps saved if I reload?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Nothing is stored, here or anywhere. Copy them out if you need them."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I count down from more than an hour?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - put the minutes in the minutes box. 90 minutes is fine, so is 999."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=date">Date & Time</a><span>&rsaquo;</span>
+        <span>Stopwatch & Timer</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Stopwatch and Countdown Timer</h1>
+        <p>A stopwatch with laps, and a countdown. Both read the clock rather
+           than counting ticks, so the time is still right when you come back
+           to a tab you left in the background.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="mode">Mode</label>
+            <select id="mode">
+              <option value="stopwatch" selected>Stopwatch &mdash; count up</option>
+              <option value="countdown">Countdown &mdash; count down</option>
+            </select>
+          </div>
+
+          <div class="field" id="countdownFields" hidden>
+            <label for="mins">Count down from</label>
+            <div class="btn-row">
+              <input type="number" id="mins" min="0" max="999" step="1" value="5" style="max-width:110px">
+              <span style="align-self:center">min</span>
+              <input type="number" id="secs" min="0" max="59" step="1" value="0" style="max-width:110px">
+              <span style="align-self:center">sec</span>
+            </div>
+            <div class="btn-row" style="margin-top:var(--s2)">
+              <button class="btn btn--ghost" type="button" data-preset="60">1 min</button>
+              <button class="btn btn--ghost" type="button" data-preset="300">5 min</button>
+              <button class="btn btn--ghost" type="button" data-preset="600">10 min</button>
+              <button class="btn btn--ghost" type="button" data-preset="1500">25 min</button>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="startBtn">Start</button>
+            <button class="btn btn--ghost"   type="button" id="lapBtn" disabled>Lap</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <div class="result">
+            <span class="result__num mono" id="display">00:00.00</span>
+            <span class="result__label" id="displayLabel">Stopwatch</span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sLaps">0</span><span class="stat__label">Laps</span></div>
+            <div class="stat"><span class="stat__num" id="sBest">&mdash;</span><span class="stat__label">Fastest lap</span></div>
+            <div class="stat"><span class="stat__num" id="sState">ready</span><span class="stat__label">State</span></div>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s3)">Laps</span>
+          <pre class="out mono" id="laps" style="min-height:130px" aria-live="polite"></pre>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>Why it is still right after you switch tabs</h2>
+        <p>The obvious way to build a stopwatch is to add ten milliseconds to a
+           number every ten milliseconds. It is also wrong, and it goes wrong
+           in a way you only notice later.</p>
+        <p>A browser does not promise to run your timer on time. It runs it
+           when it can, and when the tab is hidden it deliberately slows it
+           down to about once a second to save your battery. A stopwatch built
+           by counting ticks therefore <em>loses time</em> whenever you look
+           away &mdash; a few seconds a minute, quietly, with nothing to show
+           that it happened.</p>
+        <p>So this one does not count. It writes down the clock reading when
+           you press start, and every time it draws the display it asks the
+           clock again and subtracts. If the browser skips a hundred draws, the
+           display is late but never wrong. Come back to a tab after ten
+           minutes and the elapsed time is exactly ten minutes.</p>
+
+        <h2>The countdown has the same problem and the same answer</h2>
+        <p>A countdown built on ticks finishes late on a hidden tab &mdash;
+           sometimes by minutes. This one works out the finishing moment when
+           you press start and then compares against the clock, so it ends when
+           it should. If the tab was asleep at the time, it will tell you the
+           moment you return.</p>
+        <p>What no web page can promise is a sound or a notification the
+           instant a hidden tab's timer ends. If the exact moment matters
+           &mdash; a train, an exam, something in the oven &mdash; use a phone
+           alarm. That is not this page being modest; it is what a browser tab
+           is allowed to do.</p>
+
+        <h2>Laps</h2>
+        <p>Each lap records the time since the previous one, with the running
+           total beside it, and the fastest is marked. That is the pair of
+           numbers people actually want: the split tells you how that effort
+           went, the total tells you where you are.</p>
+
+        <h2>Nothing is saved</h2>
+        <p>Reload the page and everything is gone &mdash; the running time, the
+           laps, all of it. Nothing is stored on your machine or anywhere else.
+           If the laps matter, copy them out before you leave.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Does it keep running if I switch to another tab?</h3>
+          <p>Yes, and it stays accurate. It reads the clock rather than counting its own ticks, so a browser slowing the page down in the background cannot make it lose time.</p>
+        </div>
+        <div class="faq">
+          <h3>Will it make a sound when the countdown ends?</h3>
+          <p>It tries, and browsers permit it because you pressed start. What no web page can guarantee is a sound from a tab that is hidden or a phone that is locked. For anything that truly matters, set a phone alarm as well.</p>
+        </div>
+        <div class="faq">
+          <h3>How precise is it?</h3>
+          <p>To a hundredth of a second, which is as fine as this is worth reading. The clock underneath is better than that, but a person pressing a button is not - your reaction time is a tenth of a second on a good day.</p>
+        </div>
+        <div class="faq">
+          <h3>Are my laps saved if I reload?</h3>
+          <p>No. Nothing is stored, here or anywhere. Copy them out if you need them.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I count down from more than an hour?</h3>
+          <p>Yes - put the minutes in the minutes box. 90 minutes is fine, so is 999.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=21"></script>
+  <script src="../js/tool-helpers.js?v=21"></script>
+  <script>window.CURRENT_TOOL = "stopwatch-timer";</script>
+  <script src="../js/main.js?v=21"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var mode    = document.getElementById("mode");
+    var display = document.getElementById("display");
+    var lapsOut = document.getElementById("laps");
+    var msg     = document.getElementById("msg");
+    var DASH    = String.fromCharCode(0x2014);
+
+    var startBtn = document.getElementById("startBtn");
+    var lapBtn   = document.getElementById("lapBtn");
+
+    var running = false;
+    var startedAt = 0;        /* clock reading when the last run began */
+    var accumulated = 0;      /* milliseconds banked from earlier runs */
+    var laps = [];
+    var ticker = null;
+    var finished = false;
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: milliseconds as a clock reading ---- */
+    function two(n) { return n < 10 ? "0" + n : String(n); }
+
+    function clockText(ms) {
+      if (ms < 0) { ms = 0; }
+      var hundredths = Math.floor(ms / 10) % 100;
+      var seconds = Math.floor(ms / 1000) % 60;
+      var minutes = Math.floor(ms / 60000) % 60;
+      var hours = Math.floor(ms / 3600000);
+      return (hours ? hours + ":" : "") + two(minutes) + ":" + two(seconds)
+             + "." + two(hundredths);
+    }
+    /* ---- END: milliseconds as a clock reading ---- */
+
+    /* ---- START: elapsed, asked of the clock rather than counted ----
+       The whole point of the page. Adding ten milliseconds every ten
+       milliseconds looks identical and loses time whenever the tab is hidden,
+       because a browser deliberately slows a background timer down to save
+       battery. Subtracting two clock readings cannot drift: a skipped draw
+       makes the display late, never wrong. */
+    function elapsed() {
+      return accumulated + (running ? Date.now() - startedAt : 0);
+    }
+    /* ---- END: elapsed, asked of the clock rather than counted ---- */
+
+    /* ---- START: the countdown's target ---- */
+    function countdownTotal() {
+      var mins = Math.max(0, Math.round(Number(document.getElementById("mins").value) || 0));
+      var secs = Math.max(0, Math.round(Number(document.getElementById("secs").value) || 0));
+      return (mins * 60 + secs) * 1000;
+    }
+    /* ---- END: the countdown's target ---- */
+
+    /* ---- START: a beep built here, not fetched ----
+       A short tone from the browser's own audio engine. No file to download,
+       nothing to load from anywhere, and it works offline. Wrapped up
+       because a machine with no sound device throws rather than staying
+       quiet. */
+    function beep() {
+      try {
+        var Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) { return; }
+        var ctx = new Ctx();
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.6);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.62);
+      } catch (e) {
+        /* No sound is a disappointment, not a failure. */
+      }
+    }
+    /* ---- END: a beep built here, not fetched ---- */
+
+    /* ---- START: drawing ---- */
+    function draw() {
+      if (mode.value === "countdown") {
+        var left = countdownTotal() - elapsed();
+        if (left <= 0) {
+          display.textContent = "00:00.00";
+          if (running && !finished) {
+            finished = true;
+            stop();
+            beep();
+            setMessage("Time is up.", "ok");
+            document.getElementById("sState").textContent = "finished";
+          }
+          return;
+        }
+        display.textContent = clockText(left);
+      } else {
+        display.textContent = clockText(elapsed());
+      }
+    }
+    /* ---- END: drawing ---- */
+
+    /* ---- START: start, stop and reset ---- */
+    function start() {
+      if (mode.value === "countdown" && countdownTotal() <= 0) {
+        setMessage("Set a time to count down from.", "bad");
+        return;
+      }
+      running = true;
+      finished = false;
+      startedAt = Date.now();
+      startBtn.textContent = "Stop";
+      lapBtn.disabled = mode.value !== "stopwatch";
+      document.getElementById("sState").textContent = "running";
+      setMessage(mode.value === "countdown"
+        ? "Counting down. It reads the clock, so switching tabs does not "
+          + "make it late."
+        : "Running. Switching tabs will not lose you any time.", "ok");
+      if (ticker) { clearInterval(ticker); }
+      ticker = setInterval(draw, 41);
+      draw();
+    }
+
+    function stop() {
+      if (running) { accumulated += Date.now() - startedAt; }
+      running = false;
+      startBtn.textContent = "Start";
+      lapBtn.disabled = true;
+      if (ticker) { clearInterval(ticker); ticker = null; }
+      if (document.getElementById("sState").textContent !== "finished") {
+        document.getElementById("sState").textContent = "stopped";
+      }
+      draw();
+    }
+
+    function reset() {
+      running = false;
+      finished = false;
+      accumulated = 0;
+      startedAt = 0;
+      laps = [];
+      if (ticker) { clearInterval(ticker); ticker = null; }
+      startBtn.textContent = "Start";
+      lapBtn.disabled = true;
+      document.getElementById("sLaps").textContent = "0";
+      document.getElementById("sBest").textContent = DASH;
+      document.getElementById("sState").textContent = "ready";
+      lapsOut.textContent = "";
+      setMessage("");
+      draw();
+    }
+    /* ---- END: start, stop and reset ---- */
+
+    /* ---- START: laps, as splits and totals ----
+       Both numbers, because they answer different questions: the split says
+       how that effort went, the total says where you are. */
+    function lap() {
+      var total = elapsed();
+      var previous = laps.length ? laps[laps.length - 1].total : 0;
+      laps.push({ total: total, split: total - previous });
+
+      var best = laps[0].split;
+      for (var i = 1; i < laps.length; i++) {
+        if (laps[i].split < best) { best = laps[i].split; }
+      }
+
+      lapsOut.textContent = laps.map(function (l, n) {
+        return two(n + 1) + "   " + clockText(l.split)
+             + "   (total " + clockText(l.total) + ")"
+             + (l.split === best && laps.length > 1 ? "   fastest" : "");
+      }).join("\n");
+
+      document.getElementById("sLaps").textContent = String(laps.length);
+      document.getElementById("sBest").textContent = clockText(best);
+    }
+    /* ---- END: laps, as splits and totals ---- */
+
+    /* ---- START: wiring ---- */
+    startBtn.addEventListener("click", function () {
+      if (running) { stop(); } else { start(); }
+    });
+    lapBtn.addEventListener("click", lap);
+    document.getElementById("resetBtn").addEventListener("click", reset);
+
+    mode.addEventListener("change", function () {
+      reset();
+      var countdown = mode.value === "countdown";
+      document.getElementById("countdownFields").hidden = !countdown;
+      document.getElementById("displayLabel").textContent =
+        countdown ? "Countdown" : "Stopwatch";
+      draw();
+    });
+
+    Array.prototype.forEach.call(
+      document.querySelectorAll("[data-preset]"), function (btn) {
+        btn.addEventListener("click", function () {
+          var total = Number(btn.getAttribute("data-preset"));
+          document.getElementById("mins").value = Math.floor(total / 60);
+          document.getElementById("secs").value = total % 60;
+          reset();
+          draw();
+        });
+      });
+
+    ["mins", "secs"].forEach(function (id) {
+      document.getElementById(id).addEventListener("input", function () {
+        if (!running) { draw(); }
+      });
+    });
+    /* ---- END: wiring ---- */
+
+    draw();
+  })();
+  </script>
+</body>
+</html>
