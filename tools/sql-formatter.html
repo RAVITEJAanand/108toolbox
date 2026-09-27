@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>SQL Formatter — Readable, Without Rewriting</title>
+  <meta name="description" content="Lay out a SQL query so you can read it, with clauses on their own lines. It never changes what the query does, and never touches strings or comments.">
+  <link rel="canonical" href="https://108toolbox.in/tools/sql-formatter.html">
+
+  <meta property="og:title" content="SQL Formatter — Readable, Without Rewriting">
+  <meta property="og:description" content="Lay out a SQL query so you can read it, with clauses on their own lines. It never changes what the query does, and never touches strings or comments.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=20">
+  <link rel="stylesheet" href="../css/tool.css?v=20">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does it change what my query does?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Only whitespace and, if you ask for it, the capitalisation of keywords. Nothing is reordered, added or removed, so the formatted query runs exactly as the original did."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are the words inside my strings capitalised too?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Anything between quotation marks is copied through untouched, so a value like 'select' stays lower-case. The same goes for everything inside a comment."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will it uppercase my table names?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Never. Only recognised SQL keywords change case. Some databases treat identifiers as case-sensitive, so altering one would be a way to break a query that worked yesterday."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my window function laid out oddly?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because it lays out the shapes common to all SQL and has not been taught every dialect's extras. The query is unchanged - only the spacing is this page's opinion, and you are free to disagree with it."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it minify SQL instead - put it back on one line?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not here. There is very little reason to: a query is sent once and the database does not care about whitespace, so making it unreadable saves nothing worth having."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>SQL Formatter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>SQL Formatter</h1>
+        <p>Turn one long line of SQL into something you can actually read. The
+           layout changes; the query does not &mdash; and anything inside
+           quotes or a comment is left exactly as you wrote it.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">SQL</label>
+          <textarea id="input" class="mono" spellcheck="false">select o.id, o.total, c.name as customer from orders o inner join customers c on c.id = o.customer_id where o.total &gt; 1000 and c.city = 'Hyderabad' order by o.total desc limit 20</textarea>
+
+          <div class="field" style="margin-top:var(--s3)">
+            <label for="indent">Indent</label>
+            <select id="indent">
+              <option value="2" selected>2 spaces</option>
+              <option value="4">4 spaces</option>
+              <option value="8">a tab's worth &mdash; 8 spaces</option>
+            </select>
+          </div>
+
+          <label class="check"><input type="checkbox" id="optUpper" checked> Keywords in capitals</label>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="copyBtn">Copy</button>
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Formatted</span>
+          <pre class="out mono" id="output" aria-live="polite"></pre>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sLines">&mdash;</span><span class="stat__label">Lines</span></div>
+            <div class="stat"><span class="stat__num" id="sTokens">&mdash;</span><span class="stat__label">Tokens</span></div>
+            <div class="stat"><span class="stat__num" id="sDepth">&mdash;</span><span class="stat__label">Deepest nesting</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>What it does</h2>
+        <p>Each major clause &mdash; <code>SELECT</code>, <code>FROM</code>,
+           <code>WHERE</code>, each <code>JOIN</code>, <code>GROUP BY</code>,
+           <code>ORDER BY</code> &mdash; goes on its own line. The columns you
+           are selecting go one per line underneath. Every
+           <code>AND</code> and <code>OR</code> starts a new line, so a long
+           condition stops being a wall of text. Brackets indent what is
+           inside them.</p>
+        <p>That is the whole job. Reading a query is most of the work of fixing
+           one, and a query written as a single 300-character line hides its
+           own shape.</p>
+
+        <h2>It changes the layout and nothing else</h2>
+        <p>No clause is reordered, no bracket added or removed, no
+           <code>SELECT *</code> expanded, nothing optimised. Run the output
+           and you get exactly what you got before. That is a deliberate limit:
+           a formatter that improves your query is a formatter you have to
+           read the output of, which defeats the point.</p>
+        <p>Two things are copied through untouched. <strong>Text in
+           quotes</strong> &mdash; <code>'Hyderabad'</code> stays
+           <code>'Hyderabad'</code>, and a keyword inside a string is just a
+           word, not a keyword. And <strong>comments</strong>, both the
+           <code>--</code> and the <code>/* */</code> kind, keep their contents
+           exactly, because a comment often holds a note nobody wants
+           reflowed.</p>
+
+        <h2>Capitals are a convention, not a rule</h2>
+        <p>SQL does not care. <code>select</code> and <code>SELECT</code> are
+           the same word to every database. Capitals are a habit from the days
+           before syntax colouring, and they still do a useful job: in a plain
+           black-and-white diff or a log file, they are the only thing marking
+           where the structure is. Turn them off if your team writes
+           lower-case.</p>
+        <p>Your table and column names are never touched, in either direction.
+           Some databases treat names as case-sensitive, and changing one is
+           the sort of bug that appears only on the production server.</p>
+
+        <h2>It does not know your dialect</h2>
+        <p>It lays out the shapes common to every SQL there is. It has not been
+           taught the extras that belong to one database and not another
+           &mdash; window functions with long <code>OVER</code> clauses,
+           <code>MERGE</code>, vendor-specific hints. Those come through
+           correctly, just not laid out cleverly. If the result of formatting
+           looks wrong to you, trust yourself: the query is unchanged, only the
+           spacing is this page's opinion.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Does it change what my query does?</h3>
+          <p>No. Only whitespace and, if you ask for it, the capitalisation of keywords. Nothing is reordered, added or removed, so the formatted query runs exactly as the original did.</p>
+        </div>
+        <div class="faq">
+          <h3>Are the words inside my strings capitalised too?</h3>
+          <p>No. Anything between quotation marks is copied through untouched, so a value like &#x27;select&#x27; stays lower-case. The same goes for everything inside a comment.</p>
+        </div>
+        <div class="faq">
+          <h3>Will it uppercase my table names?</h3>
+          <p>Never. Only recognised SQL keywords change case. Some databases treat identifiers as case-sensitive, so altering one would be a way to break a query that worked yesterday.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is my window function laid out oddly?</h3>
+          <p>Because it lays out the shapes common to all SQL and has not been taught every dialect&#x27;s extras. The query is unchanged - only the spacing is this page&#x27;s opinion, and you are free to disagree with it.</p>
+        </div>
+        <div class="faq">
+          <h3>Can it minify SQL instead - put it back on one line?</h3>
+          <p>Not here. There is very little reason to: a query is sent once and the database does not care about whitespace, so making it unreadable saves nothing worth having.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=20"></script>
+  <script src="../js/tool-helpers.js?v=20"></script>
+  <script>window.CURRENT_TOOL = "sql-formatter";</script>
+  <script src="../js/main.js?v=20"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input  = document.getElementById("input");
+    var indent = document.getElementById("indent");
+    var optUpper = document.getElementById("optUpper");
+    var output = document.getElementById("output");
+    var msg    = document.getElementById("msg");
+    var DASH   = String.fromCharCode(0x2014);
+
+    var lastOut = "";
+
+    /* Clauses that begin a line of their own. The two-word ones are checked
+       first, because "group" on its own is also a perfectly good column
+       name and only "group by" is the clause. */
+    var MAJOR_TWO = ["group by", "order by", "insert into", "delete from",
+                     "union all", "left join", "right join", "inner join",
+                     "outer join", "cross join", "full join"];
+    var MAJOR_ONE = ["select", "from", "where", "having", "limit", "offset",
+                     "union", "join", "values", "update", "set", "returning"];
+    var BREAKERS = ["and", "or"];
+
+    var KEYWORDS = ("select from where group by order having limit offset union all "
+      + "insert into values update set delete join left right inner outer cross full "
+      + "on as and or not null is in like between exists distinct case when then else "
+      + "end asc desc count sum avg min max coalesce cast returning with recursive "
+      + "primary key foreign references default create table alter drop index view "
+      + "int integer varchar text date timestamp boolean decimal numeric").split(" ");
+
+    var KEYWORD_SET = Object.create(null);
+    KEYWORDS.forEach(function (k) { KEYWORD_SET["k" + k] = true; });
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: splitting SQL into pieces that know what they are ----
+       The point of tokenising rather than using regexes on the whole text:
+       a quoted value and a comment must be carried through byte for byte. If
+       a customer is called 'Select' that is a name, not a clause, and any
+       approach that does not know the difference will capitalise it. */
+    function tokenize(sql) {
+      var tokens = [];
+      var i = 0;
+      while (i < sql.length) {
+        var ch = sql.charAt(i);
+
+        if (/\s/.test(ch)) { i += 1; continue; }
+
+        if (ch === "-" && sql.charAt(i + 1) === "-") {
+          var lineEnd = sql.indexOf("\n", i);
+          if (lineEnd === -1) { lineEnd = sql.length; }
+          tokens.push({ kind: "comment", text: sql.slice(i, lineEnd) });
+          i = lineEnd;
+          continue;
+        }
+
+        if (ch === "/" && sql.charAt(i + 1) === "*") {
+          var blockEnd = sql.indexOf("*/", i + 2);
+          blockEnd = blockEnd === -1 ? sql.length : blockEnd + 2;
+          tokens.push({ kind: "comment", text: sql.slice(i, blockEnd) });
+          i = blockEnd;
+          continue;
+        }
+
+        if (ch === "'" || ch === '"' || ch === "`") {
+          var quote = ch;
+          var j = i + 1;
+          while (j < sql.length) {
+            if (sql.charAt(j) === quote) {
+              /* Two in a row is an escaped quote inside the value, not the
+                 end of it: 'it''s' is one string. */
+              if (sql.charAt(j + 1) === quote) { j += 2; continue; }
+              j += 1;
+              break;
+            }
+            j += 1;
+          }
+          tokens.push({ kind: "string", text: sql.slice(i, j) });
+          i = j;
+          continue;
+        }
+
+        if (/[A-Za-z_]/.test(ch)) {
+          var k = i;
+          while (k < sql.length && /[A-Za-z0-9_$.]/.test(sql.charAt(k))) { k += 1; }
+          var word = sql.slice(i, k);
+          tokens.push({
+            kind: KEYWORD_SET["k" + word.toLowerCase()] ? "keyword" : "name",
+            text: word
+          });
+          i = k;
+          continue;
+        }
+
+        if (/[0-9]/.test(ch)) {
+          var n = i;
+          while (n < sql.length && /[0-9.]/.test(sql.charAt(n))) { n += 1; }
+          tokens.push({ kind: "number", text: sql.slice(i, n) });
+          i = n;
+          continue;
+        }
+
+        tokens.push({ kind: "punct", text: ch });
+        i += 1;
+      }
+      return tokens;
+    }
+    /* ---- END: splitting SQL into pieces that know what they are ---- */
+
+    /* ---- START: how a token is written out ---- */
+    function render(token) {
+      if (token.kind === "keyword" && optUpper.checked) {
+        return token.text.toUpperCase();
+      }
+      return token.text;
+    }
+    /* ---- END: how a token is written out ---- */
+
+    /* ---- START: does a clause start here ----
+       Two-word clauses are tested first. "group" alone is a fine column name
+       and only "group by" is the clause, so testing the single words first
+       would break a table with a column called order or group. */
+    function clauseAt(tokens, at) {
+      if (tokens[at].kind !== "keyword") { return null; }
+      var one = tokens[at].text.toLowerCase();
+      if (tokens[at + 1] && tokens[at + 1].kind === "keyword") {
+        var two = one + " " + tokens[at + 1].text.toLowerCase();
+        if (MAJOR_TWO.indexOf(two) > -1) { return { words: 2, name: two }; }
+      }
+      if (MAJOR_ONE.indexOf(one) > -1) { return { words: 1, name: one }; }
+      return null;
+    }
+    /* ---- END: does a clause start here ---- */
+
+    /* ---- START: laying it out ---- */
+    function format(sql) {
+      var tokens = tokenize(sql);
+      if (!tokens.length) { return { text: "", tokens: 0, depth: 0 }; }
+
+      var step = Number(indent.value) || 2;
+      var lines = [];
+      var line = "";
+      var depth = 0;
+      var deepest = 0;
+      var listMode = false;
+
+      function pad(level) {
+        return new Array(Math.max(0, level) * step + 1).join(" ");
+      }
+      function newLine(level) {
+        if (line.trim() !== "") { lines.push(pad(level) + line.trim()); }
+        line = "";
+      }
+      function add(text) {
+        if (line === "") { line = text; return; }
+        var last = line.charAt(line.length - 1);
+        if (text === "," || text === ")" || text === ";" || last === "(") {
+          line += text;
+        } else {
+          line += " " + text;
+        }
+      }
+
+      var currentLevel = 0;
+      for (var i = 0; i < tokens.length; i++) {
+        var token = tokens[i];
+
+        if (token.kind === "punct" && token.text === "(") {
+          add("(");
+          depth += 1;
+          if (depth > deepest) { deepest = depth; }
+          continue;
+        }
+        if (token.kind === "punct" && token.text === ")") {
+          depth = Math.max(0, depth - 1);
+          add(")");
+          continue;
+        }
+
+        /* A comma only breaks the line while a select list is being written,
+           and only at the outermost level - a comma inside a function call
+           belongs on the same line as the call. */
+        if (token.kind === "punct" && token.text === "," && listMode && depth === 0) {
+          add(",");
+          newLine(currentLevel + 1);
+          continue;
+        }
+
+        var clause = clauseAt(tokens, i);
+        if (clause && depth === 0) {
+          newLine(currentLevel + (listMode ? 1 : 0));
+          currentLevel = 0;
+          var text = render(token);
+          if (clause.words === 2) {
+            text += " " + render(tokens[i + 1]);
+            i += 1;
+          }
+          line = text;
+          listMode = clause.name === "select" || clause.name === "set";
+          if (listMode) {
+            newLine(0);
+          }
+          continue;
+        }
+
+        if (token.kind === "keyword" && depth === 0 &&
+            BREAKERS.indexOf(token.text.toLowerCase()) > -1 && line.trim() !== "") {
+          newLine(currentLevel + (listMode ? 1 : 0));
+          line = render(token);
+          currentLevel = 1;
+          continue;
+        }
+
+        add(render(token));
+        if (listMode && line === render(token)) { currentLevel = 0; }
+      }
+      newLine(currentLevel + (listMode ? 1 : 0));
+
+      return { text: lines.join("\n"), tokens: tokens.length, depth: deepest };
+    }
+    /* ---- END: laying it out ---- */
+
+    /* ---- START: running it ---- */
+    function run() {
+      var source = input.value;
+      if (source.trim() === "") {
+        output.textContent = "";
+        lastOut = "";
+        ["sLines", "sTokens", "sDepth"].forEach(function (id) {
+          document.getElementById(id).textContent = DASH;
+        });
+        setMessage("Paste some SQL on the left.");
+        return;
+      }
+
+      var result = format(source);
+      lastOut = result.text;
+      output.textContent = result.text;
+
+      document.getElementById("sLines").textContent =
+        formatNumber(result.text.split("\n").length, 0);
+      document.getElementById("sTokens").textContent = formatNumber(result.tokens, 0);
+      document.getElementById("sDepth").textContent = result.depth;
+
+      setMessage("Laid out. Nothing was reordered and nothing was added - "
+               + "strings and comments came through exactly as written.", "ok");
+    }
+    /* ---- END: running it ---- */
+
+    /* ---- START: wiring ---- */
+    [input, indent, optUpper].forEach(function (el) {
+      el.addEventListener("input", run);
+      el.addEventListener("change", run);
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastOut) { showToast("Nothing to copy"); return; }
+      copyText(lastOut);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+    /* ---- END: wiring ---- */
+
+    run();
+  })();
+  </script>
+</body>
+</html>

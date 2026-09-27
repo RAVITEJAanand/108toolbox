@@ -3583,6 +3583,210 @@ T["csv-to-json"] = r"""
   finish();
 """
 
+T["cron-expression-parser"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+  function runLines() {
+    return txt("nextRuns").split("\n").filter(function (s) { return s !== ""; });
+  }
+
+  /* Opens on half past five, Monday to Friday. */
+  has("half past five", txt("words"), "At 05:30");
+  has("Monday to Friday, named", txt("words"), "Monday");
+  has("and Friday", txt("words"), "Friday");
+  eq("five fields", txt("sFields"), "5");
+  eq("once a day", txt("sPerDay"), "1 time");
+  eq("five dates are listed", runLines().length, 5);
+
+  var weekendRuns = runLines().filter(function (line) {
+    return line.indexOf("Sat") === 0 || line.indexOf("Sun") === 0;
+  });
+  eq("and none of them is a weekend", weekendRuns.length, 0);
+
+  /* The rule everybody trips over, on its own button. */
+  document.querySelector('[data-cron="0 0 13 * 5"]').click();
+  has("both day fields restricted is called out", txt("msg"), "EITHER");
+  has("and the words say so too", txt("words"), "EITHER matches");
+  ok("so the dates are not all Fridays",
+     runLines().filter(function (l) { return l.indexOf("Fri") === 0; }).length < 5,
+     txt("nextRuns"));
+
+  set("cron", "*/15 * * * *");
+  has("a step reads as every fifteen minutes", txt("words"), "Every 15 minutes");
+  eq("which is 96 times a day", txt("sPerDay"), "96 times");
+
+  set("cron", "@daily");
+  has("a shortcut is expanded", txt("words"), "At 00:00");
+  has("and runs every day", txt("words"), "every day");
+
+  set("cron", "0 9 * * MON-FRI");
+  has("weekday names work", txt("words"), "Monday");
+  has("and read to Friday", txt("words"), "Friday");
+
+  set("cron", "0 0 1 JAN *");
+  has("month names work too", txt("words"), "January");
+
+  set("cron", "0 0 * * 7");
+  has("seven is Sunday, as well as zero", txt("words"), "Sunday");
+
+  set("cron", "bad");
+  has("too few fields is refused", txt("msg"), "five fields");
+  eq("and the count is shown", txt("sFields"), "1");
+
+  set("cron", "99 * * * *");
+  has("an impossible minute names the field", txt("msg"), "minute field");
+
+  click("resetBtn");
+  has("reset returns to the example", txt("words"), "At 05:30");
+  finish();
+"""
+
+T["html-minifier"] = r"""
+  function out() { return txt("output"); }
+
+  /* The sample has a comment, loose spacing, two inline elements side by
+     side, and a pre block. */
+  eq("the comment is gone", out().indexOf("the header"), -1);
+  eq("runs of spaces are collapsed", out().indexOf("<div   class"), -1);
+  ok("the div survives with one space", out().indexOf('<div class="card"') > -1, out());
+
+  /* The word space between two inline elements is the whole point. */
+  has("the space between b and i is kept", out(), "</b> <i>");
+
+  /* pre is content, not formatting. */
+  has("the pre block is untouched", out(), "<pre>  keep");
+  ok("including its line break",
+     out().indexOf("<pre>  keep\n  this  </pre>") > -1, out());
+
+  ok("something was actually saved",
+     parseFloat(txt("sSaved")) > 0, txt("sSaved"));
+
+  /* Off by default, and it changes the page - which is why it says so. */
+  tick("optBetween", true);
+  has("with the third box on, the word space goes", out(), "</b><i>");
+  has("and the page warns about it", txt("msg"), "word space");
+  tick("optBetween", false);
+  has("and comes back when it is off", out(), "</b> <i>");
+
+  tick("optComments", false);
+  has("comments stay when asked", out(), "the header");
+  tick("optComments", true);
+
+  /* The gzipped pair is the honest number. */
+  waitFor("the gzipped sizes arrive",
+    function () { return txt("sGzBefore") !== String.fromCharCode(0x2014); },
+    function () {
+      ok("gzipped before is a size or an honest n/a",
+         txt("sGzBefore").length > 1, txt("sGzBefore"));
+      ok("and so is gzipped after",
+         txt("sGzAfter").length > 1, txt("sGzAfter"));
+
+      click("clearBtn");
+      has("clearing asks for HTML", txt("msg"), "Paste some HTML");
+      finish();
+    });
+"""
+
+T["css-minifier"] = r"""
+  function out() { return txt("output"); }
+
+  /* calc needs its spaces: calc(100%-2rem) is not a subtraction and the
+     browser throws the whole declaration away without a word. */
+  has("calc keeps its spaces", out(), "calc(100% - 2rem)");
+
+  /* ".card a :hover" and ".card a:hover" match different elements. */
+  has("the descendant space in a selector is kept", out(), "a :hover");
+
+  /* Inside a block the colon is only a separator. */
+  has("but the space after a colon in a block goes", out(), "color:#abc");
+  has("and a repeated-pair colour is shortened", out(), "#abc");
+  eq("the trailing semicolon before a brace is dropped", out().indexOf(";}"), -1);
+  has("combinators are tightened", out(), ".card>.title");
+  has("and so are selector commas", out(), ".card+.title");
+
+  eq("the ordinary comment is gone", out().indexOf("the card"), -1);
+
+  tick("optHex", false);
+  has("colours stay long when asked", out(), "#aabbcc");
+  tick("optHex", true);
+
+  tick("optComments", false);
+  has("comments stay when asked", out(), "the card");
+  tick("optComments", true);
+
+  /* Quoted text is content; url() may hold spaces and brackets. */
+  set("input", '.a{content:"  two  ";background:url(a b.png)}');
+  has("quoted spaces survive", out(), '"  two  "');
+  has("and so does a url with a space", out(), "url(a b.png)");
+
+  /* A licence comment is the one comment that must never be stripped. */
+  set("input", "/*! MIT licence */ .a { color : red ; }");
+  has("a bang comment is kept", out(), "/*! MIT licence */");
+  has("while the rest is still minified", out(), ".a{color:red}");
+
+  waitFor("the gzipped sizes arrive",
+    function () { return txt("sGzBefore") !== String.fromCharCode(0x2014); },
+    function () {
+      ok("gzipped before is reported", txt("sGzBefore").length > 1, txt("sGzBefore"));
+      click("clearBtn");
+      has("clearing asks for CSS", txt("msg"), "Paste some CSS");
+      finish();
+    });
+"""
+
+T["sql-formatter"] = r"""
+  function out() { return txt("output"); }
+  function lines() { return out().split("\n"); }
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+
+  eq("SELECT is on a line of its own", lines()[0], "SELECT");
+  ok("the columns come one per line", lines()[1].indexOf("  o.id,") === 0, lines()[1]);
+  ok("FROM starts its own line",
+     out().indexOf("\nFROM orders o") > -1, out());
+  ok("the join does too",
+     out().indexOf("\nINNER JOIN customers c ON") > -1, out());
+  ok("AND is broken onto its own indented line",
+     /\n\s+AND c\.city/.test(out()), out());
+  ok("ORDER BY is one clause, not two",
+     out().indexOf("\nORDER BY o.total DESC") > -1, out());
+
+  has("a quoted value is carried through untouched", out(), "'Hyderabad'");
+  has("table aliases are left alone", out(), "orders o");
+  ok("several lines came out", num("sLines") >= 8, txt("sLines"));
+  ok("tokens were counted", num("sTokens") > 20, txt("sTokens"));
+
+  /* A keyword inside a string is a value, not a keyword. */
+  set("input", "select a from t where b = 'select' and c = 'FROM'");
+  has("a keyword inside quotes stays as written", out(), "'select'");
+  has("in either case", out(), "'FROM'");
+  has("while the real keyword is capitalised", out(), "SELECT");
+
+  /* Comments keep their contents exactly. */
+  set("input", "select a -- keep this Select\nfrom t");
+  has("a line comment is carried through", out(), "-- keep this Select");
+
+  set("input", "select a /* block Select */ from t");
+  has("so is a block comment", out(), "/* block Select */");
+
+  /* Capitals are a convention, so they can be turned off. */
+  set("input", "select a from t");
+  has("capitals by default", out(), "SELECT");
+  tick("optUpper", false);
+  has("and lower case when asked", out(), "select");
+  eq("with no capitals left", out().indexOf("SELECT"), -1);
+  tick("optUpper", true);
+
+  /* Indent width. */
+  set("input", "select a, b from t");
+  eq("two spaces by default", lines()[1], "  a,");
+  set("indent", "4");
+  eq("four when chosen", lines()[1], "    a,");
+  set("indent", "2");
+
+  click("clearBtn");
+  has("clearing asks for SQL", txt("msg"), "Paste some SQL");
+  finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 

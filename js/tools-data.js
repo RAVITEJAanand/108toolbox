@@ -153,6 +153,24 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "cron-expression-parser",
+    name: "Cron Expression Parser",
+    desc: "A cron line in plain English, with the next five runs and the day trap.",
+    category: "Developer",
+    icon: "\u{23F0}",
+    keywords: ["cron expression", "cron parser", "crontab generator", "cron schedule", "what does this cron mean", "cron next run", "crontab explained"],
+    popular: false
+  },
+  {
+    slug: "css-minifier",
+    name: "CSS Minifier",
+    desc: "Shrink CSS without breaking calc() or turning a descendant into a pseudo-class.",
+    category: "Developer",
+    icon: "\u{1F3A8}",
+    keywords: ["css minifier", "minify css", "compress css", "css compressor", "css optimizer", "remove css comments"],
+    popular: false
+  },
+  {
     slug: "csv-to-json",
     name: "CSV to JSON",
     desc: "A real CSV parser: quoted commas, doubled quotes and line breaks survive.",
@@ -258,6 +276,15 @@ const TOOLS = [
     category: "Developer",
     icon: "\u{1F6E1}\u{FE0F}",
     keywords: ["html encode", "html decode", "html entities", "escape html", "html entity converter", "ampersand entity", "unescape html"],
+    popular: false
+  },
+  {
+    slug: "html-minifier",
+    name: "HTML Minifier",
+    desc: "Shrink HTML safely, and see the gzipped saving that actually reaches people.",
+    category: "Developer",
+    icon: "\u{1F4C9}",
+    keywords: ["html minifier", "minify html", "compress html", "html compressor", "remove html comments", "html whitespace"],
     popular: false
   },
   {
@@ -555,6 +582,15 @@ const TOOLS = [
     category: "Converter",
     icon: "\u{1F3CE}\u{FE0F}",
     keywords: ["kmh to mph", "mph to kmh", "m/s to km/h", "knots to mph", "running pace", "min per km", "pace converter"],
+    popular: false
+  },
+  {
+    slug: "sql-formatter",
+    name: "SQL Formatter",
+    desc: "Lay out a query so it can be read. Nothing is reordered, nothing rewritten.",
+    category: "Developer",
+    icon: "\u{1F5C3}",
+    keywords: ["sql formatter", "format sql", "sql beautifier", "pretty print sql", "sql indent", "sql query formatter", "beautify sql"],
     popular: false
   },
   {

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>CSS Minifier — Keeps calc() and Licences</title>
+  <meta name="description" content="Shrink CSS without breaking the two things naive minifiers break: the spaces inside calc, and the difference between a descendant and a pseudo-class.">
+  <link rel="canonical" href="https://108toolbox.in/tools/css-minifier.html">
+
+  <meta property="og:title" content="CSS Minifier — Keeps calc() and Licences">
+  <meta property="og:description" content="Shrink CSS without breaking the two things naive minifiers break: the spaces inside calc, and the difference between a descendant and a pseudo-class.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=20">
+  <link rel="stylesheet" href="../css/tool.css?v=20">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why did my calc() keep its spaces?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because it has to have them. calc(100% - 2rem) is a subtraction; calc(100%-2rem) is nonsense and the browser discards the whole declaration without any error. Everything inside calc() is left exactly as written."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is there still a space in '.card a :hover'?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because removing it would change the rule. With the space it means any hovered element inside a link; without it, a hovered link. They match different things, so the space stays."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is a /*! comment?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The usual convention for a comment that must survive minifying, used for licence notices. Ordinary comments are removed and those are kept."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does it remove units from zero values?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. It is a real saving and it is also the kind of change that occasionally matters, so this page leaves it. The same goes for merging rules and dropping duplicates."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can the output be read back into this tool?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - minified CSS is still valid CSS, and running it through again simply changes nothing. What you cannot get back is the comments and the layout, so keep your source."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>CSS Minifier</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>CSS Minifier</h1>
+        <p>Strip the comments and the slack out of your CSS. The spaces that
+           <em>mean</em> something &mdash; inside <code>calc()</code>, and
+           before a colon in a selector &mdash; are left alone.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">CSS</label>
+          <textarea id="input" class="mono" spellcheck="false">/* the card */
+.card {
+    color   : #aabbcc;
+    width   : calc(100% - 2rem);
+    padding : 1rem 2rem;
+}
+
+.card a :hover { color : red; }
+
+.card > .title,
+.card + .title { font-weight : 700 ; }</textarea>
+
+          <label class="check"><input type="checkbox" id="optComments" checked> Remove comments (<code>/*! &hellip; */</code> licences are kept)</label>
+          <label class="check"><input type="checkbox" id="optHex" checked> Shorten colours: <code>#aabbcc</code> to <code>#abc</code></label>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="copyBtn">Copy</button>
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Minified</span>
+          <pre class="out mono" id="output" aria-live="polite"></pre>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sBefore">&mdash;</span><span class="stat__label">Before</span></div>
+            <div class="stat"><span class="stat__num" id="sAfter">&mdash;</span><span class="stat__label">After</span></div>
+            <div class="stat"><span class="stat__num" id="sSaved">&mdash;</span><span class="stat__label">Saved</span></div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><span class="stat__num" id="sGzBefore">&mdash;</span><span class="stat__label">Gzipped before</span></div>
+            <div class="stat"><span class="stat__num" id="sGzAfter">&mdash;</span><span class="stat__label">Gzipped after</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>The two spaces that are not optional</h2>
+        <p><strong>Inside <code>calc()</code>.</strong>
+           <code>calc(100% - 2rem)</code> needs the spaces around the minus
+           sign. Take them out and you get <code>calc(100%-2rem)</code>, which
+           is not a subtraction at all &mdash; the browser reads
+           <code>-2rem</code> as a negative number sitting next to a
+           percentage, cannot make sense of it, and throws the whole
+           declaration away. It fails silently: no error, the rule is simply
+           not there.</p>
+        <p><strong>Before a colon in a selector.</strong>
+           <code>.card a :hover</code> means &ldquo;any hovered element inside
+           a link inside a card&rdquo;. <code>.card a:hover</code> means
+           &ldquo;a hovered link inside a card&rdquo;. They are different
+           rules, and a minifier that squeezes out every space turns one into
+           the other. Inside a declaration block a colon never has that
+           problem, so the space there <em>is</em> removed.</p>
+
+        <h2>What else is protected</h2>
+        <p>Text in quotation marks is content and is never touched, so
+           <code>content: "  "</code> keeps its spaces. Anything inside
+           <code>url()</code> is left alone, because file names may contain
+           spaces and parentheses. And a comment beginning <code>/*!</code> is
+           kept: that is the convention for a licence notice, and stripping a
+           licence out of somebody's stylesheet is not a saving, it is a
+           problem.</p>
+
+        <h2>What it deliberately does not do</h2>
+        <p>It does not turn <code>0px</code> into <code>0</code>, merge
+           duplicate rules, reorder declarations, or drop properties it thinks
+           are unused. Each of those saves a little more, and each of them can
+           change how the page renders in a case the tool cannot see &mdash;
+           a shorthand later in the file, a rule another stylesheet overrides,
+           a class a script adds. The whole value of a minifier is that you
+           can use it without reading the output.</p>
+
+        <h2>Check the gzipped numbers before you celebrate</h2>
+        <p>Stylesheets are served compressed, and compression is very good at
+           repeated spaces and repeated property names. So this page gzips both
+           versions and shows both. A twenty per cent raw saving is often two
+           or three per cent of what the visitor actually downloads. Still
+           free, still worth taking; simply not what the big number
+           suggests.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Why did my calc() keep its spaces?</h3>
+          <p>Because it has to have them. calc(100% - 2rem) is a subtraction; calc(100%-2rem) is nonsense and the browser discards the whole declaration without any error. Everything inside calc() is left exactly as written.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is there still a space in &#x27;.card a :hover&#x27;?</h3>
+          <p>Because removing it would change the rule. With the space it means any hovered element inside a link; without it, a hovered link. They match different things, so the space stays.</p>
+        </div>
+        <div class="faq">
+          <h3>What is a /*! comment?</h3>
+          <p>The usual convention for a comment that must survive minifying, used for licence notices. Ordinary comments are removed and those are kept.</p>
+        </div>
+        <div class="faq">
+          <h3>Does it remove units from zero values?</h3>
+          <p>No. It is a real saving and it is also the kind of change that occasionally matters, so this page leaves it. The same goes for merging rules and dropping duplicates.</p>
+        </div>
+        <div class="faq">
+          <h3>Can the output be read back into this tool?</h3>
+          <p>Yes - minified CSS is still valid CSS, and running it through again simply changes nothing. What you cannot get back is the comments and the layout, so keep your source.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=20"></script>
+  <script src="../js/tool-helpers.js?v=20"></script>
+  <script>window.CURRENT_TOOL = "css-minifier";</script>
+  <script src="../js/main.js?v=20"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input  = document.getElementById("input");
+    var output = document.getElementById("output");
+    var msg    = document.getElementById("msg");
+    var DASH   = String.fromCharCode(0x2014);
+
+    var optComments = document.getElementById("optComments");
+    var optHex      = document.getElementById("optHex");
+
+    var lastOut = "";
+    var pending = 0;
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: lifting out everything that must not be touched ----
+       Four things, and each for its own reason.
+
+       calc(...)   the spaces around its + and - are part of the arithmetic.
+                   Remove them and the browser discards the declaration
+                   without a word of complaint.
+       "..." '...' text in quotes is content. content: "  " means two spaces.
+       url(...)    file names may hold spaces and brackets.
+       bang comment  the /*! form marks a licence notice, which must survive. */
+    var PROTECT = /\/\*![\s\S]*?\*\/|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|url\([^)]*\)|calc\([^()]*(?:\([^()]*\)[^()]*)*\)/gi;
+    var MARK = "\u0001K";
+
+    function lift(css, store) {
+      return css.replace(PROTECT, function (block) {
+        store.push(block);
+        return MARK + (store.length - 1) + "\u0001";
+      });
+    }
+
+    function drop(css, store) {
+      return css.replace(/\u0001K(\d+)\u0001/g, function (whole, index) {
+        return store[Number(index)];
+      });
+    }
+    /* ---- END: lifting out everything that must not be touched ---- */
+
+    /* ---- START: squeezing, with the brace depth remembered ----
+       Chained regexes cannot do this correctly, because the same character
+       means different things in different places. A colon inside a block is a
+       separator and the space after it is waste; a colon in a SELECTOR may be
+       a pseudo-class, and the space before it is the difference between
+       "a :hover" and "a:hover" - two rules that match different elements.
+
+       So the depth is tracked as the string is walked, and each character is
+       judged by where it is. */
+    function squeeze(css) {
+      var out = "";
+      var depth = 0;
+      var i = 0;
+
+      function trimEnd() {
+        while (out.length && out.charAt(out.length - 1) === " ") {
+          out = out.slice(0, -1);
+        }
+      }
+
+      while (i < css.length) {
+        var ch = css.charAt(i);
+
+        if (ch === "{") { trimEnd(); out += "{"; depth += 1; i += 1; continue; }
+        if (ch === "}") {
+          trimEnd();
+          if (out.charAt(out.length - 1) === ";") { out = out.slice(0, -1); }
+          out += "}";
+          depth = Math.max(0, depth - 1);
+          i += 1;
+          continue;
+        }
+
+        if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r") {
+          while (i < css.length && /[ \t\r\n]/.test(css.charAt(i))) { i += 1; }
+          var prev = out.charAt(out.length - 1);
+          var next = css.charAt(i);
+          if (prev === "" || "{};,:>+~".indexOf(prev) > -1) { continue; }
+          if (next === "" || "{};,>+~".indexOf(next) > -1) { continue; }
+          /* Inside a block a colon is only a separator, so the space before
+             it is waste. In a selector it may be a pseudo-class, and there
+             the space is the whole meaning. */
+          if (depth > 0 && next === ":") { continue; }
+          out += " ";
+          continue;
+        }
+
+        if (depth > 0 && (ch === ":" || ch === ";" || ch === ",")) {
+          trimEnd(); out += ch; i += 1; continue;
+        }
+        if (depth === 0 && (ch === "," || ch === ">" || ch === "+" || ch === "~")) {
+          trimEnd(); out += ch; i += 1; continue;
+        }
+
+        out += ch;
+        i += 1;
+      }
+      return out;
+    }
+    /* ---- END: squeezing, with the brace depth remembered ---- */
+
+    /* ---- START: the three-character form of a colour ----
+       Only when each pair is a repeat: #aabbcc is #abc, #aabbcd is not
+       shortenable at all and is left as it is. */
+    function shortenHex(css) {
+      return css.replace(/#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3\b/gi,
+        function (whole, r, g, b) { return "#" + r + g + b; });
+    }
+    /* ---- END: the three-character form of a colour ---- */
+
+    /* ---- START: the minifying itself ---- */
+    function minify(css) {
+      var store = [];
+      var work = lift(css, store);
+
+      if (optComments.checked) {
+        work = work.replace(/\/\*[\s\S]*?\*\//g, "");
+      }
+      work = squeeze(work);
+      if (optHex.checked) { work = shortenHex(work); }
+
+      return drop(work, store).trim();
+    }
+    /* ---- END: the minifying itself ---- */
+
+    /* ---- START: how big it is once the server has compressed it ---- */
+    function gzipSize(text, then) {
+      if (typeof CompressionStream === "undefined" || !text) { then(null); return; }
+      try {
+        var stream = new Blob([text]).stream()
+          .pipeThrough(new CompressionStream("gzip"));
+        new Response(stream).arrayBuffer().then(function (buffer) {
+          then(buffer.byteLength);
+        }).catch(function () { then(null); });
+      } catch (e) {
+        then(null);
+      }
+    }
+    /* ---- END: how big it is once the server has compressed it ---- */
+
+    /* ---- START: running it and showing the numbers ---- */
+    function run() {
+      var source = input.value;
+      if (source.trim() === "") {
+        output.textContent = "";
+        lastOut = "";
+        ["sBefore", "sAfter", "sSaved", "sGzBefore", "sGzAfter"].forEach(function (id) {
+          document.getElementById(id).textContent = DASH;
+        });
+        setMessage("Paste some CSS on the left.");
+        return;
+      }
+
+      var result = minify(source);
+      lastOut = result;
+      output.textContent = result;
+
+      var before = new TextEncoder().encode(source).length;
+      var after = new TextEncoder().encode(result).length;
+      var saved = before ? (before - after) / before * 100 : 0;
+
+      document.getElementById("sBefore").textContent = formatBytes(before);
+      document.getElementById("sAfter").textContent = formatBytes(after);
+      document.getElementById("sSaved").textContent = formatNumber(saved, 1) + "%";
+      setMessage("Comments and spacing gone. calc(), quoted text, url() and "
+               + "any /*! licence were left exactly as written.", "ok");
+
+      pending += 1;
+      var mine = pending;
+      gzipSize(source, function (gzBefore) {
+        if (mine !== pending) { return; }
+        gzipSize(result, function (gzAfter) {
+          if (mine !== pending) { return; }
+          if (gzBefore === null || gzAfter === null) {
+            document.getElementById("sGzBefore").textContent = "n/a";
+            document.getElementById("sGzAfter").textContent = "n/a";
+            return;
+          }
+          document.getElementById("sGzBefore").textContent = formatBytes(gzBefore);
+          document.getElementById("sGzAfter").textContent = formatBytes(gzAfter);
+
+          var realSaving = gzBefore ? (gzBefore - gzAfter) / gzBefore * 100 : 0;
+          if (realSaving < saved - 5) {
+            setMessage("Raw saving " + formatNumber(saved, 1) + "%, but "
+                     + formatNumber(realSaving, 1) + "% once gzipped - and "
+                     + "gzipped is what a visitor downloads. Compression had "
+                     + "already taken most of it.", "ok");
+          }
+        });
+      });
+    }
+    /* ---- END: running it and showing the numbers ---- */
+
+    /* ---- START: wiring ---- */
+    [input, optComments, optHex].forEach(function (el) {
+      el.addEventListener("input", run);
+      el.addEventListener("change", run);
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastOut) { showToast("Nothing to copy"); return; }
+      copyText(lastOut);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+    /* ---- END: wiring ---- */
+
+    run();
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Cron Parser — In Plain Words, With Next Runs</title>
+  <meta name="description" content="Read a cron expression in plain English and see when it will actually run next. Explains the day-of-month and day-of-week rule that catches everyone.">
+  <link rel="canonical" href="https://108toolbox.in/tools/cron-expression-parser.html">
+
+  <meta property="og:title" content="Cron Parser — In Plain Words, With Next Runs">
+  <meta property="og:description" content="Read a cron expression in plain English and see when it will actually run next. Explains the day-of-month and day-of-week rule that catches everyone.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=20">
+  <link rel="stylesheet" href="../css/tool.css?v=20">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why does my job run on days I did not ask for?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Almost certainly because you restricted both the day of the month and the day of the week. When both are set, cron runs if either matches, not if both do. Set one of them back to * and the surprise stops."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What time zone are the next runs in?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yours, as your browser reports it, purely so the dates mean something to you. The actual job runs in whatever zone the server is set to, which is very often UTC and is the first thing to check when a job seems to run at the wrong time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Sunday 0 or 7?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Both. Different implementations disagreed long ago and the answer was to accept either, so 0 and 7 both mean Sunday. Saturday is always 6."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does it support seconds?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, and standard cron does not either. Six-field expressions with seconds at the front belong to particular schedulers - Quartz, some libraries - and are not what a Unix crontab reads."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I check whether my expression is valid without running it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "That is what this page is for. If it cannot be parsed you get a message saying which field is wrong, and if it can, the next five dates tell you far more than the expression does."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>Cron Expression Parser</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Cron Expression Parser</h1>
+        <p>Paste a cron line and find out what it really means &mdash; including
+           the one rule about days that surprises almost everybody the first
+           time it costs them a night's sleep.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="cron">Cron expression</label>
+            <input type="text" id="cron" class="mono" spellcheck="false" value="30 5 * * 1-5">
+          </div>
+
+          <div class="field">
+            <label>Try one</label>
+            <div class="btn-row">
+              <button class="btn btn--ghost" type="button" data-cron="*/15 * * * *">every 15 min</button>
+              <button class="btn btn--ghost" type="button" data-cron="0 9 * * 1-5">weekday 9am</button>
+              <button class="btn btn--ghost" type="button" data-cron="0 0 1 * *">1st of month</button>
+              <button class="btn btn--ghost" type="button" data-cron="0 0 13 * 5">the trap</button>
+              <button class="btn btn--ghost" type="button" data-cron="@daily">@daily</button>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="copyBtn">Copy the words</button>
+            <button class="btn btn--danger" type="button" id="resetBtn">Reset</button>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">In plain words</span>
+          <p class="out" id="words" style="min-height:70px;font-size:1.05rem" aria-live="polite"></p>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sFields">&mdash;</span><span class="stat__label">Fields</span></div>
+            <div class="stat"><span class="stat__num" id="sPerDay">&mdash;</span><span class="stat__label">Runs per day</span></div>
+            <div class="stat"><span class="stat__num" id="sZone">&mdash;</span><span class="stat__label">Shown in</span></div>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s3)">Next five runs</span>
+          <pre class="out mono" id="nextRuns" style="min-height:120px" aria-live="polite"></pre>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>The five fields</h2>
+        <p>In order: <strong>minute, hour, day of the month, month, day of the
+           week</strong>. So <code>30 5 * * 1-5</code> is half past five in the
+           morning, Monday to Friday.</p>
+        <p>Each field takes a number, a list (<code>1,15</code>), a range
+           (<code>9-17</code>), a step (<code>*/15</code>, meaning every
+           fifteenth), or <code>*</code> for every value. Months and weekdays
+           also take names: <code>JAN</code>, <code>MON</code>. Sunday is
+           <code>0</code>, and also <code>7</code>, which exists because
+           different systems disagreed and both had to keep working.</p>
+
+        <h2>The rule that catches everyone</h2>
+        <p>If you restrict <strong>both</strong> the day of the month and the
+           day of the week, cron runs when <strong>either</strong> one matches
+           &mdash; not both.</p>
+        <p><code>0 0 13 * 5</code> does not mean &ldquo;Friday the
+           13th&rdquo;. It means <em>every 13th of the month, and also every
+           Friday</em> &mdash; which is roughly sixty-five runs a year instead
+           of the one or two you had in mind. Press <em>the trap</em> above and
+           read the next five dates; they will not all be Fridays.</p>
+        <p>It is not a bug, it is written down in the manual, and it still
+           catches people with twenty years of experience. If you genuinely
+           need Friday the 13th, you schedule every 13th and check the weekday
+           inside your own script.</p>
+
+        <h2>Which clock does it use?</h2>
+        <p>The machine's, not yours. A cron line on a server set to UTC runs at
+           those times in UTC, and the times below are shown in
+           <em>your</em> zone only so you have something to compare against.
+           This is worth checking before you decide a job did not run.</p>
+        <p>Daylight saving makes it stranger still. On the morning the clocks
+           go forward, a job scheduled inside the hour that never happens may
+           not run at all; when they go back, an hour repeats and a job can run
+           twice. Anything that must happen exactly once is safer scheduled
+           outside that window &mdash; or written so that running twice does no
+           harm, which is the better habit anyway.</p>
+
+        <h2>The shortcuts</h2>
+        <p><code>@yearly</code>, <code>@monthly</code>, <code>@weekly</code>,
+           <code>@daily</code> and <code>@hourly</code> all work and are
+           expanded here so you can see what they really are. They are easier
+           to read than the equivalent five fields and mean exactly the same
+           thing.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Why does my job run on days I did not ask for?</h3>
+          <p>Almost certainly because you restricted both the day of the month and the day of the week. When both are set, cron runs if either matches, not if both do. Set one of them back to * and the surprise stops.</p>
+        </div>
+        <div class="faq">
+          <h3>What time zone are the next runs in?</h3>
+          <p>Yours, as your browser reports it, purely so the dates mean something to you. The actual job runs in whatever zone the server is set to, which is very often UTC and is the first thing to check when a job seems to run at the wrong time.</p>
+        </div>
+        <div class="faq">
+          <h3>Is Sunday 0 or 7?</h3>
+          <p>Both. Different implementations disagreed long ago and the answer was to accept either, so 0 and 7 both mean Sunday. Saturday is always 6.</p>
+        </div>
+        <div class="faq">
+          <h3>Does it support seconds?</h3>
+          <p>No, and standard cron does not either. Six-field expressions with seconds at the front belong to particular schedulers - Quartz, some libraries - and are not what a Unix crontab reads.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I check whether my expression is valid without running it?</h3>
+          <p>That is what this page is for. If it cannot be parsed you get a message saying which field is wrong, and if it can, the next five dates tell you far more than the expression does.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=20"></script>
+  <script src="../js/tool-helpers.js?v=20"></script>
+  <script>window.CURRENT_TOOL = "cron-expression-parser";</script>
+  <script src="../js/main.js?v=20"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var cron  = document.getElementById("cron");
+    var words = document.getElementById("words");
+    var runs  = document.getElementById("nextRuns");
+    var msg   = document.getElementById("msg");
+    var DASH  = String.fromCharCode(0x2014);
+
+    var MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
+                       "July", "August", "September", "October", "November",
+                       "December"];
+    var DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                     "Friday", "Saturday"];
+    var MONTH_WORDS = "jan feb mar apr may jun jul aug sep oct nov dec".split(" ");
+    var DAY_WORDS = "sun mon tue wed thu fri sat".split(" ");
+
+    var SHORTCUTS = {
+      "@yearly": "0 0 1 1 *", "@annually": "0 0 1 1 *",
+      "@monthly": "0 0 1 * *", "@weekly": "0 0 * * 0",
+      "@daily": "0 0 * * *", "@midnight": "0 0 * * *",
+      "@hourly": "0 * * * *"
+    };
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: one field into the set of values it allows ----
+       A field is a comma-separated list of pieces, and each piece is a star,
+       a single value, a range, or any of those with a /step on the end. The
+       names are folded to numbers first so that MON-FRI and 1-5 take exactly
+       the same path afterwards. */
+    function parseField(raw, low, high, names) {
+      var text = raw.toLowerCase();
+      if (names) {
+        for (var n = 0; n < names.length; n++) {
+          text = text.split(names[n]).join(String(n + (names === DAY_WORDS ? 0 : 1)));
+        }
+      }
+
+      var allowed = [];
+      var pieces = text.split(",");
+      for (var p = 0; p < pieces.length; p++) {
+        var piece = pieces[p];
+        if (piece === "") { return null; }
+
+        var step = 1;
+        var slash = piece.indexOf("/");
+        if (slash > -1) {
+          step = parseInt(piece.slice(slash + 1), 10);
+          piece = piece.slice(0, slash);
+          if (!isFinite(step) || step < 1) { return null; }
+        }
+
+        var from, to;
+        if (piece === "*") {
+          from = low; to = high;
+        } else if (piece.indexOf("-") > -1) {
+          var ends = piece.split("-");
+          from = parseInt(ends[0], 10);
+          to = parseInt(ends[1], 10);
+        } else {
+          from = parseInt(piece, 10);
+          to = slash > -1 ? high : from;
+        }
+
+        if (!isFinite(from) || !isFinite(to) || from < low || to > high || from > to) {
+          return null;
+        }
+        for (var v = from; v <= to; v += step) { allowed.push(v); }
+      }
+
+      /* Sunday is 0 and also 7, because two systems disagreed long ago and
+         both had to keep working. */
+      var unique = Object.create(null);
+      allowed.forEach(function (v) { unique["v" + (v === 7 && high === 7 ? 0 : v)] = true; });
+      return Object.keys(unique)
+        .map(function (k) { return Number(k.slice(1)); })
+        .sort(function (a, b) { return a - b; });
+    }
+    /* ---- END: one field into the set of values it allows ---- */
+
+    /* ---- START: reading the whole expression ---- */
+    function parse(line) {
+      var text = line.trim().toLowerCase();
+      if (SHORTCUTS[text]) { text = SHORTCUTS[text]; }
+
+      var parts = text.split(/\s+/).filter(function (s) { return s !== ""; });
+      if (parts.length !== 5) {
+        return { error: "A cron line has five fields: minute, hour, day of "
+                      + "month, month, day of week. This has " + parts.length
+                      + ".", count: parts.length };
+      }
+
+      var spec = {
+        minutes: parseField(parts[0], 0, 59, null),
+        hours: parseField(parts[1], 0, 23, null),
+        dom: parseField(parts[2], 1, 31, null),
+        months: parseField(parts[3], 1, 12, MONTH_WORDS),
+        dow: parseField(parts[4], 0, 7, DAY_WORDS),
+        domStar: parts[2] === "*",
+        dowStar: parts[4] === "*",
+        raw: parts
+      };
+
+      var labels = ["minute", "hour", "day of month", "month", "day of week"];
+      var keys = ["minutes", "hours", "dom", "months", "dow"];
+      for (var i = 0; i < keys.length; i++) {
+        if (!spec[keys[i]] || !spec[keys[i]].length) {
+          return { error: "The " + labels[i] + " field (" + parts[i]
+                        + ") is not something cron would accept.", count: 5 };
+        }
+      }
+      return spec;
+    }
+    /* ---- END: reading the whole expression ---- */
+
+    /* ---- START: a list of numbers as a readable phrase ---- */
+    function listWords(values, namer) {
+      var named = values.map(namer);
+      if (named.length === 1) { return named[0]; }
+      if (named.length === 2) { return named[0] + " and " + named[1]; }
+      return named.slice(0, -1).join(", ") + " and " + named[named.length - 1];
+    }
+
+    function pad(n) { return n < 10 ? "0" + n : String(n); }
+    /* ---- END: a list of numbers as a readable phrase ---- */
+
+    /* ---- START: the expression in plain words ---- */
+    function describe(spec) {
+      var when;
+      var everyMinute = spec.minutes.length === 60;
+      var everyHour = spec.hours.length === 24;
+
+      if (everyMinute && everyHour) {
+        when = "Every minute";
+      } else if (everyHour && spec.minutes.length > 1 && evenlySpaced(spec.minutes)) {
+        when = "Every " + (spec.minutes[1] - spec.minutes[0]) + " minutes";
+      } else if (spec.minutes.length === 1 && spec.hours.length === 1) {
+        when = "At " + pad(spec.hours[0]) + ":" + pad(spec.minutes[0]);
+      } else if (spec.minutes.length === 1 && everyHour) {
+        when = "At " + spec.minutes[0] + " minutes past every hour";
+      } else if (spec.minutes.length === 1) {
+        when = "At " + spec.minutes[0] + " minutes past "
+             + listWords(spec.hours, function (h) { return pad(h) + ":00"; });
+      } else {
+        when = "At minute " + listWords(spec.minutes, String) + " of "
+             + (everyHour ? "every hour"
+                : "hour " + listWords(spec.hours, String));
+      }
+
+      var days;
+      if (spec.domStar && spec.dowStar) {
+        days = "every day";
+      } else if (spec.dowStar) {
+        days = "on day " + listWords(spec.dom, String) + " of the month";
+      } else if (spec.domStar) {
+        days = "only on " + listWords(spec.dow, function (d) { return DAY_NAMES[d]; });
+      } else {
+        days = "on day " + listWords(spec.dom, String) + " of the month, AND "
+             + "separately on " + listWords(spec.dow, function (d) { return DAY_NAMES[d]; })
+             + " - cron runs when EITHER matches, not both";
+      }
+
+      var months = spec.months.length === 12 ? ""
+                 : ", in " + listWords(spec.months, function (m) { return MONTH_NAMES[m - 1]; });
+
+      return when + ", " + days + months + ".";
+    }
+
+    function evenlySpaced(values) {
+      if (values.length < 3) { return false; }
+      var gap = values[1] - values[0];
+      for (var i = 2; i < values.length; i++) {
+        if (values[i] - values[i - 1] !== gap) { return false; }
+      }
+      return values[0] === 0;
+    }
+    /* ---- END: the expression in plain words ---- */
+
+    /* ---- START: the next five times it fires ----
+       Walked a DAY at a time, not a minute at a time. A minute-by-minute
+       search for "the 29th of February" would be two million steps before it
+       found anything; checking whether a day qualifies first and only then
+       running through its hours and minutes is a few hundred. */
+    function nextRuns(spec, howMany) {
+      var start = new Date();
+      start.setSeconds(0, 0);
+      start.setMinutes(start.getMinutes() + 1);
+
+      var day = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      var out = [];
+      var guard = 0;
+
+      while (out.length < howMany && guard < 2000) {
+        guard += 1;
+        if (dayQualifies(spec, day)) {
+          for (var h = 0; h < spec.hours.length && out.length < howMany; h++) {
+            for (var m = 0; m < spec.minutes.length && out.length < howMany; m++) {
+              var at = new Date(day.getFullYear(), day.getMonth(), day.getDate(),
+                                spec.hours[h], spec.minutes[m]);
+              if (at >= start) { out.push(at); }
+            }
+          }
+        }
+        day = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1);
+      }
+      return out;
+    }
+
+    function dayQualifies(spec, date) {
+      if (spec.months.indexOf(date.getMonth() + 1) === -1) { return false; }
+      var domHit = spec.dom.indexOf(date.getDate()) > -1;
+      var dowHit = spec.dow.indexOf(date.getDay()) > -1;
+
+      /* The rule everybody trips over: with BOTH day fields restricted, cron
+         fires when either matches. With one of them a star, only the other
+         one counts. */
+      if (spec.domStar && spec.dowStar) { return true; }
+      if (spec.domStar) { return dowHit; }
+      if (spec.dowStar) { return domHit; }
+      return domHit || dowHit;
+    }
+    /* ---- END: the next five times it fires ---- */
+
+    /* ---- START: showing it all ---- */
+    function show() {
+      var spec = parse(cron.value);
+
+      if (spec.error) {
+        words.textContent = "";
+        runs.textContent = "";
+        document.getElementById("sFields").textContent = spec.count || DASH;
+        document.getElementById("sPerDay").textContent = DASH;
+        setMessage(spec.error, "bad");
+        return;
+      }
+
+      words.textContent = describe(spec);
+
+      var perDay = spec.minutes.length * spec.hours.length;
+      document.getElementById("sFields").textContent = "5";
+      document.getElementById("sPerDay").textContent =
+        formatNumber(perDay, 0) + (perDay === 1 ? " time" : " times");
+      document.getElementById("sZone").textContent = localZone();
+
+      var list = nextRuns(spec, 5);
+      runs.textContent = list.length
+        ? list.map(function (d) {
+            return DAY_NAMES[d.getDay()].slice(0, 3) + " "
+                 + d.getDate() + " " + MONTH_NAMES[d.getMonth()].slice(0, 3) + " "
+                 + d.getFullYear() + "  " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+          }).join("\n")
+        : "Nothing in the next five years - check the day and month fields.";
+
+      if (!spec.domStar && !spec.dowStar) {
+        setMessage("Both day fields are restricted, so this runs when EITHER "
+                 + "matches. Look at the dates above: they are not all what "
+                 + "the expression looks like it says.", "bad");
+      } else {
+        setMessage("Times are shown in your own zone. The job runs in the "
+                 + "server's, which is very often UTC.", "ok");
+      }
+    }
+
+    function localZone() {
+      try {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone || "your zone";
+      } catch (e) {
+        return "your zone";
+      }
+    }
+    /* ---- END: showing it all ---- */
+
+    /* ---- START: wiring ---- */
+    cron.addEventListener("input", show);
+
+    Array.prototype.forEach.call(
+      document.querySelectorAll("[data-cron]"), function (btn) {
+        btn.addEventListener("click", function () {
+          cron.value = btn.getAttribute("data-cron");
+          show();
+        });
+      });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!words.textContent) { showToast("Nothing to copy"); return; }
+      copyText(words.textContent);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      cron.value = "30 5 * * 1-5";
+      show();
+      cron.focus();
+    });
+    /* ---- END: wiring ---- */
+
+    show();
+  })();
+  </script>
+</body>
+</html>

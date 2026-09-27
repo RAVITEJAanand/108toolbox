@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>HTML Minifier — Shows the Real Saving</title>
+  <meta name="description" content="Shrink HTML without breaking it, leaving pre and script untouched. Measures the gzipped size too, which is the number that actually reaches a visitor.">
+  <link rel="canonical" href="https://108toolbox.in/tools/html-minifier.html">
+
+  <meta property="og:title" content="HTML Minifier — Shows the Real Saving">
+  <meta property="og:description" content="Shrink HTML without breaking it, leaving pre and script untouched. Measures the gzipped size too, which is the number that actually reaches a visitor.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=20">
+  <link rel="stylesheet" href="../css/tool.css?v=20">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Will it break my page?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not with the default two boxes ticked - those only remove comments and turn runs of whitespace into one space, neither of which changes how a browser renders anything. The third box can change the page, which is why it is off and labelled."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my pre block untouched?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because every space inside pre, textarea, script and style is content. Collapsing whitespace there would change what the visitor sees or what the code does, so those four are protected and left byte for byte."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is the gzipped saving so much smaller?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because compression already removes most of what minifying removes. Repeated spaces compress to almost nothing. The raw number looks impressive; the gzipped number is what a visitor actually downloads."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does it minify the CSS and JavaScript inside the page?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Those are different languages with different rules, and doing them badly is how minifiers break sites. Use a CSS or JavaScript minifier on those files."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I get my original file back?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not from the output - the removed spaces and comments are gone. Keep your source file and minify as a step when you publish, never in place."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>HTML Minifier</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>HTML Minifier</h1>
+        <p>Strip the comments and the slack out of your HTML &mdash; carefully,
+           leaving alone the places where a space is part of the page. It also
+           gzips both versions, because that is the saving you really get.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">HTML</label>
+          <textarea id="input" class="mono" spellcheck="false">&lt;!-- the header --&gt;
+&lt;div   class="card"   id="one"&gt;
+    &lt;h2&gt;Hello&lt;/h2&gt;
+
+    &lt;p&gt;Ask &lt;b&gt;Priya&lt;/b&gt; &lt;i&gt;today&lt;/i&gt; about it.&lt;/p&gt;
+
+    &lt;pre&gt;  keep
+  this  &lt;/pre&gt;
+&lt;/div&gt;</textarea>
+
+          <label class="check"><input type="checkbox" id="optComments" checked> Remove comments</label>
+          <label class="check"><input type="checkbox" id="optCollapse" checked> Collapse runs of spaces into one</label>
+          <label class="check"><input type="checkbox" id="optBetween"> Also remove the space <em>between</em> tags &mdash; can change the page</label>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="copyBtn">Copy</button>
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Minified</span>
+          <pre class="out mono" id="output" aria-live="polite"></pre>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sBefore">&mdash;</span><span class="stat__label">Before</span></div>
+            <div class="stat"><span class="stat__num" id="sAfter">&mdash;</span><span class="stat__label">After</span></div>
+            <div class="stat"><span class="stat__num" id="sSaved">&mdash;</span><span class="stat__label">Saved</span></div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><span class="stat__num" id="sGzBefore">&mdash;</span><span class="stat__label">Gzipped before</span></div>
+            <div class="stat"><span class="stat__num" id="sGzAfter">&mdash;</span><span class="stat__label">Gzipped after</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>What it removes, and what it will not touch</h2>
+        <p>Comments go. Runs of spaces, tabs and newlines become a single
+           space. Everything inside <code>&lt;pre&gt;</code>,
+           <code>&lt;textarea&gt;</code>, <code>&lt;script&gt;</code> and
+           <code>&lt;style&gt;</code> is left exactly as it was, because in
+           those four a space is content rather than formatting.</p>
+
+        <h2>The space between tags is not always nothing</h2>
+        <p>This is the mistake that makes minified pages look subtly wrong.
+           Between two inline elements, a space is a <em>word space</em>:</p>
+        <p><code>&lt;b&gt;Priya&lt;/b&gt; &lt;i&gt;today&lt;/i&gt;</code>
+           renders as &ldquo;Priya today&rdquo;. Remove that single space and
+           it renders as &ldquo;Priyatoday&rdquo;.</p>
+        <p>So collapsing runs of whitespace down to <em>one</em> space is safe
+           and is what happens by default. Removing that last space entirely is
+           the third tick box, it is off, and it is only safe if you know there
+           are no inline elements sitting next to each other anywhere in the
+           document. Tools that do it without asking are why people stop
+           trusting minifiers.</p>
+
+        <h2>The number that actually matters</h2>
+        <p>Your server almost certainly sends HTML compressed, and compression
+           is extremely good at exactly the thing minifying removes &mdash;
+           repeated spaces and predictable text. So the headline saving is
+           mostly imaginary.</p>
+        <p>That is why this page gzips both versions and shows you both
+           numbers. It is common to see twenty per cent off the raw file and
+           two or three per cent off the compressed one. Two per cent is still
+           worth having and costs nothing; it is simply not the twenty per cent
+           the first number suggests, and knowing that stops you spending an
+           afternoon on it.</p>
+
+        <h2>What this is not</h2>
+        <p>It does not rewrite your attributes, drop optional quotation marks,
+           remove closing tags that HTML says are optional, or touch the
+           JavaScript and CSS inside the page. Every one of those saves a
+           little more and every one of them can break something, and a
+           minifier that breaks your page has saved you nothing at all.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Will it break my page?</h3>
+          <p>Not with the default two boxes ticked - those only remove comments and turn runs of whitespace into one space, neither of which changes how a browser renders anything. The third box can change the page, which is why it is off and labelled.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is my pre block untouched?</h3>
+          <p>Because every space inside pre, textarea, script and style is content. Collapsing whitespace there would change what the visitor sees or what the code does, so those four are protected and left byte for byte.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is the gzipped saving so much smaller?</h3>
+          <p>Because compression already removes most of what minifying removes. Repeated spaces compress to almost nothing. The raw number looks impressive; the gzipped number is what a visitor actually downloads.</p>
+        </div>
+        <div class="faq">
+          <h3>Does it minify the CSS and JavaScript inside the page?</h3>
+          <p>No. Those are different languages with different rules, and doing them badly is how minifiers break sites. Use a CSS or JavaScript minifier on those files.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I get my original file back?</h3>
+          <p>Not from the output - the removed spaces and comments are gone. Keep your source file and minify as a step when you publish, never in place.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=20"></script>
+  <script src="../js/tool-helpers.js?v=20"></script>
+  <script>window.CURRENT_TOOL = "html-minifier";</script>
+  <script src="../js/main.js?v=20"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input  = document.getElementById("input");
+    var output = document.getElementById("output");
+    var msg    = document.getElementById("msg");
+    var DASH   = String.fromCharCode(0x2014);
+
+    var optComments = document.getElementById("optComments");
+    var optCollapse = document.getElementById("optCollapse");
+    var optBetween  = document.getElementById("optBetween");
+
+    var lastOut = "";
+    var pending = 0;
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: putting the untouchable parts safely aside ----
+       Inside pre, textarea, script and style a space is content, not
+       formatting. Rather than writing a whitespace rule clever enough to know
+       where it is, those blocks are lifted out, replaced by a marker that no
+       document would contain, and put back at the end untouched.
+
+       Conditional comments are lifted out with them: they look exactly like
+       comments and removing one can change what an old browser loads. */
+    var KEEP = /<(pre|textarea|script|style)\b[^>]*>[\s\S]*?<\/\1\s*>|<!--\[if[\s\S]*?<!\[endif\]-->/gi;
+    var MARK = "\u0001KEEP";
+
+    function lift(html, store) {
+      return html.replace(KEEP, function (block) {
+        store.push(block);
+        return MARK + (store.length - 1) + "\u0001";
+      });
+    }
+
+    function drop(html, store) {
+      return html.replace(/\u0001KEEP(\d+)\u0001/g, function (whole, index) {
+        return store[Number(index)];
+      });
+    }
+    /* ---- END: putting the untouchable parts safely aside ---- */
+
+    /* ---- START: the minifying itself ---- */
+    function minify(html) {
+      var store = [];
+      var work = lift(html, store);
+
+      if (optComments.checked) {
+        work = work.replace(/<!--[\s\S]*?-->/g, "");
+      }
+
+      if (optCollapse.checked) {
+        /* To ONE space, not to nothing. Between two inline elements that
+           space is a word space, and removing it joins two words together. */
+        work = work.replace(/[ \t\r\n]+/g, " ");
+      }
+
+      if (optBetween.checked) {
+        work = work.replace(/>\s+</g, "><");
+      }
+
+      return drop(work, store).trim();
+    }
+    /* ---- END: the minifying itself ---- */
+
+    /* ---- START: how big it is once the server has compressed it ----
+       The honest number. A server sends HTML gzipped, and gzip is very good
+       at precisely what minifying removes, so most of the headline saving has
+       already been taken by the time a visitor downloads anything. */
+    function gzipSize(text, then) {
+      if (typeof CompressionStream === "undefined" || !text) { then(null); return; }
+      try {
+        var stream = new Blob([text]).stream()
+          .pipeThrough(new CompressionStream("gzip"));
+        new Response(stream).arrayBuffer().then(function (buffer) {
+          then(buffer.byteLength);
+        }).catch(function () { then(null); });
+      } catch (e) {
+        then(null);
+      }
+    }
+    /* ---- END: how big it is once the server has compressed it ---- */
+
+    /* ---- START: running it and showing the numbers ---- */
+    function run() {
+      var source = input.value;
+      if (source.trim() === "") {
+        output.textContent = "";
+        lastOut = "";
+        ["sBefore", "sAfter", "sSaved", "sGzBefore", "sGzAfter"].forEach(function (id) {
+          document.getElementById(id).textContent = DASH;
+        });
+        setMessage("Paste some HTML on the left.");
+        return;
+      }
+
+      var result = minify(source);
+      lastOut = result;
+      output.textContent = result;
+
+      var before = new TextEncoder().encode(source).length;
+      var after = new TextEncoder().encode(result).length;
+      var saved = before ? (before - after) / before * 100 : 0;
+
+      document.getElementById("sBefore").textContent = formatBytes(before);
+      document.getElementById("sAfter").textContent = formatBytes(after);
+      document.getElementById("sSaved").textContent = formatNumber(saved, 1) + "%";
+
+      setMessage(optBetween.checked
+        ? "The space between tags was removed. Check anywhere two inline "
+          + "elements sit side by side - that space was a word space."
+        : "Comments and extra whitespace gone. pre, textarea, script and "
+          + "style were left exactly as they were.",
+        optBetween.checked ? "bad" : "ok");
+
+      /* Numbered, because two gzip runs started in the wrong order would
+         otherwise print the wrong pair of numbers. */
+      pending += 1;
+      var mine = pending;
+      gzipSize(source, function (gzBefore) {
+        if (mine !== pending) { return; }
+        gzipSize(result, function (gzAfter) {
+          if (mine !== pending) { return; }
+          if (gzBefore === null || gzAfter === null) {
+            document.getElementById("sGzBefore").textContent = "n/a";
+            document.getElementById("sGzAfter").textContent = "n/a";
+            return;
+          }
+          document.getElementById("sGzBefore").textContent = formatBytes(gzBefore);
+          document.getElementById("sGzAfter").textContent = formatBytes(gzAfter);
+
+          var realSaving = gzBefore ? (gzBefore - gzAfter) / gzBefore * 100 : 0;
+          if (realSaving < saved - 5) {
+            setMessage("Raw saving " + formatNumber(saved, 1) + "%, but only "
+                     + formatNumber(realSaving, 1) + "% once gzipped - and "
+                     + "gzipped is what a visitor downloads. Compression had "
+                     + "already taken most of it.", "ok");
+          }
+        });
+      });
+    }
+    /* ---- END: running it and showing the numbers ---- */
+
+    /* ---- START: wiring ---- */
+    [input, optComments, optCollapse, optBetween].forEach(function (el) {
+      el.addEventListener("input", run);
+      el.addEventListener("change", run);
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastOut) { showToast("Nothing to copy"); return; }
+      copyText(lastOut);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+    /* ---- END: wiring ---- */
+
+    run();
+  })();
+  </script>
+</body>
+</html>
