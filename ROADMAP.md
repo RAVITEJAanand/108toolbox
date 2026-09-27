@@ -226,7 +226,7 @@ make; it is written here so it is made with the number in front of us.
 
 | Category | Tools | Built |
 |---|---|---|
-| Calculator | 20 | 16 |
+| Calculator | 20 | 19 |
 | Developer | 18 | 16 |
 | Text | 16 | 16 |
 | Image | 14 | 7 |
@@ -234,7 +234,7 @@ make; it is written here so it is made with the number in front of us.
 | PDF | 10 | 0 |
 | Date & Time | 8 | 8 |
 | Random | 8 | 6 |
-| **Total** | **108** | **82** |
+| **Total** | **108** | **85** |
 
 ---
 
@@ -299,13 +299,13 @@ matches, so do not rename them later. ✅ = already live.
 | 10 | `simple-interest-calculator` ✅ | easy |
 | 11 | `compound-interest-calculator` ✅ | easy |
 | 12 | `margin-markup-calculator` ✅ | easy |
-| 13 | `unit-price-comparison` | easy |
+| 13 | `unit-price-comparison` ✅ | easy |
 | 14 | `fuel-cost-calculator` ✅ | easy |
 | 15 | `gst-calculator` ✅ | easy — India |
 | 16 | `sip-calculator` ✅ | medium — India, very high volume |
 | 17 | `salary-calculator` ✅ | medium — CTC to in-hand, India |
-| 18 | `calorie-calculator` | medium — BMR / TDEE |
-| 19 | `scientific-calculator` | medium |
+| 18 | `calorie-calculator` ✅ | medium — BMR / TDEE |
+| 19 | `scientific-calculator` ✅ | medium |
 | 20 | `income-tax-calculator` | hard — **rates change yearly, see Maintenance** |
 
 ### Developer (18)

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Scientific Calculator — Degrees or Radians, Clearly</title>
+  <meta name="description" content="A scientific calculator that shows the whole expression, says whether angles are degrees or radians, and explains the answers that look wrong but are not.">
+  <link rel="canonical" href="https://108toolbox.in/tools/scientific-calculator.html">
+
+  <meta property="og:title" content="Scientific Calculator — Degrees or Radians, Clearly">
+  <meta property="og:description" content="A scientific calculator that shows the whole expression, says whether angles are degrees or radians, and explains the answers that look wrong but are not.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=22">
+  <link rel="stylesheet" href="../css/tool.css?v=22">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "sin(30) gives a strange number. Why?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The angle mode is on radians. In radians 30 is about five full turns and a bit, and the sine of that is -0.988. Switch the dropdown to degrees for 0.5. This is the single most common mistake with any calculator."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does 0.1 + 0.2 not give exactly 0.3?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because binary cannot write a tenth exactly, just as decimal cannot write a third exactly. The tiny error is real and is in every computer. The page tells you when it has rounded the display rather than pretending otherwise."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is log base 10 or base e?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "log is base 10 here and ln is base e, which is the common convention. It is worth checking on any calculator, because a few use log for the natural logarithm and the two differ by a factor of about 2.3."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does the % key do?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The remainder after division - 7 % 3 is 1. It is not a percentage key. For a percentage, divide: 15% of 80 is 80 * 15 / 100."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use it for very large numbers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Up to about 15 or 16 significant digits exactly, after which digits start to be approximate - that is the limit of the number format, not of this page. Factorials stop being exact at 21! and overflow entirely past 170!."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
+        <span>Scientific Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Scientific Calculator</h1>
+        <p>Type the whole sum and see it as you go. The angle mode is on screen
+           rather than hidden behind a button, because that is where most wrong
+           answers come from.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <style>
+        .sc-keys { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--s2); }
+        .sc-keys .btn { padding: .55rem .2rem; font-size: .95rem; }
+      </style>
+
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="expr">Expression</label>
+            <input type="text" id="expr" class="mono" spellcheck="false"
+                   value="sin(30) + sqrt(16) * 2">
+          </div>
+
+          <div class="field">
+            <label for="angle">Angles in</label>
+            <select id="angle">
+              <option value="deg" selected>Degrees &mdash; sin(30) is 0.5</option>
+              <option value="rad">Radians &mdash; sin(30) is -0.988</option>
+            </select>
+          </div>
+
+          <label class="check"><input type="checkbox" id="optFull"> Show every digit the machine has</label>
+
+          <div class="sc-keys" style="margin-top:var(--s3)">
+            <button class="btn btn--ghost" type="button" data-ins="sin(">sin</button>
+            <button class="btn btn--ghost" type="button" data-ins="cos(">cos</button>
+            <button class="btn btn--ghost" type="button" data-ins="tan(">tan</button>
+            <button class="btn btn--ghost" type="button" data-ins="ln(">ln</button>
+            <button class="btn btn--ghost" type="button" data-ins="log(">log</button>
+
+            <button class="btn btn--ghost" type="button" data-ins="sqrt(">&radic;</button>
+            <button class="btn btn--ghost" type="button" data-ins="^">x^y</button>
+            <button class="btn btn--ghost" type="button" data-ins="!">n!</button>
+            <button class="btn btn--ghost" type="button" data-ins="pi">&pi;</button>
+            <button class="btn btn--ghost" type="button" data-ins="e">e</button>
+
+            <button class="btn btn--ghost" type="button" data-ins="(">(</button>
+            <button class="btn btn--ghost" type="button" data-ins=")">)</button>
+            <button class="btn btn--ghost" type="button" data-ins="%">mod</button>
+            <button class="btn btn--ghost" type="button" data-ins="abs(">abs</button>
+            <button class="btn btn--danger" type="button" id="clearBtn">C</button>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost" type="button" id="copyBtn">Copy the answer</button>
+            <button class="btn btn--ghost" type="button" id="histBtn">Clear history</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <div class="result">
+            <span class="result__num mono" id="answer">&mdash;</span>
+            <span class="result__label" id="answerLabel">Answer</span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sMode">deg</span><span class="stat__label">Angles</span></div>
+            <div class="stat"><span class="stat__num" id="sSteps">&mdash;</span><span class="stat__label">Terms</span></div>
+            <div class="stat"><span class="stat__num" id="sExact">&mdash;</span><span class="stat__label">Exact?</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+
+          <span class="panel__label" style="margin-top:var(--s3)">History</span>
+          <pre class="out mono" id="history" style="min-height:110px"></pre>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>Degrees or radians, said out loud</h2>
+        <p>This is where nearly every wrong trigonometry answer comes from, and
+           on a pocket calculator the mode is a tiny letter in the corner that
+           nobody looks at. Here it is a dropdown with the answer written into
+           it: <code>sin(30)</code> is <strong>0.5</strong> in degrees and
+           <strong>-0.988</strong> in radians. Both are correct. Only one is
+           what you meant.</p>
+        <p>School geometry, surveying and most engineering are in degrees.
+           Anything that came out of a programming language or a physics
+           formula is almost certainly radians.</p>
+
+        <h2>Why 0.1 + 0.2 is not quite 0.3</h2>
+        <p>Type it in and the exactness tile will say <em>rounded</em>. The
+           machine's answer is 0.30000000000000004, and it is not a
+           bug.</p>
+        <p>Computers store numbers in binary, and a third of the everyday
+           decimals cannot be written exactly in binary any more than a third
+           can be written exactly as a decimal. 0.1 is stored as something
+           almost exactly a tenth, 0.2 likewise, and the two almosts add up to
+           a visible speck. Every calculator on every computer has this; most
+           hide it by rounding the display and saying nothing.</p>
+        <p>This one rounds the display too &mdash; twelve significant figures,
+           which is where the noise starts &mdash; but it tells you when it has
+           done so, and the tick box shows you everything the machine actually
+           holds. That matters if you are chasing a discrepancy in a
+           spreadsheet: now you know where it came from.</p>
+
+        <h2>It reads the sum rather than running it</h2>
+        <p>There is a short cut for building a calculator on a web page: hand
+           what the visitor typed to the browser and let it run as code. It is
+           a few lines and it is an open door &mdash; whatever is in that box
+           gets executed.</p>
+        <p>So this reads the expression properly instead: splits it into
+           numbers, operators and function names, arranges them by precedence,
+           and works out the answer. Nothing you type is ever run as code. The
+           practical upshot is that a typing mistake gives you a message about
+           the mistake, rather than a strange result from something you never
+           meant to write.</p>
+
+        <h2>The small print of the keypad</h2>
+        <p><code>log</code> is base 10 and <code>ln</code> is natural, which is
+           the usual convention and is worth checking on any calculator you did
+           not write. <code>%</code> is the remainder after division, not a
+           percentage &mdash; for percentages use plain arithmetic.
+           <code>!</code> is factorial and only for whole numbers up to 170,
+           after which the answer is larger than the machine can hold.
+           <code>2(3+4)</code> works and means what it looks like.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>sin(30) gives a strange number. Why?</h3>
+          <p>The angle mode is on radians. In radians 30 is about five full turns and a bit, and the sine of that is -0.988. Switch the dropdown to degrees for 0.5. This is the single most common mistake with any calculator.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does 0.1 + 0.2 not give exactly 0.3?</h3>
+          <p>Because binary cannot write a tenth exactly, just as decimal cannot write a third exactly. The tiny error is real and is in every computer. The page tells you when it has rounded the display rather than pretending otherwise.</p>
+        </div>
+        <div class="faq">
+          <h3>Is log base 10 or base e?</h3>
+          <p>log is base 10 here and ln is base e, which is the common convention. It is worth checking on any calculator, because a few use log for the natural logarithm and the two differ by a factor of about 2.3.</p>
+        </div>
+        <div class="faq">
+          <h3>What does the % key do?</h3>
+          <p>The remainder after division - 7 % 3 is 1. It is not a percentage key. For a percentage, divide: 15% of 80 is 80 * 15 / 100.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I use it for very large numbers?</h3>
+          <p>Up to about 15 or 16 significant digits exactly, after which digits start to be approximate - that is the limit of the number format, not of this page. Factorials stop being exact at 21! and overflow entirely past 170!.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=22"></script>
+  <script src="../js/tool-helpers.js?v=22"></script>
+  <script>window.CURRENT_TOOL = "scientific-calculator";</script>
+  <script src="../js/main.js?v=22"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var expr   = document.getElementById("expr");
+    var angle  = document.getElementById("angle");
+    var optFull = document.getElementById("optFull");
+    var answer = document.getElementById("answer");
+    var msg    = document.getElementById("msg");
+    var DASH   = String.fromCharCode(0x2014);
+
+    var history = [];
+    var lastAnswer = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: the functions and constants on offer ----
+       Trigonometry reads the angle mode at the moment it runs, so changing
+       the dropdown changes the answer without anything being re-typed. */
+    function toRadians(x) { return angle.value === "deg" ? x * Math.PI / 180 : x; }
+    function fromRadians(x) { return angle.value === "deg" ? x * 180 / Math.PI : x; }
+
+    /* Object.create(null), not a plain object. A plain one already
+       answers to constructor, toString, valueOf and hasOwnProperty, so
+       FUNCTIONS["constructor"] comes back truthy and the word is
+       accepted as a function name - then called. Typing 'constructor'
+       produced a baffling result instead of an honest refusal. The same
+       trap caught word-counter's stop-word list. */
+    var FUNCTIONS = Object.assign(Object.create(null), {
+      sin: function (x) { return Math.sin(toRadians(x)); },
+      cos: function (x) { return Math.cos(toRadians(x)); },
+      tan: function (x) { return Math.tan(toRadians(x)); },
+      asin: function (x) { return fromRadians(Math.asin(x)); },
+      acos: function (x) { return fromRadians(Math.acos(x)); },
+      atan: function (x) { return fromRadians(Math.atan(x)); },
+      ln: Math.log,
+      log: function (x) { return Math.log(x) / Math.LN10; },
+      sqrt: Math.sqrt,
+      cbrt: Math.cbrt,
+      abs: Math.abs,
+      exp: Math.exp,
+      round: Math.round,
+      floor: Math.floor,
+      ceil: Math.ceil
+    });
+
+    var CONSTANTS = Object.assign(Object.create(null), { pi: Math.PI, e: Math.E });
+
+    var OPERATORS = {
+      "+": { rank: 1, right: false, apply: function (a, b) { return a + b; } },
+      "-": { rank: 1, right: false, apply: function (a, b) { return a - b; } },
+      "*": { rank: 2, right: false, apply: function (a, b) { return a * b; } },
+      "/": { rank: 2, right: false, apply: function (a, b) { return a / b; } },
+      "%": { rank: 2, right: false, apply: function (a, b) { return a % b; } },
+      "^": { rank: 4, right: true,  apply: function (a, b) { return Math.pow(a, b); } }
+    };
+    /* ---- END: the functions and constants on offer ---- */
+
+    /* ---- START: splitting the expression into pieces ----
+       The alternative is to hand what was typed to the browser and let it run
+       as code. That is three lines and an open door: whatever is in the box
+       gets executed. Reading it properly costs more code and means nothing
+       typed here is ever run. */
+    function tokenize(text) {
+      var tokens = [];
+      var i = 0;
+      var s = text.replace(/\s+/g, "");
+
+      while (i < s.length) {
+        var ch = s.charAt(i);
+
+        if (/[0-9.]/.test(ch)) {
+          var num = "";
+          while (i < s.length && /[0-9.]/.test(s.charAt(i))) { num += s.charAt(i); i += 1; }
+          /* Scientific notation: 1.5e3, and the minus that can follow the e. */
+          if (i < s.length && /[eE]/.test(s.charAt(i)) &&
+              /[0-9+-]/.test(s.charAt(i + 1) || "")) {
+            num += s.charAt(i); i += 1;
+            if (/[+-]/.test(s.charAt(i))) { num += s.charAt(i); i += 1; }
+            while (i < s.length && /[0-9]/.test(s.charAt(i))) { num += s.charAt(i); i += 1; }
+          }
+          if (!isFinite(Number(num))) { throw new Error(num + " is not a number"); }
+          tokens.push({ kind: "number", value: Number(num) });
+          continue;
+        }
+
+        if (/[a-zA-Z]/.test(ch)) {
+          var word = "";
+          while (i < s.length && /[a-zA-Z0-9]/.test(s.charAt(i))) {
+            word += s.charAt(i); i += 1;
+          }
+          var lower = word.toLowerCase();
+          if (FUNCTIONS[lower]) { tokens.push({ kind: "function", name: lower }); }
+          else if (CONSTANTS[lower] !== undefined) {
+            tokens.push({ kind: "number", value: CONSTANTS[lower] });
+          } else { throw new Error(word + " is not a function this page knows"); }
+          continue;
+        }
+
+        if (OPERATORS[ch]) { tokens.push({ kind: "operator", op: ch }); i += 1; continue; }
+        if (ch === "(" || ch === ")") { tokens.push({ kind: ch }); i += 1; continue; }
+        if (ch === "!") { tokens.push({ kind: "factorial" }); i += 1; continue; }
+        if (ch === ",") { tokens.push({ kind: "comma" }); i += 1; continue; }
+
+        throw new Error("I do not understand " + ch);
+      }
+      return tokens;
+    }
+    /* ---- END: splitting the expression into pieces ---- */
+
+    /* ---- START: the two things people write without thinking ----
+       A minus at the front of a sum or straight after another operator is a
+       sign, not a subtraction. And 2(3+4) means multiply - everybody writes
+       it, almost no parser expects it. Both are settled here so the rest of
+       the work does not have to know about them. */
+    function tidy(tokens) {
+      var out = [];
+      for (var i = 0; i < tokens.length; i++) {
+        var t = tokens[i];
+        var prev = out[out.length - 1];
+
+        if (t.kind === "operator" && (t.op === "-" || t.op === "+")) {
+          var atStart = !prev;
+          var afterOperator = prev && (prev.kind === "operator" || prev.kind === "(");
+          if (atStart || afterOperator) {
+            if (t.op === "-") {
+              out.push({ kind: "number", value: -1 });
+              out.push({ kind: "operator", op: "*" });
+            }
+            continue;
+          }
+        }
+
+        var startsValue = t.kind === "number" || t.kind === "function" || t.kind === "(";
+        var endsValue = prev && (prev.kind === "number" || prev.kind === ")"
+                                 || prev.kind === "factorial");
+        if (startsValue && endsValue) {
+          out.push({ kind: "operator", op: "*" });
+        }
+        out.push(t);
+      }
+      return out;
+    }
+    /* ---- END: the two things people write without thinking ---- */
+
+    /* ---- START: factorial, with its two honest limits ---- */
+    function factorial(n) {
+      if (n < 0 || Math.floor(n) !== n) {
+        throw new Error("factorial only works on whole numbers from zero up");
+      }
+      if (n > 170) { throw new Error("170! is as far as this number format goes"); }
+      var total = 1;
+      for (var i = 2; i <= n; i++) { total *= i; }
+      return total;
+    }
+    /* ---- END: factorial, with its two honest limits ---- */
+
+    /* ---- START: precedence, then the answer ----
+       Shunting-yard: operators wait on a stack until something of equal or
+       higher precedence turns up, which is how 2 + 3 * 4 comes out as 14
+       rather than 20. Right-associative for ^, so 2^3^2 is 2^9, not 8^2. */
+    function evaluate(tokens) {
+      var values = [];
+      var ops = [];
+
+      function applyTop() {
+        var op = ops.pop();
+        if (op.kind === "function") {
+          if (!values.length) { throw new Error("a function is missing its number"); }
+          values.push(FUNCTIONS[op.name](values.pop()));
+          return;
+        }
+        if (values.length < 2) { throw new Error("an operator is missing a number"); }
+        var b = values.pop();
+        var a = values.pop();
+        values.push(OPERATORS[op.op].apply(a, b));
+      }
+
+      for (var i = 0; i < tokens.length; i++) {
+        var t = tokens[i];
+
+        if (t.kind === "number") { values.push(t.value); continue; }
+        if (t.kind === "factorial") {
+          if (!values.length) { throw new Error("factorial has nothing to work on"); }
+          values.push(factorial(values.pop()));
+          continue;
+        }
+        if (t.kind === "function") { ops.push(t); continue; }
+        if (t.kind === "(") { ops.push(t); continue; }
+        if (t.kind === ")") {
+          while (ops.length && ops[ops.length - 1].kind !== "(") { applyTop(); }
+          if (!ops.length) { throw new Error("there is a ) with no ( to match it"); }
+          ops.pop();
+          if (ops.length && ops[ops.length - 1].kind === "function") { applyTop(); }
+          continue;
+        }
+        if (t.kind === "operator") {
+          var mine = OPERATORS[t.op];
+          while (ops.length) {
+            var top = ops[ops.length - 1];
+            if (top.kind !== "operator") { break; }
+            var theirs = OPERATORS[top.op];
+            if (theirs.rank > mine.rank ||
+                (theirs.rank === mine.rank && !mine.right)) { applyTop(); }
+            else { break; }
+          }
+          ops.push(t);
+          continue;
+        }
+        throw new Error("a comma has no place in this expression");
+      }
+
+      while (ops.length) {
+        if (ops[ops.length - 1].kind === "(") {
+          throw new Error("there is a ( that never closes");
+        }
+        applyTop();
+      }
+      if (values.length !== 1) { throw new Error("that is not a complete sum"); }
+      return values[0];
+    }
+    /* ---- END: precedence, then the answer ---- */
+
+    /* ---- START: showing a number honestly ----
+       Twelve significant figures is where the binary noise starts. Rounding
+       there is what every calculator does; saying so when it happened is what
+       almost none of them do, and it is the difference between a mystifying
+       spreadsheet discrepancy and an explained one. */
+    function present(value) {
+      if (!isFinite(value)) {
+        return { text: value > 0 ? "Infinity" : (value < 0 ? "-Infinity" : "not a number"),
+                 exact: false };
+      }
+      var full = String(value);
+      var rounded = Number(value.toPrecision(12));
+      return {
+        text: optFull.checked ? full : String(rounded),
+        exact: full === String(rounded),
+        full: full
+      };
+    }
+    /* ---- END: showing a number honestly ---- */
+
+    /* ---- START: running it ---- */
+    function run(remember) {
+      var text = expr.value.trim();
+      document.getElementById("sMode").textContent = angle.value;
+
+      if (text === "") {
+        answer.textContent = DASH;
+        document.getElementById("sSteps").textContent = DASH;
+        document.getElementById("sExact").textContent = DASH;
+        lastAnswer = "";
+        setMessage("Type a sum above.");
+        return;
+      }
+
+      var tokens, value;
+      try {
+        tokens = tidy(tokenize(text));
+        document.getElementById("sSteps").textContent = tokens.length;
+        value = evaluate(tokens);
+      } catch (error) {
+        answer.textContent = DASH;
+        document.getElementById("sExact").textContent = DASH;
+        lastAnswer = "";
+        setMessage(error.message + ".", "bad");
+        return;
+      }
+
+      var shown = present(value);
+      answer.textContent = shown.text;
+      lastAnswer = shown.text;
+      document.getElementById("sExact").textContent = shown.exact ? "exact" : "rounded";
+
+      if (!isFinite(value)) {
+        setMessage("That is past what the number format can hold, or a "
+                 + "division by zero.", "bad");
+      } else if (/(sin|cos|tan)\(/i.test(text)) {
+        /* Before the rounding note, deliberately. The wrong angle mode makes
+           an answer WRONG; rounding only makes it slightly imprecise, and the
+           exactness tile reports that anyway. */
+        setMessage("Angles are being read as " + (angle.value === "deg"
+          ? "degrees. Switch above if your formula came from code or physics."
+          : "radians. Switch above if this is school or survey work."), "ok");
+      } else if (!shown.exact && !optFull.checked) {
+        setMessage("Shown to twelve figures. The machine actually holds "
+                 + shown.full + " - binary cannot write every decimal "
+                 + "exactly, and this is what that looks like.", "ok");
+      } else {
+        setMessage("Nothing you type is run as code - the sum is read and "
+                 + "worked out.", "ok");
+      }
+
+      if (remember) {
+        history.unshift(text + "  =  " + shown.text);
+        history = history.slice(0, 12);
+        document.getElementById("history").textContent = history.join("\n");
+      }
+    }
+    /* ---- END: running it ---- */
+
+    /* ---- START: wiring ---- */
+    expr.addEventListener("input", function () { run(false); });
+    angle.addEventListener("change", function () { run(false); });
+    optFull.addEventListener("change", function () { run(false); });
+
+    expr.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { run(true); }
+    });
+
+    Array.prototype.forEach.call(
+      document.querySelectorAll("[data-ins]"), function (btn) {
+        btn.addEventListener("click", function () {
+          expr.value += btn.getAttribute("data-ins");
+          expr.focus();
+          run(false);
+        });
+      });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      expr.value = "";
+      run(false);
+      expr.focus();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastAnswer) { showToast("Nothing to copy"); return; }
+      copyText(lastAnswer);
+    });
+
+    document.getElementById("histBtn").addEventListener("click", function () {
+      history = [];
+      document.getElementById("history").textContent = "";
+    });
+    /* ---- END: wiring ---- */
+
+    run(false);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Calorie Calculator — An Estimate, Honestly Labelled</title>
+  <meta name="description" content="Work out your resting and daily calorie needs with the Mifflin-St Jeor formula, and read how wide the error bars really are before you trust the number.">
+  <link rel="canonical" href="https://108toolbox.in/tools/calorie-calculator.html">
+
+  <meta property="og:title" content="Calorie Calculator — An Estimate, Honestly Labelled">
+  <meta property="og:description" content="Work out your resting and daily calorie needs with the Mifflin-St Jeor formula, and read how wide the error bars really are before you trust the number.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=22">
+  <link rel="stylesheet" href="../css/tool.css?v=22">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How accurate is it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Within roughly ten per cent of the real resting figure for most people, and further out for anyone whose body is far from the average the formula was built on. The daily total is less accurate still, because the activity multiplier is a rule of thumb rather than a measurement."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which activity level should I choose?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Probably one lower than you first think. Nearly everyone picks too high. A desk job with three gym sessions a week is the light row, not the moderate one."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does it ask for male or female?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because the published formula has exactly two variants and differs between them by 166 calories. That is a limit of the 1990 study it comes from. If neither fits you, calculate both and treat the gap between them as your range."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I eat this many calories to lose weight?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "This page gives the figure for staying as you are, and deliberately does not prescribe a target. Deciding to eat less than you burn, and by how much, is worth doing with a doctor or a registered dietitian - particularly if you have any condition that affects appetite or metabolism."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my information sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Your age, weight and height are used by JavaScript in your own browser and are never uploaded or stored. Close the tab and they are gone."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
+        <span>Calorie Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Calorie Calculator</h1>
+        <p>Your resting burn and your daily total, from the formula most
+           dietitians use &mdash; together with an honest account of how
+           approximate it is.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="units">Units</label>
+            <select id="units">
+              <option value="metric" selected>Kilograms and centimetres</option>
+              <option value="imperial">Pounds, feet and inches</option>
+            </select>
+          </div>
+
+          <div class="field" id="metricFields">
+            <label for="kg">Weight in kg</label>
+            <input type="number" id="kg" min="20" max="400" step="0.1" value="70">
+            <label for="cm" style="margin-top:var(--s2)">Height in cm</label>
+            <input type="number" id="cm" min="80" max="260" step="0.5" value="170">
+          </div>
+
+          <div class="field" id="imperialFields" hidden>
+            <label for="lb">Weight in pounds</label>
+            <input type="number" id="lb" min="44" max="880" step="0.5" value="154">
+            <label style="margin-top:var(--s2)">Height</label>
+            <div class="btn-row">
+              <input type="number" id="ft" min="3" max="8" step="1" value="5" style="max-width:110px">
+              <span style="align-self:center">ft</span>
+              <input type="number" id="inch" min="0" max="11" step="1" value="7" style="max-width:110px">
+              <span style="align-self:center">in</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="age">Age in years</label>
+            <input type="number" id="age" min="15" max="100" step="1" value="30">
+          </div>
+
+          <div class="field">
+            <label for="sex">Formula variant</label>
+            <select id="sex">
+              <option value="male" selected>Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="activity">How active a day</label>
+            <select id="activity">
+              <option value="1.2">Desk work, little exercise</option>
+              <option value="1.375" selected>Light &mdash; 1 to 3 days a week</option>
+              <option value="1.55">Moderate &mdash; 3 to 5 days</option>
+              <option value="1.725">Hard &mdash; 6 or 7 days</option>
+              <option value="1.9">Very hard, or a physical job</option>
+            </select>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="copyBtn">Copy the summary</button>
+            <button class="btn btn--danger" type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <div class="result">
+            <span class="result__num" id="bigTdee">&mdash;</span>
+            <span class="result__label">Calories a day to stay as you are</span>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sBmr">&mdash;</span><span class="stat__label">At complete rest</span></div>
+            <div class="stat"><span class="stat__num" id="sRange">&mdash;</span><span class="stat__label">Realistic range</span></div>
+            <div class="stat"><span class="stat__num" id="sActivity">&mdash;</span><span class="stat__label">Activity added</span></div>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s3)">If your week looked different</span>
+          <pre class="out mono" id="ladder" style="min-height:130px" aria-live="polite"></pre>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>Read the range, not the number</h2>
+        <p>The figure above looks precise and is not. The Mifflin-St Jeor
+           formula &mdash; the one most dietitians reach for &mdash; lands
+           within about ten per cent of a person's real resting burn most of
+           the time. Most of the time, not always: it is built from averages,
+           and it is furthest out for people who are very muscular, very tall,
+           very small, or older.</p>
+        <p>That is why a range is shown beside the number. If the range is 2,100
+           to 2,600, then 2,350 is not your answer &mdash; the range is your
+           answer, and anything inside it is consistent with what the formula
+           knows about you, which is four numbers.</p>
+
+        <h2>The activity multiplier is the weak link</h2>
+        <p>The resting figure comes from a formula fitted to measurements. The
+           step after it &mdash; multiply by 1.375 because you exercise
+           lightly &mdash; is a rule of thumb, and it is the part that moves
+           the answer most.</p>
+        <p>People also reliably pick a level above the one they live. An hour
+           at the gym three times a week, with a desk job and a car, is closer
+           to the light row than the moderate one. The ladder underneath shows
+           every level at once so you can see how much the choice is worth: it
+           is often four or five hundred calories between neighbouring rows,
+           which is more than the formula's own error.</p>
+
+        <h2>What to do with it</h2>
+        <p>Treat it as a starting guess to <em>test</em>. Eat around that
+           figure for two or three weeks, weigh yourself at the same time of
+           day, and see what actually happens. Your body's answer beats the
+           formula's, because it is measuring you rather than a population
+           average.</p>
+        <p>Day-to-day weight swings of a kilo or two are water and food in
+           transit, not fat. It takes a couple of weeks of readings before a
+           trend means anything at all.</p>
+
+        <h2>Two honest limits</h2>
+        <p><strong>The formula has only two variants</strong>, male and female,
+           because that is how it was published and validated. That is a limit
+           of a 1990 study, not a statement about people. If neither fits, the
+           two results bracket a reasonable estimate &mdash; try both and read
+           the span between them as the range.</p>
+        <p><strong>This is arithmetic, not advice.</strong> It is a formula with
+           your numbers in it. If you are pregnant or breastfeeding, managing
+           diabetes, thyroid disease, an eating disorder or any condition that
+           affects appetite or metabolism, or you are under about eighteen,
+           the number on this page is not the one to plan from &mdash; a
+           doctor or a registered dietitian is.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How accurate is it?</h3>
+          <p>Within roughly ten per cent of the real resting figure for most people, and further out for anyone whose body is far from the average the formula was built on. The daily total is less accurate still, because the activity multiplier is a rule of thumb rather than a measurement.</p>
+        </div>
+        <div class="faq">
+          <h3>Which activity level should I choose?</h3>
+          <p>Probably one lower than you first think. Nearly everyone picks too high. A desk job with three gym sessions a week is the light row, not the moderate one.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does it ask for male or female?</h3>
+          <p>Because the published formula has exactly two variants and differs between them by 166 calories. That is a limit of the 1990 study it comes from. If neither fits you, calculate both and treat the gap between them as your range.</p>
+        </div>
+        <div class="faq">
+          <h3>Should I eat this many calories to lose weight?</h3>
+          <p>This page gives the figure for staying as you are, and deliberately does not prescribe a target. Deciding to eat less than you burn, and by how much, is worth doing with a doctor or a registered dietitian - particularly if you have any condition that affects appetite or metabolism.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my information sent anywhere?</h3>
+          <p>No. Your age, weight and height are used by JavaScript in your own browser and are never uploaded or stored. Close the tab and they are gone.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=22"></script>
+  <script src="../js/tool-helpers.js?v=22"></script>
+  <script>window.CURRENT_TOOL = "calorie-calculator";</script>
+  <script src="../js/main.js?v=22"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var units    = document.getElementById("units");
+    var activity = document.getElementById("activity");
+    var sex      = document.getElementById("sex");
+    var ladder   = document.getElementById("ladder");
+    var msg      = document.getElementById("msg");
+    var DASH     = String.fromCharCode(0x2014);
+
+    var LEVELS = [
+      [1.2,   "Desk work, little exercise"],
+      [1.375, "Light - 1 to 3 days a week"],
+      [1.55,  "Moderate - 3 to 5 days"],
+      [1.725, "Hard - 6 or 7 days"],
+      [1.9,   "Very hard, or a physical job"]
+    ];
+
+    var summary = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: the measurements, whichever units were typed ---- */
+    function readBody() {
+      if (units.value === "imperial") {
+        var lb = Number(document.getElementById("lb").value);
+        var ft = Number(document.getElementById("ft").value);
+        var inch = Number(document.getElementById("inch").value);
+        return {
+          kg: lb * 0.45359237,
+          cm: (ft * 12 + inch) * 2.54
+        };
+      }
+      return {
+        kg: Number(document.getElementById("kg").value),
+        cm: Number(document.getElementById("cm").value)
+      };
+    }
+    /* ---- END: the measurements, whichever units were typed ---- */
+
+    /* ---- START: Mifflin-St Jeor ----
+       The formula most dietitians use, published in 1990. Two variants and no
+       others, differing by a flat 166 calories - a limit of that study, not a
+       statement about people, and said so on the page rather than left to be
+       inferred. */
+    function bmrOf(kg, cm, age, variant) {
+      var base = 10 * kg + 6.25 * cm - 5 * age;
+      return variant === "female" ? base - 161 : base + 5;
+    }
+    /* ---- END: Mifflin-St Jeor ---- */
+
+    /* ---- START: working it out ---- */
+    function calculate() {
+      var body = readBody();
+      var age = Number(document.getElementById("age").value);
+
+      if (!isFinite(body.kg) || !isFinite(body.cm) || !isFinite(age) ||
+          body.kg <= 0 || body.cm <= 0 || age <= 0) {
+        ["bigTdee", "sBmr", "sRange", "sActivity"].forEach(function (id) {
+          document.getElementById(id).textContent = DASH;
+        });
+        ladder.textContent = "";
+        summary = "";
+        setMessage("Fill in weight, height and age.");
+        return;
+      }
+      if (age < 15 || age > 100 || body.kg < 20 || body.cm < 80) {
+        setMessage("Those numbers are outside the range this formula was "
+                 + "built and tested on, so the answer would not mean much.",
+                   "bad");
+        return;
+      }
+
+      var bmr = bmrOf(body.kg, body.cm, age, sex.value);
+      var multiplier = Number(activity.value);
+      var tdee = bmr * multiplier;
+
+      document.getElementById("bigTdee").textContent = formatNumber(Math.round(tdee), 0);
+      document.getElementById("sBmr").textContent = formatNumber(Math.round(bmr), 0);
+      document.getElementById("sActivity").textContent =
+        "+" + formatNumber(Math.round(tdee - bmr), 0);
+
+      /* Ten per cent either way, which is what the formula is worth. Printing
+         a single number implies a precision nobody has. */
+      document.getElementById("sRange").textContent =
+        formatNumber(Math.round(tdee * 0.9 / 10) * 10, 0) + " - "
+        + formatNumber(Math.round(tdee * 1.1 / 10) * 10, 0);
+
+      ladder.textContent = LEVELS.map(function (level) {
+        var value = Math.round(bmr * level[0]);
+        var here = Math.abs(level[0] - multiplier) < 0.001;
+        return (here ? "> " : "  ") + formatNumber(value, 0).padStart(6)
+             + "   " + level[1];
+      }).join("\n");
+
+      summary = "Resting " + Math.round(bmr) + " calories a day, about "
+              + Math.round(tdee) + " with activity (range "
+              + Math.round(tdee * 0.9) + " to " + Math.round(tdee * 1.1) + ").";
+
+      var gapToNext = Math.round(bmr * 0.175);
+      setMessage("Give or take about ten per cent. Notice the ladder: moving "
+               + "one activity row is worth roughly " + formatNumber(gapToNext, 0)
+               + " calories, more than the formula's own error - so the row "
+               + "you pick matters more than the formula does.", "ok");
+    }
+    /* ---- END: working it out ---- */
+
+    /* ---- START: wiring ---- */
+    units.addEventListener("change", function () {
+      var imperial = units.value === "imperial";
+      document.getElementById("metricFields").hidden = imperial;
+      document.getElementById("imperialFields").hidden = !imperial;
+      calculate();
+    });
+
+    ["kg", "cm", "lb", "ft", "inch", "age"].forEach(function (id) {
+      document.getElementById(id).addEventListener("input", calculate);
+    });
+    [sex, activity].forEach(function (el) {
+      el.addEventListener("change", calculate);
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!summary) { showToast("Nothing to copy"); return; }
+      copyText(summary);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      units.value = "metric";
+      document.getElementById("metricFields").hidden = false;
+      document.getElementById("imperialFields").hidden = true;
+      document.getElementById("kg").value = 70;
+      document.getElementById("cm").value = 170;
+      document.getElementById("age").value = 30;
+      sex.value = "male";
+      activity.value = "1.375";
+      calculate();
+    });
+    /* ---- END: wiring ---- */
+
+    calculate();
+  })();
+  </script>
+</body>
+</html>

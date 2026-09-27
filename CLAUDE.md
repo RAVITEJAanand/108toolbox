@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 82 of a planned 108 tools are built, tested and live.
+**Where it stands:** 85 of a planned 108 tools are built, tested and live.
 Phase 2 is finished; Phase 3 has started.
 
 ---
@@ -34,11 +34,11 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`82 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`85 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">82</span> tools live
+<span data-tool-count="live">85</span> tools live
 <span data-tool-count="remaining">47</span> on the way
 ```
 
@@ -72,8 +72,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=21` → `?v=22` across all 92 pages (currently `?v=21`,
-442 occurrences), the template included.
+Find-and-replace `?v=22` → `?v=23` across all 95 pages (currently `?v=22`,
+457 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
 the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
@@ -107,7 +107,7 @@ python security.py     ATTACKS the files — hostile text in every box, every
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 82, not just the one you changed.** That is the
+**`test_tools.py` runs all 85, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -151,7 +151,7 @@ Umami or Cloudflare Web Analytics — or drop the claim. Not both.
 
 **Advertising is the same rule, and it is already decided.** The owner wants
 ads on once all 108 tools are live, and not before. The site currently
-promises "no ads" in the hero, in the footer of all 92 pages, in
+promises "no ads" in the hero, in the footer of all 95 pages, in
 `privacy.html` section 7 and in `disclaimer.html` section 9. Those promises
 get rewritten **first, in their own commit**, before a single line of ad code
 is added — otherwise the site starts lying to visitors on the day it starts
@@ -387,30 +387,32 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (82):** add-line-numbers, add-subtract-days, age-calculator,
+**Live (85):** add-line-numbers, add-subtract-days, age-calculator,
 area-converter, average-calculator, base64-encoder-decoder,
-binary-decimal-hex-converter, bmi-calculator, case-converter,
-character-frequency-counter, coin-flip, color-code-converter,
-compound-interest-calculator, cooking-measurement-converter,
-cron-expression-parser, css-minifier, csv-to-json, data-storage-converter,
-date-difference-calculator, days-until-countdown, dice-roller,
-discount-calculator, emi-calculator, find-and-replace, fraction-calculator,
-fuel-cost-calculator, gst-calculator, html-encoder-decoder, html-minifier,
-image-compressor, image-converter, image-resizer, image-rotator,
-image-to-base64, json-formatter, json-to-csv, jwt-decoder,
-leap-year-checker, lorem-ipsum-generator, margin-markup-calculator,
-text-to-morse, nato-phonetic-converter, number-to-words, password-generator,
-percentage-calculator, image-placeholder-generator, random-list-shuffler,
-random-number-generator, random-picker, ratio-calculator, readability-score,
-regex-tester, remove-duplicate-lines, remove-line-breaks, reverse-text,
-roman-numeral-converter, salary-calculator, hash-generator,
-shoe-size-converter, simple-interest-calculator, sip-calculator,
-sort-text-lines, speed-converter, sql-formatter, stopwatch-timer,
-svg-to-png, temperature-converter, text-diff-checker, text-repeater,
-text-to-speech, time-zone-converter, tip-calculator, unit-converter,
-timestamp-converter, url-encoder-decoder, slug-generator,
-username-generator, uuid-generator, week-number-calculator,
-whitespace-remover, word-counter, working-days-calculator.
+binary-decimal-hex-converter, bmi-calculator, calorie-calculator,
+case-converter, character-frequency-counter, coin-flip,
+color-code-converter, compound-interest-calculator,
+cooking-measurement-converter, cron-expression-parser, css-minifier,
+csv-to-json, data-storage-converter, date-difference-calculator,
+days-until-countdown, dice-roller, discount-calculator, emi-calculator,
+find-and-replace, fraction-calculator, fuel-cost-calculator, gst-calculator,
+html-encoder-decoder, html-minifier, image-compressor, image-converter,
+image-resizer, image-rotator, image-to-base64, json-formatter, json-to-csv,
+jwt-decoder, leap-year-checker, lorem-ipsum-generator,
+margin-markup-calculator, text-to-morse, nato-phonetic-converter,
+number-to-words, password-generator, percentage-calculator,
+image-placeholder-generator, random-list-shuffler, random-number-generator,
+random-picker, ratio-calculator, readability-score, regex-tester,
+remove-duplicate-lines, remove-line-breaks, reverse-text,
+roman-numeral-converter, salary-calculator, scientific-calculator,
+hash-generator, shoe-size-converter, simple-interest-calculator,
+sip-calculator, sort-text-lines, speed-converter, sql-formatter,
+stopwatch-timer, svg-to-png, temperature-converter, text-diff-checker,
+text-repeater, text-to-speech, time-zone-converter, tip-calculator,
+unit-converter, unit-price-comparison, timestamp-converter,
+url-encoder-decoder, slug-generator, username-generator, uuid-generator,
+week-number-calculator, whitespace-remover, word-counter,
+working-days-calculator.
 
 That count is checked: `check.py` fails if it drifts from the registry.
 It read 30 while listing 40 for a whole batch, which is the same hand-typed

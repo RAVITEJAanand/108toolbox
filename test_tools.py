@@ -4076,6 +4076,166 @@ T["time-zone-converter"] = r"""
   finish();
 """
 
+T["unit-price-comparison"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+
+  /* 500g at 45, 1kg at 82, 2.5kg at 235 - so 9.00, 8.20 and 9.40 per 100g.
+     The middle pack wins and the biggest is the worst buy, which is the
+     whole point the page is making. */
+  eq("the middle pack is best value", txt("bigBest"), "Pack 2");
+  eq("three packs compared", txt("sPacks"), "3");
+  eq("compared per 100 grams", txt("sUnit"), "100 g");
+  has("at 8.20", txt("bigLabel"), "8.20");
+  ok("a saving of about 13 per cent",
+     num("sSaving") > 12 && num("sSaving") < 14, txt("sSaving"));
+  has("the winner is marked in the list", txt("output"), "BEST  Pack 2");
+  has("and the page says the smaller pack won", txt("msg"), "SMALLER pack wins");
+
+  /* Kilos and grams are the same measure, so they compare happily. */
+  set("u1", "kg"); set("q1", "0.5");
+  eq("half a kilo is the same as 500 grams", txt("bigBest"), "Pack 2");
+  set("u1", "g"); set("q1", "500");
+
+  /* Weight against volume is not a comparison anyone can make. */
+  set("u2", "ml");
+  has("mixed measures are refused", txt("msg"), "not measured in the same way");
+  eq("and no winner is claimed", txt("bigBest"), String.fromCharCode(0x2014));
+  set("u2", "kg");
+
+  /* Pieces compare only with pieces. */
+  set("u1", "piece"); set("q1", "10"); set("p1", "50");
+  set("u2", "piece"); set("q2", "24"); set("p2", "96");
+  set("p3", ""); set("q3", "");
+  eq("24 for 96 beats 10 for 50", txt("bigBest"), "Pack 2");
+  eq("compared per piece", txt("sUnit"), "piece");
+
+  /* A near tie is not worth crossing the aisle for. */
+  set("p2", "50"); set("q2", "10");
+  has("a tie is called a tie", txt("msg"), "not worth choosing");
+
+  set("p2", ""); set("q2", "");
+  has("one pack alone cannot be compared", txt("msg"), "at least two packs");
+
+  click("resetBtn");
+  has("reset empties everything", txt("msg"), "at least two packs");
+  finish();
+"""
+
+T["scientific-calculator"] = r"""
+  /* sin(30) in degrees is 0.5, plus sqrt(16) times 2 which is 8. */
+  eq("the opening sum", txt("answer"), "8.5");
+  eq("angles start in degrees", txt("sMode"), "deg");
+
+  set("angle", "rad");
+  eq("the mode tile follows", txt("sMode"), "rad");
+  ok("and the answer changes completely", txt("answer") !== "8.5", txt("answer"));
+  has("with a warning about which mode is on", txt("msg"), "radians");
+  set("angle", "deg");
+  eq("back to 8.5", txt("answer"), "8.5");
+
+  set("expr", "2+3*4");
+  eq("multiplication before addition", txt("answer"), "14");
+  set("expr", "(2+3)*4");
+  eq("brackets win", txt("answer"), "20");
+  set("expr", "2^3^2");
+  eq("powers go right to left", txt("answer"), "512");
+  set("expr", "2(3+4)");
+  eq("writing the multiply sign is optional", txt("answer"), "14");
+  set("expr", "-5+3");
+  eq("a minus at the front is a sign", txt("answer"), "-2");
+  set("expr", "5!");
+  eq("factorial", txt("answer"), "120");
+  set("expr", "7%3");
+  eq("the percent key is a remainder", txt("answer"), "1");
+  set("expr", "log(100)");
+  eq("log is base ten", txt("answer"), "2");
+  set("expr", "ln(e)");
+  eq("ln is natural", txt("answer"), "1");
+
+  /* Floating point, reported rather than hidden. */
+  set("expr", "0.1+0.2");
+  eq("the display is rounded to something readable", txt("answer"), "0.3");
+  eq("and the tile admits it", txt("sExact"), "rounded");
+  has("with the real value spelled out", txt("msg"), "0.30000000000000004");
+  tick("optFull", true);
+  has("and shown in full when asked", txt("answer"), "0.30000000000000004");
+  tick("optFull", false);
+
+  set("expr", "2+2");
+  eq("an exact answer says exact", txt("sExact"), "exact");
+
+  /* It refuses rather than guessing, and nothing is run as code. */
+  set("expr", "2+");
+  has("a dangling operator is refused", txt("msg"), "missing a number");
+  set("expr", "(2+3");
+  has("an unclosed bracket is named", txt("msg"), "never closes");
+  set("expr", "foo(2)");
+  has("an unknown function is named", txt("msg"), "not a function");
+  set("expr", "constructor");
+  has("a built-in property is not a function here", txt("msg"), "not a function");
+  set("expr", "alert(1)");
+  has("and neither is anything else from the page", txt("msg"), "not a function");
+
+  set("expr", "");
+  has("an empty box asks for a sum", txt("msg"), "Type a sum");
+
+  /* The keypad appends to the expression. */
+  document.querySelector('[data-ins="pi"]').click();
+  has("the pi key inserts pi", val("expr"), "pi");
+  ok("and it is worked out", txt("answer").indexOf("3.14159") === 0, txt("answer"));
+
+  click("clearBtn");
+  eq("C empties the box", val("expr"), "");
+  finish();
+"""
+
+T["calorie-calculator"] = r"""
+  function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
+
+  /* Mifflin-St Jeor, worked by hand: 10*70 + 6.25*170 - 5*30 + 5 = 1617.5,
+     and 1617.5 * 1.375 = 2224. */
+  eq("resting burn", num("sBmr"), 1618);
+  eq("and the daily total", num("bigTdee"), 2224);
+  has("a range is given, not just a number", txt("sRange"), "-");
+  has("the activity part is shown as an addition", txt("sActivity"), "+");
+
+  /* The two variants differ by a flat 166. */
+  set("sex", "female");
+  eq("the female variant is 166 lower", num("sBmr"), 1452);
+  set("sex", "male");
+
+  /* The multiplier is the part that moves the answer most. */
+  set("activity", "1.2");
+  eq("desk work", num("bigTdee"), 1941);
+  set("activity", "1.9");
+  eq("a physical job", num("bigTdee"), 3073);
+  set("activity", "1.375");
+
+  var rows = txt("ladder").split("\n").filter(function (s) { return s !== ""; });
+  eq("every activity level is listed", rows.length, 5);
+  eq("with the chosen one marked",
+     rows.filter(function (r) { return r.indexOf(">") === 0; }).length, 1);
+  has("and the message explains why the ladder matters",
+      txt("msg"), "row you pick matters more");
+
+  /* Pounds and feet land within a couple of calories of the metric answer. */
+  set("units", "imperial");
+  ok("imperial agrees with metric", Math.abs(num("sBmr") - 1618) < 5, txt("sBmr"));
+  set("units", "metric");
+
+  /* Outside the range the formula was built on, it says so. */
+  set("age", "10");
+  has("a child is out of range", txt("msg"), "outside the range");
+  set("age", "30");
+
+  set("kg", "");
+  has("a missing weight is asked for", txt("msg"), "Fill in weight");
+
+  click("resetBtn");
+  eq("reset returns to the example", num("sBmr"), 1618);
+  finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 

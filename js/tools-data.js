@@ -99,6 +99,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "calorie-calculator",
+    name: "Calorie Calculator",
+    desc: "Resting and daily calorie needs, with the error bars shown not hidden.",
+    category: "Calculator",
+    icon: "\u{1F957}",
+    keywords: ["calorie calculator", "tdee calculator", "bmr calculator", "daily calorie needs", "maintenance calories", "how many calories do i need"],
+    popular: false
+  },
+  {
     slug: "case-converter",
     name: "Case Converter",
     desc: "Switch text to UPPERCASE, lowercase, Title Case, camelCase and more.",
@@ -540,6 +549,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "scientific-calculator",
+    name: "Scientific Calculator",
+    desc: "Whole expressions, with the angle mode on screen rather than hidden.",
+    category: "Calculator",
+    icon: "\u{1F9EE}",
+    keywords: ["scientific calculator", "online calculator", "trig calculator", "sin cos tan calculator", "log calculator", "expression calculator", "factorial calculator"],
+    popular: false
+  },
+  {
     slug: "hash-generator",
     name: "SHA Hash Generator",
     desc: "SHA-256, 384, 512 or SHA-1 of text or a file, computed in your browser.",
@@ -682,6 +700,15 @@ const TOOLS = [
     icon: "\u{1F4CF}",
     keywords: ["unit converter", "length converter", "weight converter", "volume converter", "cm to inches", "kg to pounds", "litres to gallons"],
     popular: true
+  },
+  {
+    slug: "unit-price-comparison",
+    name: "Unit Price Comparison",
+    desc: "Compare four packs by price per gram. The big one is not always cheaper.",
+    category: "Calculator",
+    icon: "\u{1F6D2}",
+    keywords: ["unit price calculator", "price per gram", "compare prices", "price comparison", "which pack is cheaper", "cost per unit", "price per kg calculator"],
+    popular: false
   },
   {
     slug: "timestamp-converter",
