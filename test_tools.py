@@ -5368,6 +5368,552 @@ function samplePhoto(be, overrides) {
   });
 """
 
+T["barcode-generator"] = r"""
+  var DASH = String.fromCharCode(0x2014);
+  var TIMES = String.fromCharCode(0x00D7);
+  var stage = document.getElementById("stage");
+  var pngBtn = document.getElementById("pngBtn");
+  var svgBtn = document.getElementById("svgBtn");
+
+  /* Record downloads instead of performing them. */
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+
+  /* ---- decoders written for this test; they share no table with the page ---- */
+  var C128_BITS = ["11011001100", "11001101100", "11001100110", "10010011000", "10010001100", "10001001100", "10011001000", "10011000100", "10001100100", "11001001000", "11001000100", "11000100100", "10110011100", "10011011100", "10011001110", "10111001100", "10011101100", "10011100110", "11001110010", "11001011100", "11001001110", "11011100100", "11001110100", "11101101110", "11101001100", "11100101100", "11100100110", "11101100100", "11100110100", "11100110010", "11011011000", "11011000110", "11000110110", "10100011000", "10001011000", "10001000110", "10110001000", "10001101000", "10001100010", "11010001000", "11000101000", "11000100010", "10110111000", "10110001110", "10001101110", "10111011000", "10111000110", "10001110110", "11101110110", "11010001110", "11000101110", "11011101000", "11011100010", "11011101110", "11101011000", "11101000110", "11100010110", "11101101000", "11101100010", "11100011010", "11101111010", "11001000010", "11110001010", "10100110000", "10100001100", "10010110000", "10010000110", "10000101100", "10000100110", "10110010000", "10110000100", "10011010000", "10011000010", "10000110100", "10000110010", "11000010010", "11001010000", "11110111010", "11000010100", "10001111010", "10100111100", "10010111100", "10010011110", "10111100100", "10011110100", "10011110010", "11110100100", "11110010100", "11110010010", "11011011110", "11011110110", "11110110110", "10101111000", "10100011110", "10001011110", "10111101000", "10111100010", "11110101000", "11110100010", "10111011110", "10111101110", "11101011110", "11110101110", "11010000100", "11010010000", "11010011100"];
+  var C128_STOP = "1100011101011";
+  var L = ["0001101", "0011001", "0010011", "0111101", "0100011", "0110001", "0101111", "0111011", "0110111", "0001011"], G = ["0100111", "0110011", "0011011", "0100001", "0011101", "0111001", "0000101", "0010001", "0001001", "0010111"], R = ["1110010", "1100110", "1101100", "1000010", "1011100", "1001110", "1010000", "1000100", "1001000", "1110100"], PAR = ["LLLLLL", "LLGLGG", "LLGGLG", "LLGGGL", "LGLLGG", "LGGLLG", "LGGGLL", "LGLGLG", "LGLGGL", "LGGLGL"];
+  var C39 = {
+    "0": "nnnwwnwnn", "1": "wnnwnnnnw", "2": "nnwwnnnnw", "3": "wnwwnnnnn", "4": "nnnwwnnnw",
+    "5": "wnnwwnnnn", "6": "nnwwwnnnn", "7": "nnnwnnwnw", "8": "wnnwnnwnn", "9": "nnwwnnwnn",
+    "A": "wnnnnwnnw", "B": "nnwnnwnnw", "C": "wnwnnwnnn", "D": "nnnnwwnnw", "E": "wnnnwwnnn",
+    "F": "nnwnwwnnn", "G": "nnnnnwwnw", "H": "wnnnnwwnn", "I": "nnwnnwwnn", "J": "nnnnwwwnn",
+    "K": "wnnnnnnww", "L": "nnwnnnnww", "M": "wnwnnnnwn", "N": "nnnnwnnww", "O": "wnnnwnnwn",
+    "P": "nnwnwnnwn", "Q": "nnnnnnwww", "R": "wnnnnnwwn", "S": "nnwnnnwwn", "T": "nnnnwnwwn",
+    "U": "wwnnnnnnw", "V": "nwwnnnnnw", "W": "wwwnnnnnn", "X": "nwnnwnnnw", "Y": "wwnnwnnnn",
+    "Z": "nwwnwnnnn", "-": "nwnnnnwnw", ".": "wwnnnnwnn", " ": "nwwnnnwnn", "*": "nwnnwnwnn",
+    "$": "nwnwnwnnn", "/": "nwnwnnnwn", "+": "nwnnnwnwn", "%": "nnnwnwnwn"
+  };
+  var ITF = ["nnwwn", "wnnnw", "nwnnw", "wwnnn", "nnwnw", "wnwnn", "nwwnn", "nnnww", "wnnwn", "nwnwn"];
+
+  function runsOf(bits) {
+    var out = [], i = 0;
+    while (i < bits.length) {
+      var j = i;
+      while (j < bits.length && bits.charAt(j) === bits.charAt(i)) { j++; }
+      out.push({ dark: bits.charAt(i) === "1", n: j - i });
+      i = j;
+    }
+    return out;
+  }
+  function narrowWide(bits) {
+    var elems = "";
+    var runs = runsOf(bits);
+    for (var i = 0; i < runs.length; i++) {
+      if (runs[i].n !== 1 && runs[i].n !== 3) { return { error: "an element " + runs[i].n + " modules wide" }; }
+      elems += runs[i].n === 1 ? "n" : "w";
+    }
+    return { elems: elems };
+  }
+
+  function decode128(bits) {
+    if (bits.slice(-13) !== C128_STOP) { return { error: "no stop pattern" }; }
+    var body = bits.slice(0, -13);
+    if (body.length % 11) { return { error: "body is not whole symbols" }; }
+    var values = [];
+    for (var i = 0; i < body.length; i += 11) {
+      var v = C128_BITS.indexOf(body.substr(i, 11));
+      if (v < 0) { return { error: "unknown symbol number " + (i / 11) }; }
+      values.push(v);
+    }
+    var start = values[0], check = values[values.length - 1], data = values.slice(1, -1);
+    if (start < 103 || start > 105) { return { error: "bad start symbol " + start }; }
+    var sum = start;
+    data.forEach(function (x, k) { sum += (k + 1) * x; });
+    if (sum % 103 !== check) { return { error: "checksum is " + check + ", should be " + (sum % 103) }; }
+    var set = "ABC".charAt(start - 103), text = "";
+    for (var k = 0; k < data.length; k++) {
+      var x = data[k];
+      if (x >= 103) { return { error: "a start symbol in the middle" }; }
+      if (x === 99 && set !== "C") { set = "C"; continue; }
+      if (x === 100 && set !== "B") { set = "B"; continue; }
+      if (x === 101 && set !== "A") { set = "A"; continue; }
+      if (set === "C") {
+        if (x > 99) { return { error: "value " + x + " in set C" }; }
+        text += (x < 10 ? "0" : "") + x;
+      } else if (x > 95) {
+        return { error: "function symbol " + x + " in set " + set };
+      } else if (set === "B") {
+        text += String.fromCharCode(x + 32);
+      } else {
+        text += String.fromCharCode(x < 64 ? x + 32 : x - 64);
+      }
+    }
+    return { text: text };
+  }
+
+  function decode39(bits) {
+    var nw = narrowWide(bits);
+    if (nw.error) { return nw; }
+    var e = nw.elems, text = "", i = 0;
+    while (i < e.length) {
+      var chunk = e.substr(i, 9), found = null;
+      Object.keys(C39).forEach(function (ch) { if (C39[ch] === chunk) { found = ch; } });
+      if (found === null) { return { error: "unknown character " + chunk }; }
+      text += found;
+      i += 9;
+      if (i < e.length) {
+        if (e.charAt(i) !== "n") { return { error: "gap is not narrow" }; }
+        i += 1;
+      }
+    }
+    if (text.length < 2 || text.charAt(0) !== "*" || text.charAt(text.length - 1) !== "*") {
+      return { error: "no start and stop marks" };
+    }
+    return { text: text.slice(1, -1) };
+  }
+
+  function decodeItf(bits) {
+    var nw = narrowWide(bits);
+    if (nw.error) { return nw; }
+    var e = nw.elems;
+    if (e.slice(0, 4) !== "nnnn") { return { error: "no start" }; }
+    if (e.slice(-3) !== "wnn") { return { error: "no stop" }; }
+    var body = e.slice(4, -3), text = "";
+    if (body.length % 10) { return { error: "body is not whole pairs" }; }
+    for (var i = 0; i < body.length; i += 10) {
+      var bars = "", spaces = "";
+      for (var k = 0; k < 10; k += 2) { bars += body.charAt(i + k); spaces += body.charAt(i + k + 1); }
+      var a = ITF.indexOf(bars), b = ITF.indexOf(spaces);
+      if (a < 0 || b < 0) { return { error: "unknown digit" }; }
+      text += String(a) + String(b);
+    }
+    return { text: text };
+  }
+
+  function eanOk(digits) {
+    var s = 0, n = digits.length - 1;
+    for (var i = 0; i < n; i++) { s += Number(digits.charAt(i)) * (((n - 1 - i) % 2 === 0) ? 3 : 1); }
+    return (10 - s % 10) % 10 === Number(digits.charAt(n));
+  }
+  function decodeEan(bits) {
+    var digits = "", i;
+    if (bits.length === 67) {
+      if (bits.slice(0, 3) !== "101" || bits.slice(31, 36) !== "01010" || bits.slice(64) !== "101") {
+        return { error: "guards" };
+      }
+      for (i = 0; i < 4; i++) {
+        var l8 = L.indexOf(bits.substr(3 + 7 * i, 7));
+        if (l8 < 0) { return { error: "left digit " + i }; }
+        digits += l8;
+      }
+      for (i = 0; i < 4; i++) {
+        var r8 = R.indexOf(bits.substr(36 + 7 * i, 7));
+        if (r8 < 0) { return { error: "right digit " + i }; }
+        digits += r8;
+      }
+    } else if (bits.length === 95) {
+      if (bits.slice(0, 3) !== "101" || bits.slice(45, 50) !== "01010" || bits.slice(92) !== "101") {
+        return { error: "guards" };
+      }
+      var pattern = "", left = "";
+      for (i = 0; i < 6; i++) {
+        var cell = bits.substr(3 + 7 * i, 7);
+        if (L.indexOf(cell) > -1) { pattern += "L"; left += L.indexOf(cell); }
+        else if (G.indexOf(cell) > -1) { pattern += "G"; left += G.indexOf(cell); }
+        else { return { error: "left digit " + i }; }
+      }
+      var first = PAR.indexOf(pattern);
+      if (first < 0) { return { error: "parity pattern " + pattern }; }
+      var right = "";
+      for (i = 0; i < 6; i++) {
+        var r13 = R.indexOf(bits.substr(50 + 7 * i, 7));
+        if (r13 < 0) { return { error: "right digit " + i }; }
+        right += r13;
+      }
+      digits = String(first) + left + right;
+    } else {
+      return { error: "a symbol " + bits.length + " modules wide" };
+    }
+    return eanOk(digits) ? { text: digits } : { error: "the check digit is wrong in " + digits };
+  }
+
+  /* ---- reading the canvas the way a scanner does ---- */
+  function scan(scale, quietLeft, quietRight) {
+    var w = stage.width, h = stage.height;
+    var data = stage.getContext("2d").getImageData(0, 0, w, h).data;
+    function dark(x, y) { return data[(y * w + x) * 4] < 128; }
+    var row = -1;
+    for (var y = 0; y < h && row < 0; y++) {
+      for (var x = 0; x < w; x++) { if (dark(x, y)) { row = y + 3; break; } }
+    }
+    var modules = w / scale, all = "", clean = true;
+    for (var m = 0; m < modules; m++) {
+      var first = dark(m * scale, row);
+      all += first ? "1" : "0";
+      for (var k = 1; k < scale; k++) { if (dark(m * scale + k, row) !== first) { clean = false; } }
+    }
+    return { all: all, bits: all.slice(quietLeft, modules - quietRight), modules: modules, clean: clean };
+  }
+  /* How far a bar reaches down from the top of the drawing, in pixels. */
+  function barLength(x) {
+    var w = stage.width, h = stage.height;
+    var data = stage.getContext("2d").getImageData(0, 0, w, h).data;
+    var y = 0;
+    while (y < h && data[(y * w + x) * 4] >= 128) { y++; }
+    var n = 0;
+    while (y + n < h && data[((y + n) * w + x) * 4] < 128) { n++; }
+    return n;
+  }
+
+  function pick(fmt, text) { set("format", fmt); set("text", text); }
+  function drawn() { return stage.style.display !== "none"; }
+  function trip(label, fmt, text, want, decoder, ql, qr) {
+    pick(fmt, text);
+    if (!drawn()) { ok(label + " is drawn", false, txt("msg")); return; }
+    var got = decoder(scan(3, ql, qr).bits);
+    eq(label, got.error ? "DECODE FAILED: " + got.error : got.text, want);
+  }
+  function ean13(label, text, want) { trip(label, "ean13", text, want, decodeEan, 11, 7); }
+  function code128(label, text) { trip(label, "code128", text, text, decode128, 10, 10); }
+
+  /* ================= the page as it opens ================= */
+  ok("a barcode is on the screen when the page opens", drawn());
+  eq("the type is Code 128", val("format"), "code128");
+  eq("saying 108TOOLBOX", val("text"), "108TOOLBOX");
+  var first = scan(3, 10, 10);
+  eq("and a scanner reads it back", decode128(first.bits).text, "108TOOLBOX");
+  ok("with every bar a whole number of modules", first.clean);
+  ok("and a clear margin on both sides", first.all.slice(0, 10) === "0000000000" && first.all.slice(-10) === "0000000000");
+  eq("the page counts the modules the pixels show", txt("sMod"), String(first.bits.length));
+  eq("the image is that many modules plus the margins, at 3 px each", stage.width, (first.bits.length + 20) * 3);
+  eq("and the size tile says so", txt("sSize"), stage.width + " " + TIMES + " " + stage.height);
+  has("and it says it was drawn here", txt("msg"), "Drawn in your browser");
+  ok("both download buttons are ready", !pngBtn.disabled && !svgBtn.disabled);
+  ok("a check symbol is shown", /^[0-9]+$/.test(txt("sCheck")), txt("sCheck"));
+
+  /* ================= Code 128 ================= */
+  eq("digits only use set C: start, four pairs, check, stop is 79 modules", (pick("code128", "12345678"), txt("sMod")), "79");
+  eq("and read back", decode128(scan(3, 10, 10).bits).text, "12345678");
+  eq("letters use set B: start, five letters, check, stop is 90 modules", (pick("code128", "Hello"), txt("sMod")), "90");
+  eq("a run of digits inside letters switches sets and back again", (pick("code128", "ab12345678cd"), txt("sMod")), "145");
+  eq("and read back", decode128(scan(3, 10, 10).bits).text, "ab12345678cd");
+  eq("a control character forces set A", (pick("code128", "A\tB"), txt("sMod")), "68");
+  eq("and read back", decode128(scan(3, 10, 10).bits).text, "A\tB");
+  code128("lowercase and a control character together", "a\tb");
+  code128("one character", "a");
+  code128("a single digit", "7");
+  code128("two digits", "42");
+  code128("three digits, an odd run", "123");
+  code128("a space", " ");
+  code128("a run of zeros", "0000000000");
+  code128("the tilde and DEL", "~" + String.fromCharCode(127) + "~");
+  code128("punctuation that XML and HTML care about", "<&>\"'");
+  code128("an identifier with slashes and hashes", "ID-2026-09-29/SHIP#4471");
+  var printable = "", low = "", c;
+  for (c = 32; c < 96; c++) { printable += String.fromCharCode(c); }
+  code128("every character from space to underscore", printable);
+  printable = "";
+  for (c = 96; c < 127; c++) { printable += String.fromCharCode(c); }
+  code128("every character from the backtick to the tilde", printable);
+  for (c = 0; c < 32; c++) { if (c !== 10 && c !== 13) { low += String.fromCharCode(c); } }
+  code128("every control character a text box can hold", "x" + low);
+  code128("digits and letters alternating", "1a2b3c4d5e6f");
+  code128("digit runs of every parity between letters", "1a12a123a1234a12345a123456a1234567");
+
+  /* ================= EAN-13 ================= */
+  pick("ean13", "590123412345");
+  eq("the check digit of 590123412345 is 7 - a published example", txt("sCheck"), "7");
+  has("and the message says it was worked out", txt("msg"), "Check digit 7");
+  eq("the symbol is 95 modules wide", txt("sMod"), "95");
+  eq("its bars match a symbol built from literal tables", scan(3, 11, 7).bits, "10100010110100111011001100100110111101001110101010110011011011001000010101110010011101000100101");
+  eq("and decode to the whole number", decodeEan(scan(3, 11, 7).bits).text, "5901234123457");
+  ean13("a published EAN-13 whose check digit is 1", "400638133393", "4006381333931");
+  ean13("an ISBN-13, typed with hyphens", "978-3-16-148410-0", "9783161484100");
+  ean13("digits pasted with spaces", "590 123 412345 7", "5901234123457");
+  ean13("all zeros", "000000000000", "0000000000000");
+  ean13("all nines", "999999999999", "9999999999994");
+  var d, payload, cd, s, i;
+  function checkOf(p) {
+    var t = 0;
+    for (var k = 0; k < p.length; k++) { t += Number(p.charAt(k)) * (((p.length - 1 - k) % 2 === 0) ? 3 : 1); }
+    return String((10 - t % 10) % 10);
+  }
+  for (d = 0; d < 10; d++) {
+    payload = String(d) + "12345678901";
+    ean13("a number starting with " + d + " (its own parity pattern)", payload, payload + checkOf(payload));
+  }
+
+  pick("ean13", "5901234123457");
+  has("typing the check digit too is accepted", txt("msg"), "check digit is right");
+  pick("ean13", "5901234123458");
+  ok("a wrong check digit draws nothing", !drawn());
+  has("and names the right one", txt("msg"), "should be 7");
+  ok("and switches both downloads off", pngBtn.disabled && svgBtn.disabled);
+  eq("and blanks the tiles", txt("sMod") + txt("sCheck") + txt("sSize"), DASH + DASH + DASH);
+  pick("ean13", "59012341234x");
+  has("a letter is named", txt("msg"), "Digits only");
+  pick("ean13", "5901234");
+  has("too few digits says how many are needed", txt("msg"), "needs 12 digits");
+  ok("and draws nothing", !drawn());
+  pick("ean13", "5901234123457");
+  ok("fixing it brings the barcode back", drawn());
+  ok("and the downloads", !pngBtn.disabled && !svgBtn.disabled);
+
+  /* Guard bars are taller than the rest, and only when there are digits to hang beside. */
+  var normalBar = barLength((11 + 3 + 3) * 3 + 1);   /* a bar in the first digit */
+  var guardBar = barLength(11 * 3 + 1);              /* the start guard */
+  var middleBar = barLength((11 + 46) * 3 + 1);      /* inside the centre guard */
+  eq("an ordinary bar is as tall as asked", normalBar, 100);
+  ok("the start guard hangs lower", guardBar > normalBar + 5, guardBar + " vs " + normalBar);
+  ok("and so does the centre guard", middleBar > normalBar + 5, middleBar + " vs " + normalBar);
+  tick("showText", false);
+  eq("with the text off the guard is an ordinary bar again", barLength(11 * 3 + 1), 100);
+  eq("and the bars did not change", scan(3, 11, 7).bits, "10100010110100111011001100100110111101001110101010110011011011001000010101110010011101000100101");
+  tick("showText", true);
+
+  /* ================= UPC-A ================= */
+  pick("upca", "03600029145");
+  eq("the check digit of 03600029145 is 2 - a published example", txt("sCheck"), "2");
+  eq("the symbol is 95 modules wide", txt("sMod"), "95");
+  eq("its bars match a symbol built from literal tables", scan(3, 9, 9).bits, "10100011010111101010111100011010001101000110101010110110011101001100110101110010011101101100101");
+  eq("and read as an EAN-13 with a 0 in front", decodeEan(scan(3, 9, 9).bits).text, "0036000291452");
+  pick("upca", "04210000526");
+  eq("a second published UPC-A ends in 4", txt("sCheck"), "4");
+  eq("and is read back", decodeEan(scan(3, 9, 9).bits).text, "0042100005264");
+  pick("upca", "042100005264");
+  has("typing all twelve is checked", txt("msg"), "check digit is right");
+  pick("upca", "042100005265");
+  has("a wrong twelfth digit is refused", txt("msg"), "should be 4");
+  pick("upca", "03600029145");
+  ok("the first digit's bars hang too, since it is printed outside", barLength((9 + 6) * 3 + 1) > 105);
+  eq("the ordinary bars do not", barLength((9 + 12) * 3 + 1), 100);
+
+  /* ================= EAN-8 ================= */
+  pick("ean8", "9638507");
+  eq("the check digit of 9638507 is 4 - a published example", txt("sCheck"), "4");
+  eq("the symbol is 67 modules wide", txt("sMod"), "67");
+  eq("its bars match a symbol built from literal tables", scan(3, 7, 7).bits, "1010001011010111101111010110111010101001110111001010001001011100101");
+  eq("and are read back", decodeEan(scan(3, 7, 7).bits).text, "96385074");
+  pick("ean8", "7351353");
+  eq("another published EAN-8 ends in 7", txt("sCheck"), "7");
+  eq("and is read back", decodeEan(scan(3, 7, 7).bits).text, "73513537");
+  pick("ean8", "96385075");
+  has("a wrong eighth digit is refused", txt("msg"), "should be 4");
+
+  /* ================= Code 39 ================= */
+  function c39(label, text, want) { trip(label, "code39", text, want === undefined ? text : want, decode39, 10, 10); }
+  c39("the default word", "108TOOLBOX");
+  c39("one character", "A");
+  c39("the symbols", "$/+%");
+  c39("the other symbols", "-. ");
+  c39("every digit", "0123456789");
+  c39("every capital", "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  c39("every character at once", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%");
+  c39("lowercase is turned into capitals", "abc", "ABC");
+  has("and the message says so", txt("msg"), "lowercase turned into capitals");
+  pick("code39", "ABC");
+  eq("three characters plus two stars, sixteen modules each, less the last gap: 79", txt("sMod"), "79");
+  eq("Code 39 has no check character to show", txt("sCheck"), DASH);
+  pick("code39", "A_B");
+  has("an underscore is refused by name", txt("msg"), "cannot hold");
+  pick("code39", "A*B");
+  has("a star is refused because it is the start mark", txt("msg"), "start and stop");
+
+  /* ================= ITF ================= */
+  function itf(label, text, want) { trip(label, "itf", text, want === undefined ? text : want, decodeItf, 10, 10); }
+  itf("the default", "1234567890");
+  itf("one pair", "12");
+  itf("zeros", "0000");
+  itf("nines", "9999");
+  itf("all ten digits again, differently", "9876543210");
+  itf("a fourteen-digit carton number", "31415926535897");
+  pick("itf", "1234567890");
+  eq("ten digits: 4 + 9 x 10 + 5 = 99 modules", txt("sMod"), "99");
+  itf("an odd count gets a 0 in front", "123", "0123");
+  has("and the message says so", txt("msg"), "put in front");
+  var padded = scan(3, 10, 10).bits;
+  pick("itf", "0123");
+  eq("exactly as if the 0 had been typed", scan(3, 10, 10).bits, padded);
+  pick("itf", "12a4");
+  has("a letter is named", txt("msg"), "Digits only");
+  pick("itf", "");
+  has("nothing typed says so", txt("msg"), "Type something");
+  pick("itf", "12 34-56");
+  eq("spaces and hyphens are ignored", decodeItf(scan(3, 10, 10).bits).text, "123456");
+
+  /* ================= refusing what does not fit ================= */
+  pick("code128", "");
+  ok("an empty box draws nothing", !drawn());
+  ok("and switches the downloads off", pngBtn.disabled && svgBtn.disabled);
+  pick("code128", "caf" + String.fromCharCode(0xE9));
+  has("a character outside ASCII is named", txt("msg"), "ASCII");
+  ok("and nothing is drawn", !drawn());
+  var long81 = "";
+  for (i = 0; i < 81; i++) { long81 += "A"; }
+  pick("code128", long81);
+  has("eighty-one characters are refused with the count", txt("msg"), "81 characters");
+  var long80 = long81.slice(1);
+  pick("code128", long80);
+  ok("eighty are fine", drawn());
+  eq("and read back", decode128(scan(3, 10, 10).bits).text, long80);
+
+  pick("code39", long80);
+  set("scale", "10");
+  has("a barcode too wide for a canvas is refused with its width", txt("msg"), "pixels wide");
+  ok("and draws nothing", !drawn());
+  set("scale", "3");
+  ok("a narrower bar width brings it back", drawn());
+
+  /* ================= the size controls ================= */
+  pick("code128", "AB");
+  var narrow = scan(3, 10, 10);
+  var w3 = stage.width, h100 = stage.height;
+  set("scale", "5");
+  eq("bar width 5 makes every module 5 px", stage.width, (narrow.bits.length + 20) * 5);
+  eq("and the bars are the same bars", scan(5, 10, 10).bits, narrow.bits);
+  set("scale", "1");
+  eq("bar width 1 makes it one pixel a module", stage.width, narrow.bits.length + 20);
+  eq("and they are still the same bars", scan(1, 10, 10).bits, narrow.bits);
+  set("scale", "3");
+  set("height", "200");
+  eq("a taller bar adds exactly that much height", stage.height, h100 + 100);
+  eq("and leaves the width alone", stage.width, w3);
+  set("height", "10");
+  has("a bar height below 20 is refused", txt("msg"), "from 20 to 400");
+  ok("and nothing is drawn", !drawn());
+  set("height", "500");
+  has("a bar height above 400 is refused", txt("msg"), "from 20 to 400");
+  set("height", "");
+  has("an empty height is refused", txt("msg"), "from 20 to 400");
+  set("height", "100");
+  ok("a sensible height brings it back", drawn());
+  eq("at the height it was", stage.height, h100);
+  tick("showText", false);
+  ok("without the text the picture is shorter", stage.height < h100, stage.height + " vs " + h100);
+  eq("and the bars are unchanged", scan(3, 10, 10).bits, narrow.bits);
+  tick("showText", true);
+  eq("the text brings the height back", stage.height, h100);
+
+  /* ================= switching type ================= */
+  set("format", "code128");
+  set("text", "108TOOLBOX");
+  set("format", "ean13");
+  eq("an untouched example is swapped for the new type's example", val("text"), "590123412345");
+  has("and the hint changes with the type", txt("hint"), "13th");
+  set("text", "111111111111");
+  set("format", "upca");
+  eq("the visitor's own text is kept when the type changes", val("text"), "111111111111");
+  set("format", "code39");
+  set("text", "HELLO");
+  set("format", "itf");
+  eq("text of their own survives a switch to a type that refuses it", val("text"), "HELLO");
+  has("and the refusal says why", txt("msg"), "Digits only");
+
+  /* ================= hostile text ================= */
+  pick("code128", "<iframe onload=zq>");
+  ok("markup typed into the box still draws a barcode", drawn());
+  eq("and reads back as text", decode128(scan(3, 10, 10).bits).text, "<iframe onload=zq>");
+  eq("with no element made out of it", document.querySelectorAll("iframe").length, 0);
+  pick("code128", "<iframe onload=zq>" + String.fromCharCode(0xE9));
+  ok("and a refusal that echoes the text makes no element either", document.querySelectorAll("iframe").length === 0);
+
+  /* ================= reset ================= */
+  pick("ean13", "5901234123457");
+  set("scale", "6");
+  set("height", "60");
+  tick("showText", false);
+  click("resetBtn");
+  eq("reset returns to Code 128", val("format"), "code128");
+  eq("with the example text", val("text"), "108TOOLBOX");
+  eq("and bar width 3", val("scale"), "3");
+  eq("and height 100", val("height"), "100");
+  ok("and the text switched on", document.getElementById("showText").checked);
+  ok("and a barcode drawn", drawn());
+  eq("the same picture as at the start", scan(3, 10, 10).bits, first.bits);
+
+  /* ================= saving the files ================= */
+  pick("ean13", "590123412345");
+  var pngSeen = false, svgSeen = false;
+  click("pngBtn");
+  waitFor("the PNG is handed over", function () { return window.__saved.length === 1; }, function () {
+    var saved = window.__saved[0];
+    eq("named for the type and the whole number", saved.name, "barcode-ean13-5901234123457.png");
+    eq("as a PNG", saved.blob.type, "image/png");
+    createImageBitmap(saved.blob).then(function (bmp) {
+      eq("with the width of the picture on screen", bmp.width, stage.width);
+      eq("and its height", bmp.height, stage.height);
+      var c = document.createElement("canvas");
+      c.width = bmp.width; c.height = bmp.height;
+      var cx = c.getContext("2d");
+      cx.drawImage(bmp, 0, 0);
+      var a = cx.getImageData(0, 0, c.width, c.height).data;
+      var b = stage.getContext("2d").getImageData(0, 0, stage.width, stage.height).data;
+      var same = a.length === b.length;
+      for (var k = 0; same && k < a.length; k++) { if (a[k] !== b[k]) { same = false; } }
+      ok("every pixel of the file is the pixel on screen", same);
+      pngSeen = true;
+    });
+  });
+
+  waitFor("the PNG has been checked", function () { return pngSeen; }, function () {
+    click("svgBtn");
+    waitFor("the SVG is handed over", function () { return window.__saved.length === 2; }, function () {
+      var saved = window.__saved[1];
+      eq("named the same, ending .svg", saved.name, "barcode-ean13-5901234123457.svg");
+      eq("as an SVG", saved.blob.type, "image/svg+xml");
+      saved.blob.text().then(function (text) {
+        var doc = new DOMParser().parseFromString(text, "image/svg+xml");
+        ok("it is well-formed XML", doc.getElementsByTagName("parsererror").length === 0, text.slice(0, 100));
+        var root = doc.documentElement;
+        eq("its width is the picture's", root.getAttribute("width"), String(stage.width));
+        eq("its height is the picture's", root.getAttribute("height"), String(stage.height));
+        var modules = stage.width / 3, bits = [];
+        for (var m = 0; m < modules; m++) { bits.push("0"); }
+        Array.prototype.forEach.call(doc.querySelectorAll("g rect"), function (r) {
+          var x = Number(r.getAttribute("x")) / 3, w = Number(r.getAttribute("width")) / 3;
+          for (var k = 0; k < w; k++) { bits[x + k] = "1"; }
+        });
+        eq("its bars are the bars on screen", bits.join(""), scan(3, 11, 7).all);
+        var digits = "";
+        Array.prototype.forEach.call(doc.querySelectorAll("text"), function (t) { digits += t.textContent; });
+        eq("and its text is the whole number", digits, "5901234123457");
+        svgSeen = true;
+      });
+    });
+  });
+
+  waitFor("the SVG has been checked", function () { return svgSeen; }, function () {
+    /* A caption full of characters XML cares about must still be a valid file. */
+    pick("code128", "<&>\"'");
+    click("svgBtn");
+    waitFor("the second SVG is handed over", function () { return window.__saved.length === 3; }, function () {
+      var saved = window.__saved[2];
+      eq("its name keeps only letters and digits from the text", saved.name, "barcode-code128.svg");
+      saved.blob.text().then(function (text) {
+        var doc = new DOMParser().parseFromString(text, "image/svg+xml");
+        ok("markup characters in the caption leave it well-formed", doc.getElementsByTagName("parsererror").length === 0, text.slice(-160));
+        var caption = doc.querySelector("text");
+        eq("and the caption reads exactly what was typed", caption ? caption.textContent : "(no text)", "<&>\"'");
+
+        pick("code128", "ID 2026/09#1");
+        click("pngBtn");
+        waitFor("the third file is handed over", function () { return window.__saved.length === 4; }, function () {
+          eq("a name built from text has the odd characters turned into hyphens",
+             window.__saved[3].name, "barcode-code128-ID-2026-09-1.png");
+          pick("code128", "");
+          click("pngBtn");
+          click("svgBtn");
+          setTimeout(function () {
+            eq("with nothing to draw, neither button hands anything over", window.__saved.length, 4);
+            finish();
+          }, 300);
+        });
+      });
+    });
+  });
+"""
+
 # ===== END: the test bodies ================================================
 
 

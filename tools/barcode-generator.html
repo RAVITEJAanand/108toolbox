@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Barcode Generator — Code 128, EAN-13, UPC-A, Code 39</title>
+  <meta name="description" content="Make a barcode online in Code 128, EAN-13, UPC-A, EAN-8, Code 39 or ITF. Check digits are worked out for you, and you save a PNG or SVG. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/barcode-generator.html">
+
+  <meta property="og:title" content="Barcode Generator — Code 128, EAN-13, UPC-A, Code 39">
+  <meta property="og:description" content="Make a barcode online in Code 128, EAN-13, UPC-A, EAN-8, Code 39 or ITF. Check digits are worked out for you, and you save a PNG or SVG. Nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=24">
+  <link rel="stylesheet" href="../css/tool.css?v=24">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Will an EAN-13 or UPC-A from this page work in a shop?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It will scan, but a shop's system treats the number as a product identifier, and those numbers are issued by GS1, the standards body. This page draws whatever number you give it and does not reserve one for you. It is fine for your own stock, for events, for testing and for a book that already has its ISBN. Putting an invented number on something you sell can clash with another company's product."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the check digit?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The last digit of an EAN or UPC is arithmetic on the others. Counting from the right, the digits are multiplied by 3, 1, 3, 1 and so on and added up, and the check digit is what brings the total to the next multiple of ten. It lets a scanner notice a misread. If you type all the digits, this page checks yours and tells you the right one if it is wrong."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I make an ISBN barcode?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. An ISBN-13 is an EAN-13 whose number starts with 978 or 979. Choose EAN-13 and type the first twelve digits. Hyphens and spaces are ignored, so you can paste the ISBN as it is printed."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How big should I print it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "As large as the space allows. At 300 dpi, a bar width of 4 pixels is about 0.34 mm, which is almost exactly the standard size for EAN and UPC. Smaller than that and cheap scanners start to struggle. SVG is the best choice for print, because it is sharp at every size."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does Code 128 come out shorter for numbers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Code 128 has a mode that packs two digits into one symbol. This page switches into it whenever there is a run of digits and back out again when there is not, so a long number is about half the width it would be in the other types."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my text refused?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Each type holds a different set of characters. Code 128 here holds standard keyboard characters, Code 39 holds capitals, digits, space and - . $ / + %, and the rest hold digits only. The message under the box names the first character it cannot use."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=random">Random</a><span>&rsaquo;</span>
+        <span>Barcode Generator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Barcode Generator</h1>
+        <p>Pick a type, type what the barcode should say, and save it as a PNG or an
+           SVG. For EAN and UPC the last digit is worked out for you. It is all
+           drawn in your browser, so nothing is uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="format">Barcode type</label>
+            <select id="format">
+              <option value="code128" selected>Code 128 &mdash; any text</option>
+              <option value="ean13">EAN-13 &mdash; products and books, 13 digits</option>
+              <option value="upca">UPC-A &mdash; US and Canada products, 12 digits</option>
+              <option value="ean8">EAN-8 &mdash; small packs, 8 digits</option>
+              <option value="code39">Code 39 &mdash; capitals and digits</option>
+              <option value="itf">ITF &mdash; digits in pairs, for cartons</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="text">What the barcode says</label>
+            <input type="text" id="text" value="108TOOLBOX" maxlength="80" autocomplete="off" spellcheck="false">
+            <p class="msg" id="hint" style="margin-top:var(--s2)"></p>
+          </div>
+
+          <div class="field">
+            <label for="scale">Bar width (pixels for the thinnest bar)</label>
+            <select id="scale">
+              <option value="1">1 &mdash; tiny, screens only</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4 &mdash; about 0.33 mm printed at 300 dpi</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="8">8</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="height">Bar height in pixels</label>
+            <input type="number" id="height" min="20" max="400" step="1" value="100">
+          </div>
+
+          <div class="check"><input type="checkbox" id="showText" checked><label for="showText">Print the text under the bars</label></div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="pngBtn">Download PNG</button>
+            <button class="btn btn--ghost"   type="button" id="svgBtn">Download SVG</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Your barcode</span>
+          <div class="preview" id="preview">
+            <canvas id="stage" width="10" height="10" style="max-width:100%;height:auto;display:block;margin:0 auto var(--s4);border-radius:var(--r-sm);border:1px solid var(--border);box-shadow:var(--sh1);background:#fff"></canvas>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sMod">&mdash;</span><span class="stat__label">Modules wide</span></div>
+            <div class="stat"><span class="stat__num" id="sCheck">&mdash;</span><span class="stat__label">Check digit</span></div>
+            <div class="stat"><span class="stat__num" id="sSize">&mdash;</span><span class="stat__label">Image size (px)</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+          <p class="msg" style="margin-top:var(--s2)">Scan a test print with a phone before you print many. This page draws whatever number you give it; it does not reserve one, and the numbers on goods sold in shops are issued by GS1, not by this site.</p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to make a barcode</h2>
+        <ol>
+          <li>Pick the type. If you are not sure, leave it on <strong>Code 128</strong>, which holds any text you can type.</li>
+          <li>Type or paste what the barcode should say. For EAN-13, UPC-A and EAN-8, leave off the last digit and the page works it out.</li>
+          <li>Choose a bar width and a height. Wider bars scan more easily, and every edge is drawn on a whole pixel so it stays sharp.</li>
+          <li>Save a <strong>PNG</strong> for a document or a screen, or an <strong>SVG</strong> to print at any size without blur.</li>
+        </ol>
+
+        <h2>Which type should I pick?</h2>
+        <ul>
+          <li><strong>Code 128</strong> holds any letters, digits and symbols, and it is the smallest for a given text. Use it for shipping labels, stock, asset tags and anything with letters in it.</li>
+          <li><strong>EAN-13</strong> is the 13-digit code on products in most of the world, and on books, where it is the ISBN-13.</li>
+          <li><strong>UPC-A</strong> is the 12-digit version used on products in the United States and Canada.</li>
+          <li><strong>EAN-8</strong> is a short 8-digit code for packs too small for an EAN-13.</li>
+          <li><strong>Code 39</strong> takes capitals, digits and a few symbols. It is older and wider than Code 128, and still common on badges and industrial labels.</li>
+          <li><strong>ITF</strong> takes digits only, in pairs, and is used on cartons and cases.</li>
+        </ul>
+
+        <h2>Printing it so it scans</h2>
+        <ul>
+          <li>Keep the blank margin at both ends. It is part of the barcode, and this page adds the standard width.</li>
+          <li>Keep it dark bars on a light background. Scanners read contrast, so pale ink or a coloured background can make it unreadable.</li>
+          <li>Never stretch it in one direction only. Scale the whole image together, or save the SVG.</li>
+          <li>Print one, scan it with a phone, and only then print the rest.</li>
+        </ul>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Will an EAN-13 or UPC-A from this page work in a shop?</h3>
+          <p>It will scan, but a shop&#x27;s system treats the number as a product identifier, and those numbers are issued by GS1, the standards body. This page draws whatever number you give it and does not reserve one for you. It is fine for your own stock, for events, for testing and for a book that already has its ISBN. Putting an invented number on something you sell can clash with another company&#x27;s product.</p>
+        </div>
+        <div class="faq">
+          <h3>What is the check digit?</h3>
+          <p>The last digit of an EAN or UPC is arithmetic on the others. Counting from the right, the digits are multiplied by 3, 1, 3, 1 and so on and added up, and the check digit is what brings the total to the next multiple of ten. It lets a scanner notice a misread. If you type all the digits, this page checks yours and tells you the right one if it is wrong.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I make an ISBN barcode?</h3>
+          <p>Yes. An ISBN-13 is an EAN-13 whose number starts with 978 or 979. Choose EAN-13 and type the first twelve digits. Hyphens and spaces are ignored, so you can paste the ISBN as it is printed.</p>
+        </div>
+        <div class="faq">
+          <h3>How big should I print it?</h3>
+          <p>As large as the space allows. At 300 dpi, a bar width of 4 pixels is about 0.34 mm, which is almost exactly the standard size for EAN and UPC. Smaller than that and cheap scanners start to struggle. SVG is the best choice for print, because it is sharp at every size.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does Code 128 come out shorter for numbers?</h3>
+          <p>Code 128 has a mode that packs two digits into one symbol. This page switches into it whenever there is a run of digits and back out again when there is not, so a long number is about half the width it would be in the other types.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is my text refused?</h3>
+          <p>Each type holds a different set of characters. Code 128 here holds standard keyboard characters, Code 39 holds capitals, digits, space and - . $ / + %, and the rest hold digits only. The message under the box names the first character it cannot use.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=24"></script>
+  <script src="../js/tool-helpers.js?v=24"></script>
+  <script>window.CURRENT_TOOL = "barcode-generator";</script>
+  <script src="../js/main.js?v=24"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var el = {
+      format:   document.getElementById("format"),
+      text:     document.getElementById("text"),
+      hint:     document.getElementById("hint"),
+      scale:    document.getElementById("scale"),
+      height:   document.getElementById("height"),
+      showText: document.getElementById("showText"),
+      stage:    document.getElementById("stage"),
+      msg:      document.getElementById("msg"),
+      pngBtn:   document.getElementById("pngBtn"),
+      svgBtn:   document.getElementById("svgBtn"),
+      sMod:     document.getElementById("sMod"),
+      sCheck:   document.getElementById("sCheck"),
+      sSize:    document.getElementById("sSize")
+    };
+
+    var DASH   = String.fromCharCode(0x2014);
+    var TIMES  = String.fromCharCode(0x00D7);
+    var MIDDOT = String.fromCharCode(0x00B7);
+
+    /* Monospace on purpose: every character is about the same width, so the
+       caption can be sized to fit without measuring it, and the PNG and the
+       SVG (which cannot measure) agree. */
+    var FONT = "Menlo, Consolas, monospace";
+    var MAX_CHARS = 80;
+    var MAX_PX = 12000;   /* wider than this and a canvas starts to fail */
+
+    var current = null;   /* the drawing plan on screen, or null */
+    var previousFormat = el.format.value;
+
+    /* ---- START: what each barcode type is and what it accepts ---- */
+    var FORMATS = Object.create(null);
+    FORMATS.code128 = {
+      name: "Code 128", file: "code128", example: "108TOOLBOX",
+      hint: "Any letters, digits and symbols on a keyboard (plain ASCII), up to " + MAX_CHARS + " characters."
+    };
+    FORMATS.ean13 = {
+      name: "EAN-13", file: "ean13", example: "590123412345",
+      hint: "12 digits and the 13th is worked out for you, or all 13 to have yours checked. Spaces and hyphens are ignored."
+    };
+    FORMATS.upca = {
+      name: "UPC-A", file: "upca", example: "03600029145",
+      hint: "11 digits and the 12th is worked out for you, or all 12 to have yours checked."
+    };
+    FORMATS.ean8 = {
+      name: "EAN-8", file: "ean8", example: "9638507",
+      hint: "7 digits and the 8th is worked out for you, or all 8 to have yours checked."
+    };
+    FORMATS.code39 = {
+      name: "Code 39", file: "code39", example: "108TOOLBOX",
+      hint: "Capitals, digits, space and - . $ / + %. Lowercase letters are turned into capitals."
+    };
+    FORMATS.itf = {
+      name: "ITF", file: "itf", example: "1234567890",
+      hint: "Digits only, in pairs. An odd number of digits gets a 0 put in front."
+    };
+    /* ---- END: what each barcode type is and what it accepts ---- */
+
+    /* ---- START: turning bar and space widths into modules ----
+       "212222" reads: a bar 2 wide, a space 1, a bar 2, a space 2, and so on.
+       The standards print symbols that way, so they are stored that way; the
+       drawing code wants a string of 1 (dark) and 0 (light), one per module,
+       where a module is the width of the thinnest bar. */
+    function widthsToBits(widths) {
+      var out = "";
+      var dark = true;
+      for (var i = 0; i < widths.length; i++) {
+        var run = Number(widths.charAt(i));
+        for (var k = 0; k < run; k++) { out += dark ? "1" : "0"; }
+        dark = !dark;
+      }
+      return out;
+    }
+    /* ---- END: turning bar and space widths into modules ---- */
+
+    /* ---- START: Code 128, the type that holds any text ----
+       Code 128 has three character sets. A holds capitals and control
+       characters, B holds capitals and lowercase, C holds pairs of digits in
+       one symbol - which is why a long number comes out about half as wide as
+       the same number in the others. Symbol values 0-105 are the 106 patterns
+       below; 106 is the stop. The last data symbol is a check: the start value
+       plus each later symbol times its position, modulo 103. */
+    var C128 = [
+      "212222", "222122", "222221", "121223", "121322", "131222", "122213", "122312",
+      "132212", "221213", "221312", "231212", "112232", "122132", "122231", "113222",
+      "123122", "123221", "223211", "221132", "221231", "213212", "223112", "312131",
+      "311222", "321122", "321221", "312212", "322112", "322211", "212123", "212321",
+      "232121", "111323", "131123", "131321", "112313", "132113", "132311", "211313",
+      "231113", "231311", "112133", "112331", "132131", "113123", "113321", "133121",
+      "313121", "211331", "231131", "213113", "213311", "213131", "311123", "311321",
+      "331121", "312113", "312311", "332111", "314111", "221411", "431111", "111224",
+      "111422", "121124", "121421", "141122", "141221", "112214", "112412", "122114",
+      "122411", "142112", "142211", "241211", "221114", "413111", "241112", "134111",
+      "111242", "121142", "121241", "114212", "124112", "124211", "411212", "421112",
+      "421211", "212141", "214121", "412121", "111143", "111341", "131141", "114113",
+      "114311", "411113", "411311", "113141", "114131", "311141", "411131", "211412",
+      "211214", "211232", "2331112"
+    ];
+
+    function inSetA(code) { return code >= 0 && code <= 95; }
+    function inSetB(code) { return code >= 32 && code <= 127; }
+    function isDigitCode(code) { return code >= 48 && code <= 57; }
+
+    /* Cheapest way through the text, counted in symbols. The state is which
+       set is active; changing set costs one symbol and can go from any set to
+       any other, so each position first relaxes the switches and then spends
+       characters. Slightly cheaper encodings exist (a one-symbol shift for a
+       single control character) but every encoding this finds is valid. */
+    function encodeCode128(text) {
+      var n = text.length;
+      for (var c = 0; c < n; c++) {
+        if (text.charCodeAt(c) > 127) {
+          return { error: "Code 128 here holds standard keyboard characters (ASCII). \"" + text.charAt(c) + "\" is not one of them." };
+        }
+      }
+
+      var INF = 1e9;
+      var cost = [], from = [];
+      for (var i = 0; i <= n; i++) { cost.push([INF, INF, INF]); from.push([null, null, null]); }
+      for (var s = 0; s < 3; s++) { cost[0][s] = 1; from[0][s] = { kind: "start" }; }
+
+      for (i = 0; i <= n; i++) {
+        var base = cost[i].slice();
+        for (var t = 0; t < 3; t++) {
+          for (s = 0; s < 3; s++) {
+            if (s !== t && base[s] + 1 < cost[i][t]) {
+              cost[i][t] = base[s] + 1;
+              from[i][t] = { kind: "switch", i: i, s: s };
+            }
+          }
+        }
+        if (i === n) { break; }
+        var code = text.charCodeAt(i);
+        if (inSetA(code) && cost[i][0] + 1 < cost[i + 1][0]) {
+          cost[i + 1][0] = cost[i][0] + 1; from[i + 1][0] = { kind: "char", i: i, s: 0 };
+        }
+        if (inSetB(code) && cost[i][1] + 1 < cost[i + 1][1]) {
+          cost[i + 1][1] = cost[i][1] + 1; from[i + 1][1] = { kind: "char", i: i, s: 1 };
+        }
+        if (isDigitCode(code) && i + 1 < n && isDigitCode(text.charCodeAt(i + 1)) &&
+            cost[i][2] + 1 < cost[i + 2][2]) {
+          cost[i + 2][2] = cost[i][2] + 1; from[i + 2][2] = { kind: "pair", i: i, s: 2 };
+        }
+      }
+
+      var best = 0;
+      for (s = 1; s < 3; s++) { if (cost[n][s] < cost[n][best]) { best = s; } }
+
+      /* Walk back from the end, then reverse into reading order. */
+      var steps = [];
+      var at = { i: n, s: best };
+      while (true) {
+        var step = from[at.i][at.s];
+        if (step.kind === "start") { steps.push({ kind: "start", s: at.s }); break; }
+        steps.push({ kind: step.kind, at: step.i, to: at.s });
+        at = { i: step.i, s: step.s };
+      }
+      steps.reverse();
+
+      var values = [];
+      for (var k = 0; k < steps.length; k++) {
+        var st = steps[k];
+        if (st.kind === "start") {
+          values.push(103 + st.s);
+        } else if (st.kind === "switch") {
+          values.push(st.to === 0 ? 101 : st.to === 1 ? 100 : 99);
+        } else if (st.kind === "pair") {
+          values.push(Number(text.substr(st.at, 2)));
+        } else {
+          var ch = text.charCodeAt(st.at);
+          values.push(st.to === 0 ? (ch < 32 ? ch + 64 : ch - 32) : ch - 32);
+        }
+      }
+
+      var sum = values[0];
+      for (var p = 1; p < values.length; p++) { sum += p * values[p]; }
+      var check = sum % 103;
+      values.push(check);
+
+      var bits = "";
+      for (var v = 0; v < values.length; v++) { bits += widthsToBits(C128[values[v]]); }
+      bits += widthsToBits(C128[106]);
+
+      /* Control characters have no picture, so the caption shows a dot. */
+      var line = "";
+      for (var q = 0; q < n; q++) {
+        var cc = text.charCodeAt(q);
+        line += (cc < 32 || cc === 127) ? MIDDOT : text.charAt(q);
+      }
+
+      return {
+        name: "Code 128", file: "code128", bits: bits, quiet: [10, 10],
+        line: line, check: String(check), data: text,
+        summary: "Code 128, " + (values.length + 1) + " symbols."
+      };
+    }
+    /* ---- END: Code 128, the type that holds any text ---- */
+
+    /* ---- START: Code 39, capitals and digits ----
+       Every character is nine elements, five bars and four spaces, and three
+       of the nine are wide - hence "3 of 9". Wide is three times narrow here.
+       The table is not memorised, it is built: the characters come in rows of
+       ten, and a character's place in its row says which two bars are wide,
+       while its row says which space is wide. The last four ($ / + %) are the
+       ones with three wide spaces and no wide bar. */
+    var C39_ORDER = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *";
+    var C39_BARS = [[1, 9], [3, 9], [1, 3], [5, 9], [1, 5], [3, 5], [7, 9], [1, 7], [3, 7], [5, 7]];
+    var C39_ROW_SPACE = [4, 6, 8, 2];
+    var C39_SPECIAL = "$/+%";
+    var C39_SPECIAL_WIDE = [[2, 4, 6], [2, 4, 8], [2, 6, 8], [4, 6, 8]];
+
+    function code39Widths(ch) {
+      var wide;
+      var at = C39_ORDER.indexOf(ch);
+      if (at > -1) {
+        var pair = C39_BARS[at % 10];
+        wide = [pair[0], pair[1], C39_ROW_SPACE[Math.floor(at / 10)]];
+      } else {
+        wide = C39_SPECIAL_WIDE[C39_SPECIAL.indexOf(ch)];
+      }
+      var out = "";
+      for (var e = 1; e <= 9; e++) { out += wide.indexOf(e) > -1 ? "3" : "1"; }
+      return out;
+    }
+
+    function encodeCode39(raw) {
+      var text = raw.toUpperCase();
+      for (var i = 0; i < text.length; i++) {
+        var ch = text.charAt(i);
+        if (ch === "*") {
+          return { error: "Code 39 uses * as its start and stop mark, so it cannot go inside the text." };
+        }
+        if (C39_ORDER.indexOf(ch) < 0 && C39_SPECIAL.indexOf(ch) < 0) {
+          return { error: "Code 39 cannot hold \"" + ch + "\". It takes capitals, digits, space and - . $ / + %." };
+        }
+      }
+      /* Characters are separated by one narrow space. */
+      var chars = ("*" + text + "*").split("");
+      var bits = chars.map(function (c) { return widthsToBits(code39Widths(c)); }).join("0");
+      return {
+        name: "Code 39", file: "code39", bits: bits, quiet: [10, 10],
+        line: text, check: null, data: text,
+        summary: "Code 39" + (text !== raw ? ", lowercase turned into capitals." : ".")
+      };
+    }
+    /* ---- END: Code 39, capitals and digits ---- */
+
+    /* ---- START: ITF, digits in pairs ----
+       Interleaved 2 of 5 hides two digits in one stretch: the first digit is
+       written in the bars and the second in the spaces between them. Each
+       digit is five elements, two of them wide (wide = 3). */
+    var ITF_DIGIT = ["11331", "31113", "13113", "33111", "11313", "31311", "13311", "11133", "31131", "13131"];
+
+    function encodeItf(raw) {
+      var digits = cleanDigits(raw);
+      if (digits.error) { return digits; }
+      var text = digits.text;
+      if (text.length === 0) { return { error: "Type some digits." }; }
+      var padded = text.length % 2 === 1;
+      if (padded) { text = "0" + text; }
+
+      var widths = "1111";   /* start: narrow bar, space, bar, space */
+      for (var i = 0; i < text.length; i += 2) {
+        var bars = ITF_DIGIT[Number(text.charAt(i))];
+        var spaces = ITF_DIGIT[Number(text.charAt(i + 1))];
+        for (var k = 0; k < 5; k++) { widths += bars.charAt(k) + spaces.charAt(k); }
+      }
+      widths += "311";       /* stop: wide bar, narrow space, narrow bar */
+
+      return {
+        name: "ITF", file: "itf", bits: widthsToBits(widths), quiet: [10, 10],
+        line: text, check: null, data: text,
+        summary: "ITF" + (padded ? ", a 0 was put in front to make whole pairs." : ".")
+      };
+    }
+    /* ---- END: ITF, digits in pairs ---- */
+
+    /* ---- START: reading digits from a box ---- */
+    /* Spaces and hyphens are dropped, because numbers are pasted with them
+       (590 123 412345 7, 978-3-16-148410-0). Anything else that is not a digit
+       is named back to the visitor. */
+    function cleanDigits(raw) {
+      var text = "";
+      for (var i = 0; i < raw.length; i++) {
+        var ch = raw.charAt(i);
+        if (ch === " " || ch === "-") { continue; }
+        if (ch < "0" || ch > "9") {
+          return { error: "Digits only. \"" + ch + "\" is not a digit." };
+        }
+        text += ch;
+      }
+      return { text: text };
+    }
+    /* ---- END: reading digits from a box ---- */
+
+    /* ---- START: the check digit of EAN and UPC ----
+       Counting from the right, digits are multiplied by 3, 1, 3, 1 ... and
+       added up; the check digit is whatever brings the total to the next
+       multiple of ten. It catches every single mistyped digit and almost every
+       swap of two neighbours, which is what it is for. */
+    function eanCheckDigit(payload) {
+      var sum = 0;
+      for (var i = 0; i < payload.length; i++) {
+        var weight = (payload.length - 1 - i) % 2 === 0 ? 3 : 1;
+        sum += Number(payload.charAt(i)) * weight;
+      }
+      return (10 - (sum % 10)) % 10;
+    }
+    /* ---- END: the check digit of EAN and UPC ---- */
+
+    /* ---- START: EAN-13, UPC-A and EAN-8 ----
+       Only the "L" pattern of each digit is stored. The right-hand half uses
+       its complement (bars and spaces swapped), and the "G" pattern used in
+       some left-hand positions is that complement written backwards. Deriving
+       them means there are ten patterns to get right instead of thirty.
+       In an EAN-13 the first digit is not drawn at all: it decides which of
+       the first six digits use L and which use G. A UPC-A is an EAN-13 with a
+       0 in front, whose pattern is all L, so it is drawn the same way. */
+    var EAN_L = ["0001101", "0011001", "0010011", "0111101", "0100011",
+                 "0110001", "0101111", "0111011", "0110111", "0001011"];
+    var EAN_PARITY = ["LLLLLL", "LLGLGG", "LLGGLG", "LLGGGL", "LGLLGG",
+                      "LGGLLG", "LGGGLL", "LGLGLG", "LGLGGL", "LGGLGL"];
+
+    function eanPattern(digit, table) {
+      var l = EAN_L[digit];
+      if (table === "L") { return l; }
+      var r = l.split("").map(function (b) { return b === "1" ? "0" : "1"; }).join("");
+      return table === "R" ? r : r.split("").reverse().join("");
+    }
+
+    var EAN_KINDS = Object.create(null);
+    EAN_KINDS.ean13 = { name: "EAN-13", payload: 12, quiet: [11, 7] };
+    EAN_KINDS.upca  = { name: "UPC-A",  payload: 11, quiet: [9, 9] };
+    EAN_KINDS.ean8  = { name: "EAN-8",  payload: 7,  quiet: [7, 7] };
+
+    function encodeEan(kind, raw) {
+      var spec = EAN_KINDS[kind];
+      var digits = cleanDigits(raw);
+      if (digits.error) { return digits; }
+      var text = digits.text;
+
+      var note;
+      if (text.length === spec.payload) {
+        text += String(eanCheckDigit(text));
+        note = "Check digit " + text.charAt(text.length - 1) + " was worked out for you.";
+      } else if (text.length === spec.payload + 1) {
+        var good = eanCheckDigit(text.slice(0, -1));
+        if (Number(text.charAt(text.length - 1)) !== good) {
+          return { error: "The check digit should be " + good + ", not " + text.charAt(text.length - 1) +
+                          ". Fix a digit, or delete the last one and this page works it out." };
+        }
+        note = "The check digit is right.";
+      } else {
+        return { error: spec.name + " needs " + spec.payload + " digits, and the last one is worked out for you " +
+                        "(or " + (spec.payload + 1) + " digits to have yours checked). You typed " + text.length + "." };
+      }
+
+      var bits, cells = [], guards, i;
+      if (kind === "ean8") {
+        bits = "101";
+        for (i = 0; i < 4; i++) { bits += eanPattern(Number(text.charAt(i)), "L"); }
+        bits += "01010";
+        for (i = 4; i < 8; i++) { bits += eanPattern(Number(text.charAt(i)), "R"); }
+        bits += "101";
+        for (i = 0; i < 8; i++) {
+          cells.push({ ch: text.charAt(i), at: (i < 4 ? 3 + 7 * i : 36 + 7 * (i - 4)) + 3.5 });
+        }
+        guards = [[0, 3], [31, 36], [64, 67]];
+      } else {
+        /* A UPC-A is drawn as the EAN-13 it is a special case of. */
+        var full = kind === "upca" ? "0" + text : text;
+        var parity = EAN_PARITY[Number(full.charAt(0))];
+        bits = "101";
+        for (i = 1; i <= 6; i++) { bits += eanPattern(Number(full.charAt(i)), parity.charAt(i - 1)); }
+        bits += "01010";
+        for (i = 7; i <= 12; i++) { bits += eanPattern(Number(full.charAt(i)), "R"); }
+        bits += "101";
+
+        if (kind === "ean13") {
+          cells.push({ ch: full.charAt(0), at: -5 });
+          for (i = 1; i <= 12; i++) {
+            cells.push({ ch: full.charAt(i), at: (i <= 6 ? 3 + 7 * (i - 1) : 50 + 7 * (i - 7)) + 3.5 });
+          }
+          guards = [[0, 3], [45, 50], [92, 95]];
+        } else {
+          /* In a UPC-A the first and last digits stand outside the bars. */
+          cells.push({ ch: text.charAt(0), at: -5 });
+          for (i = 1; i <= 10; i++) {
+            cells.push({ ch: text.charAt(i), at: (i <= 5 ? 3 + 7 * i : 50 + 7 * (i - 6)) + 3.5 });
+          }
+          cells.push({ ch: text.charAt(11), at: bits.length + 5 });
+          guards = [[0, 10], [45, 50], [85, 95]];
+        }
+      }
+
+      return {
+        name: spec.name, file: kind, bits: bits, quiet: spec.quiet.slice(),
+        cells: cells, guards: guards, check: text.charAt(text.length - 1), data: text,
+        summary: spec.name + " " + text + ". " + note
+      };
+    }
+    /* ---- END: EAN-13, UPC-A and EAN-8 ---- */
+
+    /* ---- START: choosing the encoder ---- */
+    function encode(kind, raw) {
+      if (!FORMATS[kind]) { return { error: "Pick a barcode type." }; }
+      if (raw === "") { return { error: "Type something to put in the barcode." }; }
+      if (raw.length > MAX_CHARS) {
+        return { error: "That is " + raw.length + " characters. The limit is " + MAX_CHARS + " - a longer barcode is too wide to scan." };
+      }
+      if (kind === "code128") { return encodeCode128(raw); }
+      if (kind === "code39") { return encodeCode39(raw); }
+      if (kind === "itf") { return encodeItf(raw); }
+      return encodeEan(kind, raw);
+    }
+    /* ---- END: choosing the encoder ---- */
+
+    /* ---- START: laying the barcode out in pixels ----
+       One plan - rectangles and pieces of text, in pixels - drawn twice: onto
+       the canvas for the PNG and written out as the SVG. Because both are
+       made from the same plan they cannot disagree. Every coordinate is a
+       whole number of pixels, so bar edges stay sharp. */
+    function inGuard(sym, m) {
+      if (!sym.guards) { return false; }
+      for (var i = 0; i < sym.guards.length; i++) {
+        if (m >= sym.guards[i][0] && m < sym.guards[i][1]) { return true; }
+      }
+      return false;
+    }
+
+    function buildPlan(sym, opts) {
+      var s = opts.scale;
+      var padY = s * 2;
+      var left = sym.quiet[0];
+      var width = (left + sym.bits.length + sym.quiet[1]) * s;
+
+      var caption = opts.showText && (sym.cells || sym.line);
+      var fontPx = Math.max(10, s * 9);
+      var textZone = caption ? Math.round(fontPx * 1.15) : 0;
+      /* The tall guard bars of EAN and UPC reach down beside the digits. */
+      var hang = caption && sym.guards ? Math.round(fontPx * 0.55) : 0;
+      var height = padY + opts.barHeight + textZone + padY;
+
+      var rects = [];
+      var m = 0;
+      while (m < sym.bits.length) {
+        var dark = sym.bits.charAt(m) === "1";
+        var tall = inGuard(sym, m);
+        var end = m + 1;
+        while (end < sym.bits.length && (sym.bits.charAt(end) === "1") === dark && inGuard(sym, end) === tall) {
+          end += 1;
+        }
+        if (dark) {
+          rects.push({ x: (left + m) * s, y: padY, w: (end - m) * s, h: opts.barHeight + (tall ? hang : 0) });
+        }
+        m = end;
+      }
+
+      var texts = [];
+      var baseline = padY + opts.barHeight + Math.round(fontPx * 0.95);
+      if (caption && sym.cells) {
+        sym.cells.forEach(function (c) {
+          texts.push({ str: c.ch, x: Math.round((left + c.at) * s), y: baseline, size: fontPx });
+        });
+      } else if (caption) {
+        /* Shrink a long caption until it fits under the bars. */
+        var fit = Math.floor((sym.bits.length * s) / (0.62 * sym.line.length));
+        texts.push({ str: sym.line, x: width / 2, y: baseline, size: Math.max(6, Math.min(fontPx, fit)) });
+      }
+
+      return { width: width, height: height, rects: rects, texts: texts };
+    }
+    /* ---- END: laying the barcode out in pixels ---- */
+
+    /* ---- START: drawing the plan onto the canvas ---- */
+    function paint(plan) {
+      var canvas = el.stage;
+      canvas.width = plan.width;
+      canvas.height = plan.height;
+      var ctx = canvas.getContext("2d");
+      /* Always dark on white, whatever the site theme: a scanner reads
+         contrast, not taste, and the blank margin has to be light. */
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, plan.width, plan.height);
+      ctx.fillStyle = "#000000";
+      plan.rects.forEach(function (r) { ctx.fillRect(r.x, r.y, r.w, r.h); });
+      ctx.textAlign = "center";
+      ctx.textBaseline = "alphabetic";
+      plan.texts.forEach(function (t) {
+        ctx.font = t.size + "px " + FONT;
+        ctx.fillText(t.str, t.x, t.y);
+      });
+    }
+    /* ---- END: drawing the plan onto the canvas ---- */
+
+    /* ---- START: writing the plan out as an SVG file ----
+       The caption is text that came from the visitor, so it is escaped before
+       it goes into the file; a < or & left raw would make the SVG invalid and
+       a browser would refuse to open it. */
+    function buildSvg(plan) {
+      var w = plan.width, h = plan.height;
+      var out = [
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" + w + "\" height=\"" + h +
+          "\" viewBox=\"0 0 " + w + " " + h + "\">",
+        "<rect width=\"" + w + "\" height=\"" + h + "\" fill=\"#ffffff\"/>",
+        "<g fill=\"#000000\" shape-rendering=\"crispEdges\">"
+      ];
+      plan.rects.forEach(function (r) {
+        out.push("<rect x=\"" + r.x + "\" y=\"" + r.y + "\" width=\"" + r.w + "\" height=\"" + r.h + "\"/>");
+      });
+      out.push("</g>");
+      plan.texts.forEach(function (t) {
+        out.push("<text x=\"" + t.x + "\" y=\"" + t.y + "\" font-family=\"" + FONT +
+                 "\" font-size=\"" + t.size + "\" text-anchor=\"middle\" fill=\"#000000\">" +
+                 escapeHtml(t.str) + "</text>");
+      });
+      out.push("</svg>");
+      return out.join("\n") + "\n";
+    }
+    /* ---- END: writing the plan out as an SVG file ---- */
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      el.msg.textContent = text || "";
+      el.msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: showing that there is nothing to show ---- */
+    function showNothing(reason) {
+      current = null;
+      el.stage.style.display = "none";
+      el.pngBtn.disabled = true;
+      el.svgBtn.disabled = true;
+      el.sMod.textContent = DASH;
+      el.sCheck.textContent = DASH;
+      el.sSize.textContent = DASH;
+      setMessage(reason, "bad");
+    }
+    /* ---- END: showing that there is nothing to show ---- */
+
+    /* ---- START: reading the size boxes ---- */
+    function readOptions() {
+      var scale = Math.round(Number(el.scale.value));
+      if (!isFinite(scale) || scale < 1 || scale > 10) {
+        return { error: "Pick a bar width from 1 to 10 pixels." };
+      }
+      var barHeight = Math.round(Number(el.height.value));
+      if (el.height.value === "" || !isFinite(barHeight) || barHeight < 20 || barHeight > 400) {
+        return { error: "Type a bar height from 20 to 400 pixels." };
+      }
+      return { scale: scale, barHeight: barHeight, showText: el.showText.checked };
+    }
+    /* ---- END: reading the size boxes ---- */
+
+    /* ---- START: making the barcode ---- */
+    function render() {
+      var sym = encode(el.format.value, el.text.value);
+      if (sym.error) { showNothing(sym.error); return; }
+      var opts = readOptions();
+      if (opts.error) { showNothing(opts.error); return; }
+
+      var plan = buildPlan(sym, opts);
+      if (plan.width > MAX_PX) {
+        showNothing("That would be " + formatNumber(plan.width, 0) + " pixels wide, more than a browser can draw reliably. " +
+                    "Choose a thinner bar width or shorten the text.");
+        return;
+      }
+
+      paint(plan);
+      el.stage.style.display = "block";
+      current = { sym: sym, plan: plan };
+      el.pngBtn.disabled = false;
+      el.svgBtn.disabled = false;
+
+      el.sMod.textContent = String(sym.bits.length);
+      el.sCheck.textContent = sym.check === null ? DASH : sym.check;
+      el.sSize.textContent = plan.width + " " + TIMES + " " + plan.height;
+      setMessage(sym.summary + " Drawn in your browser.", "ok");
+    }
+    /* ---- END: making the barcode ---- */
+
+    /* ---- START: choosing a type ----
+       If the box still holds the last type's example, swap in the new type's
+       example; a visitor's own text is never thrown away. */
+    function changeFormat() {
+      var was = FORMATS[previousFormat];
+      var now = FORMATS[el.format.value];
+      if (now) {
+        if (was && el.text.value === was.example) { el.text.value = now.example; }
+        el.hint.textContent = now.hint;
+      }
+      previousFormat = el.format.value;
+      render();
+    }
+    /* ---- END: choosing a type ---- */
+
+    /* ---- START: saving the files ---- */
+    function fileStem() {
+      var data = current.sym.data.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 24);
+      return "barcode-" + current.sym.file + (data ? "-" + data : "");
+    }
+
+    function savePng() {
+      if (!current) { showToast("Nothing to download"); return; }
+      var stem = fileStem();
+      el.stage.toBlob(function (blob) {
+        if (!blob) { setMessage("This browser could not make the PNG.", "bad"); return; }
+        downloadBlob(blob, stem + ".png");
+      }, "image/png");
+    }
+
+    function saveSvg() {
+      if (!current) { showToast("Nothing to download"); return; }
+      downloadBlob(new Blob([buildSvg(current.plan)], { type: "image/svg+xml" }), fileStem() + ".svg");
+    }
+    /* ---- END: saving the files ---- */
+
+    /* ---- START: wiring ---- */
+    el.format.addEventListener("change", changeFormat);
+    el.text.addEventListener("input", render);
+    el.scale.addEventListener("change", render);
+    el.height.addEventListener("input", render);
+    el.showText.addEventListener("change", render);
+    el.pngBtn.addEventListener("click", savePng);
+    el.svgBtn.addEventListener("click", saveSvg);
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      el.format.value = "code128";
+      previousFormat = "code128";
+      el.text.value = FORMATS.code128.example;
+      el.hint.textContent = FORMATS.code128.hint;
+      el.scale.value = "3";
+      el.height.value = "100";
+      el.showText.checked = true;
+      render();
+    });
+    /* ---- END: wiring ---- */
+
+    el.hint.textContent = FORMATS.code128.hint;
+    render();
+  })();
+  </script>
+</body>
+</html>

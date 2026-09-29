@@ -72,6 +72,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "barcode-generator",
+    name: "Barcode Generator",
+    desc: "Code 128, EAN-13, UPC-A, EAN-8, Code 39 and ITF, with check digits worked out. Save PNG or SVG.",
+    category: "Random",
+    icon: "\u{1F6D2}",
+    keywords: ["barcode generator", "barcode maker", "make a barcode", "code 128", "ean-13", "upc-a", "code 39", "isbn barcode", "ean-8", "itf barcode"],
+    popular: false
+  },
+  {
     slug: "base64-encoder-decoder",
     name: "Base64 Encoder & Decoder",
     desc: "Encode text to Base64 or decode it back, URL-safe and Unicode-correct.",
