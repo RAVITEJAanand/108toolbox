@@ -43,6 +43,14 @@ HARNESS = r"""
 (function () {
   var results = [];
   var done = false;
+  /* Headless Chrome runs on a virtual clock that jumps to the next timer whenever
+     the page is idle. Waiting for a blob to be read or an image to decode is
+     real work on another thread, and to the page it looks idle - so the clock
+     leapt straight to the test's overall time limit and the test was declared
+     stuck while the read was a millisecond from finishing. A timer that ticks
+     every millisecond makes the clock move in small steps instead, which gives
+     that work the real time it needs. It stops when the test finishes. */
+  var heartbeat = setInterval(function () {}, 1);
 
   /* ---- START: recording a result ---- */
   function record(pass, line) {
@@ -157,7 +165,7 @@ HARNESS = r"""
     (function poll() {
       if (test()) { ok(label, true); then(); return; }
       waited += step;
-      if (waited >= (budgetMs || 6000)) {
+      if (waited >= (budgetMs || 15000)) {
         ok(label, false, "timed out after " + waited + "ms");
         then();
         return;
@@ -171,6 +179,7 @@ HARNESS = r"""
   function finish() {
     if (done) return;
     done = true;
+    clearInterval(heartbeat);
     var pre = document.createElement("pre");
     pre.id = "RESULTS";
     pre.textContent = "\n>>> __SLUG__\n" + results.join("\n") + "\n<<< end\n";
@@ -5914,6 +5923,450 @@ T["barcode-generator"] = r"""
   });
 """
 
+T["qr-code-generator"] = r"""
+  var DASH = String.fromCharCode(0x2014);
+  var TIMES = String.fromCharCode(0x00D7);
+  var stage = document.getElementById("stage");
+  var pngBtn = document.getElementById("pngBtn");
+  var svgBtn = document.getElementById("svgBtn");
+
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+
+  var GOLD = {"hello": {"version": 1, "n": 21, "hash": 1425558341, "bits": "111111100010101111111100000101110001000001101110100010101011101101110100010101011101101110101011101011101100000100111001000001111111101010101111111000000000000000000000101010100100100010010011110001001000010001000111111101001011000111101011001110101110010011110101001110101000000001010001000101111111100000100101100100000100110001101000101110101100101111111101110100011010100010101110101111011101001100000100001110001011111111101101011100001"}, "default": {"version": 2, "n": 25, "hash": 1112059023, "bits": "1111111011010000001111111100000100011100010100000110111010111001100010111011011101000001101001011101101110100101101000101110110000010101001100010000011111111010101010101111111000000000001000100000000010100011011000011001001011011100101000101111001011111011101100011111101110111111100111100101000010001100111101001000111000001001001001110110111100001111101110100010010100011010000100001011001100111000110101111100011011111001000000000110001001000100011111111010110000101010001100000100110010110001001010111010000111011111100011011101001101001110010110101110101000111000011101110000010011110101101100001111111011000110111001001"}, "digits": {"version": 1, "n": 21, "hash": 4161546187, "bits": "111111101011101111111100000100011001000001101110101101001011101101110101100101011101101110101001001011101100000100111101000001111111101010101111111000000000001100000000111100101111110011101011011000101111001100100100100011000000010111111010111001111010111011100010100100000000000001011001000001111111100001100100111100000100110000110001101110100010111111101101110101011001011010101110101110101100000100000101100010001111111111101000010011010"}, "telugu": {"version": 2, "n": 25, "hash": 3854196825, "bits": "1111111010000001001111111100000101001101110100000110111010001011101010111011011101010010001101011101101110100101011100101110110000010010000111010000011111111010101010101111111000000001000111000000000010110111011011101010010110110000011010000100110000010110111011001111000001110001001000011110001010000111001110000001100111101011010011111010000100000101000010100010111001001011011100011001101011001101000001111101000011111111000000000111011011000101011111111011111000101010010100000101010100010001011110111010010111011111101001011101010001111000110011101110101101110001000011010000010011000000001010001111111010001010111001111"}, "v7": {"version": 7, "n": 45, "hash": 2079917253}, "v10": {"version": 10, "n": 57, "hash": 3771208583}, "v40": {"version": 40, "n": 177, "hash": 410974329}, "wifi": {"version": 3, "n": 29, "hash": 2351303086}};
+  var CHART = {"1": [17, 14, 11, 7], "2": [32, 26, 20, 14], "3": [53, 42, 32, 24], "4": [78, 62, 46, 34], "5": [106, 84, 60, 44], "6": [134, 106, 74, 58], "7": [154, 122, 86, 64], "8": [192, 152, 108, 84], "9": [230, 180, 130, 98], "10": [271, 213, 151, 119]};
+  var MAXIMA = {"numeric": [7089, 5596, 3993, 3057], "alphanumeric": [4296, 3391, 2420, 1852], "byte": [2953, 2331, 1663, 1273]};
+  var STRUCT = [[2, 1, 26], [7, 0, 154], [10, 1, 213], [14, 0, 458], [32, 0, 1952], [36, 0, 2431], [40, 0, 2953]];
+
+  /* Positions of the alignment patterns, and the version information, from the tables of the standard. */
+  var ALIGN = { 2: [6, 18], 7: [6, 22, 38], 10: [6, 28, 50], 14: [6, 26, 46, 66],
+                32: [6, 34, 60, 86, 112, 138], 36: [6, 24, 50, 76, 102, 128, 154],
+                40: [6, 30, 58, 86, 114, 142, 170] };
+  var VERSION_INFO = { 7: 0x07C94, 8: 0x085BC, 9: 0x09A99, 10: 0x0A4D3, 14: 0x0E60D,
+                       32: 0x209D5, 36: 0x24B0B, 40: 0x28C69 };
+  var FORMAT_LEVEL = [1, 0, 3, 2];   /* L M Q H as the standard writes them */
+
+  function rep(ch, n) { return new Array(n + 1).join(ch); }
+  function cyc(pattern, n) { return (rep(pattern, Math.ceil(n / pattern.length) + 1)).slice(0, n); }
+  function fnv(s) {
+    var h = 2166136261;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    return h >>> 0;
+  }
+  function drawn() { return stage.style.display !== "none"; }
+  function plain(text) { return String(text).replace(/,/g, ""); }
+
+  /* One render per call: the kind and level are put in place quietly, and the
+     text event that follows draws the code. */
+  function text(t, level) {
+    if (val("kind") !== "text") { set("kind", "text"); }
+    document.getElementById("ecl").value = String(level === undefined ? 1 : level);
+    set("text", t);
+  }
+
+  /* Read the modules off the canvas: one sample in the middle of each square,
+     inside a blank border of four squares. */
+  function read(scale) {
+    var w = stage.width;
+    var n = w / scale - 8;
+    var data = stage.getContext("2d").getImageData(0, 0, w, stage.height).data;
+    var rows = [], flat = "";
+    for (var r = 0; r < n; r++) {
+      var row = [];
+      for (var c = 0; c < n; c++) {
+        var at = (((r + 4) * scale + (scale >> 1)) * w + (c + 4) * scale + (scale >> 1)) * 4;
+        var dark = data[at] < 128 ? 1 : 0;
+        row.push(dark);
+        flat += dark;
+      }
+      rows.push(row);
+    }
+    return { n: n, rows: rows, bits: flat };
+  }
+
+  /* Everything a scanner finds a code by: the three finders and their
+     separators, the timing lines, the dark module and the alignment patterns. */
+  function structure(m, aligns) {
+    var n = m.n, r = m.rows, bad = [], i, dy, dx;
+    [[0, 0], [0, n - 7], [n - 7, 0]].forEach(function (c) {
+      for (dy = -1; dy <= 7; dy++) {
+        for (dx = -1; dx <= 7; dx++) {
+          var y = c[0] + dy, x = c[1] + dx;
+          if (y < 0 || x < 0 || y >= n || x >= n) { continue; }
+          var inside = dy >= 0 && dy <= 6 && dx >= 0 && dx <= 6;
+          var d = Math.max(Math.abs(dx - 3), Math.abs(dy - 3));
+          var want = inside && d !== 2 ? 1 : 0;
+          if (r[y][x] !== want) { bad.push("finder at " + c + " offset " + dy + "," + dx); }
+        }
+      }
+    });
+    for (i = 8; i <= n - 9; i++) {
+      if (r[6][i] !== (i % 2 === 0 ? 1 : 0)) { bad.push("timing row at " + i); }
+      if (r[i][6] !== (i % 2 === 0 ? 1 : 0)) { bad.push("timing column at " + i); }
+    }
+    if (r[n - 8][8] !== 1) { bad.push("the dark module"); }
+    if (aligns) {
+      var last = aligns.length - 1;
+      aligns.forEach(function (a, ai) {
+        aligns.forEach(function (b, bi) {
+          if ((ai === 0 && bi === 0) || (ai === 0 && bi === last) || (ai === last && bi === 0)) { return; }
+          for (dy = -2; dy <= 2; dy++) {
+            for (dx = -2; dx <= 2; dx++) {
+              var want = Math.max(Math.abs(dx), Math.abs(dy)) !== 1 ? 1 : 0;
+              if (r[a + dy][b + dx] !== want) { bad.push("alignment at " + a + "," + b); }
+            }
+          }
+        });
+      });
+    }
+    return bad;
+  }
+
+  /* The 15 format bits, from both copies. */
+  function formatBits(m) {
+    var r = m.rows, n = m.n, first = 0, second = 0, i;
+    for (i = 0; i <= 5; i++) { first |= r[i][8] << i; }
+    first |= r[7][8] << 6; first |= r[8][8] << 7; first |= r[8][7] << 8;
+    for (i = 9; i < 15; i++) { first |= r[8][14 - i] << i; }
+    for (i = 0; i < 8; i++) { second |= r[8][n - 1 - i] << i; }
+    for (i = 8; i < 15; i++) { second |= r[n - 15 + i][8] << i; }
+    return { first: first, second: second };
+  }
+  function bchRemainder(v) {
+    for (var i = 14; i >= 10; i--) { if ((v >>> i) & 1) { v ^= 0x537 << (i - 10); } }
+    return v;
+  }
+  function checkFormat(label, m, level) {
+    var f = formatBits(m);
+    eq(label + ": both copies of the format information agree", f.first, f.second);
+    var c = f.first ^ 0x5412;
+    eq(label + ": the format bits are a valid BCH code word", bchRemainder(c), 0);
+    eq(label + ": and name the level that was chosen", (c >> 13) & 3, FORMAT_LEVEL[level]);
+    return f.first;
+  }
+  function checkVersionInfo(label, m, version) {
+    var n = m.n, r = m.rows, a = 0, b = 0;
+    for (var i = 0; i < 18; i++) {
+      a |= r[n - 11 + i % 3][Math.floor(i / 3)] << i;
+      b |= r[Math.floor(i / 3)][n - 11 + i % 3] << i;
+    }
+    eq(label + ": both copies of the version information agree", a, b);
+    eq(label + ": and are the table's value for version " + version, a, VERSION_INFO[version]);
+  }
+
+  /* ================= the page as it opens ================= */
+  ok("a QR code is on the screen when the page opens", drawn());
+  eq("it holds the default link", txt("payload"), "https://108toolbox.in");
+  eq("version 2, as the capacity chart says for 21 bytes at level M", txt("sVer"), "2");
+  eq("25 squares each way", txt("sGrid"), "25 " + TIMES + " 25");
+  eq("23 of the 28 data bytes of a version 2-M code: 4 + 8 + 168 bits", txt("sFill"), "23 of 28");
+  eq("the picture is that many squares plus a border of four each side, 8 px each", stage.width, (25 + 8) * 8);
+  has("the message names the mode", txt("msg"), "byte mode, 21 bytes");
+  has("and the version", txt("msg"), "version 2");
+  has("and how much damage it survives", txt("msg"), "15%");
+  has("and says where it was drawn", txt("msg"), "Drawn in your browser");
+  ok("both downloads are ready", !pngBtn.disabled && !svgBtn.disabled);
+  shown("the link box is showing", "textFields");
+  gone("and the Wi-Fi fields are not", "wifiFields");
+  var m0 = read(8);
+  eq("it is the matrix OpenCV read back as exactly this link", m0.bits, GOLD["default"].bits);
+  eq("with the right structure", structure(m0, ALIGN[2]).join("; "), "");
+  checkFormat("the default code", m0, 1);
+
+  /* ================= the published worked example ================= */
+  text("HELLO WORLD", 1);
+  eq("HELLO WORLD is version 1", txt("sVer"), "1");
+  has("capitals and a space use alphanumeric mode", txt("msg"), "alphanumeric mode, 11 characters");
+  eq("4 + 9 + 61 bits is 74 bits, which is 10 of the 16 data bytes", txt("sFill"), "10 of 16");
+  var hello = read(8);
+  eq("its matrix is the one whose codewords match the published example", hello.bits, GOLD.hello.bits);
+  var helloFormat = checkFormat("HELLO WORLD", hello, 1);
+  eq("its format string at mask 0, level M, is the published 101010000010010",
+     ("000000000000000" + helloFormat.toString(2)).slice(-15), "101010000010010");
+  eq("with the right structure", structure(hello, null).join("; "), "");
+
+  text("0123456789", 0);
+  has("digits use numeric mode", txt("msg"), "numeric mode, 10 characters");
+  eq("and version 1 at level L", txt("sVer"), "1");
+  eq("and this matrix", read(8).bits, GOLD.digits.bits);
+
+  /* ================= what goes in ================= */
+  text("\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41", 1);
+  ok("Telugu text draws", drawn());
+  has("and is counted in UTF-8 bytes, three for each of its six letters", txt("msg"), "byte mode, 18 bytes");
+  eq("as version 2", txt("sVer"), "2");
+  eq("with this matrix", read(8).bits, GOLD.telugu.bits);
+  text("caf" + String.fromCharCode(0xE9), 1);
+  has("an accented letter is two bytes", txt("msg"), "5 bytes");
+  text(String.fromCodePoint(0x1F600), 1);
+  has("an emoji is four bytes", txt("msg"), "4 bytes");
+  text("a" + String.fromCodePoint(0x1F600) + "b", 1);
+  has("and they add up", txt("msg"), "6 bytes");
+  text("line one\nline two", 1);
+  has("a line break is one byte", txt("msg"), "17 bytes");
+  text("HTTPS://108TOOLBOX.IN", 1);
+  has("capitals and slashes stay in alphanumeric mode", txt("msg"), "alphanumeric mode");
+  text("https://108toolbox.in", 1);
+  has("lowercase forces byte mode", txt("msg"), "byte mode");
+  text("1234567890123456789012345678901234567890", 1);
+  has("a long number stays numeric", txt("msg"), "numeric mode, 40 characters");
+
+  /* ================= the capacity chart, every version to 10 at every level ================= */
+  var v, lvl;
+  for (v = 1; v <= 10; v++) {
+    for (lvl = 0; lvl < 4; lvl++) {
+      var cap = CHART[v][lvl];
+      text(rep("a", cap), lvl);
+      eq("version " + v + " level " + "LMQH".charAt(lvl) + " holds " + cap + " bytes", txt("sVer"), String(v));
+      text(rep("a", cap + 1), lvl);
+      eq("and one more byte needs version " + (v + 1), txt("sVer"), String(v + 1));
+    }
+  }
+
+  /* ================= the most one code can hold, every mode and level ================= */
+  var modes = [["numeric", "7"], ["alphanumeric", "Z"], ["byte", "x"]];
+  modes.forEach(function (mode) {
+    for (var l = 0; l < 4; l++) {
+      var most = MAXIMA[mode[0]][l];
+      text(rep(mode[1], most), l);
+      eq(mode[0] + " at level " + "LMQH".charAt(l) + ": " + most + " fit in version 40", drawn() ? txt("sVer") : "refused", "40");
+      text(rep(mode[1], most + 1), l);
+      ok("and one more is refused", !drawn());
+      has("naming the limit", plain(txt("msg")), String(most));
+    }
+  });
+
+  /* ================= every row of both tables, locked =================
+     For each of the 160 combinations of version and level, the smallest and the
+     largest text that fits: each was decoded to exactly its text by an
+     independent decoder (block by block, Reed-Solomon re-derived) before its
+     matrix was recorded. A typo in one table entry, one alignment position or
+     one block count fails here by name. */
+  var SWEEP = [[0, 1, 1, 2087236283], [0, 1, 17, 454188295], [0, 2, 18, 3449790025], [0, 2, 32, 3452831619], [0, 3, 33, 2236000884], [0, 3, 53, 1301206725], [0, 4, 54, 114053048], [0, 4, 78, 3900377604], [0, 5, 79, 2894960073], [0, 5, 106, 1352797307], [0, 6, 107, 2338867650], [0, 6, 134, 2666943548], [0, 7, 135, 2691799315], [0, 7, 154, 567230587], [0, 8, 155, 1588778675], [0, 8, 192, 2321344831], [0, 9, 193, 3893691483], [0, 9, 230, 3783627015], [0, 10, 231, 2728851593], [0, 10, 271, 2703756617], [0, 11, 272, 910651417], [0, 11, 321, 335074341], [0, 12, 322, 4281662673], [0, 12, 367, 3667002327], [0, 13, 368, 3678274523], [0, 13, 425, 151055407], [0, 14, 426, 2832715091], [0, 14, 458, 558492223], [0, 15, 459, 2796571021], [0, 15, 520, 3765519125], [0, 16, 521, 3824185162], [0, 16, 586, 1040247138], [0, 17, 587, 3302207081], [0, 17, 644, 3517373307], [0, 18, 645, 2620196579], [0, 18, 718, 1010492251], [0, 19, 719, 348488509], [0, 19, 792, 2372948391], [0, 20, 793, 1538267827], [0, 20, 858, 1875524343], [0, 21, 859, 3978536181], [0, 21, 929, 2487612403], [0, 22, 930, 4177796517], [0, 22, 1003, 707325409], [0, 23, 1004, 666562899], [0, 23, 1091, 3394084161], [0, 24, 1092, 647075969], [0, 24, 1171, 1624901793], [0, 25, 1172, 2157100895], [0, 25, 1273, 3362530961], [0, 26, 1274, 304233553], [0, 26, 1367, 4220189715], [0, 27, 1368, 4098961953], [0, 27, 1465, 724481331], [0, 28, 1466, 3045876588], [0, 28, 1528, 3003186436], [0, 29, 1529, 1282238267], [0, 29, 1628, 3503569013], [0, 30, 1629, 1854959131], [0, 30, 1732, 446963545], [0, 31, 1733, 214372018], [0, 31, 1840, 1906839446], [0, 32, 1841, 3532341502], [0, 32, 1952, 3178177086], [0, 33, 1953, 2173711680], [0, 33, 2068, 855884896], [0, 34, 2069, 3457066733], [0, 34, 2188, 171135621], [0, 35, 2189, 2617494511], [0, 35, 2303, 622344037], [0, 36, 2304, 37166631], [0, 36, 2431, 3716328121], [0, 37, 2432, 2244996419], [0, 37, 2563, 2396042905], [0, 38, 2564, 714187519], [0, 38, 2699, 206837987], [0, 39, 2700, 3332177007], [0, 39, 2809, 3619384371], [0, 40, 2810, 3538470801], [0, 40, 2953, 3533345427], [1, 1, 1, 2648599305], [1, 1, 14, 648859603], [1, 2, 15, 33534777], [1, 2, 26, 664108763], [1, 3, 27, 1255121150], [1, 3, 42, 3197698270], [1, 4, 43, 2561723302], [1, 4, 62, 837875998], [1, 5, 63, 1687985183], [1, 5, 84, 3212899343], [1, 6, 85, 3869207038], [1, 6, 106, 4176704502], [1, 7, 107, 1149351661], [1, 7, 122, 1576209451], [1, 8, 123, 2220700961], [1, 8, 152, 1667655543], [1, 9, 153, 700915055], [1, 9, 180, 1548862145], [1, 10, 181, 3597448727], [1, 10, 213, 3179999575], [1, 11, 214, 100492569], [1, 11, 251, 697833449], [1, 12, 252, 4043490867], [1, 12, 287, 319121847], [1, 13, 288, 1797101023], [1, 13, 331, 2381461339], [1, 14, 332, 2254308223], [1, 14, 362, 2611491735], [1, 15, 363, 3843354125], [1, 15, 412, 473778611], [1, 16, 413, 4240792976], [1, 16, 450, 3839069858], [1, 17, 451, 3220583913], [1, 17, 504, 2517152995], [1, 18, 505, 3505555019], [1, 18, 560, 387408279], [1, 19, 561, 1911786851], [1, 19, 624, 3593568355], [1, 20, 625, 784333061], [1, 20, 666, 2343065641], [1, 21, 667, 519203445], [1, 21, 711, 85114961], [1, 22, 712, 1320757007], [1, 22, 779, 2668727487], [1, 23, 780, 1070395539], [1, 23, 857, 2038013837], [1, 24, 858, 2968945863], [1, 24, 911, 3944981235], [1, 25, 912, 2204019729], [1, 25, 997, 403475841], [1, 26, 998, 1887018363], [1, 26, 1059, 1233293397], [1, 27, 1060, 275402197], [1, 27, 1125, 2675517075], [1, 28, 1126, 1819173832], [1, 28, 1190, 3525833430], [1, 29, 1191, 3935883031], [1, 29, 1264, 2283193421], [1, 30, 1265, 2350811085], [1, 30, 1370, 389323977], [1, 31, 1371, 4184639130], [1, 31, 1452, 417519210], [1, 32, 1453, 2780285178], [1, 32, 1538, 3143076190], [1, 33, 1539, 4263181888], [1, 33, 1628, 3614623702], [1, 34, 1629, 509839605], [1, 34, 1722, 3706099715], [1, 35, 1723, 4259256305], [1, 35, 1809, 2264845619], [1, 36, 1810, 1810020839], [1, 36, 1911, 1573317711], [1, 37, 1912, 3790160463], [1, 37, 1989, 2097664569], [1, 38, 1990, 1446777477], [1, 38, 2099, 932230743], [1, 39, 2100, 2935424751], [1, 39, 2213, 1069402041], [1, 40, 2214, 1604212909], [1, 40, 2331, 3620783465], [2, 1, 1, 585942405], [2, 1, 11, 3838682755], [2, 2, 12, 3805864332], [2, 2, 20, 1431486903], [2, 3, 21, 1521857199], [2, 3, 32, 1103898008], [2, 4, 33, 2186133881], [2, 4, 46, 1054288759], [2, 5, 47, 881869843], [2, 5, 60, 1452825069], [2, 6, 61, 1577631720], [2, 6, 74, 570068119], [2, 7, 75, 2027069851], [2, 7, 86, 1157409801], [2, 8, 87, 1652684101], [2, 8, 108, 4194315335], [2, 9, 109, 4111493207], [2, 9, 130, 2099937391], [2, 10, 131, 4007021065], [2, 10, 151, 459289549], [2, 11, 152, 3082279157], [2, 11, 177, 2961449207], [2, 12, 178, 534050601], [2, 12, 203, 569289744], [2, 13, 204, 1202539993], [2, 13, 241, 787745587], [2, 14, 242, 2232433511], [2, 14, 258, 2625583363], [2, 15, 259, 565425444], [2, 15, 292, 909953705], [2, 16, 293, 146626072], [2, 16, 322, 3846530078], [2, 17, 323, 739578293], [2, 17, 364, 3170210391], [2, 18, 365, 3611643511], [2, 18, 394, 1761541082], [2, 19, 395, 172309175], [2, 19, 442, 3743853097], [2, 20, 443, 1546778167], [2, 20, 482, 334724301], [2, 21, 483, 4068942449], [2, 21, 509, 1414872091], [2, 22, 510, 1116775559], [2, 22, 565, 580511009], [2, 23, 566, 2819170603], [2, 23, 611, 2541664023], [2, 24, 612, 4063366115], [2, 24, 661, 2910797355], [2, 25, 662, 323398717], [2, 25, 715, 1016722848], [2, 26, 716, 2951221531], [2, 26, 751, 3222940297], [2, 27, 752, 2692394611], [2, 27, 805, 1092444791], [2, 28, 806, 1389644776], [2, 28, 868, 631502560], [2, 29, 869, 3078317521], [2, 29, 908, 660826271], [2, 30, 909, 891732281], [2, 30, 982, 3562352381], [2, 31, 983, 3747494154], [2, 31, 1030, 1720773370], [2, 32, 1031, 2066664448], [2, 32, 1112, 3312944852], [2, 33, 1113, 898844792], [2, 33, 1168, 3860477180], [2, 34, 1169, 1149154225], [2, 34, 1228, 3105766979], [2, 35, 1229, 299098893], [2, 35, 1283, 2648820601], [2, 36, 1284, 1116129441], [2, 36, 1351, 2652816325], [2, 37, 1352, 803186787], [2, 37, 1423, 2797191991], [2, 38, 1424, 746523299], [2, 38, 1499, 3911911759], [2, 39, 1500, 1494274583], [2, 39, 1579, 915904475], [2, 40, 1580, 1063136637], [2, 40, 1663, 3299847901], [3, 1, 1, 2889886831], [3, 1, 7, 3193784607], [3, 2, 8, 2004731131], [3, 2, 14, 2511902151], [3, 3, 15, 2981765282], [3, 3, 24, 1930792626], [3, 4, 25, 2123966586], [3, 4, 34, 3332639714], [3, 5, 35, 2456203023], [3, 5, 44, 3012374064], [3, 6, 45, 1360429350], [3, 6, 58, 246088047], [3, 7, 59, 3143959583], [3, 7, 64, 1970339891], [3, 8, 65, 1770907467], [3, 8, 84, 3814092785], [3, 9, 85, 1018504185], [3, 9, 98, 1636216948], [3, 10, 99, 2306442717], [3, 10, 119, 4164204761], [3, 11, 120, 4183230796], [3, 11, 137, 2272209609], [3, 12, 138, 1581013222], [3, 12, 155, 643967850], [3, 13, 156, 1003939919], [3, 13, 177, 1891857015], [3, 14, 178, 1443888015], [3, 14, 194, 3177111145], [3, 15, 195, 1285711228], [3, 15, 220, 635112521], [3, 16, 221, 3395170492], [3, 16, 250, 3631801938], [3, 17, 251, 1279302089], [3, 17, 280, 2066204199], [3, 18, 281, 1229339965], [3, 18, 310, 2469188637], [3, 19, 311, 1062673151], [3, 19, 338, 4272458563], [3, 20, 339, 1462688003], [3, 20, 382, 1737796725], [3, 21, 383, 3631535629], [3, 21, 403, 3711193519], [3, 22, 404, 142346597], [3, 22, 439, 2576323981], [3, 23, 440, 3767312960], [3, 23, 461, 3821485838], [3, 24, 462, 3105057417], [3, 24, 511, 2443022434], [3, 25, 512, 1750530665], [3, 25, 535, 876494677], [3, 26, 536, 3531011935], [3, 26, 593, 3878241397], [3, 27, 594, 2330511591], [3, 27, 625, 2033881295], [3, 28, 626, 2800858380], [3, 28, 658, 1555125468], [3, 29, 659, 3210401747], [3, 29, 698, 2921464477], [3, 30, 699, 1096131525], [3, 30, 742, 2027177717], [3, 31, 743, 3314156408], [3, 31, 790, 3778989396], [3, 32, 791, 3648992656], [3, 32, 842, 2844491820], [3, 33, 843, 1736188], [3, 33, 898, 2480527867], [3, 34, 899, 1139197976], [3, 34, 958, 505693910], [3, 35, 959, 1560500757], [3, 35, 983, 1481739175], [3, 36, 984, 2688323629], [3, 36, 1051, 1134949745], [3, 37, 1052, 924850833], [3, 37, 1093, 1104119215], [3, 38, 1094, 1322166253], [3, 38, 1139, 4125234223], [3, 39, 1140, 2561890629], [3, 39, 1219, 31554291], [3, 40, 1220, 2168482327], [3, 40, 1273, 3053909089]];
+  set("scale", "2");
+  SWEEP.forEach(function (s) {
+    text(cyc("the quick brown fox jumps over 0123456789 the lazy dog?", s[2]), s[0]);
+    var m = drawn() ? read(2) : null;
+    eq("version " + s[1] + " level " + "LMQH".charAt(s[0]) + " with " + s[2] + " bytes: version and matrix",
+       m ? m.n + ":" + fnv(m.bits) : "refused", (17 + 4 * s[1]) + ":" + s[3]);
+  });
+  set("scale", "8");
+
+  /* ================= structure at every kind of version ================= */
+  STRUCT.forEach(function (s) {
+    var version = s[0], level = s[1], length = s[2];
+    text(cyc("abcdefghij", length), level);
+    eq("version " + version + " is what " + length + " bytes at level " + "LMQH".charAt(level) + " needs", txt("sVer"), String(version));
+    var m = read(8);
+    eq("version " + version + " has " + (17 + 4 * version) + " squares a side", m.n, 17 + 4 * version);
+    eq("version " + version + ": finders, timing, dark module and alignment patterns are right",
+       structure(m, ALIGN[version]).join("; "), "");
+    checkFormat("version " + version, m, level);
+    if (VERSION_INFO[version]) { checkVersionInfo("version " + version, m, version); }
+  });
+
+  /* ================= goldens for larger codes ================= */
+  text(cyc("abcdefghij", 135), 0);
+  eq("version 7 matrix, as OpenCV read it", fnv(read(8).bits), GOLD.v7.hash);
+  text(cyc("0123456789abcdef", 181), 1);
+  eq("version 10 matrix, as OpenCV read it", fnv(read(8).bits), GOLD.v10.hash);
+  text(rep("x", 2953), 0);
+  eq("version 40 matrix, as OpenCV read it", fnv(read(8).bits), GOLD.v40.hash);
+
+  /* ================= Wi-Fi ================= */
+  function wifi(ssid, pass, sec, hidden) {
+    set("kind", "wifi");
+    set("ssid", ssid);
+    set("wpass", pass);
+    set("wsec", sec);
+    tick("whidden", !!hidden);
+  }
+  set("ecl", "1");
+  wifi("HomeNet", "correct horse", "WPA", false);
+  gone("the link box is hidden for Wi-Fi", "textFields");
+  shown("and the Wi-Fi fields show", "wifiFields");
+  eq("a plain network", txt("payload"), "WIFI:T:WPA;S:HomeNet;P:correct horse;;");
+  eq("as version 3", txt("sVer"), "3");
+  has("labelled as Wi-Fi", txt("msg"), "Wi-Fi, byte mode");
+  eq("with the matrix OpenCV read back", fnv(read(8).bits), GOLD.wifi.hash);
+  wifi("My;Net:1", "pa,ss\\word\"", "WPA", false);
+  eq("a name and password full of special characters are escaped",
+     txt("payload"), "WIFI:T:WPA;S:My\\;Net\\:1;P:pa\\,ss\\\\word\\\";;");
+  wifi("Guest", "ignored", "nopass", false);
+  eq("an open network has no password field, whatever is typed", txt("payload"), "WIFI:T:nopass;S:Guest;;");
+  wifi("Hidden", "secret123", "WPA", true);
+  eq("a hidden network says so", txt("payload"), "WIFI:T:WPA;S:Hidden;P:secret123;H:true;;");
+  wifi("OldRouter", "12345", "WEP", false);
+  eq("WEP", txt("payload"), "WIFI:T:WEP;S:OldRouter;P:12345;;");
+  wifi("\u0c07\u0c32\u0c4d\u0c32\u0c41", "abc", "WPA", false);
+  ok("a Telugu network name draws", drawn());
+  wifi("", "abc", "WPA", false);
+  ok("no network name draws nothing", !drawn());
+  has("and asks for it", txt("msg"), "network name");
+  wifi("HomeNet", "", "WPA", false);
+  ok("no password with WPA draws nothing", !drawn());
+  has("and asks for it", txt("msg"), "password");
+  wifi("HomeNet", "", "nopass", false);
+  ok("no password is fine for an open network", drawn());
+  wifi("HomeNet", "abc", "WEP", false);
+  set("wsec", "");
+  ok("a security value that is not on the list is refused", !drawn());
+  has("and says so", txt("msg"), "security");
+  set("wsec", "WPA");
+  set("kind", "text");
+  shown("switching back shows the link box", "textFields");
+  gone("and hides the Wi-Fi fields", "wifiFields");
+  ok("the text that was there before is 2953 bytes, more than level M can hold, so it is refused", !drawn());
+  has("naming the level's limit", plain(txt("msg")), "2331");
+
+  /* ================= refusing what does not fit ================= */
+  text("", 1);
+  ok("nothing typed draws nothing", !drawn());
+  has("and says what to do", txt("msg"), "Type or paste");
+  eq("with the tiles blanked", txt("sVer") + txt("sGrid") + txt("sFill"), DASH + DASH + DASH);
+  eq("and the readout empty", txt("payload"), "");
+  ok("and both downloads off", pngBtn.disabled && svgBtn.disabled);
+  text(rep("a", 10001), 1);
+  ok("ten thousand characters is refused at once", !drawn());
+  has("with the count", plain(txt("msg")), "10001 characters");
+  text("hello", 1);
+  set("ecl", "9");
+  ok("a level that is not on the list is refused, not quietly turned into Low", !drawn());
+  has("and says so", txt("msg"), "error-correction level");
+  set("ecl", "1");
+  ok("choosing a real one brings the code back", drawn());
+  set("scale", "999");
+  ok("a module size that is not on the list is refused", !drawn());
+  set("scale", "8");
+
+  /* ================= the choices ================= */
+  text(rep("a", 100), 0); eq("100 bytes at L is version 5, from the chart", txt("sVer"), "5");
+  set("ecl", "1"); eq("at M version 6", txt("sVer"), "6");
+  set("ecl", "2"); eq("at Q version 8", txt("sVer"), "8");
+  set("ecl", "3"); eq("at H version 10", txt("sVer"), "10");
+  has("and the message says how much damage H survives", txt("msg"), "30%");
+  set("ecl", "0"); has("and L", txt("msg"), "7%");
+
+  text("https://108toolbox.in", 1);
+  var at8 = read(8);
+  set("scale", "4");
+  eq("half the module size makes half the picture", stage.width, 33 * 4);
+  eq("of the same matrix", read(4).bits, at8.bits);
+  set("scale", "16");
+  eq("and 16 makes it twice as big as 8", stage.width, 33 * 16);
+  eq("still the same matrix", read(16).bits, at8.bits);
+  set("scale", "8");
+
+  /* ================= colours ================= */
+  set("fg", "#1a2b6d");
+  set("bg", "#fff3b0");
+  var px = stage.getContext("2d").getImageData(1, 1, 1, 1).data;
+  eq("the border takes the background colour", px[0] + "," + px[1] + "," + px[2], "255,243,176");
+  var dark = stage.getContext("2d").getImageData(4 * 8 + 3, 4 * 8 + 3, 1, 1).data;
+  eq("and the corner of the first finder takes the code colour", dark[0] + "," + dark[1] + "," + dark[2], "26,43,109");
+  has("good colours draw normally", txt("msg"), "Drawn in your browser");
+  set("fg", "#777777"); set("bg", "#888888");
+  ok("colours that are too close still draw", drawn());
+  has("but are warned about", txt("msg"), "too close");
+  has("starting with the word Drawn", txt("msg"), "Drawn, but");
+  set("fg", "#ffffff"); set("bg", "#000000");
+  has("a light code on a dark background is warned about", txt("msg"), "lighter than its background");
+  set("fg", "#000000"); set("bg", "#ffffff");
+  has("black on white is not", txt("msg"), "Drawn in your browser");
+
+  /* ================= hostile text ================= */
+  text("<iframe onload=zq>", 1);
+  ok("markup typed into the box still draws a code", drawn());
+  eq("the readout shows it as text", txt("payload"), "<iframe onload=zq>");
+  eq("with no element made out of it", document.querySelectorAll("iframe").length, 0);
+  wifi("<iframe onload=zq>", "<b>x</b>", "WPA", false);
+  ok("and the same for a network name", drawn() && document.querySelectorAll("iframe, b").length === 0);
+  set("kind", "text");
+
+  /* ================= reset ================= */
+  text("something else", 3);
+  set("scale", "3");
+  set("fg", "#1a2b6d");
+  click("resetBtn");
+  eq("reset brings back the link box", val("kind"), "text");
+  eq("the default text", val("text"), "https://108toolbox.in");
+  eq("level M", val("ecl"), "1");
+  eq("module size 8", val("scale"), "8");
+  eq("and black", val("fg"), "#000000");
+  ok("and a code drawn", drawn());
+  eq("the same picture as at the start", read(8).bits, GOLD["default"].bits);
+
+  /* ================= saving the files ================= */
+  var pngSeen = false, svgSeen = false;
+  click("pngBtn");
+  waitFor("the PNG is handed over", function () { return window.__saved.length === 1; }, function () {
+    var saved = window.__saved[0];
+    eq("named for the text", saved.name, "qr-code-https-108toolbox-in.png");
+    eq("as a PNG", saved.blob.type, "image/png");
+    createImageBitmap(saved.blob).then(function (bmp) {
+      eq("the width of the picture on screen", bmp.width, stage.width);
+      var c = document.createElement("canvas");
+      c.width = bmp.width; c.height = bmp.height;
+      var cx = c.getContext("2d");
+      cx.drawImage(bmp, 0, 0);
+      var a = cx.getImageData(0, 0, c.width, c.height).data;
+      var b = stage.getContext("2d").getImageData(0, 0, stage.width, stage.height).data;
+      var same = a.length === b.length;
+      for (var k = 0; same && k < a.length; k++) { if (a[k] !== b[k]) { same = false; } }
+      ok("every pixel of the file is the pixel on screen", same);
+      pngSeen = true;
+    });
+  });
+
+  waitFor("the PNG has been checked", function () { return pngSeen; }, function () {
+    set("fg", "#1a2b6d");
+    set("bg", "#fff3b0");
+    click("svgBtn");
+    waitFor("the SVG is handed over", function () { return window.__saved.length === 2; }, function () {
+      var saved = window.__saved[1];
+      eq("named the same, ending .svg", saved.name, "qr-code-https-108toolbox-in.svg");
+      eq("as an SVG", saved.blob.type, "image/svg+xml");
+      saved.blob.text().then(function (svg) {
+        var doc = new DOMParser().parseFromString(svg, "image/svg+xml");
+        ok("it is well-formed XML", doc.getElementsByTagName("parsererror").length === 0, svg.slice(0, 100));
+        var root = doc.documentElement;
+        eq("its viewBox is in squares, border included", root.getAttribute("viewBox"), "0 0 33 33");
+        eq("its width is the picture's", root.getAttribute("width"), String(stage.width));
+        var back = doc.querySelector("rect");
+        eq("its background is the chosen colour", back.getAttribute("fill"), "#fff3b0");
+        var path = doc.querySelector("path");
+        eq("its code is the chosen colour", path.getAttribute("fill"), "#1a2b6d");
+        var rows = [];
+        for (var y = 0; y < 25; y++) { rows.push(rep("0", 25).split("")); }
+        var pattern = /M(\d+) (\d+)h(\d+)v1h-(\d+)z/g, part, pieces = 0;
+        while ((part = pattern.exec(path.getAttribute("d"))) !== null) {
+          pieces++;
+          for (var k = 0; k < Number(part[3]); k++) { rows[Number(part[2]) - 4][Number(part[1]) - 4 + k] = "1"; }
+        }
+        ok("the path has pieces", pieces > 10, String(pieces));
+        eq("and they are exactly the modules of the code", rows.map(function (r) { return r.join(""); }).join(""), GOLD["default"].bits);
+        svgSeen = true;
+      });
+    });
+  });
+
+  waitFor("the SVG has been checked", function () { return svgSeen; }, function () {
+    wifi("HomeNet", "correct horse", "WPA", false);
+    click("pngBtn");
+    waitFor("the Wi-Fi PNG is handed over", function () { return window.__saved.length === 3; }, function () {
+      eq("a Wi-Fi file never has the network name or password in its name", window.__saved[2].name, "qr-code-wifi.png");
+      set("kind", "text");
+      text("", 1);
+      click("pngBtn");
+      click("svgBtn");
+      setTimeout(function () {
+        eq("with nothing to draw, neither button hands anything over", window.__saved.length, 3);
+        finish();
+      }, 300);
+    });
+  });
+"""
+
 # ===== END: the test bodies ================================================
 
 
@@ -5928,6 +6381,8 @@ BUDGET_MS = {
     "image-splitter": 40000,
     "image-metadata-viewer": 40000,
     "image-cropper": 25000,
+    "barcode-generator": 30000,
+    "qr-code-generator": 40000,
 }
 
 

@@ -522,6 +522,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "qr-code-generator",
+    name: "QR Code Generator",
+    desc: "Links, text and Wi-Fi passwords as QR codes, with error correction, colours and size. Save PNG or SVG.",
+    category: "Random",
+    icon: "\u{1F4F1}",
+    keywords: ["qr code generator", "qr code", "make a qr code", "wifi qr code", "qr code maker", "url to qr code", "link to qr code", "free qr code", "qr code png", "qr code svg"],
+    popular: false
+  },
+  {
     slug: "random-list-shuffler",
     name: "Random List Shuffler",
     desc: "Shuffle a list with Fisher-Yates, not the sort trick that is not random.",

@@ -233,8 +233,8 @@ make; it is written here so it is made with the number in front of us.
 | Converter | 14 | 13 |
 | PDF | 10 | 0 |
 | Date & Time | 8 | 8 |
-| Random | 8 | 7 |
-| **Total** | **108** | **93** |
+| Random | 8 | 8 |
+| **Total** | **108** | **94** |
 
 ---
 
@@ -419,7 +419,7 @@ the footer and becomes the entire reason to pick this site.
 | 4 | `random-list-shuffler` ✅ | easy |
 | 5 | `random-picker` ✅ | medium — name / winner picker |
 | 6 | `username-generator` ✅ | easy |
-| 7 | `qr-code-generator` | medium — needs a small library |
+| 7 | `qr-code-generator` ✅ | medium — written by hand, no library |
 | 8 | `barcode-generator` ✅ | medium — written by hand, no library |
 
 ---
@@ -470,7 +470,6 @@ Libraries you will actually need:
 |---|---|---|
 | `pdf-lib` | MIT | all 10 PDF tools |
 | `pdf.js` | Apache-2.0 | `pdf-to-image` |
-| `qrcode` | MIT | `qr-code-generator` |
 | `marked` + `DOMPurify` | MIT | `markdown-previewer` |
 | `PapaParse` | MIT | `csv-to-json`, `json-to-csv` ✅ |
 | `Terser` | BSD-2 | `js-minifier` |
