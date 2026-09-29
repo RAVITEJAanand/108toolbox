@@ -396,6 +396,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "js-minifier",
+    name: "JavaScript Minifier",
+    desc: "Remove comments and whitespace from JavaScript without renaming anything or changing what it does.",
+    category: "Developer",
+    icon: "\u{1F4DC}",
+    keywords: ["javascript minifier", "js minifier", "minify javascript", "minify js", "compress javascript", "remove comments from javascript", "javascript compressor", "shrink javascript", "js compressor"],
+    popular: false
+  },
+  {
     slug: "json-formatter",
     name: "JSON Formatter & Validator",
     desc: "Beautify or minify JSON and see exactly where the error is.",

@@ -227,14 +227,14 @@ make; it is written here so it is made with the number in front of us.
 | Category | Tools | Built |
 |---|---|---|
 | Calculator | 20 | 19 |
-| Developer | 18 | 16 |
+| Developer | 18 | 17 |
 | Text | 16 | 16 |
 | Image | 14 | 14 |
 | Converter | 14 | 13 |
 | PDF | 10 | 0 |
 | Date & Time | 8 | 8 |
 | Random | 8 | 8 |
-| **Total** | **108** | **94** |
+| **Total** | **108** | **95** |
 
 ---
 
@@ -329,7 +329,7 @@ matches, so do not rename them later. ✅ = already live.
 | 15 | `css-minifier` ✅ | medium |
 | 16 | `sql-formatter` ✅ | hard |
 | 17 | `markdown-previewer` | hard — needs a library |
-| 18 | `js-minifier` | hard — needs a library, lazy-load it |
+| 18 | `js-minifier` ✅ | hard — written by hand, no library; judged by a real parser |
 
 ### Converter (14)
 
@@ -472,7 +472,6 @@ Libraries you will actually need:
 | `pdf.js` | Apache-2.0 | `pdf-to-image` |
 | `marked` + `DOMPurify` | MIT | `markdown-previewer` |
 | `PapaParse` | MIT | `csv-to-json`, `json-to-csv` ✅ |
-| `Terser` | BSD-2 | `js-minifier` |
 
 `DOMPurify` is not optional next to `marked` — rendering someone's markdown
 straight into the page is an XSS hole.
