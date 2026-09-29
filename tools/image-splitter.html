@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Image Splitter — Grid Tiles for Carousels</title>
+  <meta name="description" content="Cut one picture into a grid of equal tiles for a carousel or a profile grid, and download them as a zip. Every pixel is kept, and nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/image-splitter.html">
+
+  <meta property="og:title" content="Image Splitter — Grid Tiles for Carousels">
+  <meta property="og:description" content="Cut one picture into a grid of equal tiles for a carousel or a profile grid, and download them as a zip. Every pixel is kept, and nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=23">
+  <link rel="stylesheet" href="../css/tool.css?v=23">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Are any pixels lost when it does not divide evenly?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Every cut is placed at the nearest whole pixel, so tiles differ by at most one pixel and together cover the picture exactly. Nothing is trimmed off the edges."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "In what order should I post a profile grid?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Newest posts appear at the top left, so post the bottom-right tile first and the top-left tile last. Choose 'posting order' for the file names and 01 is the first to post."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How big should the original be?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "As big as each tile needs to be, multiplied by the number of tiles. Three tiles across that each need to be 1080 wide means an original 3240 wide. Splitting a small picture gives small tiles - detail that was not captured cannot be added."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why a zip instead of separate downloads?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Browsers will not let a page start a dozen downloads in a row without asking about each. One zip is a single download, and each tile also has its own button if you only want one."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my picture uploaded?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The tiles are cut out and packed into the zip by your own browser. Nothing is sent to a server."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
+        <span>Image Splitter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Image Splitter</h1>
+        <p>Cut one image into rows and columns of equal tiles. Every pixel of the
+           original ends up in exactly one tile, and you can save them all in
+           one zip.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="drop" id="drop" for="file">
+            <span class="drop__big" aria-hidden="true">&#129513;</span>
+            <p><strong>Click to choose</strong> or drag an image here</p>
+            <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; nothing is uploaded</p>
+            <input type="file" id="file" accept="image/*">
+          </label>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label>Quick layouts</label>
+            <div class="btn-row">
+              <button class="btn btn--ghost" type="button" data-grid="3x1">3 across</button>
+              <button class="btn btn--ghost" type="button" data-grid="2x1">2 across</button>
+              <button class="btn btn--ghost" type="button" data-grid="1x3">3 down</button>
+              <button class="btn btn--ghost" type="button" data-grid="3x3">3 &times; 3</button>
+              <button class="btn btn--ghost" type="button" data-grid="2x2">2 &times; 2</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Columns and rows</label>
+            <div class="btn-row">
+              <input type="number" id="cols" min="1" max="10" step="1" value="3" style="max-width:96px" aria-label="Columns">
+              <span style="align-self:center">across</span>
+              <input type="number" id="rows" min="1" max="10" step="1" value="1" style="max-width:96px" aria-label="Rows">
+              <span style="align-self:center">down</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="naming">Name the files by</label>
+            <select id="naming">
+              <option value="position" selected>Position &mdash; photo-r1c2.png</option>
+              <option value="order">Posting order for a profile grid &mdash; 01 goes up first</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="fmt">Save as</label>
+            <select id="fmt">
+              <option value="image/png" selected>PNG &mdash; lossless</option>
+              <option value="image/jpeg">JPG &mdash; smaller</option>
+            </select>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="zipBtn" disabled>Download all (.zip)</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Where the cuts fall</span>
+          <div class="preview"><canvas id="stage" width="10" height="10" style="max-width:100%;height:auto;display:block"></canvas></div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sTiles">&mdash;</span><span class="stat__label">Tiles</span></div>
+            <div class="stat"><span class="stat__num" id="sEach">&mdash;</span><span class="stat__label">Each about</span></div>
+            <div class="stat"><span class="stat__num" id="sOriginal">&mdash;</span><span class="stat__label">Original</span></div>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s3)">Save one tile</span>
+          <div id="tileList" style="display:flex;flex-wrap:wrap;gap:var(--s2)"></div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Choose a picture and pick a layout, or type the number of columns
+              and rows.</li>
+          <li>The preview shows where the cuts fall.</li>
+          <li>Save one tile at a time, or take them all in a single zip.</li>
+        </ol>
+
+        <h2>Nothing is lost at the edges</h2>
+        <p>Not every picture divides evenly. A 1000-pixel width cut into three
+           is 333.33 pixels a tile, and there is no such thing as a third of a
+           pixel. The careless answer is to make every tile 333 wide and quietly
+           drop the last pixel; do that on both axes and you have lost a strip
+           along two edges without saying so.</p>
+        <p>Here every cut is placed at the nearest whole pixel to where it
+           belongs, so the tiles differ from each other by at most one pixel and
+           together they cover the picture exactly. Put them back side by side
+           and you get the original, pixel for pixel.</p>
+
+        <h2>For a carousel</h2>
+        <p>Cut the picture into columns &mdash; three across, say &mdash; and
+           post the tiles in order, left to right. Swiping through then pans
+           across the original, which is why a panorama looks so good split this
+           way. The layouts marked <em>across</em> are for exactly this.</p>
+
+        <h2>For a profile grid, the order is backwards</h2>
+        <p>A grid of posts shows the newest first, at the top left. So to make
+           the finished grid read as one picture, the tile that belongs at the
+           <em>bottom right</em> has to be posted <em>first</em>, and the top
+           left one last. The second file-naming option numbers the tiles that
+           way, so file 01 is the first to post and you can simply upload them
+           in name order.</p>
+        <p>What no page can tell you is how a given service crops each
+           thumbnail in its grid, and services have changed that before. Post
+           one tile and look at how it displays before you commit the rest.</p>
+
+        <h2>Quality</h2>
+        <p>Each tile is copied straight out of the original at full
+           resolution &mdash; nothing is shrunk. Splitting a small picture into
+           many tiles makes small tiles, and no tool can add detail that was not
+           captured. If each tile has to be a certain size, work backwards: the
+           original needs to be that size times the number of tiles.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Are any pixels lost when it does not divide evenly?</h3>
+          <p>No. Every cut is placed at the nearest whole pixel, so tiles differ by at most one pixel and together cover the picture exactly. Nothing is trimmed off the edges.</p>
+        </div>
+        <div class="faq">
+          <h3>In what order should I post a profile grid?</h3>
+          <p>Newest posts appear at the top left, so post the bottom-right tile first and the top-left tile last. Choose &#x27;posting order&#x27; for the file names and 01 is the first to post.</p>
+        </div>
+        <div class="faq">
+          <h3>How big should the original be?</h3>
+          <p>As big as each tile needs to be, multiplied by the number of tiles. Three tiles across that each need to be 1080 wide means an original 3240 wide. Splitting a small picture gives small tiles - detail that was not captured cannot be added.</p>
+        </div>
+        <div class="faq">
+          <h3>Why a zip instead of separate downloads?</h3>
+          <p>Browsers will not let a page start a dozen downloads in a row without asking about each. One zip is a single download, and each tile also has its own button if you only want one.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my picture uploaded?</h3>
+          <p>No. The tiles are cut out and packed into the zip by your own browser. Nothing is sent to a server.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=23"></script>
+  <script src="../js/tool-helpers.js?v=23"></script>
+  <script>window.CURRENT_TOOL = "image-splitter";</script>
+  <script src="../js/main.js?v=23"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var fileIn = document.getElementById("file");
+    var drop   = document.getElementById("drop");
+    var stage  = document.getElementById("stage");
+    var ctx    = stage.getContext("2d");
+    var colsEl = document.getElementById("cols");
+    var rowsEl = document.getElementById("rows");
+    var naming = document.getElementById("naming");
+    var fmtEl  = document.getElementById("fmt");
+    var zipBtn = document.getElementById("zipBtn");
+    var list   = document.getElementById("tileList");
+    var msg    = document.getElementById("msg");
+    var DASH   = String.fromCharCode(0x2014);
+    var TIMES  = String.fromCharCode(0x00D7);
+
+    var MAX = 10;
+    var img = null;
+    var name = "photo";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: where each cut falls ----
+       Every boundary is placed at the nearest WHOLE pixel to where it truly
+       belongs, so tile widths differ by at most one and the last boundary is
+       exactly the picture's edge. The careless version - floor the tile size
+       and cut every tile that wide - silently drops a strip along two sides
+       whenever the size does not divide evenly. */
+    function cuts(total, parts) {
+      var out = [];
+      for (var i = 0; i <= parts; i++) { out.push(Math.round(i * total / parts)); }
+      return out;
+    }
+
+    function layout() {
+      var cols = Math.max(1, Math.min(MAX, Math.round(Number(colsEl.value) || 1)));
+      var rows = Math.max(1, Math.min(MAX, Math.round(Number(rowsEl.value) || 1)));
+      var xs = cuts(img.naturalWidth, cols);
+      var ys = cuts(img.naturalHeight, rows);
+      var tiles = [];
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          tiles.push({
+            row: r, col: c,
+            x: xs[c], y: ys[r], w: xs[c + 1] - xs[c], h: ys[r + 1] - ys[r]
+          });
+        }
+      }
+      return { cols: cols, rows: rows, tiles: tiles };
+    }
+    /* ---- END: where each cut falls ---- */
+
+    /* ---- START: a file name for a tile ----
+       By position, or in POSTING order. A profile grid shows the newest post
+       at the top left, so the tile that belongs at the bottom right has to be
+       posted first: file 01 is the last tile in reading order. Numbers are
+       padded so a list of ten sorts as 01, 02 ... 10 rather than 1, 10, 2. */
+    function fileName(tile, plan) {
+      var ext = fmtEl.value === "image/jpeg" ? "jpg" : "png";
+      if (naming.value === "order") {
+        var index = tile.row * plan.cols + tile.col;
+        var n = plan.tiles.length - index;
+        /* At least two digits, always. The page promises "01 goes up first", and
+           nine tiles would otherwise be named 9 to 1. */
+        var width = Math.max(2, String(plan.tiles.length).length);
+        var padded = String(n);
+        while (padded.length < width) { padded = "0" + padded; }
+        return name + "-" + padded + "." + ext;
+      }
+      return name + "-r" + (tile.row + 1) + "c" + (tile.col + 1) + "." + ext;
+    }
+    /* ---- END: a file name for a tile ---- */
+
+    /* ---- START: cutting one tile out of the ORIGINAL ---- */
+    function tileCanvas(tile) {
+      var out = document.createElement("canvas");
+      out.width = tile.w; out.height = tile.h;
+      out.getContext("2d").drawImage(img, tile.x, tile.y, tile.w, tile.h, 0, 0, tile.w, tile.h);
+      return out;
+    }
+
+    function tileBlob(tile, done) {
+      tileCanvas(tile).toBlob(done, fmtEl.value, 0.92);
+    }
+    /* ---- END: cutting one tile out of the ORIGINAL ---- */
+
+    /* ---- START: drawing the picture with the cuts over it ---- */
+    function drawGuides(plan) {
+      ctx.clearRect(0, 0, stage.width, stage.height);
+      ctx.drawImage(img, 0, 0);
+
+      var rect = stage.getBoundingClientRect();
+      var k = rect.width ? stage.width / rect.width : 1;
+      ctx.lineWidth = Math.max(1, 2 * k);
+      ctx.strokeStyle = "rgba(255,255,255,0.95)";
+      ctx.setLineDash([8 * k, 6 * k]);
+
+      plan.tiles.forEach(function (t) {
+        ctx.strokeRect(t.x + ctx.lineWidth / 2, t.y + ctx.lineWidth / 2,
+                       t.w - ctx.lineWidth, t.h - ctx.lineWidth);
+      });
+      ctx.setLineDash([]);
+
+      ctx.font = "700 " + Math.max(14, Math.round(18 * k)) + "px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      plan.tiles.forEach(function (t, i) {
+        ctx.lineWidth = Math.max(2, 3 * k);
+        ctx.strokeStyle = "rgba(0,0,0,0.75)";
+        ctx.strokeText(String(i + 1), t.x + t.w / 2, t.y + t.h / 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(String(i + 1), t.x + t.w / 2, t.y + t.h / 2);
+      });
+    }
+    /* ---- END: drawing the picture with the cuts over it ---- */
+
+    /* ---- START: showing the plan ---- */
+    function update() {
+      if (!img) { return; }
+      var plan = layout();
+      colsEl.value = plan.cols;
+      rowsEl.value = plan.rows;
+      drawGuides(plan);
+
+      var first = plan.tiles[0];
+      document.getElementById("sTiles").textContent = String(plan.tiles.length);
+      document.getElementById("sEach").textContent =
+        first.w + " " + TIMES + " " + first.h;
+      document.getElementById("sOriginal").textContent =
+        img.naturalWidth + " " + TIMES + " " + img.naturalHeight;
+
+      list.innerHTML = "";
+      plan.tiles.forEach(function (tile, i) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn btn--ghost";
+        button.textContent = (i + 1) + "  " + tile.w + TIMES + tile.h;
+        button.title = fileName(tile, plan);
+        button.addEventListener("click", function () {
+          tileBlob(tile, function (blob) {
+            if (blob) { downloadBlob(blob, fileName(tile, plan)); }
+          });
+        });
+        list.appendChild(button);
+      });
+      zipBtn.disabled = false;
+
+      /* Every tile, not just the ends: 1000 across three is 333, 334, 333,
+         where the first and last agree and the middle one does not. */
+      var uneven = plan.tiles.some(function (t) { return t.w !== first.w || t.h !== first.h; });
+      var small = Math.min(first.w, first.h) < 300;
+
+      var note = uneven
+        ? "The picture does not divide evenly, so tiles differ by a single "
+          + "pixel. Nothing was trimmed - together they cover every pixel of "
+          + "the original."
+        : "Every tile is the same size and every pixel of the original is in "
+          + "exactly one of them.";
+
+      /* Both can be true at once, and both are worth hearing. */
+      if (small) {
+        setMessage("Each tile is only " + first.w + " " + TIMES + " " + first.h
+                 + " - small. Splitting cannot add detail, so start from a "
+                 + "bigger original if the tiles need to be sharp. " + note, "bad");
+      } else {
+        setMessage(note, "ok");
+      }
+    }
+    /* ---- END: showing the plan ---- */
+
+    /* ---- START: all tiles, in one zip ---- */
+    function downloadZip() {
+      if (!img) { return; }
+      var plan = layout();
+      var files = [];
+      var todo = plan.tiles.length;
+
+      plan.tiles.forEach(function (tile, i) {
+        tileBlob(tile, function (blob) {
+          if (!blob) { todo -= 1; return; }
+          blob.arrayBuffer().then(function (buffer) {
+            files[i] = { name: fileName(tile, plan), bytes: new Uint8Array(buffer) };
+            todo -= 1;
+            if (todo === 0) {
+              downloadBlob(buildZip(files.filter(Boolean)), name + "-tiles.zip");
+            }
+          });
+        });
+      });
+    }
+    /* ---- END: all tiles, in one zip ---- */
+
+    /* ---- START: reading the chosen file, without uploading it ---- */
+    function loadFile(file) {
+      if (!file) { return; }
+      if (!file.type || file.type.indexOf("image/") !== 0) {
+        setMessage("That is not an image file.", "bad");
+        return;
+      }
+      name = file.name.replace(/\.[^.]+$/, "");
+      var reader = new FileReader();
+      reader.onload = function () {
+        var picture = new Image();
+        picture.onload = function () {
+          img = picture;
+          stage.width = picture.naturalWidth;
+          stage.height = picture.naturalHeight;
+          update();
+        };
+        picture.onerror = function () { setMessage("That image could not be read.", "bad"); };
+        picture.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    /* ---- END: reading the chosen file, without uploading it ---- */
+
+    /* ---- START: wiring ---- */
+    fileIn.addEventListener("change", function () { loadFile(fileIn.files[0]); });
+
+    ["dragenter", "dragover"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.add("is-over");
+      });
+    });
+    ["dragleave", "drop"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.remove("is-over");
+      });
+    });
+    drop.addEventListener("drop", function (e) { loadFile(e.dataTransfer.files[0]); });
+
+    [colsEl, rowsEl, naming, fmtEl].forEach(function (el) {
+      el.addEventListener("input", update);
+      el.addEventListener("change", update);
+    });
+
+    Array.prototype.forEach.call(
+      document.querySelectorAll("[data-grid]"), function (btn) {
+        btn.addEventListener("click", function () {
+          var parts = btn.getAttribute("data-grid").split("x");
+          colsEl.value = parts[0];
+          rowsEl.value = parts[1];
+          update();
+        });
+      });
+
+    zipBtn.addEventListener("click", downloadZip);
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      img = null;
+      fileIn.value = "";
+      stage.width = 10; stage.height = 10;
+      ctx.clearRect(0, 0, 10, 10);
+      colsEl.value = 3; rowsEl.value = 1;
+      naming.value = "position";
+      fmtEl.value = "image/png";
+      list.innerHTML = "";
+      ["sTiles", "sEach", "sOriginal"].forEach(function (id) {
+        document.getElementById(id).textContent = DASH;
+      });
+      zipBtn.disabled = true;
+      setMessage("");
+    });
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

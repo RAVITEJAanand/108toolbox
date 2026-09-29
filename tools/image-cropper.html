@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Image Cropper — Drag or Type Exact Pixels</title>
+  <meta name="description" content="Crop a photo by dragging on it or by typing exact pixel numbers, with common aspect ratios locked in. The full-size original is cropped, and nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/image-cropper.html">
+
+  <meta property="og:title" content="Image Cropper — Drag or Type Exact Pixels">
+  <meta property="og:description" content="Crop a photo by dragging on it or by typing exact pixel numbers, with common aspect ratios locked in. The full-size original is cropped, and nothing is uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=23">
+  <link rel="stylesheet" href="../css/tool.css?v=23">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is the crop cut from the full-size image?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The box is measured against the real pixels, and the crop is copied straight from the original at full resolution. The picture on screen may be shown smaller, but that never affects what you download."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I get an exact size, like 1080 by 1080?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Type the width and height into the pixel boxes. If the image is smaller than that, the box cannot be larger than the picture - cropping cannot add pixels. Use the resizer afterwards if you need a specific size from a different-sized crop."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does the box change shape when I pick a ratio?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "So it fits the new shape. The width is kept where it can be and the height is worked out from the ratio, then the box is pulled back inside the picture if it would overhang."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does it keep the photo's date and location?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No - the crop is drawn fresh and none of the hidden metadata is copied. That is usually what you want before sharing, but a copyright note stored in the original will not survive either."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I crop on a phone?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Drag with a finger to draw the box, and drag a corner to resize. If dragging scrolls the page instead, use the four pixel boxes, which always work."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
+        <span>Image Cropper</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Image Cropper</h1>
+        <p>Drag a box over the part you want, or type the exact pixels. Pick an
+           aspect ratio and the box keeps its shape. The crop is cut from the
+           full-size original, not from what you see on screen.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="drop" id="drop" for="file">
+            <span class="drop__big" aria-hidden="true">&#9986;&#65039;</span>
+            <p><strong>Click to choose</strong> or drag an image here</p>
+            <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; nothing is uploaded</p>
+            <input type="file" id="file" accept="image/*">
+          </label>
+
+          <div class="preview" style="margin-top:var(--s4);touch-action:none;cursor:crosshair">
+            <canvas id="stage" width="10" height="10" style="max-width:100%;height:auto;display:block;touch-action:none"></canvas>
+          </div>
+          <p class="msg" id="hint" style="margin-top:var(--s2)">Drag on the picture to draw a box. Drag inside it to move it, or drag a corner to resize.</p>
+
+          <div class="field" style="margin-top:var(--s3)">
+            <label for="aspect">Shape</label>
+            <select id="aspect">
+              <option value="free" selected>Free &mdash; any shape</option>
+              <option value="1:1">Square 1:1</option>
+              <option value="4:5">Portrait 4:5</option>
+              <option value="3:4">Portrait 3:4</option>
+              <option value="4:3">Landscape 4:3</option>
+              <option value="3:2">Landscape 3:2</option>
+              <option value="16:9">Widescreen 16:9</option>
+              <option value="9:16">Vertical 9:16</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Exact pixels (of the original)</label>
+            <div class="btn-row">
+              <input type="number" id="cx" min="0" step="1" placeholder="Left" style="max-width:96px" aria-label="Left edge">
+              <input type="number" id="cy" min="0" step="1" placeholder="Top" style="max-width:96px" aria-label="Top edge">
+              <input type="number" id="cw" min="1" step="1" placeholder="Width" style="max-width:96px" aria-label="Width">
+              <input type="number" id="ch" min="1" step="1" placeholder="Height" style="max-width:96px" aria-label="Height">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="fmt">Save as</label>
+            <select id="fmt">
+              <option value="image/png" selected>PNG &mdash; lossless</option>
+              <option value="image/jpeg">JPG</option>
+              <option value="image/webp">WebP</option>
+            </select>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Download crop</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">The crop</span>
+          <div class="preview" id="preview"></div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sSize">&mdash;</span><span class="stat__label">Crop size</span></div>
+            <div class="stat"><span class="stat__num" id="sPos">&mdash;</span><span class="stat__label">From the corner</span></div>
+            <div class="stat"><span class="stat__num" id="sBytes">&mdash;</span><span class="stat__label">File weight</span></div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><span class="stat__num" id="sOriginal">&mdash;</span><span class="stat__label">Original</span></div>
+            <div class="stat"><span class="stat__num" id="sArea">&mdash;</span><span class="stat__label">Of the picture kept</span></div>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Choose an image.</li>
+          <li>Drag on the picture to draw a box, drag inside it to move it, or
+              drag a corner to resize it. Or type the exact pixels &mdash;
+              left, top, width, height &mdash; if you know them.</li>
+          <li>Pick a shape first if the crop has to be a particular ratio, and
+              the box keeps it as you drag.</li>
+          <li>Download the crop.</li>
+        </ol>
+
+        <h2>The crop comes from the original, not from the screen</h2>
+        <p>On a phone or a narrow window the picture is shown smaller than it
+           really is. If a cropper measured your box in screen pixels and cut
+           from that, a 4000-pixel photograph would come out as a few hundred
+           pixels wide and soft.</p>
+        <p>Here the box is measured against the real image, and the pixel boxes
+           show real pixels. What you download is cut straight from the
+           full-size original at its full resolution &mdash; no shrinking
+           first.</p>
+
+        <h2>Why the shape buttons matter</h2>
+        <p>Almost every crop is for somewhere that wants a particular shape: a
+           square for a profile picture, 16:9 for a video thumbnail, 4:5 for a
+           portrait post. Cropping freehand and then discovering the shape is
+           slightly off means either cropping again or letting the site trim it
+           for you, and its idea of the centre is rarely yours.</p>
+        <p>Choose the shape first and the box will not let you leave it. If you
+           change the shape afterwards, the current box is fitted to the new one
+           rather than thrown away.</p>
+
+        <h2>Cropping and quality</h2>
+        <p>Cropping itself loses nothing: it copies a rectangle of pixels
+           exactly as they are. What can lose quality is saving. PNG is
+           lossless. JPG and WebP compress, and saving a JPG as a JPG throws
+           away a little more detail each time it happens.</p>
+        <p>If you will crop again later, save this one as PNG and keep it as
+           your working copy.</p>
+
+        <h2>The metadata does not travel</h2>
+        <p>A photograph normally carries hidden details &mdash; the camera, the
+           date, sometimes the location it was taken. The crop is drawn fresh,
+           so none of that is copied across. That is often what you want
+           before sharing a picture, but it also means a copyright note in the
+           original's metadata will not survive.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Is the crop cut from the full-size image?</h3>
+          <p>Yes. The box is measured against the real pixels, and the crop is copied straight from the original at full resolution. The picture on screen may be shown smaller, but that never affects what you download.</p>
+        </div>
+        <div class="faq">
+          <h3>How do I get an exact size, like 1080 by 1080?</h3>
+          <p>Type the width and height into the pixel boxes. If the image is smaller than that, the box cannot be larger than the picture - cropping cannot add pixels. Use the resizer afterwards if you need a specific size from a different-sized crop.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does the box change shape when I pick a ratio?</h3>
+          <p>So it fits the new shape. The width is kept where it can be and the height is worked out from the ratio, then the box is pulled back inside the picture if it would overhang.</p>
+        </div>
+        <div class="faq">
+          <h3>Does it keep the photo&#x27;s date and location?</h3>
+          <p>No - the crop is drawn fresh and none of the hidden metadata is copied. That is usually what you want before sharing, but a copyright note stored in the original will not survive either.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I crop on a phone?</h3>
+          <p>Yes. Drag with a finger to draw the box, and drag a corner to resize. If dragging scrolls the page instead, use the four pixel boxes, which always work.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=23"></script>
+  <script src="../js/tool-helpers.js?v=23"></script>
+  <script>window.CURRENT_TOOL = "image-cropper";</script>
+  <script src="../js/main.js?v=23"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var fileIn = document.getElementById("file");
+    var drop   = document.getElementById("drop");
+    var stage  = document.getElementById("stage");
+    var ctx    = stage.getContext("2d");
+    var aspect = document.getElementById("aspect");
+    var fmt    = document.getElementById("fmt");
+    var preview = document.getElementById("preview");
+    var dlBtn  = document.getElementById("dlBtn");
+    var msg    = document.getElementById("msg");
+    var DASH   = String.fromCharCode(0x2014);
+    var TIMES  = String.fromCharCode(0x00D7);
+
+    var boxes = {
+      x: document.getElementById("cx"), y: document.getElementById("cy"),
+      w: document.getElementById("cw"), h: document.getElementById("ch")
+    };
+
+    var img = null;                 /* the decoded original */
+    var name = "image";
+    var sel = { x: 0, y: 0, w: 0, h: 0 };
+    var resultBlob = null;
+    var pending = 0;
+    var drag = null;
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: the shape asked for, as one number ---- */
+    function ratio() {
+      if (aspect.value === "free") { return 0; }
+      var parts = aspect.value.split(":");
+      return Number(parts[0]) / Number(parts[1]);
+    }
+    /* ---- END: the shape asked for, as one number ---- */
+
+    /* ---- START: keeping a box inside the picture ----
+       Every path that can change the box ends here - dragging, typing and
+       changing the shape - so a box that overhangs the image is impossible
+       whichever of them produced it. */
+    function clampBox(b) {
+      var w = Math.max(1, Math.min(img.naturalWidth, Math.round(b.w)));
+      var h = Math.max(1, Math.min(img.naturalHeight, Math.round(b.h)));
+      var x = Math.max(0, Math.min(img.naturalWidth - w, Math.round(b.x)));
+      var y = Math.max(0, Math.min(img.naturalHeight - h, Math.round(b.y)));
+      return { x: x, y: y, w: w, h: h };
+    }
+
+    /* Fit a width and height to a ratio without leaving the picture. Width is
+       kept where it can be; if the resulting height will not fit, the height
+       is the limit and the width follows it. */
+    function fitRatio(w, h, r) {
+      if (!r) { return { w: w, h: h }; }
+      var outW = w, outH = Math.round(w / r);
+      if (outH > img.naturalHeight) { outH = img.naturalHeight; outW = Math.round(outH * r); }
+      if (outW > img.naturalWidth) { outW = img.naturalWidth; outH = Math.round(outW / r); }
+      return { w: Math.max(1, outW), h: Math.max(1, outH) };
+    }
+    /* ---- END: keeping a box inside the picture ---- */
+
+    /* ---- START: drawing the picture with the box over it ----
+       Sizes that must LOOK constant on screen - the handles, the border - are
+       worked out from how much the canvas is currently shrunk, or they would
+       vanish on a large photo and swell on a small one. */
+    function screenScale() {
+      var rect = stage.getBoundingClientRect();
+      return rect.width ? stage.width / rect.width : 1;
+    }
+
+    function draw() {
+      if (!img) { return; }
+      ctx.clearRect(0, 0, stage.width, stage.height);
+      ctx.drawImage(img, 0, 0);
+
+      ctx.fillStyle = "rgba(0,0,0,0.55)";
+      ctx.fillRect(0, 0, stage.width, sel.y);
+      ctx.fillRect(0, sel.y + sel.h, stage.width, stage.height - sel.y - sel.h);
+      ctx.fillRect(0, sel.y, sel.x, sel.h);
+      ctx.fillRect(sel.x + sel.w, sel.y, stage.width - sel.x - sel.w, sel.h);
+
+      var k = screenScale();
+      ctx.lineWidth = 2 * k;
+      ctx.strokeStyle = "#ffffff";
+      ctx.strokeRect(sel.x, sel.y, sel.w, sel.h);
+
+      var s = 9 * k;
+      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = "#111111";
+      ctx.lineWidth = 1 * k;
+      corners().forEach(function (c) {
+        ctx.fillRect(c.x - s / 2, c.y - s / 2, s, s);
+        ctx.strokeRect(c.x - s / 2, c.y - s / 2, s, s);
+      });
+    }
+
+    function corners() {
+      return [
+        { name: "nw", x: sel.x, y: sel.y },
+        { name: "ne", x: sel.x + sel.w, y: sel.y },
+        { name: "sw", x: sel.x, y: sel.y + sel.h },
+        { name: "se", x: sel.x + sel.w, y: sel.y + sel.h }
+      ];
+    }
+    /* ---- END: drawing the picture with the box over it ---- */
+
+    /* ---- START: the numbers, the tiles and the result ---- */
+    function syncBoxes() {
+      boxes.x.value = sel.x; boxes.y.value = sel.y;
+      boxes.w.value = sel.w; boxes.h.value = sel.h;
+    }
+
+    function tiles() {
+      document.getElementById("sSize").textContent = sel.w + " " + TIMES + " " + sel.h;
+      document.getElementById("sPos").textContent = sel.x + ", " + sel.y;
+      document.getElementById("sOriginal").textContent =
+        img.naturalWidth + " " + TIMES + " " + img.naturalHeight;
+      var pct = sel.w * sel.h / (img.naturalWidth * img.naturalHeight) * 100;
+      document.getElementById("sArea").textContent = formatNumber(pct, pct < 10 ? 1 : 0) + "%";
+    }
+
+    /* The crop itself: a rectangle of the ORIGINAL copied across. Numbered,
+       because encoding is asynchronous and a slow one finishing after a newer
+       one must not overwrite it. */
+    function commit() {
+      if (!img) { return; }
+      var out = document.createElement("canvas");
+      out.width = sel.w; out.height = sel.h;
+      out.getContext("2d").drawImage(img, sel.x, sel.y, sel.w, sel.h, 0, 0, sel.w, sel.h);
+
+      pending += 1;
+      var mine = pending;
+      out.toBlob(function (blob) {
+        if (mine !== pending) { return; }
+        if (!blob) { setMessage("This browser could not produce that file.", "bad"); return; }
+        resultBlob = blob;
+        preview.innerHTML = "";
+        var shown = new Image();
+        shown.src = URL.createObjectURL(blob);
+        shown.alt = "The cropped picture";
+        preview.appendChild(shown);
+        document.getElementById("sBytes").textContent = formatBytes(blob.size);
+        dlBtn.disabled = false;
+        setMessage("Cut from the full-size original at " + sel.w + " " + TIMES
+                 + " " + sel.h + ". Nothing was uploaded.", "ok");
+      }, fmt.value, 0.92);
+    }
+
+    function refresh(final) {
+      sel = clampBox(sel);
+      syncBoxes();
+      tiles();
+      draw();
+      if (final) { commit(); }
+    }
+    /* ---- END: the numbers, the tiles and the result ---- */
+
+    /* ---- START: reading the chosen file, without uploading it ---- */
+    function loadFile(file) {
+      if (!file) { return; }
+      if (!file.type || file.type.indexOf("image/") !== 0) {
+        setMessage("That is not an image file.", "bad");
+        return;
+      }
+      name = file.name.replace(/\.[^.]+$/, "");
+
+      var reader = new FileReader();
+      reader.onload = function () {
+        var picture = new Image();
+        picture.onload = function () {
+          img = picture;
+          stage.width = picture.naturalWidth;
+          stage.height = picture.naturalHeight;
+
+          /* Opening on a centred box covering most of the picture, rather
+             than on nothing, so the page answers the moment a file arrives. */
+          var fitted = fitRatio(Math.round(picture.naturalWidth * 0.8),
+                                Math.round(picture.naturalHeight * 0.8), ratio());
+          sel = clampBox({
+            x: (picture.naturalWidth - fitted.w) / 2,
+            y: (picture.naturalHeight - fitted.h) / 2,
+            w: fitted.w, h: fitted.h
+          });
+          refresh(true);
+        };
+        picture.onerror = function () { setMessage("That image could not be read.", "bad"); };
+        picture.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    /* ---- END: reading the chosen file, without uploading it ---- */
+
+    /* ---- START: turning a pointer position into a point in the ORIGINAL ---- */
+    function pointOf(event) {
+      var rect = stage.getBoundingClientRect();
+      return {
+        x: (event.clientX - rect.left) * stage.width / rect.width,
+        y: (event.clientY - rect.top) * stage.height / rect.height
+      };
+    }
+    /* ---- END: turning a pointer position into a point in the ORIGINAL ---- */
+
+    /* ---- START: what a press on the picture means ----
+       On a corner it resizes, inside the box it moves, and anywhere else it
+       starts a new box. The corner test comes first and uses a generous
+       radius, or the handles are impossible to hit with a finger. */
+    function hitTest(point) {
+      var reach = 16 * screenScale();
+      var found = null;
+      corners().forEach(function (c) {
+        if (!found && Math.abs(point.x - c.x) <= reach && Math.abs(point.y - c.y) <= reach) {
+          found = c.name;
+        }
+      });
+      if (found) { return { mode: "resize", corner: found }; }
+      if (point.x >= sel.x && point.x <= sel.x + sel.w &&
+          point.y >= sel.y && point.y <= sel.y + sel.h) {
+        return { mode: "move" };
+      }
+      return { mode: "new" };
+    }
+
+    function onDown(event) {
+      if (!img) { setMessage("Choose an image first.", "bad"); return; }
+      var point = pointOf(event);
+      var hit = hitTest(point);
+      drag = { mode: hit.mode, corner: hit.corner, start: point, from: { x: sel.x, y: sel.y, w: sel.w, h: sel.h } };
+      try { stage.setPointerCapture(event.pointerId); } catch (e) { /* a synthetic event has no pointer to capture */ }
+      event.preventDefault();
+    }
+
+    function onMove(event) {
+      if (!drag) { return; }
+      var p = pointOf(event);
+      var r = ratio();
+      var f = drag.from;
+
+      if (drag.mode === "move") {
+        sel = clampBox({ x: f.x + (p.x - drag.start.x), y: f.y + (p.y - drag.start.y), w: f.w, h: f.h });
+      } else {
+        /* Both "new" and "resize" are: one corner stays put, the other
+           follows the pointer. For "new" the anchor is where the press began;
+           for "resize" it is the corner opposite the one grabbed. */
+        var ax, ay;
+        if (drag.mode === "new") { ax = drag.start.x; ay = drag.start.y; }
+        else {
+          ax = drag.corner.indexOf("w") > -1 ? f.x + f.w : f.x;
+          ay = drag.corner.indexOf("n") > -1 ? f.y + f.h : f.y;
+        }
+        var px = Math.max(0, Math.min(img.naturalWidth, p.x));
+        var py = Math.max(0, Math.min(img.naturalHeight, p.y));
+        var w = Math.abs(px - ax), h = Math.abs(py - ay);
+
+        if (r) {
+          /* Whichever way the pointer has travelled further wins, so the box
+             follows the hand naturally instead of fighting it. */
+          if (w / r > h) { h = w / r; } else { w = h * r; }
+
+          /* Then shrink both sides together if the box would leave the
+             picture in the direction it is growing. One scale factor, the
+             tighter of the two, keeps the shape exact by construction. */
+          var roomX = px >= ax ? img.naturalWidth - ax : ax;
+          var roomY = py >= ay ? img.naturalHeight - ay : ay;
+          var squeeze = Math.min(1, roomX / w, roomY / h);
+          w *= squeeze; h *= squeeze;
+        }
+        sel = clampBox({
+          x: px >= ax ? ax : ax - w, y: py >= ay ? ay : ay - h,
+          w: Math.max(1, w), h: Math.max(1, h)
+        });
+      }
+      syncBoxes(); tiles(); draw();
+    }
+
+    function onUp() {
+      if (!drag) { return; }
+      drag = null;
+      refresh(true);
+    }
+    /* ---- END: what a press on the picture means ---- */
+
+    /* ---- START: the four pixel boxes ----
+       Changing width or height under a fixed shape moves the other one with
+       it, so typing 800 with 16:9 selected gives 800 by 450, not a box that
+       has quietly stopped being 16:9. */
+    function fromBox(which) {
+      if (!img) { return; }
+      var next = {
+        x: Number(boxes.x.value) || 0, y: Number(boxes.y.value) || 0,
+        w: Number(boxes.w.value) || 1, h: Number(boxes.h.value) || 1
+      };
+      var r = ratio();
+      if (r && which === "w") { next.h = next.w / r; }
+      if (r && which === "h") { next.w = next.h * r; }
+      if (r && (which === "w" || which === "h")) {
+        var fitted = fitRatio(next.w, next.h, r);
+        next.w = fitted.w; next.h = fitted.h;
+      }
+      sel = clampBox(next);
+      refresh(true);
+    }
+    /* ---- END: the four pixel boxes ---- */
+
+    /* ---- START: wiring ---- */
+    fileIn.addEventListener("change", function () { loadFile(fileIn.files[0]); });
+
+    ["dragenter", "dragover"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.add("is-over");
+      });
+    });
+    ["dragleave", "drop"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.remove("is-over");
+      });
+    });
+    drop.addEventListener("drop", function (e) { loadFile(e.dataTransfer.files[0]); });
+
+    stage.addEventListener("pointerdown", onDown);
+    stage.addEventListener("pointermove", onMove);
+    stage.addEventListener("pointerup", onUp);
+    stage.addEventListener("pointercancel", onUp);
+
+    ["x", "y", "w", "h"].forEach(function (key) {
+      boxes[key].addEventListener("change", function () { fromBox(key); });
+    });
+
+    aspect.addEventListener("change", function () {
+      if (!img) { return; }
+      var fitted = fitRatio(sel.w, sel.h, ratio());
+      sel = clampBox({ x: sel.x, y: sel.y, w: fitted.w, h: fitted.h });
+      refresh(true);
+    });
+
+    fmt.addEventListener("change", function () { if (img) { commit(); } });
+
+    dlBtn.addEventListener("click", function () {
+      if (!resultBlob) { return; }
+      /* The extension comes from the blob actually in hand, not from the menu.
+         Change the format and press download inside the moment the new file is
+         still being encoded, and the menu says JPG while the file is a PNG. */
+      var kind = resultBlob.type || fmt.value;
+      var ext = kind === "image/jpeg" ? "jpg" : kind === "image/webp" ? "webp" : "png";
+      downloadBlob(resultBlob, name + "-crop-" + sel.w + "x" + sel.h + "." + ext);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      img = null;
+      resultBlob = null;
+      pending += 1;
+      fileIn.value = "";
+      stage.width = 10; stage.height = 10;
+      ctx.clearRect(0, 0, 10, 10);
+      preview.innerHTML = "";
+      Object.keys(boxes).forEach(function (k) { boxes[k].value = ""; });
+      ["sSize", "sPos", "sBytes", "sOriginal", "sArea"].forEach(function (id) {
+        document.getElementById(id).textContent = DASH;
+      });
+      dlBtn.disabled = true;
+      aspect.value = "free";
+      setMessage("");
+    });
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

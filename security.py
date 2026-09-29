@@ -26,6 +26,12 @@ So this runs in two parts.
      then asked whether an element appeared that the page never wrote, or
      whether a handler from that payload ran.
 
+  3. Every file input is attacked too. A file's NAME is attacker-controlled
+     text just as much as a textarea is, and several tools put it on screen;
+     and a tool that parses a file's bytes can be broken by a file built to
+     break it. Each is given a picture named as markup, a corrupt PNG and a
+     truncated JPEG, and must neither build an element nor throw.
+
 It needs Chrome and takes about a minute. Run it before a deploy that touched
 any tool's own code, and always after adding a tool.
 """
@@ -196,6 +202,107 @@ def check_tools_reject_markup(tools):
 # ---- END: part 2, type an attack into every box on every tool --------------
 
 
+# ---- START: part 4, hand every file input a hostile file ------------------
+FILE_PROBE = r"""
+<div id="secverdict">not run</div>
+<script>
+(function () {
+  window.__ran = "no";
+  var errors = [];
+  window.addEventListener("error", function (e) {
+    if (String(e.message).indexOf("zq") > -1) { window.__ran = "YES"; }
+    else { errors.push(String(e.message).slice(0, 70)); }
+  });
+  window.addEventListener("unhandledrejection", function (e) {
+    errors.push("rejection: " + String(e.reason).slice(0, 60));
+  });
+
+  /* Nothing reaches the disk while a machine presses every button. */
+  window.downloadBlob = function () {};
+  window.downloadText = function () {};
+
+  function feed(file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById("file");
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function pressEverything() {
+    Array.prototype.forEach.call(document.querySelectorAll("button"), function (b) {
+      var label = (b.textContent || "") + " " + (b.id || "");
+      if (/reset|clear|download|save/i.test(label)) { return; }
+      try { b.click(); } catch (err) { errors.push("click: " + String(err).slice(0, 60)); }
+    });
+  }
+
+  window.addEventListener("load", function () {
+    var before = document.querySelectorAll("iframe, object, embed").length;
+
+    var c = document.createElement("canvas");
+    c.width = 64; c.height = 64;
+    var ctx = c.getContext("2d");
+    ctx.fillStyle = "#3366aa"; ctx.fillRect(0, 0, 64, 64);
+
+    c.toBlob(function (blob) {
+      /* A real, decodable picture - so the tool goes all the way through its
+         normal path - with a name that is markup if anything treats it so. */
+      feed(new File([blob], "<iframe onload=zq>.png", { type: "image/png" }));
+
+      setTimeout(function () {
+        pressEverything();
+
+        /* The signature of a PNG and then nothing sensible. */
+        var junk = new Uint8Array(300);
+        var sig = [137, 80, 78, 71, 13, 10, 26, 10];
+        for (var i = 0; i < junk.length; i++) { junk[i] = (i * 37 + 11) & 255; }
+        for (var s = 0; s < 8; s++) { junk[s] = sig[s]; }
+        feed(new File([junk], "broken.png", { type: "image/png" }));
+
+        /* And a JPEG marker that promises a segment longer than the file. */
+        setTimeout(function () {
+          feed(new File([new Uint8Array([255, 216, 255, 225, 255, 255, 69, 120, 105, 102, 0, 0])],
+                        "cut-short.jpg", { type: "image/jpeg" }));
+
+          setTimeout(function () {
+            var after = document.querySelectorAll("iframe, object, embed").length;
+            document.getElementById("secverdict").textContent =
+              "NEW_ELEMENTS=" + (after - before) + " HANDLER_RAN=" + window.__ran +
+              " ERRORS=" + errors.length + (errors.length ? " (" + errors[0] + ")" : "");
+          }, 700);
+        }, 700);
+      }, 900);
+    }, "image/png");
+  });
+})();
+</script>
+"""
+
+
+def check_tools_survive_hostile_files(tools):
+    print("\n4. Every file input survives a hostile file")
+    with_file = [p for p in tools if 'type="file"' in p.read_text(encoding="utf-8")]
+    bad = 0
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+        jobs = {pool.submit(probe_page, p, FILE_PROBE, "file"): p for p in with_file}
+        for job in concurrent.futures.as_completed(jobs):
+            page = jobs[job]
+            verdict = job.result()
+            if verdict.startswith(("TIMEOUT", "PROBE", "NO BODY")):
+                fail("%s could not be given a file: %s" % (page.name, verdict))
+                bad += 1
+            elif ("NEW_ELEMENTS=0" not in verdict or "HANDLER_RAN=no" not in verdict
+                  or "ERRORS=0" not in verdict):
+                fail("%s: %s" % (page.name, verdict))
+                bad += 1
+    if not bad:
+        ok("%d tools with a file input given a file named as markup, a "
+           "corrupt PNG and a truncated JPEG - none built an element, none "
+           "threw" % len(with_file))
+# ---- END: part 4, hand every file input a hostile file --------------------
+
+
 # ---- START: part 3, the static promises that keep the exits shut -----------
 def check_policy_present(pages):
     print("\n3. The policy is on every page")
@@ -249,6 +356,7 @@ if __name__ == "__main__":
         check_policy_present(pages)
         check_pages_load_clean(pages)
         check_tools_reject_markup(tools)
+        check_tools_survive_hostile_files(tools)
     finally:
         shutil.rmtree(WORK, ignore_errors=True)
         for leftover in list(ROOT.glob("_sec_*.html")) + list(

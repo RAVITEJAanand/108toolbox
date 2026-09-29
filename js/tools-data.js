@@ -243,6 +243,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "favicon-generator",
+    name: "Favicon Generator",
+    desc: "One image in, the full favicon set out: .ico, PNGs, Apple and Android icons.",
+    category: "Image",
+    icon: "\u{1F31F}",
+    keywords: ["favicon generator", "favicon.ico", "make favicon", "png to ico", "apple touch icon", "website icon", "favicon maker"],
+    popular: false
+  },
+  {
     slug: "find-and-replace",
     name: "Find and Replace Text",
     desc: "Swap one word for another everywhere, with regex and whole-word options.",
@@ -297,6 +306,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "image-color-picker",
+    name: "Image Color Picker",
+    desc: "Click a pixel for its HEX, RGB and HSL, or pull out the dominant palette.",
+    category: "Image",
+    icon: "\u{1F3A8}",
+    keywords: ["image color picker", "color picker from image", "pick color from photo", "eyedropper", "hex from image", "image palette", "dominant colors"],
+    popular: false
+  },
+  {
     slug: "image-compressor",
     name: "Image Compressor",
     desc: "Reduce JPG and PNG file size in your browser. Nothing is uploaded.",
@@ -306,6 +324,15 @@ const TOOLS = [
     popular: true
   },
   {
+    slug: "image-cropper",
+    name: "Image Cropper",
+    desc: "Drag a box or type exact pixels, with common aspect ratios locked in.",
+    category: "Image",
+    icon: "\u{2702}\u{FE0F}",
+    keywords: ["image cropper", "crop image", "crop photo", "crop picture online", "crop to square", "crop 16:9", "photo cropper"],
+    popular: false
+  },
+  {
     slug: "image-converter",
     name: "Image Format Converter",
     desc: "Convert between PNG, JPG and WebP without leaving the page.",
@@ -313,6 +340,15 @@ const TOOLS = [
     icon: "\u{1F504}",
     keywords: ["png to jpg", "jpg to png", "webp converter", "change image format"],
     popular: true
+  },
+  {
+    slug: "image-metadata-viewer",
+    name: "Image Metadata Viewer",
+    desc: "See the EXIF and hidden GPS in a photo, and save a copy with none of it.",
+    category: "Image",
+    icon: "\u{1F50D}",
+    keywords: ["exif viewer", "image metadata", "photo metadata viewer", "exif data", "remove exif", "gps in photo", "strip metadata"],
+    popular: false
   },
   {
     slug: "image-resizer",
@@ -330,6 +366,15 @@ const TOOLS = [
     category: "Image",
     icon: "\u{1F503}",
     keywords: ["rotate image", "image rotator", "flip image", "mirror image", "rotate photo online", "turn picture sideways", "rotate jpg"],
+    popular: false
+  },
+  {
+    slug: "image-splitter",
+    name: "Image Splitter",
+    desc: "Cut a picture into a grid of tiles, with every pixel kept, and zip them.",
+    category: "Image",
+    icon: "\u{1F9E9}",
+    keywords: ["image splitter", "split image", "instagram grid maker", "carousel splitter", "split photo into tiles", "grid splitter"],
     popular: false
   },
   {
@@ -396,6 +441,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "meme-generator",
+    name: "Meme Generator",
+    desc: "Top and bottom text on your own picture, wrapped and shrunk to fit.",
+    category: "Image",
+    icon: "\u{1F602}",
+    keywords: ["meme generator", "make a meme", "meme maker", "caption image", "add text to image", "top text bottom text"],
+    popular: false
+  },
+  {
     slug: "text-to-morse",
     name: "Morse Code Translator",
     desc: "Text to Morse and Morse back to text, punctuation included.",
@@ -439,6 +493,15 @@ const TOOLS = [
     icon: "\u{1F4CA}",
     keywords: ["percentage", "percent of", "percent increase", "percent decrease", "discount"],
     popular: true
+  },
+  {
+    slug: "photo-watermark",
+    name: "Photo Watermark",
+    desc: "Put text on a photo, placed or tiled, with size, opacity and angle.",
+    category: "Image",
+    icon: "\u{1F4A7}",
+    keywords: ["photo watermark", "add watermark", "watermark image", "text watermark", "watermark photos online", "protect photo"],
+    popular: false
   },
   {
     slug: "image-placeholder-generator",

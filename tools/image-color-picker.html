@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Image Color Picker — HEX, RGB and a Palette</title>
+  <meta name="description" content="Click anywhere on a photo to read its exact colour as HEX, RGB and HSL, or pull out its dominant palette. It runs in your browser and the image is not uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/image-color-picker.html">
+
+  <meta property="og:title" content="Image Color Picker — HEX, RGB and a Palette">
+  <meta property="og:description" content="Click anywhere on a photo to read its exact colour as HEX, RGB and HSL, or pull out its dominant palette. It runs in your browser and the image is not uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=23">
+  <link rel="stylesheet" href="../css/tool.css?v=23">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is the image uploaded?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. It is read and decoded by your own browser and drawn onto a canvas here. Nothing is sent to a server, so a screenshot or a client's artwork stays on your machine."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does the same-looking area give different colours each click?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because photographs carry noise, especially JPEGs. Neighbouring pixels of a flat-looking area differ by a few steps. Choose a 3 x 3 or 5 x 5 sample to average it out."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this the colour my screen shows?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It is the colour stored in the file. Your screen may display it slightly differently depending on brightness, warmth and calibration. For matching something physical, compare against a real swatch."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What do the dominant colours mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The most common colours by area, found by sorting every pixel into coarse buckets and averaging the biggest ones. A small accent colour can be important and still not appear, because the list ranks by how much space a colour takes up."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does a transparent pixel give black?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because a fully transparent pixel has no real colour, and the file stores zeros there. The page tells you when you have clicked one so you do not mistake the black for part of the picture."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
+        <span>Image Color Picker</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Image Color Picker</h1>
+        <p>Choose an image, click a pixel, get the colour. It can average a small
+           patch instead of one pixel &mdash; which matters more than it sounds
+           on a photograph.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="drop" id="drop" for="file">
+            <span class="drop__big" aria-hidden="true">&#127912;</span>
+            <p><strong>Click to choose</strong> or drag an image here</p>
+            <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; nothing is uploaded</p>
+            <input type="file" id="file" accept="image/*">
+          </label>
+
+          <div class="preview" style="margin-top:var(--s4);cursor:crosshair">
+            <canvas id="stage" width="10" height="10" style="max-width:100%;height:auto;display:block"></canvas>
+          </div>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="area">Sample</label>
+            <select id="area">
+              <option value="1" selected>One pixel &mdash; exact</option>
+              <option value="3">3 &times; 3 patch &mdash; averaged</option>
+              <option value="5">5 &times; 5 patch</option>
+              <option value="9">9 &times; 9 patch</option>
+            </select>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="copyBtn">Copy HEX</button>
+            <button class="btn btn--danger" type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">Picked colour</span>
+          <div id="swatch" style="height:78px;border-radius:var(--r-md);border:1px solid var(--border);background:transparent"></div>
+
+          <div class="stats stats--3" style="margin-top:var(--s3)">
+            <div class="stat"><span class="stat__num mono" id="sHex">&mdash;</span><span class="stat__label">HEX</span></div>
+            <div class="stat"><span class="stat__num mono" id="sRgb">&mdash;</span><span class="stat__label">RGB</span></div>
+            <div class="stat"><span class="stat__num mono" id="sHsl">&mdash;</span><span class="stat__label">HSL</span></div>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s3)">Dominant colours</span>
+          <div id="palette" style="display:flex;flex-wrap:wrap;gap:var(--s2);min-height:52px"></div>
+
+          <span class="panel__label" style="margin-top:var(--s3)">Picked so far</span>
+          <pre class="out mono" id="picked" style="min-height:90px"></pre>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Choose an image, or drag one onto the box.</li>
+          <li>Click anywhere on it. The swatch, HEX, RGB and HSL update, and
+              the colour is added to the list below.</li>
+          <li>Or use the dominant colours &mdash; the handful that make up most
+              of the picture &mdash; and click one to copy it.</li>
+        </ol>
+
+        <h2>Why one pixel is often the wrong answer</h2>
+        <p>On a screenshot or a logo, a pixel is a colour and one pixel is
+           exactly what you want. On a photograph it is not. Photographs, and
+           JPEGs above all, carry noise: two neighbouring pixels of what looks
+           like a flat blue sky can differ by five or ten steps in each
+           channel, and the pixel you happened to click is one arbitrary sample
+           of that scatter.</p>
+        <p>That is what the sample setting is for. A 3 by 3 or 5 by 5 patch
+           averages the neighbours and lands on the colour your eye actually
+           saw. Use one pixel for flat artwork and a patch for anything that
+           came out of a camera.</p>
+
+        <h2>What &ldquo;the colour&rdquo; means here</h2>
+        <p>The value is the colour stored in the file, read after your browser
+           decoded it. It is not a measurement of what your screen is showing:
+           a screen that is bright, warm, or simply not calibrated will display
+           the same stored value slightly differently, and two people looking
+           at the same picture on two monitors are not seeing quite the same
+           colour. For matching paint or print, use a physical swatch. For
+           matching a button to a logo on a web page, the stored value is
+           exactly what you want.</p>
+
+        <h2>How the dominant colours are found</h2>
+        <p>Every colour in the image is dropped into a coarse bucket &mdash;
+           sixteen levels per channel &mdash; and the buckets are ranked by how
+           many pixels landed in them. The most popular ones are then averaged
+           back into real colours, skipping any that are nearly identical to
+           one already chosen, so you get six different colours rather than six
+           shades of the sky.</p>
+        <p>It is a quick and honest summary, not a designer's judgement. A small
+           bright accent that matters to the picture may not make the list,
+           because the list is decided by area, not by importance.</p>
+
+        <h2>Transparent pixels</h2>
+        <p>A PNG can have pixels that are partly or wholly see-through. Click
+           one and the page says so: a fully transparent pixel has no meaningful
+           colour at all, and whatever number is stored there is simply what
+           the file happened to hold.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Is the image uploaded?</h3>
+          <p>No. It is read and decoded by your own browser and drawn onto a canvas here. Nothing is sent to a server, so a screenshot or a client&#x27;s artwork stays on your machine.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does the same-looking area give different colours each click?</h3>
+          <p>Because photographs carry noise, especially JPEGs. Neighbouring pixels of a flat-looking area differ by a few steps. Choose a 3 x 3 or 5 x 5 sample to average it out.</p>
+        </div>
+        <div class="faq">
+          <h3>Is this the colour my screen shows?</h3>
+          <p>It is the colour stored in the file. Your screen may display it slightly differently depending on brightness, warmth and calibration. For matching something physical, compare against a real swatch.</p>
+        </div>
+        <div class="faq">
+          <h3>What do the dominant colours mean?</h3>
+          <p>The most common colours by area, found by sorting every pixel into coarse buckets and averaging the biggest ones. A small accent colour can be important and still not appear, because the list ranks by how much space a colour takes up.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does a transparent pixel give black?</h3>
+          <p>Because a fully transparent pixel has no real colour, and the file stores zeros there. The page tells you when you have clicked one so you do not mistake the black for part of the picture.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=23"></script>
+  <script src="../js/tool-helpers.js?v=23"></script>
+  <script>window.CURRENT_TOOL = "image-color-picker";</script>
+  <script src="../js/main.js?v=23"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var fileIn = document.getElementById("file");
+    var drop   = document.getElementById("drop");
+    var stage  = document.getElementById("stage");
+    var ctx    = stage.getContext("2d", { willReadFrequently: true });
+    var area   = document.getElementById("area");
+    var swatch = document.getElementById("swatch");
+    var palette = document.getElementById("palette");
+    var picked  = document.getElementById("picked");
+    var msg    = document.getElementById("msg");
+    var DASH   = String.fromCharCode(0x2014);
+
+    var loaded = false;
+    var isJpeg = false;
+    var history = [];
+    var lastHex = "";
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: the three ways of writing one colour ---- */
+    function hex2(n) { var s = n.toString(16); return s.length === 1 ? "0" + s : s; }
+
+    function toHex(r, g, b) {
+      return "#" + hex2(r) + hex2(g) + hex2(b);
+    }
+
+    /* Standard RGB to HSL. Hue is in degrees, the other two in per cent. A
+       grey has no hue, and 0 is written rather than leaving a hole. */
+    function toHsl(r, g, b) {
+      var rf = r / 255, gf = g / 255, bf = b / 255;
+      var max = Math.max(rf, gf, bf), min = Math.min(rf, gf, bf);
+      var l = (max + min) / 2;
+      var h = 0, s = 0;
+      if (max !== min) {
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        if (max === rf) { h = (gf - bf) / d + (gf < bf ? 6 : 0); }
+        else if (max === gf) { h = (bf - rf) / d + 2; }
+        else { h = (rf - gf) / d + 4; }
+        h *= 60;
+      }
+      return { h: Math.round(h) % 360, s: Math.round(s * 100), l: Math.round(l * 100) };
+    }
+    /* ---- END: the three ways of writing one colour ---- */
+
+    /* ---- START: reading the chosen file into the canvas, without uploading it ---- */
+    function loadFile(file) {
+      if (!file) { return; }
+      if (!file.type || file.type.indexOf("image/") !== 0) {
+        setMessage("That is not an image file.", "bad");
+        return;
+      }
+      isJpeg = file.type === "image/jpeg";
+
+      var reader = new FileReader();
+      reader.onload = function () {
+        var img = new Image();
+        img.onload = function () {
+          stage.width = img.naturalWidth;
+          stage.height = img.naturalHeight;
+          ctx.drawImage(img, 0, 0);
+          loaded = true;
+          history = [];
+          picked.textContent = "";
+          buildPalette();
+          setMessage("Click anywhere on the image to read a colour.", "ok");
+        };
+        img.onerror = function () { setMessage("That image could not be read.", "bad"); };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    /* ---- END: reading the chosen file into the canvas, without uploading it ---- */
+
+    /* ---- START: turning a click into a pixel of the ORIGINAL image ----
+       The canvas is shown smaller than its real size on a narrow screen, so
+       a click position has to be scaled back up. Getting this wrong reads a
+       pixel somewhere near the one you clicked, which looks right on a flat
+       colour and is quietly wrong everywhere else. */
+    function pixelAt(event) {
+      var rect = stage.getBoundingClientRect();
+      if (!rect.width || !rect.height) { return null; }
+      var x = Math.floor((event.clientX - rect.left) * stage.width / rect.width);
+      var y = Math.floor((event.clientY - rect.top) * stage.height / rect.height);
+      x = Math.max(0, Math.min(stage.width - 1, x));
+      y = Math.max(0, Math.min(stage.height - 1, y));
+      return { x: x, y: y };
+    }
+    /* ---- END: turning a click into a pixel of the ORIGINAL image ---- */
+
+    /* ---- START: the colour at a point, averaged over a small patch ----
+       One pixel of a photograph is one arbitrary draw from noise. Averaging a
+       few neighbours lands on the colour the eye actually saw. */
+    function sample(x, y) {
+      var size = Number(area.value) || 1;
+      var half = Math.floor(size / 2);
+      var left = Math.max(0, x - half);
+      var top = Math.max(0, y - half);
+      var w = Math.min(stage.width - left, size);
+      var h = Math.min(stage.height - top, size);
+      var data = ctx.getImageData(left, top, w, h).data;
+
+      var r = 0, g = 0, b = 0, a = 0, count = w * h;
+      for (var i = 0; i < data.length; i += 4) {
+        r += data[i]; g += data[i + 1]; b += data[i + 2]; a += data[i + 3];
+      }
+      return {
+        r: Math.round(r / count), g: Math.round(g / count),
+        b: Math.round(b / count), a: Math.round(a / count)
+      };
+    }
+    /* ---- END: the colour at a point, averaged over a small patch ---- */
+
+    /* ---- START: showing a colour ---- */
+    function show(c, remember) {
+      var hex = toHex(c.r, c.g, c.b);
+      var hsl = toHsl(c.r, c.g, c.b);
+      lastHex = hex;
+
+      swatch.style.background = hex;
+      document.getElementById("sHex").textContent = hex;
+      document.getElementById("sRgb").textContent = c.r + ", " + c.g + ", " + c.b;
+      document.getElementById("sHsl").textContent = hsl.h + ", " + hsl.s + "%, " + hsl.l + "%";
+
+      if (remember) {
+        history.unshift(hex + "   rgb(" + c.r + ", " + c.g + ", " + c.b + ")");
+        history = history.slice(0, 10);
+        picked.textContent = history.join("\n");
+      }
+
+      if (c.a === 0) {
+        setMessage("That pixel is fully transparent, so it has no real colour "
+                 + "- the black you see is just what the file stores there.",
+                   "bad");
+      } else if (c.a < 255) {
+        setMessage("That pixel is " + Math.round((1 - c.a / 255) * 100)
+                 + "% transparent. The value shown is its colour without the "
+                 + "transparency.", "ok");
+      } else if (isJpeg && Number(area.value) === 1) {
+        setMessage("This is a JPEG, so neighbouring pixels differ slightly. "
+                 + "Try a 3 x 3 patch if the colour looks a little off.", "ok");
+      } else {
+        setMessage("Read from the file, not from your screen - a screen may "
+                 + "display the same value slightly differently.", "ok");
+      }
+    }
+    /* ---- END: showing a colour ---- */
+
+    /* ---- START: the dominant colours ----
+       Every pixel goes into a coarse bucket, sixteen levels a channel, and
+       the buckets are ranked by population. Each popular bucket is then
+       averaged back into a real colour. A colour too close to one already
+       chosen is skipped, or the list would be six shades of the sky.
+
+       Sampled with a stride so a 24-megapixel photograph does not stall the
+       tab: about forty thousand pixels is plenty to rank the colours. */
+    function buildPalette() {
+      palette.innerHTML = "";
+      var total = stage.width * stage.height;
+      var stride = Math.max(1, Math.floor(total / 40000));
+      var data = ctx.getImageData(0, 0, stage.width, stage.height).data;
+
+      var buckets = Object.create(null);
+      for (var p = 0; p < total; p += stride) {
+        var i = p * 4;
+        if (data[i + 3] < 128) { continue; }
+        var key = (data[i] >> 4) * 256 + (data[i + 1] >> 4) * 16 + (data[i + 2] >> 4);
+        var bucket = buckets[key] || (buckets[key] = { n: 0, r: 0, g: 0, b: 0 });
+        bucket.n += 1;
+        bucket.r += data[i]; bucket.g += data[i + 1]; bucket.b += data[i + 2];
+      }
+
+      var ranked = Object.keys(buckets).map(function (k) { return buckets[k]; })
+        .sort(function (a, b) { return b.n - a.n; });
+
+      var chosen = [];
+      for (var n = 0; n < ranked.length && chosen.length < 6; n++) {
+        var c = {
+          r: Math.round(ranked[n].r / ranked[n].n),
+          g: Math.round(ranked[n].g / ranked[n].n),
+          b: Math.round(ranked[n].b / ranked[n].n)
+        };
+        var tooClose = chosen.some(function (o) {
+          return Math.abs(o.r - c.r) + Math.abs(o.g - c.g) + Math.abs(o.b - c.b) < 60;
+        });
+        if (!tooClose) { chosen.push(c); }
+      }
+
+      chosen.forEach(function (c) {
+        var hex = toHex(c.r, c.g, c.b);
+        var chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "btn btn--ghost palette-chip";
+        chip.title = "Use " + hex;
+        chip.style.cssText = "display:flex;align-items:center;gap:6px;padding:4px 10px";
+        var dot = document.createElement("span");
+        dot.style.cssText = "width:18px;height:18px;border-radius:4px;border:1px solid var(--border);background:" + hex;
+        chip.appendChild(dot);
+        var label = document.createElement("span");
+        label.className = "mono";
+        label.textContent = hex;
+        chip.appendChild(label);
+        chip.addEventListener("click", function () {
+          show({ r: c.r, g: c.g, b: c.b, a: 255 }, true);
+        });
+        palette.appendChild(chip);
+      });
+    }
+    /* ---- END: the dominant colours ---- */
+
+    /* ---- START: wiring ---- */
+    fileIn.addEventListener("change", function () { loadFile(fileIn.files[0]); });
+
+    ["dragenter", "dragover"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.add("is-over");
+      });
+    });
+    ["dragleave", "drop"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.remove("is-over");
+      });
+    });
+    drop.addEventListener("drop", function (e) { loadFile(e.dataTransfer.files[0]); });
+
+    stage.addEventListener("click", function (event) {
+      if (!loaded) { setMessage("Choose an image first.", "bad"); return; }
+      var at = pixelAt(event);
+      if (at) { show(sample(at.x, at.y), true); }
+    });
+
+    stage.addEventListener("mousemove", function (event) {
+      if (!loaded) { return; }
+      var at = pixelAt(event);
+      if (at) { show(sample(at.x, at.y), false); }
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastHex) { showToast("Pick a colour first"); return; }
+      copyText(lastHex);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      loaded = false;
+      history = [];
+      lastHex = "";
+      fileIn.value = "";
+      stage.width = 10; stage.height = 10;
+      ctx.clearRect(0, 0, 10, 10);
+      swatch.style.background = "transparent";
+      palette.innerHTML = "";
+      picked.textContent = "";
+      ["sHex", "sRgb", "sHsl"].forEach(function (id) {
+        document.getElementById(id).textContent = DASH;
+      });
+      setMessage("");
+    });
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

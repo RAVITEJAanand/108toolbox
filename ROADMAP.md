@@ -229,12 +229,12 @@ make; it is written here so it is made with the number in front of us.
 | Calculator | 20 | 19 |
 | Developer | 18 | 16 |
 | Text | 16 | 16 |
-| Image | 14 | 7 |
+| Image | 14 | 14 |
 | Converter | 14 | 13 |
 | PDF | 10 | 0 |
 | Date & Time | 8 | 8 |
 | Random | 8 | 6 |
-| **Total** | **108** | **85** |
+| **Total** | **108** | **92** |
 
 ---
 
@@ -275,13 +275,13 @@ matches, so do not rename them later. ✅ = already live.
 | 5 | `image-to-base64` ✅ | easy |
 | 6 | `svg-to-png` ✅ | easy |
 | 7 | `image-placeholder-generator` ✅ | easy |
-| 8 | `image-color-picker` | medium — canvas pixel read |
-| 9 | `image-cropper` | medium — the drag handles are the hard part |
-| 10 | `favicon-generator` | medium — multi-size export |
-| 11 | `photo-watermark` | medium |
-| 12 | `meme-generator` | medium — the user supplies the image, always |
-| 13 | `image-splitter` | medium — grid split for Instagram |
-| 14 | `image-metadata-viewer` | hard — EXIF parsing |
+| 8 | `image-color-picker` ✅ | medium — canvas pixel read |
+| 9 | `image-cropper` ✅ | medium — the drag handles are the hard part |
+| 10 | `favicon-generator` ✅ | medium — multi-size export |
+| 11 | `photo-watermark` ✅ | medium |
+| 12 | `meme-generator` ✅ | medium — the user supplies the image, always |
+| 13 | `image-splitter` ✅ | medium — grid split for Instagram |
+| 14 | `image-metadata-viewer` ✅ | hard — EXIF parsing |
 
 ### Calculator (20) — your quiet advantage, see the India note below
 

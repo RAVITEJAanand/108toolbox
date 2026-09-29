@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Favicon Generator — Every Size, Plus favicon.ico</title>
+  <meta name="description" content="Turn one image into the full favicon set: favicon.ico, 16 and 32 pixel PNGs, the Apple touch icon and the 192 and 512 sizes, with the HTML to paste in.">
+  <link rel="canonical" href="https://108toolbox.in/tools/favicon-generator.html">
+
+  <meta property="og:title" content="Favicon Generator — Every Size, Plus favicon.ico">
+  <meta property="og:description" content="Turn one image into the full favicon set: favicon.ico, 16 and 32 pixel PNGs, the Apple touch icon and the 192 and 512 sizes, with the HTML to paste in.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=23">
+  <link rel="stylesheet" href="../css/tool.css?v=23">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do I still need favicon.ico?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, put one at the root of your site. Browsers request it automatically even when you link a PNG, so having it there avoids a stream of missing-file errors. It also covers older browsers and some feed readers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my favicon blurry?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because sixteen pixels is very little space. A detailed logo cannot survive it. Start from something simple - a bold initial, a plain shape - or draw the small sizes by hand. The larger sizes here will look fine."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is in the favicon.ico?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Three images, at 16, 32 and 48 pixels, each stored as a PNG inside the ICO container. Every current browser reads that form. Very old software from before the mid-2000s may not, and it is not a concern for a website."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does the icon have a black background on my phone?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Transparent areas are filled by the phone. Turn on the background colour box and pick one, and the home-screen icons will be filled with it instead."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my image uploaded?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Every size is drawn by your own browser, packed into the zip on your machine, and never sent anywhere."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
+        <span>Favicon Generator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Favicon Generator</h1>
+        <p>One image in, the whole set out: favicon.ico, the small PNGs, the
+           phone home-screen icons, and the exact HTML that links them.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="drop" id="drop" for="file">
+            <span class="drop__big" aria-hidden="true">&#127775;</span>
+            <p><strong>Click to choose</strong> or drag an image here</p>
+            <p style="margin-top:var(--s1)">Square works best &middot; nothing is uploaded</p>
+            <input type="file" id="file" accept="image/*">
+          </label>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="fit">If the image is not square</label>
+            <select id="fit">
+              <option value="contain" selected>Keep all of it, with empty space around</option>
+              <option value="cover">Fill the square, cropping the edges</option>
+            </select>
+          </div>
+
+          <label class="check"><input type="checkbox" id="useBg"> Fill the empty space with a colour</label>
+          <div class="field">
+            <label for="bg">Background colour</label>
+            <input type="color" id="bg" value="#ffffff" style="height:44px;padding:4px">
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="zipBtn" disabled>Download everything (.zip)</button>
+            <button class="btn btn--ghost"   type="button" id="icoBtn" disabled>favicon.ico only</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">What you get</span>
+          <div id="grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:var(--s3)"></div>
+
+          <div class="stats stats--3" style="margin-top:var(--s3)">
+            <div class="stat"><span class="stat__num" id="sFiles">&mdash;</span><span class="stat__label">Files</span></div>
+            <div class="stat"><span class="stat__num" id="sSource">&mdash;</span><span class="stat__label">Your image</span></div>
+            <div class="stat"><span class="stat__num" id="sTotal">&mdash;</span><span class="stat__label">Total weight</span></div>
+          </div>
+
+          <span class="panel__label" style="margin-top:var(--s3)">Paste this into your page's head</span>
+          <pre class="out mono" id="snippet" style="min-height:120px"></pre>
+          <div class="btn-row"><button class="btn btn--ghost" type="button" id="copyBtn">Copy the HTML</button></div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>What each file is for</h2>
+        <ul>
+          <li><strong>favicon.ico</strong> &mdash; the classic. Browsers still
+              ask for it at the root of your site whether or not you link
+              anything, so having one there stops a stream of failed requests
+              in your logs. It holds 16, 32 and 48 pixel versions in one
+              file.</li>
+          <li><strong>16 and 32 pixel PNGs</strong> &mdash; what a browser tab
+              and a bookmark bar actually draw. Two sizes because a
+              high-density screen wants the bigger one squeezed into the same
+              space.</li>
+          <li><strong>apple-touch-icon (180)</strong> &mdash; what an iPhone or
+              iPad uses when someone adds your site to their home screen.</li>
+          <li><strong>192 and 512</strong> &mdash; what Android and installable
+              web apps use for the home screen and the loading screen.</li>
+        </ul>
+
+        <h2>Why the tiny ones look rough</h2>
+        <p>A favicon is sixteen pixels across. That is two hundred and fifty-six
+           dots in total, and no amount of clever shrinking makes a detailed
+           logo readable in it. Designers hand-draw the small sizes for exactly
+           that reason.</p>
+        <p>What this page does is shrink in stages, halving repeatedly rather
+           than jumping straight down, which avoids the jagged edges you get
+           from one giant step. It cannot decide what to leave out. The single
+           most useful thing you can do is start from something simple &mdash;
+           a bold letter or a plain shape &mdash; and let the fine print go.</p>
+
+        <h2>Square or not</h2>
+        <p>Icons are square and most images are not. You choose what happens:
+           keep the whole picture with space around it, or fill the square and
+           lose the edges. Empty space is transparent unless you ask for a
+           colour, and transparent is usually right for a tab, where the
+           browser draws its own background, and wrong for a home screen, where
+           some phones fill it with black.</p>
+
+        <h2>One honest limit</h2>
+        <p>A favicon that looks fine on a light tab can vanish on a dark one, and
+           browsers now switch between the two automatically. Check the small
+           previews against both backgrounds before you decide, especially if
+           your icon is mostly dark.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Do I still need favicon.ico?</h3>
+          <p>Yes, put one at the root of your site. Browsers request it automatically even when you link a PNG, so having it there avoids a stream of missing-file errors. It also covers older browsers and some feed readers.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is my favicon blurry?</h3>
+          <p>Because sixteen pixels is very little space. A detailed logo cannot survive it. Start from something simple - a bold initial, a plain shape - or draw the small sizes by hand. The larger sizes here will look fine.</p>
+        </div>
+        <div class="faq">
+          <h3>What is in the favicon.ico?</h3>
+          <p>Three images, at 16, 32 and 48 pixels, each stored as a PNG inside the ICO container. Every current browser reads that form. Very old software from before the mid-2000s may not, and it is not a concern for a website.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does the icon have a black background on my phone?</h3>
+          <p>Transparent areas are filled by the phone. Turn on the background colour box and pick one, and the home-screen icons will be filled with it instead.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my image uploaded?</h3>
+          <p>No. Every size is drawn by your own browser, packed into the zip on your machine, and never sent anywhere.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=23"></script>
+  <script src="../js/tool-helpers.js?v=23"></script>
+  <script>window.CURRENT_TOOL = "favicon-generator";</script>
+  <script src="../js/main.js?v=23"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var fileIn = document.getElementById("file");
+    var drop   = document.getElementById("drop");
+    var fit    = document.getElementById("fit");
+    var useBg  = document.getElementById("useBg");
+    var bg     = document.getElementById("bg");
+    var grid   = document.getElementById("grid");
+    var msg    = document.getElementById("msg");
+    var DASH   = String.fromCharCode(0x2014);
+    var TIMES  = String.fromCharCode(0x00D7);
+
+    var zipBtn = document.getElementById("zipBtn");
+    var icoBtn = document.getElementById("icoBtn");
+
+    /* The set: what each is called and where it is used. The three sizes
+       inside favicon.ico are marked, and every other one is a file of its
+       own. */
+    var SIZES = [
+      { px: 16,  file: "favicon-16x16.png",            note: "browser tab", ico: true },
+      { px: 32,  file: "favicon-32x32.png",            note: "tab, high density", ico: true },
+      { px: 48,  file: "favicon-48x48.png",            note: "in the .ico only", ico: true, hidden: true },
+      { px: 180, file: "apple-touch-icon.png",         note: "iPhone home screen" },
+      { px: 192, file: "android-chrome-192x192.png",   note: "Android home screen" },
+      { px: 512, file: "android-chrome-512x512.png",   note: "app loading screen" }
+    ];
+
+    var source = null;
+    var built = [];              /* { spec, blob, bytes } once drawn */
+    var pending = 0;
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: shrinking in stages ----
+       One giant step from a 2000-pixel picture to sixteen pixels throws away
+       almost everything at random and leaves jagged edges. Halving repeatedly
+       lets each step average its neighbours, which is what makes a small icon
+       merely rough instead of broken. */
+    function scaledSquare(size) {
+      var iw = source.naturalWidth, ih = source.naturalHeight;
+
+      /* Where in the original the square comes from, and where in the square
+         it lands. "contain" keeps everything and leaves margin; "cover"
+         fills the square and trims. */
+      var sx = 0, sy = 0, sw = iw, sh = ih, dx = 0, dy = 0, dw = 1, dh = 1;
+      if (fit.value === "cover") {
+        var side = Math.min(iw, ih);
+        sx = (iw - side) / 2; sy = (ih - side) / 2; sw = side; sh = side;
+      } else {
+        var longest = Math.max(iw, ih);
+        dw = iw / longest; dh = ih / longest;
+        dx = (1 - dw) / 2; dy = (1 - dh) / 2;
+      }
+
+      /* First cut the region out at full size, then halve down to the target. */
+      var cur = document.createElement("canvas");
+      cur.width = Math.max(1, Math.round(sw * dw));
+      cur.height = Math.max(1, Math.round(sh * dh));
+      cur.getContext("2d").drawImage(source, sx, sy, sw, sh, 0, 0, cur.width, cur.height);
+
+      var target = Math.max(1, Math.round(size * dw));
+      var targetH = Math.max(1, Math.round(size * dh));
+      while (cur.width / 2 >= target && cur.height / 2 >= targetH && cur.width > 2) {
+        var half = document.createElement("canvas");
+        half.width = Math.max(1, Math.floor(cur.width / 2));
+        half.height = Math.max(1, Math.floor(cur.height / 2));
+        var hctx = half.getContext("2d");
+        hctx.imageSmoothingQuality = "high";
+        hctx.drawImage(cur, 0, 0, half.width, half.height);
+        cur = half;
+      }
+
+      var out = document.createElement("canvas");
+      out.width = size; out.height = size;
+      var octx = out.getContext("2d");
+      if (useBg.checked) {
+        octx.fillStyle = bg.value;
+        octx.fillRect(0, 0, size, size);
+      }
+      octx.imageSmoothingQuality = "high";
+      octx.drawImage(cur, dx * size, dy * size, size * dw, size * dh);
+      return out;
+    }
+    /* ---- END: shrinking in stages ---- */
+
+    /* ---- START: the bytes of a canvas as a PNG ---- */
+    function pngBytes(canvas, done) {
+      canvas.toBlob(function (blob) {
+        if (!blob) { done(null, null); return; }
+        blob.arrayBuffer().then(function (buffer) {
+          done(blob, new Uint8Array(buffer));
+        });
+      }, "image/png");
+    }
+    /* ---- END: the bytes of a canvas as a PNG ---- */
+
+    /* ---- START: favicon.ico, built by hand ----
+       An ICO is a small directory followed by the images. Modern ICO files
+       store each image as a complete PNG, which every current browser reads
+       and which needs no pixel-format conversion here - the PNG bytes are
+       simply placed after the directory.
+
+       Directory: 6 bytes (reserved, type 1 = icon, image count), then 16
+       bytes for each image (width, height, palette 0, reserved 0, colour
+       planes 1, bits per pixel 32, byte length, byte offset). */
+    function buildIco(entries) {
+      var count = entries.length;
+      var head = new DataView(new ArrayBuffer(6 + 16 * count));
+      head.setUint16(0, 0, true);
+      head.setUint16(2, 1, true);
+      head.setUint16(4, count, true);
+
+      var offset = 6 + 16 * count;
+      entries.forEach(function (e, i) {
+        var at = 6 + 16 * i;
+        /* A width or height of 256 is written as 0 - the format's own rule,
+           and 256 does not fit in a byte. Nothing here reaches it, but a
+           directory that mishandles it is a bug waiting for the next size. */
+        head.setUint8(at, e.px >= 256 ? 0 : e.px);
+        head.setUint8(at + 1, e.px >= 256 ? 0 : e.px);
+        head.setUint8(at + 2, 0);
+        head.setUint8(at + 3, 0);
+        head.setUint16(at + 4, 1, true);
+        head.setUint16(at + 6, 32, true);
+        head.setUint32(at + 8, e.bytes.length, true);
+        head.setUint32(at + 12, offset, true);
+        offset += e.bytes.length;
+      });
+
+      var parts = [head.buffer];
+      entries.forEach(function (e) { parts.push(e.bytes); });
+      return new Blob(parts, { type: "image/x-icon" });
+    }
+    /* ---- END: favicon.ico, built by hand ---- */
+
+    /* ---- START: the HTML that links the set ---- */
+    function snippet() {
+      return [
+        '<link rel="icon" href="/favicon.ico" sizes="48x48">',
+        '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">',
+        '<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">',
+        '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">'
+      ].join("\n");
+    }
+    /* ---- END: the HTML that links the set ---- */
+
+    /* ---- START: drawing every size and showing them ---- */
+    function build() {
+      if (!source) { return; }
+      pending += 1;
+      var mine = pending;
+      var todo = SIZES.length;
+      var results = new Array(SIZES.length);
+
+      SIZES.forEach(function (spec, index) {
+        var canvas = scaledSquare(spec.px);
+        pngBytes(canvas, function (blob, bytes) {
+          if (mine !== pending) { return; }
+          results[index] = blob ? { spec: spec, blob: blob, bytes: bytes, canvas: canvas } : null;
+          todo -= 1;
+          if (todo === 0) { finish(results); }
+        });
+      });
+    }
+
+    function finish(results) {
+      built = results.filter(Boolean);
+      grid.innerHTML = "";
+
+      built.forEach(function (item) {
+        if (item.spec.hidden) { return; }
+        var card = document.createElement("div");
+        card.className = "stat";
+        card.style.cssText = "display:flex;flex-direction:column;align-items:center;gap:6px;padding:var(--s3)";
+
+        var frame = document.createElement("div");
+        /* A checkerboard behind each preview, so transparency reads as
+           transparency rather than as white. */
+        frame.style.cssText = "width:64px;height:64px;display:flex;align-items:center;justify-content:center;"
+          + "background:repeating-conic-gradient(#c9ced6 0% 25%, #eef0f3 0% 50%) 50% / 12px 12px;border-radius:6px";
+        var shown = new Image();
+        shown.src = URL.createObjectURL(item.blob);
+        shown.alt = item.spec.px + " pixel icon";
+        shown.style.cssText = "width:" + Math.min(64, item.spec.px) + "px;height:" + Math.min(64, item.spec.px)
+          + "px;image-rendering:" + (item.spec.px < 64 ? "pixelated" : "auto");
+        frame.appendChild(shown);
+        card.appendChild(frame);
+
+        var label = document.createElement("span");
+        label.className = "stat__num mono";
+        label.style.fontSize = "1rem";
+        label.textContent = item.spec.px + " " + TIMES + " " + item.spec.px;
+        card.appendChild(label);
+
+        var note = document.createElement("span");
+        note.className = "stat__label";
+        note.textContent = item.spec.note + " - " + formatBytes(item.bytes.length);
+        card.appendChild(note);
+
+        var save = document.createElement("button");
+        save.type = "button";
+        save.className = "btn btn--ghost";
+        save.textContent = "Save PNG";
+        save.addEventListener("click", function () { downloadBlob(item.blob, item.spec.file); });
+        card.appendChild(save);
+
+        grid.appendChild(card);
+      });
+
+      var total = 0;
+      built.forEach(function (i) { total += i.bytes.length; });
+      /* What is actually in the zip: every PNG that is a file of its own, the
+         .ico, and the snippet. The 48 pixel image lives only inside the .ico. */
+      var visible = built.filter(function (i) { return !i.spec.hidden; }).length;
+      document.getElementById("sFiles").textContent = String(visible + 2);
+      document.getElementById("sSource").textContent =
+        source.naturalWidth + " " + TIMES + " " + source.naturalHeight;
+      document.getElementById("sTotal").textContent = formatBytes(total);
+      document.getElementById("snippet").textContent = snippet();
+
+      zipBtn.disabled = false;
+      icoBtn.disabled = false;
+
+      var square = source.naturalWidth === source.naturalHeight;
+      var small = Math.min(source.naturalWidth, source.naturalHeight) < 512;
+      if (small) {
+        setMessage("The image is smaller than 512 pixels, so the two large "
+                 + "icons are enlarged and will look soft. Start from "
+                 + "something bigger for those.", "bad");
+      } else if (!square) {
+        setMessage("Not square, so it was "
+                 + (fit.value === "cover" ? "cropped to fill" : "fitted with empty space around it")
+                 + ". Change the option on the left to see the other.", "ok");
+      } else {
+        setMessage("Drawn in your browser. Remember the 16 pixel one is tiny: "
+                 + "a simple shape survives it and fine detail does not.", "ok");
+      }
+    }
+    /* ---- END: drawing every size and showing them ---- */
+
+    /* ---- START: the two downloads ---- */
+    function icoEntries() {
+      return built.filter(function (i) { return i.spec.ico; })
+                  .map(function (i) { return { px: i.spec.px, bytes: i.bytes }; });
+    }
+
+    function downloadIco() {
+      if (!built.length) { return; }
+      downloadBlob(buildIco(icoEntries()), "favicon.ico");
+    }
+
+    function downloadZip() {
+      if (!built.length) { return; }
+      var files = [];
+      built.forEach(function (i) {
+        if (!i.spec.hidden) { files.push({ name: i.spec.file, bytes: i.bytes }); }
+      });
+      /* The .ico is built once more here and read back as bytes, since the
+         zip needs bytes and buildIco returns a Blob. */
+      buildIco(icoEntries()).arrayBuffer().then(function (buffer) {
+        files.unshift({ name: "favicon.ico", bytes: new Uint8Array(buffer) });
+        files.push({ name: "head-snippet.html", bytes: new TextEncoder().encode(snippet() + "\n") });
+        downloadBlob(buildZip(files), "favicons.zip");
+      });
+    }
+    /* ---- END: the two downloads ---- */
+
+    /* ---- START: reading the chosen file, without uploading it ---- */
+    function loadFile(file) {
+      if (!file) { return; }
+      if (!file.type || file.type.indexOf("image/") !== 0) {
+        setMessage("That is not an image file.", "bad");
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function () {
+        var picture = new Image();
+        picture.onload = function () { source = picture; build(); };
+        picture.onerror = function () { setMessage("That image could not be read.", "bad"); };
+        picture.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    /* ---- END: reading the chosen file, without uploading it ---- */
+
+    /* ---- START: wiring ---- */
+    fileIn.addEventListener("change", function () { loadFile(fileIn.files[0]); });
+
+    ["dragenter", "dragover"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.add("is-over");
+      });
+    });
+    ["dragleave", "drop"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.remove("is-over");
+      });
+    });
+    drop.addEventListener("drop", function (e) { loadFile(e.dataTransfer.files[0]); });
+
+    [fit, useBg, bg].forEach(function (el) {
+      el.addEventListener("change", build);
+    });
+
+    zipBtn.addEventListener("click", downloadZip);
+    icoBtn.addEventListener("click", downloadIco);
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!built.length) { showToast("Choose an image first"); return; }
+      copyText(snippet());
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      source = null;
+      built = [];
+      pending += 1;
+      fileIn.value = "";
+      grid.innerHTML = "";
+      document.getElementById("snippet").textContent = "";
+      ["sFiles", "sSource", "sTotal"].forEach(function (id) {
+        document.getElementById(id).textContent = DASH;
+      });
+      zipBtn.disabled = true;
+      icoBtn.disabled = true;
+      setMessage("");
+    });
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

@@ -162,6 +162,11 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://108toolbox.in/tools/favicon-generator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://108toolbox.in/tools/find-and-replace.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -192,12 +197,27 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://108toolbox.in/tools/image-color-picker.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://108toolbox.in/tools/image-compressor.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://108toolbox.in/tools/image-cropper.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://108toolbox.in/tools/image-converter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/image-metadata-viewer.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -208,6 +228,11 @@
   </url>
   <url>
     <loc>https://108toolbox.in/tools/image-rotator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/image-splitter.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -247,6 +272,11 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://108toolbox.in/tools/meme-generator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://108toolbox.in/tools/text-to-morse.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -268,6 +298,11 @@
   </url>
   <url>
     <loc>https://108toolbox.in/tools/percentage-calculator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://108toolbox.in/tools/photo-watermark.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>

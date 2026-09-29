@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Image Metadata Viewer — EXIF and Hidden GPS</title>
+  <meta name="description" content="See what a photo secretly records: camera, settings, date and GPS location. Then save a clean copy with all of it removed. Read in your browser, never uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/image-metadata-viewer.html">
+
+  <meta property="og:title" content="Image Metadata Viewer — EXIF and Hidden GPS">
+  <meta property="og:description" content="See what a photo secretly records: camera, settings, date and GPS location. Then save a clean copy with all of it removed. Read in your browser, never uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=23">
+  <link rel="stylesheet" href="../css/tool.css?v=23">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does the photo get uploaded?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The file is read by your own browser and the details are worked out here. Nothing is sent anywhere, which is the only sensible way to look at a photo you are worried about."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is there no map link for the GPS location?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because opening the coordinates on a mapping site would tell that site exactly where the photo was taken. The numbers are shown instead, and you can decide what to do with them."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does removing the metadata change the picture?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The clean copy is redrawn from the pixels. A PNG stays identical; a JPEG is compressed again, which loses a small amount of detail. The copy is also drawn the right way up, since the sideways-storage tag is removed with everything else."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do social networks remove this?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Many large ones remove location when you upload, but you cannot check from outside which do, and it changes. Email attachments, files sent from a chat app, cloud links and small websites usually keep everything. When it matters, remove it yourself."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "The date is wrong by a few hours. Why?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The date is the camera's own clock and carries no time zone. A camera set to the wrong zone, or to the time where you bought it, will stamp every photo that way. The number is correct for the camera, not necessarily for where you were."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
+        <span>Image Metadata Viewer</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Image Metadata Viewer</h1>
+        <p>A photograph usually carries more than a picture: the camera, the date,
+           sometimes exactly where you were standing. See it here, then save a
+           copy with all of it removed.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="drop" id="drop" for="file">
+            <span class="drop__big" aria-hidden="true">&#128269;</span>
+            <p><strong>Click to choose</strong> or drag a photo here</p>
+            <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; read here, never uploaded</p>
+            <input type="file" id="file" accept="image/*">
+          </label>
+
+          <div class="preview" id="preview" style="margin-top:var(--s4)"></div>
+
+          <div class="stats stats--3" style="margin-top:var(--s3)">
+            <div class="stat"><span class="stat__num" id="sFormat">&mdash;</span><span class="stat__label">Format</span></div>
+            <div class="stat"><span class="stat__num" id="sSize">&mdash;</span><span class="stat__label">File size</span></div>
+            <div class="stat"><span class="stat__num" id="sDims">&mdash;</span><span class="stat__label">Pixels</span></div>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="cleanBtn" disabled>Save a copy with no metadata</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <div id="alert" class="msg" hidden></div>
+
+          <span class="panel__label">What the file records</span>
+          <div class="table-wrap">
+            <table class="data">
+              <thead><tr><th>Detail</th><th>Value</th></tr></thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>What is hiding in a photograph</h2>
+        <p>Almost every photo from a phone or camera carries a block of
+           information called EXIF, written by the device without asking you.
+           It usually holds the make and model, the exposure settings, the exact
+           time the shutter fired, and &mdash; if location was switched on
+           &mdash; GPS coordinates accurate to a few metres.</p>
+        <p>None of it is visible in the picture, and none of it is secret to
+           anyone who opens the file. This page opens the file and reads it out,
+           so you can see what you would be handing over.</p>
+
+        <h2>The location is the one to care about</h2>
+        <p>A photo taken at home and sent to a stranger can carry your home
+           address to within a few metres. So can one taken at a child's school,
+           a workplace, or a place you would rather not be tied to. People have
+           been located from pictures they posted innocently.</p>
+        <p>Many large sites strip location when you upload, and that is worth
+           knowing &mdash; but you cannot tell from the outside which ones do. A
+           file sent by email, as an attachment in a chat app, through a cloud
+           link, or uploaded to a small forum usually arrives with everything
+           intact. If a photo is going anywhere you do not control, check it
+           here first.</p>
+
+        <h2>Other details that identify</h2>
+        <p>The camera's serial number is often stored too, which can tie photos
+           taken on the same device together, or link a photo to the person who
+           bought that camera. The date and time are the camera's own clock, with
+           no time zone written down, so they may not match when you think you
+           took it. And a copyright or artist field is often filled in by
+           editing software, sometimes with a name you did not choose.</p>
+
+        <h2>Why the size can look swapped</h2>
+        <p>Phones often save a photograph sideways and add a tag saying which
+           way to turn it. Browsers apply the tag, so the pixel size shown at
+           the top is the size the picture <em>appears</em>. When the two
+           differ, the table adds the size it is actually stored at.</p>
+
+        <h2>Removing it</h2>
+        <p>The clean copy is drawn afresh from the picture's pixels, and drawing
+           never carries the hidden block across. Nothing is edited in place and
+           your original is untouched. Two things to know: a JPEG is compressed
+           again, which loses a little detail; and the copy is drawn the right
+           way up, because the tag saying &ldquo;this is stored sideways&rdquo;
+           is one of the things removed.</p>
+        <p>There is no map link on this page, on purpose. Opening the
+           coordinates on a mapping site would tell that site exactly where the
+           photo was taken. The numbers are shown so you can decide what to do
+           with them.</p>
+
+        <h2>What this page cannot read</h2>
+        <p>It reads JPEG, PNG and WebP. Phone formats such as HEIC are not
+           supported by browsers, and camera raw files are not either. It shows
+           the standard fields but not the manufacturer's private notes, which
+           every maker encodes differently &mdash; it will tell you when those
+           are present.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Does the photo get uploaded?</h3>
+          <p>No. The file is read by your own browser and the details are worked out here. Nothing is sent anywhere, which is the only sensible way to look at a photo you are worried about.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is there no map link for the GPS location?</h3>
+          <p>Because opening the coordinates on a mapping site would tell that site exactly where the photo was taken. The numbers are shown instead, and you can decide what to do with them.</p>
+        </div>
+        <div class="faq">
+          <h3>Does removing the metadata change the picture?</h3>
+          <p>The clean copy is redrawn from the pixels. A PNG stays identical; a JPEG is compressed again, which loses a small amount of detail. The copy is also drawn the right way up, since the sideways-storage tag is removed with everything else.</p>
+        </div>
+        <div class="faq">
+          <h3>Do social networks remove this?</h3>
+          <p>Many large ones remove location when you upload, but you cannot check from outside which do, and it changes. Email attachments, files sent from a chat app, cloud links and small websites usually keep everything. When it matters, remove it yourself.</p>
+        </div>
+        <div class="faq">
+          <h3>The date is wrong by a few hours. Why?</h3>
+          <p>The date is the camera&#x27;s own clock and carries no time zone. A camera set to the wrong zone, or to the time where you bought it, will stamp every photo that way. The number is correct for the camera, not necessarily for where you were.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=23"></script>
+  <script src="../js/tool-helpers.js?v=23"></script>
+  <script>window.CURRENT_TOOL = "image-metadata-viewer";</script>
+  <script src="../js/main.js?v=23"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var fileIn = document.getElementById("file");
+    var drop   = document.getElementById("drop");
+    var rowsEl = document.getElementById("rows");
+    var alertEl = document.getElementById("alert");
+    var preview = document.getElementById("preview");
+    var cleanBtn = document.getElementById("cleanBtn");
+    var msg    = document.getElementById("msg");
+    var DASH   = String.fromCharCode(0x2014);
+    var TIMES  = String.fromCharCode(0x00D7);
+
+    var MAX_BYTES = 100 * 1024 * 1024;
+    var current = null;          /* { file, name, type, img } */
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: reading numbers out of the file safely ----
+       This is parsing bytes somebody else wrote, so nothing is trusted. Every
+       read is bounds-checked and returns null instead of running past the
+       end, and every caller has to cope with null. A photo edited by a
+       hostile or simply buggy program is exactly the kind of file that puts
+       an offset outside the file. */
+    function makeReader(bytes) {
+      var view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+      return function (little) {
+        return {
+          length: bytes.length,
+          u8: function (o) { return o >= 0 && o < bytes.length ? bytes[o] : null; },
+          u16: function (o) { return o >= 0 && o + 2 <= bytes.length ? view.getUint16(o, little) : null; },
+          u32: function (o) { return o >= 0 && o + 4 <= bytes.length ? view.getUint32(o, little) : null; },
+          i32: function (o) { return o >= 0 && o + 4 <= bytes.length ? view.getInt32(o, little) : null; }
+        };
+      };
+    }
+
+    function ascii(bytes, start, length) {
+      var s = "";
+      for (var i = 0; i < length && start + i < bytes.length; i++) {
+        s += String.fromCharCode(bytes[start + i]);
+      }
+      return s;
+    }
+    /* ---- END: reading numbers out of the file safely ---- */
+
+    /* ---- START: one directory of tags ----
+       TIFF stores metadata as directories of 12-byte entries: tag, type,
+       count, and either the value itself (if it fits in four bytes) or an
+       offset to it. Everything read here is capped - entry count, item count,
+       total size - so a corrupt file cannot make this loop for ever or build
+       something enormous. */
+    var TYPE_SIZE = { 1: 1, 2: 1, 3: 2, 4: 4, 5: 8, 6: 1, 7: 1, 8: 2, 9: 4, 10: 8, 11: 4, 12: 8 };
+
+    function decodeValue(rd, type, n, at) {
+      if (type === 2) {
+        var s = "";
+        for (var i = 0; i < n && i < 512; i++) {
+          var c = rd.u8(at + i);
+          if (!c) { break; }
+          s += String.fromCharCode(c);
+        }
+        return s.trim();
+      }
+      var items = [];
+      var take = Math.min(n, 32);
+      for (var k = 0; k < take; k++) {
+        if (type === 1 || type === 6 || type === 7) { items.push(rd.u8(at + k)); }
+        else if (type === 3 || type === 8) { items.push(rd.u16(at + k * 2)); }
+        else if (type === 4) { items.push(rd.u32(at + k * 4)); }
+        else if (type === 9) { items.push(rd.i32(at + k * 4)); }
+        else if (type === 5) {
+          var a = rd.u32(at + k * 8), b = rd.u32(at + k * 8 + 4);
+          items.push(a !== null && b ? a / b : null);
+        } else if (type === 10) {
+          var a2 = rd.i32(at + k * 8), b2 = rd.i32(at + k * 8 + 4);
+          items.push(a2 !== null && b2 ? a2 / b2 : null);
+        } else { items.push(null); }
+      }
+      return items.length === 1 ? items[0] : items;
+    }
+
+    function readIfd(rd, tiff, offset) {
+      var out = Object.create(null);
+      var base = tiff + offset;
+      var count = rd.u16(base);
+      if (count === null || count > 400) { return out; }
+
+      for (var i = 0; i < count; i++) {
+        var e = base + 2 + i * 12;
+        var tag = rd.u16(e), type = rd.u16(e + 2), n = rd.u32(e + 4);
+        if (tag === null || type === null || n === null) { break; }
+        var unit = TYPE_SIZE[type];
+        if (!unit || n < 1) { continue; }
+        var size = unit * n;
+        if (size > rd.length) { continue; }
+
+        var at;
+        if (size <= 4) { at = e + 8; }
+        else {
+          var rel = rd.u32(e + 8);
+          if (rel === null) { continue; }
+          at = tiff + rel;
+        }
+        if (at < 0 || at + size > rd.length) { continue; }
+        out[tag] = decodeValue(rd, type, n, at);
+      }
+      return out;
+    }
+    /* ---- END: one directory of tags ---- */
+
+    /* ---- START: the TIFF block that EXIF lives in ----
+       Starts with two letters saying which way round numbers are written -
+       II for little-endian, MM for big-endian, and both are common in the
+       wild - then the number 42, then where the first directory is. Camera
+       details, and the pointers to the two sub-directories, are in the
+       first. */
+    function parseTiff(bytes, tiff) {
+      var order = (bytes[tiff] << 8) | bytes[tiff + 1];
+      if (order !== 0x4949 && order !== 0x4D4D) { return null; }
+      var rd = makeReader(bytes)(order === 0x4949);
+      if (rd.u16(tiff + 2) !== 42) { return null; }
+      var first = rd.u32(tiff + 4);
+      if (first === null) { return null; }
+
+      var ifd0 = readIfd(rd, tiff, first);
+      var pointer = function (tag) {
+        return typeof ifd0[tag] === "number" ? readIfd(rd, tiff, ifd0[tag]) : Object.create(null);
+      };
+      return { ifd0: ifd0, exif: pointer(0x8769), gps: pointer(0x8825) };
+    }
+    /* ---- END: the TIFF block that EXIF lives in ---- */
+
+    /* ---- START: finding the metadata inside each file format ----
+       Three containers, three ways of carrying the same TIFF block. */
+    function scanJpeg(bytes) {
+      var result = { format: "JPEG", tiff: null, xmp: false, iptc: false, icc: false, text: [] };
+      var o = 2;
+      var guard = 0;
+      while (o + 4 <= bytes.length && guard < 200) {
+        guard += 1;
+        if (bytes[o] !== 0xFF) { break; }
+        var marker = bytes[o + 1];
+        if (marker === 0xFF) { o += 1; continue; }
+        if (marker === 0xD8 || marker === 0x01 || (marker >= 0xD0 && marker <= 0xD7)) { o += 2; continue; }
+        if (marker === 0xDA || marker === 0xD9) { break; }
+
+        var len = (bytes[o + 2] << 8) | bytes[o + 3];
+        if (len < 2) { break; }
+        var head = ascii(bytes, o + 4, 32);
+
+        if (marker === 0xE1 && head.indexOf("Exif\0\0") === 0 && !result.tiff) {
+          result.tiff = parseTiff(bytes, o + 10);
+        } else if (marker === 0xE1 && head.indexOf("http://ns.adobe.com/xap/") === 0) {
+          result.xmp = true;
+        } else if (marker === 0xED && head.indexOf("Photoshop 3.0") === 0) {
+          result.iptc = true;
+        } else if (marker === 0xE2 && head.indexOf("ICC_PROFILE") === 0) {
+          result.icc = true;
+        } else if (marker === 0xFE) {
+          result.text.push(["Comment", ascii(bytes, o + 4, Math.min(len - 2, 300))]);
+        }
+        o += 2 + len;
+      }
+      return result;
+    }
+
+    function scanPng(bytes) {
+      var result = { format: "PNG", tiff: null, xmp: false, iptc: false, icc: false, text: [] };
+      var rd = makeReader(bytes)(false);
+      var o = 8;
+      var guard = 0;
+      while (o + 8 <= bytes.length && guard < 400) {
+        guard += 1;
+        var len = rd.u32(o);
+        var type = ascii(bytes, o + 4, 4);
+        if (len === null || len > bytes.length) { break; }
+        var data = o + 8;
+        if (data + len > bytes.length) { break; }
+
+        if (type === "eXIf" && !result.tiff) { result.tiff = parseTiff(bytes, data); }
+        else if (type === "iCCP") { result.icc = true; }
+        else if (type === "tEXt" || type === "iTXt" || type === "zTXt") {
+          var body = ascii(bytes, data, Math.min(len, 400));
+          var nul = body.indexOf("\0");
+          var key = nul > -1 ? body.slice(0, nul) : body.slice(0, 40);
+          if (key === "XML:com.adobe.xmp") { result.xmp = true; }
+          else if (type === "tEXt") { result.text.push([key, body.slice(nul + 1)]); }
+          else { result.text.push([key, type === "zTXt" ? "(compressed text)" : "(text)"]); }
+        }
+        if (type === "IEND") { break; }
+        o = data + len + 4;
+      }
+      return result;
+    }
+
+    function scanWebp(bytes) {
+      var result = { format: "WebP", tiff: null, xmp: false, iptc: false, icc: false, text: [] };
+      var rd = makeReader(bytes)(true);
+      var o = 12;
+      var guard = 0;
+      while (o + 8 <= bytes.length && guard < 200) {
+        guard += 1;
+        var type = ascii(bytes, o, 4);
+        var len = rd.u32(o + 4);
+        if (len === null) { break; }
+        var data = o + 8;
+        if (data + len > bytes.length) { break; }
+
+        if (type === "EXIF" && !result.tiff) {
+          /* Some writers prefix the block with "Exif" and two zero bytes,
+             some do not. Both occur in real files. */
+          var skip = ascii(bytes, data, 4) === "Exif" ? 6 : 0;
+          result.tiff = parseTiff(bytes, data + skip);
+        } else if (type === "XMP ") { result.xmp = true; }
+        else if (type === "ICCP") { result.icc = true; }
+        o = data + len + (len % 2);
+      }
+      return result;
+    }
+
+    function scan(bytes) {
+      if (bytes.length > 4 && bytes[0] === 0xFF && bytes[1] === 0xD8) { return scanJpeg(bytes); }
+      if (bytes.length > 8 && bytes[0] === 0x89 && ascii(bytes, 1, 3) === "PNG") { return scanPng(bytes); }
+      if (bytes.length > 12 && ascii(bytes, 0, 4) === "RIFF" && ascii(bytes, 8, 4) === "WEBP") {
+        return scanWebp(bytes);
+      }
+      return null;
+    }
+    /* ---- END: finding the metadata inside each file format ---- */
+
+    /* ---- START: turning raw tags into things a person can read ---- */
+    var ORIENTATION = {
+      1: "Upright",
+      2: "Mirrored left to right",
+      3: "Stored upside down",
+      4: "Mirrored top to bottom",
+      5: "Mirrored and stored sideways",
+      6: "Stored sideways - needs a quarter turn clockwise",
+      7: "Mirrored and stored sideways",
+      8: "Stored sideways - needs a quarter turn anticlockwise"
+    };
+
+    function trim(n, places) {
+      return String(Number(n.toFixed(places)));
+    }
+
+    function exposureText(v) {
+      if (typeof v !== "number" || !isFinite(v) || v <= 0) { return null; }
+      return v < 1 ? "1/" + Math.round(1 / v) + " s" : trim(v, 1) + " s";
+    }
+
+    function dateText(v) {
+      if (typeof v !== "string") { return null; }
+      var m = /^(\d{4}):(\d{2}):(\d{2}) (\d{2}:\d{2}:\d{2})/.exec(v);
+      return m ? m[1] + "-" + m[2] + "-" + m[3] + " " + m[4] : (v || null);
+    }
+
+    /* Degrees, minutes and seconds to one decimal number, negative for south
+       and west. Rejects anything that is not a real place on Earth rather
+       than displaying it: a corrupt block should not show a confident
+       coordinate in the middle of nowhere. */
+    function coordinate(parts, ref, limit) {
+      if (!Array.isArray(parts) || parts.length < 3) { return null; }
+      if (parts.some(function (p) { return typeof p !== "number" || !isFinite(p); })) { return null; }
+      var value = parts[0] + parts[1] / 60 + parts[2] / 3600;
+      if (ref === "S" || ref === "W") { value = -value; }
+      return Math.abs(value) <= limit ? value : null;
+    }
+
+    function describe(found) {
+      var rows = [];
+      var gps = null;
+      var add = function (group, label, value) {
+        if (value !== null && value !== undefined && value !== "") { rows.push([group, label, String(value)]); }
+      };
+      var t = found ? found.tiff : null;
+
+      if (t) {
+        var i0 = t.ifd0, ex = t.exif, g = t.gps;
+
+        add("Camera", "Make", i0[0x010F]);
+        add("Camera", "Model", i0[0x0110]);
+        add("Camera", "Lens", ex[0xA434]);
+        add("Camera", "Software", i0[0x0131]);
+        add("Camera", "Serial number", ex[0xA431]);
+        add("Camera", "Lens serial number", ex[0xA435]);
+
+        add("Exposure", "Shutter", exposureText(ex[0x829A]));
+        add("Exposure", "Aperture", typeof ex[0x829D] === "number" ? "f/" + trim(ex[0x829D], 1) : null);
+        add("Exposure", "ISO", typeof ex[0x8827] === "number" ? ex[0x8827] : (Array.isArray(ex[0x8827]) ? ex[0x8827][0] : null));
+        add("Exposure", "Focal length", typeof ex[0x920A] === "number"
+            ? trim(ex[0x920A], 1) + " mm"
+              + (typeof ex[0xA405] === "number" && ex[0xA405] ? " (" + ex[0xA405] + " mm equivalent)" : "")
+            : null);
+        if (typeof ex[0x9209] === "number") {
+          add("Exposure", "Flash", (ex[0x9209] & 1) ? "Fired" : "Did not fire");
+        }
+
+        /* DateTimeOriginal is when the shutter fired. The plain DateTime tag
+           is when the FILE was last written, which is often the same and
+           often not - and labelling it "Taken" when it is the only one there
+           would state something the file did not say. */
+        if (dateText(ex[0x9003])) {
+          add("When", "Taken", dateText(ex[0x9003]));
+          add("When", "File last edited", dateText(i0[0x0132]));
+        } else {
+          add("When", "Date recorded", dateText(i0[0x0132]));
+        }
+
+        add("Other", "Orientation", ORIENTATION[i0[0x0112]] || null);
+        add("Other", "Artist", i0[0x013B]);
+        add("Other", "Copyright", i0[0x8298]);
+        if (ex[0x927C] !== undefined) {
+          add("Other", "Maker's private notes", "Present, not decoded");
+        }
+
+        var lat = coordinate(g[2], g[1], 90);
+        var lon = coordinate(g[4], g[3], 180);
+        if (lat !== null && lon !== null) {
+          gps = { lat: lat, lon: lon, alt: typeof g[6] === "number" ? g[6] * (g[5] === 1 ? -1 : 1) : null };
+          add("Location", "Latitude", lat.toFixed(6));
+          add("Location", "Longitude", lon.toFixed(6));
+          add("Location", "Altitude", gps.alt === null ? null : Math.round(gps.alt) + " m");
+        } else if (Object.keys(g).length) {
+          add("Location", "GPS block", "Present but its values are not usable");
+        }
+      }
+
+      if (found) {
+        found.text.forEach(function (pair) { add("Text in the file", pair[0], pair[1]); });
+        if (found.xmp) { add("Other", "XMP block", "Present - can hold edit history and titles"); }
+        if (found.iptc) { add("Other", "IPTC block", "Present - often holds captions and credits"); }
+        if (found.icc) { add("Other", "Colour profile", "Present"); }
+      }
+      return {
+        rows: rows, gps: gps, hasExif: !!t,
+        orientation: t && typeof t.ifd0[0x0112] === "number" ? t.ifd0[0x0112] : null
+      };
+    }
+    /* ---- END: turning raw tags into things a person can read ---- */
+
+    /* ---- START: showing the result ----
+       Built with createElement and textContent throughout, never innerHTML:
+       every string here came out of a file somebody else made, and a camera
+       name or comment field can hold anything at all. */
+    function show(described, file, img) {
+      rowsEl.innerHTML = "";
+      var lastGroup = "";
+
+      described.rows.forEach(function (row) {
+        if (row[0] !== lastGroup) {
+          lastGroup = row[0];
+          var head = document.createElement("tr");
+          var th = document.createElement("th");
+          th.colSpan = 2;
+          th.textContent = row[0];
+          head.appendChild(th);
+          rowsEl.appendChild(head);
+        }
+        var tr = document.createElement("tr");
+        var label = document.createElement("td");
+        label.textContent = row[1];
+        var value = document.createElement("td");
+        value.textContent = row[2];
+        tr.appendChild(label);
+        tr.appendChild(value);
+        rowsEl.appendChild(tr);
+      });
+
+      if (!described.rows.length) {
+        var none = document.createElement("tr");
+        var cell = document.createElement("td");
+        cell.colSpan = 2;
+        cell.textContent = "No camera, date or location details were found in this file.";
+        none.appendChild(cell);
+        rowsEl.appendChild(none);
+      }
+
+      if (described.gps) {
+        alertEl.hidden = false;
+        alertEl.className = "msg msg--bad";
+        alertEl.textContent = "This photo records where it was taken: "
+          + described.gps.lat.toFixed(6) + ", " + described.gps.lon.toFixed(6)
+          + ". Anyone you send this file to can read that. There is no map link "
+          + "here on purpose - opening one would tell a mapping site where you were.";
+      } else {
+        alertEl.hidden = true;
+        alertEl.textContent = "";
+      }
+    }
+    /* ---- END: showing the result ---- */
+
+    /* ---- START: reading the chosen file, without uploading it ---- */
+    function loadFile(file) {
+      if (!file) { return; }
+      if (file.size > MAX_BYTES) {
+        setMessage("That file is over 100 MB, which is more than this page will read into memory.", "bad");
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function () {
+        var bytes = new Uint8Array(reader.result);
+        var found = scan(bytes);
+        var described = describe(found);
+
+        current = { file: file, name: file.name.replace(/\.[^.]+$/, ""), type: file.type, img: null };
+
+        document.getElementById("sFormat").textContent = found ? found.format : (file.type || "unknown");
+        document.getElementById("sSize").textContent = formatBytes(file.size);
+
+        /* The picture is decoded separately, only for its size and a
+           thumbnail. A format the browser cannot draw still has its metadata
+           read, because that came from the bytes and not from the picture. */
+        var url = URL.createObjectURL(file);
+        var picture = new Image();
+        picture.onload = function () {
+          current.img = picture;
+          document.getElementById("sDims").textContent =
+            picture.naturalWidth + " " + TIMES + " " + picture.naturalHeight;
+
+          /* A photo stored sideways with a tag saying "turn a quarter" is
+             decoded already turned, so the browser reports width and height
+             swapped. That is how it is SHOWN. What is STORED is the other way
+             round, and a viewer that showed only one of them would hide a real
+             fact about the file. Orientations 5 to 8 are the quarter-turn
+             ones. */
+          if (described.orientation >= 5 && described.orientation <= 8) {
+            var at = 0;
+            described.rows.forEach(function (row, i) { if (row[1] === "Orientation") { at = i; } });
+            described.rows.splice(at + 1, 0, ["Other", "Size as stored",
+              picture.naturalHeight + " " + TIMES + " " + picture.naturalWidth]);
+            show(described, file, null);
+          }
+          preview.innerHTML = "";
+          picture.alt = "Thumbnail of the chosen photo";
+          picture.style.maxHeight = "180px";
+          preview.appendChild(picture);
+          cleanBtn.disabled = false;
+        };
+        picture.onerror = function () {
+          document.getElementById("sDims").textContent = DASH;
+          preview.innerHTML = "";
+          cleanBtn.disabled = true;
+        };
+        picture.src = url;
+
+        show(described, file, null);
+
+        if (!found) {
+          setMessage("This is not a JPEG, PNG or WebP, so its metadata cannot be read here.", "bad");
+        } else if (described.gps) {
+          setMessage("It has a GPS location. Save a clean copy before sharing it anywhere you do not control.", "bad");
+        } else if (described.hasExif) {
+          setMessage("No location, but the camera and date are recorded. Read in your browser - nothing was uploaded.", "ok");
+        } else {
+          setMessage("No EXIF block. That is common for screenshots and for pictures that have been through a site that strips it.", "ok");
+        }
+      };
+      reader.onerror = function () { setMessage("That file could not be read.", "bad"); };
+      reader.readAsArrayBuffer(file);
+    }
+    /* ---- END: reading the chosen file, without uploading it ---- */
+
+    /* ---- START: the clean copy ----
+       Drawn afresh from the decoded pixels. A canvas has no idea what
+       metadata is, so none is carried across - that is the whole mechanism,
+       and it means the original file is never modified. The browser applies
+       the orientation tag when it decodes, so the copy comes out upright and
+       the tag is gone. */
+    function saveClean() {
+      if (!current || !current.img) { return; }
+      var picture = current.img;
+      var canvas = document.createElement("canvas");
+      canvas.width = picture.naturalWidth;
+      canvas.height = picture.naturalHeight;
+      canvas.getContext("2d").drawImage(picture, 0, 0);
+
+      var type = current.type === "image/jpeg" || current.type === "image/webp" ? current.type : "image/png";
+      var ext = type === "image/jpeg" ? "jpg" : type === "image/webp" ? "webp" : "png";
+      canvas.toBlob(function (blob) {
+        if (!blob) { setMessage("This browser could not produce the copy.", "bad"); return; }
+        downloadBlob(blob, current.name + "-clean." + ext);
+        setMessage("Saved " + current.name + "-clean." + ext + " without metadata. "
+                 + (type === "image/png" ? "" : "It was compressed again, so it lost a little detail. ")
+                 + "Your original is untouched.", "ok");
+      }, type, 0.95);
+    }
+    /* ---- END: the clean copy ---- */
+
+    /* ---- START: wiring ---- */
+    fileIn.addEventListener("change", function () { loadFile(fileIn.files[0]); });
+
+    ["dragenter", "dragover"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.add("is-over");
+      });
+    });
+    ["dragleave", "drop"].forEach(function (type) {
+      drop.addEventListener(type, function (e) {
+        e.preventDefault(); drop.classList.remove("is-over");
+      });
+    });
+    drop.addEventListener("drop", function (e) { loadFile(e.dataTransfer.files[0]); });
+
+    cleanBtn.addEventListener("click", saveClean);
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      current = null;
+      fileIn.value = "";
+      rowsEl.innerHTML = "";
+      preview.innerHTML = "";
+      alertEl.hidden = true;
+      alertEl.textContent = "";
+      ["sFormat", "sSize", "sDims"].forEach(function (id) {
+        document.getElementById(id).textContent = DASH;
+      });
+      cleanBtn.disabled = true;
+      setMessage("");
+    });
+    /* ---- END: wiring ---- */
+  })();
+  </script>
+</body>
+</html>

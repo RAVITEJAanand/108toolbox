@@ -102,3 +102,96 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
+
+/* ---- START: building a ZIP file, with no library ----
+   Two tools need to hand back many files at once - the favicon set and the
+   image splitter - and a browser will not let a page trigger a dozen
+   downloads in a row without asking the visitor about each.
+
+   This writes the simplest legal ZIP: every file stored as it is, nothing
+   compressed. That is exactly right for PNG and JPEG, which are compressed
+   already and do not shrink further, and it keeps this to a page of code
+   instead of a library.
+
+   files: [{ name: "a.png", bytes: Uint8Array }]. Returns a Blob.
+   Names are written as UTF-8 and flagged so, or every non-English file name
+   would come out as mojibake in the visitor's unzip program. */
+var ZIP_CRC_TABLE = null;
+
+function zipCrc32(bytes) {
+  if (!ZIP_CRC_TABLE) {
+    ZIP_CRC_TABLE = new Uint32Array(256);
+    for (var n = 0; n < 256; n++) {
+      var c = n;
+      for (var k = 0; k < 8; k++) { c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); }
+      ZIP_CRC_TABLE[n] = c >>> 0;
+    }
+  }
+  var crc = 0xFFFFFFFF;
+  for (var i = 0; i < bytes.length; i++) {
+    crc = ZIP_CRC_TABLE[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+  }
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+
+function buildZip(files) {
+  var encoder = new TextEncoder();
+  var now = new Date();
+  /* MS-DOS date and time: two-second resolution, years counted from 1980. */
+  var dosDate = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+  var dosTime = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
+
+  var parts = [];
+  var central = [];
+  var offset = 0;
+
+  files.forEach(function (file) {
+    var name = encoder.encode(file.name);
+    var crc = zipCrc32(file.bytes);
+    var size = file.bytes.length;
+
+    var local = new DataView(new ArrayBuffer(30));
+    local.setUint32(0, 0x04034B50, true);
+    local.setUint16(4, 20, true);
+    local.setUint16(6, 0x0800, true);          /* bit 11: the name is UTF-8 */
+    local.setUint16(8, 0, true);               /* method 0: stored */
+    local.setUint16(10, dosTime, true);
+    local.setUint16(12, dosDate, true);
+    local.setUint32(14, crc, true);
+    local.setUint32(18, size, true);
+    local.setUint32(22, size, true);
+    local.setUint16(26, name.length, true);
+    local.setUint16(28, 0, true);
+
+    var entry = new DataView(new ArrayBuffer(46));
+    entry.setUint32(0, 0x02014B50, true);
+    entry.setUint16(4, 20, true);
+    entry.setUint16(6, 20, true);
+    entry.setUint16(8, 0x0800, true);
+    entry.setUint16(10, 0, true);
+    entry.setUint16(12, dosTime, true);
+    entry.setUint16(14, dosDate, true);
+    entry.setUint32(16, crc, true);
+    entry.setUint32(20, size, true);
+    entry.setUint32(24, size, true);
+    entry.setUint16(28, name.length, true);
+    entry.setUint32(42, offset, true);          /* where its local header sits */
+
+    parts.push(local.buffer, name, file.bytes);
+    central.push(entry.buffer, name);
+    offset += 30 + name.length + size;
+  });
+
+  var centralSize = 0;
+  central.forEach(function (piece) { centralSize += piece.byteLength || piece.length; });
+
+  var end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054B50, true);
+  end.setUint16(8, files.length, true);
+  end.setUint16(10, files.length, true);
+  end.setUint32(12, centralSize, true);
+  end.setUint32(16, offset, true);
+
+  return new Blob(parts.concat(central, [end.buffer]), { type: "application/zip" });
+}
+/* ---- END: building a ZIP file, with no library ---- */

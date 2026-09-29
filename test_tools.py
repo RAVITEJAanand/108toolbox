@@ -183,7 +183,7 @@ HARNESS = r"""
   setTimeout(function () {
     if (!done) { record(false, "test body never finished - timed out"); }
     finish();
-  }, 12000);
+  }, __BUDGET__);
 
   /* Any uncaught error anywhere on the page is itself a failure */
   window.addEventListener("error", function (e) {
@@ -4236,14 +4236,1167 @@ T["calorie-calculator"] = r"""
   finish();
 """
 
+T["image-color-picker"] = r"""
+  var TIMES = String.fromCharCode(0x00D7);
+  var DASH = String.fromCharCode(0x2014);
+
+  /* Record downloads instead of performing them. */
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+  function lastSaved() { return window.__saved[window.__saved.length - 1]; }
+
+  /* Hand a File to a file input exactly as choosing one would. */
+  function feed(id, file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById(id);
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function bytesOf(blob, then) {
+    blob.arrayBuffer().then(function (buffer) { then(new Uint8Array(buffer)); });
+  }
+
+  function clickAt(x, y) {
+    var c = document.getElementById("stage");
+    var r = c.getBoundingClientRect();
+    c.dispatchEvent(new MouseEvent("click", {
+      bubbles: true,
+      clientX: r.left + (x + 0.5) * r.width / c.width,
+      clientY: r.top + (y + 0.5) * r.height / c.height
+    }));
+  }
+
+  clickAt(1, 1);
+  has("clicking before choosing a picture says so", txt("msg"), "Choose an image first");
+
+  makeImage("file", 200, 100, function () {
+    waitFor("the picture is drawn",
+      function () { return txt("msg").indexOf("Click anywhere") > -1; },
+      function () {
+        eq("the canvas is the picture's real size", document.getElementById("stage").width, 200);
+
+        /* Pixel (20,12) sits in the block that starts at (16,8), which the
+           test image paints rgb(16, 8, 128). Worked by hand from its own rule. */
+        clickAt(20, 12);
+        eq("the exact pixel's RGB", txt("sRgb"), "16, 8, 128");
+        eq("its HEX", txt("sHex"), "#100880");
+        eq("its HSL, worked out by hand", txt("sHsl"), "244, 88%, 27%");
+        has("the history keeps it", txt("picked"), "#100880");
+
+        clickAt(100, 40);
+        eq("another pixel is a different colour", txt("sHex"), "#602880");
+        eq("and history grows", txt("picked").split("\n").length, 2);
+        eq("newest at the top", txt("picked").indexOf("#602880"), 0);
+
+        /* A 3x3 patch across a block edge averages: x=7 is one column of
+           r=0 and x=8,9 are two columns of r=8, so (0*3 + 8*6) / 9 = 5.33. */
+        set("area", "3");
+        clickAt(8, 12);
+        eq("a patch across an edge averages the neighbours", txt("sRgb"), "5, 8, 128");
+        set("area", "1");
+        clickAt(8, 12);
+        eq("while one pixel is exact", txt("sRgb"), "8, 8, 128");
+
+        var chips = document.querySelectorAll("#palette .palette-chip");
+        ok("a palette was found", chips.length >= 1 && chips.length <= 6, chips.length + " chips");
+        chips[0].click();
+        ok("clicking a palette colour picks it", /^#[0-9a-f]{6}$/.test(txt("sHex")), txt("sHex"));
+
+        /* A fully transparent pixel has no colour, and must say so rather
+           than passing off the zeros stored there as black. */
+        var clear = document.createElement("canvas");
+        clear.width = 20; clear.height = 20;
+        clear.toBlob(function (blob) {
+          feed("file", new File([blob], "clear.png", { type: "image/png" }));
+          waitFor("the transparent picture loads",
+            function () { return document.getElementById("stage").width === 20; },
+            function () {
+              clickAt(5, 5);
+              has("a transparent pixel is called transparent", txt("msg"), "fully transparent");
+
+              click("resetBtn");
+              eq("reset clears the colour", txt("sHex"), DASH);
+              eq("and the history", txt("picked"), "");
+              finish();
+            });
+        }, "image/png");
+      });
+  });
+"""
+
+T["image-cropper"] = r"""
+  var TIMES = String.fromCharCode(0x00D7);
+  var DASH = String.fromCharCode(0x2014);
+
+  /* Record downloads instead of performing them. */
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+  function lastSaved() { return window.__saved[window.__saved.length - 1]; }
+
+  /* Hand a File to a file input exactly as choosing one would. */
+  function feed(id, file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById(id);
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function bytesOf(blob, then) {
+    blob.arrayBuffer().then(function (buffer) { then(new Uint8Array(buffer)); });
+  }
+
+  function fire(type, x, y) {
+    var c = document.getElementById("stage");
+    var r = c.getBoundingClientRect();
+    c.dispatchEvent(new PointerEvent(type, {
+      bubbles: true, cancelable: true, pointerId: 1,
+      clientX: r.left + x * r.width / c.width,
+      clientY: r.top + y * r.height / c.height
+    }));
+  }
+  function drag(x1, y1, x2, y2) { fire("pointerdown", x1, y1); fire("pointermove", x2, y2); fire("pointerup", x2, y2); }
+  function box() {
+    return [Number(val("cx")), Number(val("cy")), Number(val("cw")), Number(val("ch"))].join(",");
+  }
+
+  makeImage("file", 200, 100, function () {
+    waitFor("the crop is ready",
+      function () { return txt("sBytes") !== DASH; },
+      function () {
+        eq("opens on a centred box covering 80%", txt("sSize"), "160 " + TIMES + " 80");
+        eq("positioned in the middle", txt("sPos"), "20, 10");
+        eq("the original's size is shown", txt("sOriginal"), "200 " + TIMES + " 100");
+        eq("64 per cent kept", txt("sArea"), "64%");
+        eq("the four boxes agree", box(), "20,10,160,80");
+        ok("the download is available", document.getElementById("dlBtn").disabled === false);
+
+        /* Small and out of the way, so the drags below start on empty picture. */
+        set("cw", 40); set("ch", 20); set("cx", 0); set("cy", 0);
+        eq("typed pixels set the box", box(), "0,0,40,20");
+
+        drag(100, 60, 150, 90);
+        eq("dragging on empty picture draws a new box", box(), "100,60,50,30");
+
+        drag(120, 75, 130, 80);
+        eq("dragging inside moves it, keeping its size", box(), "110,65,50,30");
+
+        drag(160, 95, 180, 90);
+        eq("dragging a corner resizes it, the opposite corner staying put", box(), "110,65,70,25");
+
+        drag(180, 90, 250, 150);
+        eq("dragging past the edge stops at the edge", box(), "110,65,90,35");
+
+        /* Shape locked. */
+        set("aspect", "1:1");
+        eq("choosing a shape fits the box to it", box(), "110,10,90,90");
+        drag(20, 20, 60, 30);
+        eq("a locked box follows the pointer but keeps its shape", box(), "20,20,40,40");
+        set("cw", 60);
+        eq("typing a width moves the height with it", box(), "20,20,60,60");
+        set("ch", 30);
+        eq("and the other way round", box(), "20,20,30,30");
+        set("aspect", "16:9");
+        eq("16:9 of that width", box(), "20,20,30,17");
+        set("aspect", "free");
+
+        /* A box cannot be bigger than the picture. */
+        set("cx", 0); set("cy", 0); set("cw", 999); set("ch", 999);
+        eq("oversize is clamped to the picture", box(), "0,0,200,100");
+        eq("all of it kept", txt("sArea"), "100%");
+
+        /* The crop is cut from the ORIGINAL. The block at (16,8) is painted
+           rgb(16,8,128); cropping exactly it must give back exactly that. */
+        var before = document.querySelector("#preview img") ? document.querySelector("#preview img").src : "";
+        set("cw", 8); set("ch", 8); set("cx", 16); set("cy", 8);
+        waitFor("the crop is re-cut",
+          function () {
+            var i = document.querySelector("#preview img");
+            return i && i.src !== before && i.complete && i.naturalWidth === 8;
+          },
+          function () {
+            var i = document.querySelector("#preview img");
+            var c = document.createElement("canvas");
+            c.width = 8; c.height = 8;
+            var ctx = c.getContext("2d");
+            ctx.drawImage(i, 0, 0);
+            var px = ctx.getImageData(4, 4, 1, 1).data;
+            eq("the crop is really that part of the original",
+               px[0] + "," + px[1] + "," + px[2], "16,8,128");
+            eq("and is 8 pixels each way", i.naturalWidth + "x" + i.naturalHeight, "8x8");
+
+            click("dlBtn");
+            eq("the file is named for its size", lastSaved().name, "test-crop-8x8.png");
+
+            set("fmt", "image/jpeg");
+            waitFor("a JPG is produced",
+              function () { click("dlBtn"); return lastSaved().name === "test-crop-8x8.jpg"; },
+              function () {
+                eq("named for the real type", lastSaved().name, "test-crop-8x8.jpg");
+                eq("and it is a JPEG", lastSaved().blob.type, "image/jpeg");
+
+                feed("file", new File(["not a picture"], "note.txt", { type: "text/plain" }));
+                has("a non-image is refused", txt("msg"), "not an image");
+
+                click("resetBtn");
+                eq("reset clears the size", txt("sSize"), DASH);
+                eq("disables the download", document.getElementById("dlBtn").disabled, true);
+                eq("and frees the shape", val("aspect"), "free");
+                finish();
+              }, 4000);
+          }, 4000);
+      });
+  });
+"""
+
+T["favicon-generator"] = r"""
+  var TIMES = String.fromCharCode(0x00D7);
+  var DASH = String.fromCharCode(0x2014);
+
+  /* Record downloads instead of performing them. */
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+  function lastSaved() { return window.__saved[window.__saved.length - 1]; }
+
+  /* Hand a File to a file input exactly as choosing one would. */
+  function feed(id, file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById(id);
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function bytesOf(blob, then) {
+    blob.arrayBuffer().then(function (buffer) { then(new Uint8Array(buffer)); });
+  }
+
+  /* Walks a zip's central directory. Independent of the writer: this is the
+     reader's half of the format, so an offset wrong in the same way on both
+     sides cannot hide. */
+  function readZip(bytes) {
+    var dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    var eocd = bytes.length - 22;
+    if (eocd < 0 || dv.getUint32(eocd, true) !== 0x06054b50) { return null; }
+    var count = dv.getUint16(eocd + 10, true);
+    var p = dv.getUint32(eocd + 16, true);
+    var out = [];
+    for (var i = 0; i < count; i++) {
+      if (dv.getUint32(p, true) !== 0x02014b50) { return null; }
+      var size = dv.getUint32(p + 24, true);
+      var nameLen = dv.getUint16(p + 28, true);
+      var extraLen = dv.getUint16(p + 30, true);
+      var commentLen = dv.getUint16(p + 32, true);
+      var local = dv.getUint32(p + 42, true);
+      var name = new TextDecoder().decode(bytes.slice(p + 46, p + 46 + nameLen));
+      var start = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
+      out.push({ name: name, data: bytes.slice(start, start + size) });
+      p += 46 + nameLen + extraLen + commentLen;
+    }
+    return out;
+  }
+
+  /* A PNG announces its own size in bytes 16 to 23, big-endian. */
+  function pngSize(data) {
+    var sig = [137, 80, 78, 71, 13, 10, 26, 10];
+    for (var i = 0; i < 8; i++) { if (data[i] !== sig[i]) { return null; } }
+    var dv = new DataView(data.buffer, data.byteOffset, data.byteLength);
+    return { w: dv.getUint32(16), h: dv.getUint32(20) };
+  }
+
+  /* The colour of one pixel of a PNG, by decoding it for real. */
+  function pixelOf(data, x, y, then) {
+    var img = new Image();
+    img.onload = function () {
+      var c = document.createElement("canvas");
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      var ctx = c.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      var p = ctx.getImageData(x, y, 1, 1).data;
+      then([p[0], p[1], p[2], p[3]]);
+    };
+    img.src = URL.createObjectURL(new Blob([data], { type: "image/png" }));
+  }
+
+  function grabZip(then) {
+    var seen = window.__saved.length;
+    click("zipBtn");
+    waitFor("the zip is handed over",
+      function () { return window.__saved.length > seen; },
+      function () { bytesOf(lastSaved().blob, function (bytes) { then(readZip(bytes)); }); });
+  }
+  function entry(files, name) {
+    return files.filter(function (f) { return f.name === name; })[0];
+  }
+
+  makeImage("file", 200, 100, function () {
+    waitFor("the icons are drawn",
+      function () { return document.getElementById("zipBtn").disabled === false; },
+      function () {
+        eq("five icon cards are shown", document.querySelectorAll("#grid .stat").length, 5);
+        eq("seven files in the zip", txt("sFiles"), "7");
+        eq("the source size is shown", txt("sSource"), "200 " + TIMES + " 100");
+        has("the snippet links the Apple icon", txt("snippet"), 'rel="apple-touch-icon"');
+        has("and the .ico", txt("snippet"), 'href="/favicon.ico"');
+        has("a small source is called small", txt("msg"), "smaller than 512");
+
+        grabZip(function (files) {
+          ok("the zip opens", files !== null);
+          eq("named as a set", lastSaved().name, "favicons.zip");
+          eq("every file is there, in order", files.map(function (f) { return f.name; }).join(" "),
+             "favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png " +
+             "android-chrome-192x192.png android-chrome-512x512.png head-snippet.html");
+
+          [["favicon-16x16.png", 16], ["favicon-32x32.png", 32], ["apple-touch-icon.png", 180],
+           ["android-chrome-192x192.png", 192], ["android-chrome-512x512.png", 512]].forEach(function (pair) {
+            var size = pngSize(entry(files, pair[0]).data);
+            ok(pair[0] + " is a real PNG of " + pair[1] + " pixels",
+               size && size.w === pair[1] && size.h === pair[1],
+               JSON.stringify(size));
+          });
+
+          /* The .ico: a 6-byte header, then 16 bytes per image, each pointing
+             at a complete PNG. Read back the way a browser reads it. */
+          var ico = entry(files, "favicon.ico").data;
+          var dv = new DataView(ico.buffer, ico.byteOffset, ico.byteLength);
+          eq("ico: reserved zero, type 1 (icon)", dv.getUint16(0, true) + "," + dv.getUint16(2, true), "0,1");
+          eq("ico: three images", dv.getUint16(4, true), 3);
+          [16, 32, 48].forEach(function (px, i) {
+            var at = 6 + 16 * i;
+            var off = dv.getUint32(at + 12, true), len = dv.getUint32(at + 8, true);
+            var inner = pngSize(ico.slice(off, off + len));
+            ok("ico image " + (i + 1) + " is declared " + px + " and is " + px,
+               ico[at] === px && ico[at + 1] === px && inner && inner.w === px && inner.h === px,
+               JSON.stringify(inner));
+          });
+          var lastEntry = 6 + 16 * 2;
+          eq("ico: the last image ends exactly at the end of the file",
+             dv.getUint32(lastEntry + 12, true) + dv.getUint32(lastEntry + 8, true), ico.length);
+
+          has("the snippet file is in the zip",
+              new TextDecoder().decode(entry(files, "head-snippet.html").data), "apple-touch-icon");
+
+          /* 200x100 kept whole in a 32 pixel square leaves the top and bottom
+             empty: transparent at the top, opaque in the middle. */
+          pixelOf(entry(files, "favicon-32x32.png").data, 16, 2, function (top) {
+            eq("kept whole: the top edge is transparent", top[3], 0);
+            pixelOf(entry(files, "favicon-32x32.png").data, 16, 16, function (mid) {
+              eq("and the middle is picture", mid[3], 255);
+
+              var firstSrc = document.querySelector("#grid img").src;
+              set("fit", "cover");
+              waitFor("the icons are redrawn",
+                function () { return document.querySelector("#grid img").src !== firstSrc; },
+                function () {
+                  grabZip(function (cover) {
+                    pixelOf(entry(cover, "favicon-32x32.png").data, 16, 2, function (edge) {
+                      eq("cropped to fill: the top edge is picture", edge[3], 255);
+
+                      var secondSrc = document.querySelector("#grid img").src;
+                      set("fit", "contain");
+                      tick("useBg", true);
+                      set("bg", "#ff0000");
+                      waitFor("redrawn with a background",
+                        function () { return document.querySelector("#grid img").src !== secondSrc; },
+                        function () {
+                          grabZip(function (filled) {
+                            pixelOf(entry(filled, "favicon-32x32.png").data, 16, 2, function (bg) {
+                              eq("a chosen background fills the empty space", bg.join(","), "255,0,0,255");
+
+                              click("icoBtn");
+                              eq("the .ico alone is offered too", lastSaved().name, "favicon.ico");
+
+                              click("resetBtn");
+                              eq("reset empties the grid", document.querySelectorAll("#grid .stat").length, 0);
+                              eq("and disables the downloads", document.getElementById("zipBtn").disabled, true);
+                              finish();
+                            });
+                          });
+                        }, 8000);
+                    });
+                  });
+                }, 8000);
+            });
+          });
+        });
+      });
+  });
+"""
+
+T["photo-watermark"] = r"""
+  var TIMES = String.fromCharCode(0x00D7);
+  var DASH = String.fromCharCode(0x2014);
+
+  /* Record downloads instead of performing them. */
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+  function lastSaved() { return window.__saved[window.__saved.length - 1]; }
+
+  /* Hand a File to a file input exactly as choosing one would. */
+  function feed(id, file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById(id);
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function bytesOf(blob, then) {
+    blob.arrayBuffer().then(function (buffer) { then(new Uint8Array(buffer)); });
+  }
+
+  /* What changed on a canvas between two moments: how many pixels, and the
+     bounding box of them. */
+  function grab(id) {
+    var c = document.getElementById(id);
+    return c.getContext("2d").getImageData(0, 0, c.width, c.height);
+  }
+  function changed(before, after) {
+    var w = before.width, box = { n: 0, x0: 1e9, y0: 1e9, x1: -1, y1: -1, energy: 0, black: 0, red: 0 };
+    for (var i = 0; i < before.data.length; i += 4) {
+      var dr = Math.abs(before.data[i] - after.data[i]);
+      var dg = Math.abs(before.data[i + 1] - after.data[i + 1]);
+      var db = Math.abs(before.data[i + 2] - after.data[i + 2]);
+      if (dr + dg + db > 0) {
+        var p = i / 4, x = p % w, y = Math.floor(p / w);
+        box.n += 1;
+        box.energy += dr + dg + db;
+        if (x < box.x0) { box.x0 = x; } if (x > box.x1) { box.x1 = x; }
+        if (y < box.y0) { box.y0 = y; } if (y > box.y1) { box.y1 = y; }
+        if (after.data[i] === 0 && after.data[i + 1] === 0 && after.data[i + 2] === 0) { box.black += 1; }
+        if (after.data[i] === 255 && after.data[i + 1] === 0 && after.data[i + 2] === 0) { box.red += 1; }
+      }
+    }
+    return box;
+  }
+
+  makeImage("file", 400, 200, function () {
+    waitFor("the picture is drawn",
+      function () { return txt("sSize") !== DASH; },
+      function () {
+        eq("the picture size", txt("sSize"), "400 " + TIMES + " 200");
+        eq("one mark", txt("sMarks"), "1");
+        eq("twenty pixel letters at 5% of 400", txt("sFont"), "20 px");
+        ok("download is available", document.getElementById("dlBtn").disabled === false);
+
+        set("text", "");
+        var base = grab("stage");
+        eq("the empty mark leaves the original: first pixel", base.data[0] + "," + base.data[1] + "," + base.data[2], "0,0,128");
+        eq("and none are drawn", txt("sMarks"), "0");
+        has("and it says so", txt("msg"), "empty");
+
+        set("text", "ABCD"); set("opacity", 100);
+        set("size", 10);
+        eq("the size label follows the slider", txt("sizeOut"), "10");
+        eq("and doubles the letters", txt("sFont"), "40 px");
+        set("size", 5);
+
+        set("pos", "nw");
+        var m = changed(base, grab("stage"));
+        ok("top left: something was drawn", m.n > 50, m.n + " pixels");
+        ok("and all of it in the top-left quarter", m.x1 < 200 && m.y1 < 100,
+           "box " + m.x0 + "," + m.y0 + " to " + m.x1 + "," + m.y1);
+
+        set("pos", "se");
+        m = changed(base, grab("stage"));
+        ok("bottom right: all of it in the bottom-right quarter", m.x0 >= 200 && m.y0 >= 100,
+           "box " + m.x0 + "," + m.y0 + " to " + m.x1 + "," + m.y1);
+        ok("and not touching the edge", m.x1 < 399 && m.y1 < 199, "box ends " + m.x1 + "," + m.y1);
+
+        set("pos", "c");
+        m = changed(base, grab("stage"));
+        ok("centre: away from every edge",
+           m.x0 > 100 && m.x1 < 300 && m.y0 > 60 && m.y1 < 140,
+           "box " + m.x0 + "," + m.y0 + " to " + m.x1 + "," + m.y1);
+
+        /* A mark turned a quarter-circle in a corner is tall, not wide, and
+           has to be placed by that or it hangs off the picture. */
+        set("pos", "se"); set("angle", 90);
+        m = changed(base, grab("stage"));
+        ok("turned 90 degrees it is taller than wide", (m.y1 - m.y0) > (m.x1 - m.x0),
+           "box " + (m.x1 - m.x0) + " wide, " + (m.y1 - m.y0) + " tall");
+        ok("and still inside the picture", m.x1 < 399 && m.y1 < 199 && m.x0 > 0 && m.y0 > 0,
+           "box " + m.x0 + "," + m.y0 + " to " + m.x1 + "," + m.y1);
+        set("angle", 0);
+
+        var strong = changed(base, grab("stage")).energy;
+        set("opacity", 10);
+        var faint = changed(base, grab("stage")).energy;
+        ok("lower opacity changes far less", faint * 3 < strong, "strong " + strong + ", faint " + faint);
+        set("opacity", 100);
+
+        set("mode", "tile");
+        ok("tiled: many marks", Number(txt("sMarks")) > 5, txt("sMarks"));
+        eq("and the position menu is put away", document.getElementById("posField").hidden, true);
+        m = changed(base, grab("stage"));
+        ok("spread over the whole picture", m.x0 < 60 && m.x1 > 340 && m.y0 < 60 && m.y1 > 140,
+           "box " + m.x0 + "," + m.y0 + " to " + m.x1 + "," + m.y1);
+        has("and it says tiling is harder to remove", txt("msg"), "harder to crop");
+        set("mode", "single");
+        eq("single brings the menu back", document.getElementById("posField").hidden, false);
+
+        set("text", "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKL"); set("size", 40);
+        has("text wider than the picture is flagged", txt("msg"), "wider than the picture");
+        set("text", "ABCD"); set("size", 5);
+
+        click("dlBtn");
+        waitFor("a PNG is produced",
+          function () { return window.__saved.length > 0; },
+          function () {
+            eq("named for the photo", lastSaved().name, "test-watermarked.png");
+            eq("a PNG", lastSaved().blob.type, "image/png");
+
+            set("fmt", "image/jpeg");
+            click("dlBtn");
+            waitFor("a JPG is produced",
+              function () { return window.__saved.length > 1; },
+              function () {
+                eq("and a JPG when asked", lastSaved().name, "test-watermarked.jpg");
+                eq("really a JPEG", lastSaved().blob.type, "image/jpeg");
+
+                click("resetBtn");
+                eq("reset puts the copyright sign back",
+                   val("text"), String.fromCharCode(0x00A9) + " Your Name");
+                eq("disables the download", document.getElementById("dlBtn").disabled, true);
+                finish();
+              });
+          });
+      });
+  });
+"""
+
+T["meme-generator"] = r"""
+  var TIMES = String.fromCharCode(0x00D7);
+  var DASH = String.fromCharCode(0x2014);
+
+  /* Record downloads instead of performing them. */
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+  function lastSaved() { return window.__saved[window.__saved.length - 1]; }
+
+  /* Hand a File to a file input exactly as choosing one would. */
+  function feed(id, file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById(id);
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function bytesOf(blob, then) {
+    blob.arrayBuffer().then(function (buffer) { then(new Uint8Array(buffer)); });
+  }
+
+  /* What changed on a canvas between two moments: how many pixels, and the
+     bounding box of them. */
+  function grab(id) {
+    var c = document.getElementById(id);
+    return c.getContext("2d").getImageData(0, 0, c.width, c.height);
+  }
+  function changed(before, after) {
+    var w = before.width, box = { n: 0, x0: 1e9, y0: 1e9, x1: -1, y1: -1, energy: 0, black: 0, red: 0 };
+    for (var i = 0; i < before.data.length; i += 4) {
+      var dr = Math.abs(before.data[i] - after.data[i]);
+      var dg = Math.abs(before.data[i + 1] - after.data[i + 1]);
+      var db = Math.abs(before.data[i + 2] - after.data[i + 2]);
+      if (dr + dg + db > 0) {
+        var p = i / 4, x = p % w, y = Math.floor(p / w);
+        box.n += 1;
+        box.energy += dr + dg + db;
+        if (x < box.x0) { box.x0 = x; } if (x > box.x1) { box.x1 = x; }
+        if (y < box.y0) { box.y0 = y; } if (y > box.y1) { box.y1 = y; }
+        if (after.data[i] === 0 && after.data[i + 1] === 0 && after.data[i + 2] === 0) { box.black += 1; }
+        if (after.data[i] === 255 && after.data[i + 1] === 0 && after.data[i + 2] === 0) { box.red += 1; }
+      }
+    }
+    return box;
+  }
+
+  makeImage("file", 400, 300, function () {
+    waitFor("the picture is drawn",
+      function () { return txt("sSize") !== DASH; },
+      function () {
+        eq("the picture size", txt("sSize"), "400 " + TIMES + " 300");
+        ok("both captions were drawn", Number(txt("sTop")) >= 1 && Number(txt("sBottom")) >= 1,
+           txt("sTop") + " / " + txt("sBottom"));
+        ok("neither takes more than three lines", Number(txt("sTop")) <= 3 && Number(txt("sBottom")) <= 3);
+
+        set("top", ""); set("bottom", "");
+        var base = grab("stage");
+        eq("with no text the picture is untouched: first pixel",
+           base.data[0] + "," + base.data[1] + "," + base.data[2], "0,0,128");
+        has("and it says so", txt("msg"), "empty");
+
+        set("top", "HELLO");
+        var m = changed(base, grab("stage"));
+        ok("top text lands in the top half", m.n > 50 && m.y1 < 150, "box ends at y " + m.y1);
+        ok("centred on the picture", m.x0 > 100 && m.x1 < 300, "box " + m.x0 + " to " + m.x1);
+        ok("and there is outline: pure black pixels exist", m.black > 10, m.black + " black pixels");
+        set("top", "");
+
+        set("bottom", "HELLO");
+        m = changed(base, grab("stage"));
+        ok("bottom text lands in the bottom half", m.n > 50 && m.y0 > 150, "box starts at y " + m.y0);
+        ok("and near the bottom edge", m.y1 > 260, "box ends at y " + m.y1);
+        set("bottom", "");
+
+        /* A long caption wraps, and never runs off either side. */
+        var caption = "";
+        for (var i = 0; i < 30; i++) { caption += "WORD "; }
+        set("top", caption);
+        var lines = Number(txt("sTop"));
+        ok("a long caption wraps onto two or three lines", lines >= 2 && lines <= 3, lines + " lines");
+        m = changed(base, grab("stage"));
+        ok("and stays inside the picture", m.x0 > 0 && m.x1 < 399, "box " + m.x0 + " to " + m.x1);
+
+        /* One word too wide to wrap is shrunk instead. */
+        var word = "";
+        for (var j = 0; j < 30; j++) { word += "W"; }
+        set("top", word);
+        eq("an unbreakable word stays on one line", txt("sTop"), "1");
+        m = changed(base, grab("stage"));
+        ok("and is shrunk to fit", m.x0 > 0 && m.x1 < 399, "box " + m.x0 + " to " + m.x1);
+
+        set("top", "hello world");
+        var withCaps = changed(base, grab("stage"));
+        tick("caps", false);
+        var without = changed(base, grab("stage"));
+        ok("capitals change what is drawn", (withCaps.x1 - withCaps.x0) !== (without.x1 - without.x0),
+           (withCaps.x1 - withCaps.x0) + " vs " + (without.x1 - without.x0));
+        tick("caps", true);
+
+        set("fill", "#ff0000");
+        m = changed(base, grab("stage"));
+        ok("the letter colour is used", m.red > 20, m.red + " red pixels");
+
+        click("dlBtn");
+        waitFor("a PNG is produced",
+          function () { return window.__saved.length > 0; },
+          function () {
+            eq("named for the photo", lastSaved().name, "test-meme.png");
+            click("resetBtn");
+            eq("reset puts the classic top line back", val("top"), "WHEN THE CODE WORKS");
+            eq("and disables the download", document.getElementById("dlBtn").disabled, true);
+            finish();
+          });
+      });
+  });
+"""
+
+T["image-splitter"] = r"""
+  var TIMES = String.fromCharCode(0x00D7);
+  var DASH = String.fromCharCode(0x2014);
+
+  /* Record downloads instead of performing them. */
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+  function lastSaved() { return window.__saved[window.__saved.length - 1]; }
+
+  /* Hand a File to a file input exactly as choosing one would. */
+  function feed(id, file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById(id);
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function bytesOf(blob, then) {
+    blob.arrayBuffer().then(function (buffer) { then(new Uint8Array(buffer)); });
+  }
+
+  /* Walks a zip's central directory. Independent of the writer: this is the
+     reader's half of the format, so an offset wrong in the same way on both
+     sides cannot hide. */
+  function readZip(bytes) {
+    var dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    var eocd = bytes.length - 22;
+    if (eocd < 0 || dv.getUint32(eocd, true) !== 0x06054b50) { return null; }
+    var count = dv.getUint16(eocd + 10, true);
+    var p = dv.getUint32(eocd + 16, true);
+    var out = [];
+    for (var i = 0; i < count; i++) {
+      if (dv.getUint32(p, true) !== 0x02014b50) { return null; }
+      var size = dv.getUint32(p + 24, true);
+      var nameLen = dv.getUint16(p + 28, true);
+      var extraLen = dv.getUint16(p + 30, true);
+      var commentLen = dv.getUint16(p + 32, true);
+      var local = dv.getUint32(p + 42, true);
+      var name = new TextDecoder().decode(bytes.slice(p + 46, p + 46 + nameLen));
+      var start = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
+      out.push({ name: name, data: bytes.slice(start, start + size) });
+      p += 46 + nameLen + extraLen + commentLen;
+    }
+    return out;
+  }
+
+  /* A PNG announces its own size in bytes 16 to 23, big-endian. */
+  function pngSize(data) {
+    var sig = [137, 80, 78, 71, 13, 10, 26, 10];
+    for (var i = 0; i < 8; i++) { if (data[i] !== sig[i]) { return null; } }
+    var dv = new DataView(data.buffer, data.byteOffset, data.byteLength);
+    return { w: dv.getUint32(16), h: dv.getUint32(20) };
+  }
+
+  /* The colour of one pixel of a PNG, by decoding it for real. */
+  function pixelOf(data, x, y, then) {
+    var img = new Image();
+    img.onload = function () {
+      var c = document.createElement("canvas");
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      var ctx = c.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      var p = ctx.getImageData(x, y, 1, 1).data;
+      then([p[0], p[1], p[2], p[3]]);
+    };
+    img.src = URL.createObjectURL(new Blob([data], { type: "image/png" }));
+  }
+
+  function grabZip(then) {
+    var seen = window.__saved.length;
+    click("zipBtn");
+    waitFor("the zip is handed over",
+      function () { return window.__saved.length > seen; },
+      function () { bytesOf(lastSaved().blob, function (bytes) { then(readZip(bytes)); }); });
+  }
+
+  makeImage("file", 200, 100, function () {
+    waitFor("the plan is drawn",
+      function () { return txt("sTiles") !== DASH; },
+      function () {
+        /* 200 across three: the cuts fall at 0, 67, 133, 200, so 67, 66, 67. */
+        eq("three across by default", txt("sTiles"), "3");
+        eq("the first tile is 67 wide", txt("sEach"), "67 " + TIMES + " 100");
+        has("an uneven split says nothing was trimmed", txt("msg"), "single pixel");
+        eq("each tile has its own button", document.querySelectorAll("#tileList button").length, 3);
+
+        set("cols", 2);
+        eq("two tiles", txt("sTiles"), "2");
+        eq("an even split", txt("sEach"), "100 " + TIMES + " 100");
+        has("said plainly", txt("msg"), "every pixel of the original");
+
+        set("rows", 2);
+        eq("four tiles", txt("sTiles"), "4");
+        eq("each 100 by 50", txt("sEach"), "100 " + TIMES + " 50");
+
+        document.querySelector('[data-grid="3x3"]').click();
+        eq("the quick layout sets columns", val("cols"), "3");
+        eq("and rows", val("rows"), "3");
+        eq("nine tiles", txt("sTiles"), "9");
+
+        set("cols", 99);
+        eq("more than ten is clamped", val("cols"), "10");
+
+        /* Two across, and the content of the tiles checked pixel by pixel. */
+        set("cols", 2); set("rows", 1);
+        grabZip(function (files) {
+          eq("two files in the zip", files.length, 2);
+          eq("named by position", files.map(function (f) { return f.name; }).join(" "),
+             "test-r1c1.png test-r1c2.png");
+          var a = pngSize(files[0].data), b = pngSize(files[1].data);
+          eq("together they are exactly as wide as the picture", a.w + b.w, 200);
+          eq("and as tall", a.h, 100);
+
+          /* The right tile begins at x=100, in the block that starts at x=96. */
+          pixelOf(files[1].data, 0, 0, function (px) {
+            eq("the right tile starts where the original does: rgb(96,0,128)",
+               px[0] + "," + px[1] + "," + px[2], "96,0,128");
+
+            /* Three by three, to prove coverage and posting order. */
+            set("cols", 3); set("rows", 3);
+            set("naming", "order");
+            grabZip(function (nine) {
+              eq("nine files", nine.length, 9);
+              eq("posting order: the first tile in reading order is posted LAST",
+                 nine[0].name, "test-09.png");
+              eq("and the final one is posted first", nine[8].name, "test-01.png");
+
+              var width = 0, height = 0;
+              [0, 1, 2].forEach(function (c) { width += pngSize(nine[c].data).w; });
+              [0, 3, 6].forEach(function (r) { height += pngSize(nine[r].data).h; });
+              eq("a row of tiles covers the full width", width, 200);
+              eq("a column covers the full height", height, 100);
+
+              set("naming", "position");
+              set("fmt", "image/jpeg");
+              document.querySelectorAll("#tileList button")[0].click();
+              waitFor("a single tile is saved",
+                function () { return window.__saved.length > 2; },
+                function () {
+                  eq("as a JPG when asked", lastSaved().name, "test-r1c1.jpg");
+
+                  click("resetBtn");
+                  eq("reset clears the tiles", txt("sTiles"), DASH);
+                  eq("and disables the zip", document.getElementById("zipBtn").disabled, true);
+                  finish();
+                });
+            });
+          });
+        });
+      });
+  });
+"""
+
+T["image-metadata-viewer"] = r"""
+  var TIMES = String.fromCharCode(0x00D7);
+  var DASH = String.fromCharCode(0x2014);
+
+  /* Record downloads instead of performing them. */
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+  function lastSaved() { return window.__saved[window.__saved.length - 1]; }
+
+  /* Hand a File to a file input exactly as choosing one would. */
+  function feed(id, file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById(id);
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function bytesOf(blob, then) {
+    blob.arrayBuffer().then(function (buffer) { then(new Uint8Array(buffer)); });
+  }
+
+  /* Walks a zip's central directory. Independent of the writer: this is the
+     reader's half of the format, so an offset wrong in the same way on both
+     sides cannot hide. */
+  function readZip(bytes) {
+    var dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    var eocd = bytes.length - 22;
+    if (eocd < 0 || dv.getUint32(eocd, true) !== 0x06054b50) { return null; }
+    var count = dv.getUint16(eocd + 10, true);
+    var p = dv.getUint32(eocd + 16, true);
+    var out = [];
+    for (var i = 0; i < count; i++) {
+      if (dv.getUint32(p, true) !== 0x02014b50) { return null; }
+      var size = dv.getUint32(p + 24, true);
+      var nameLen = dv.getUint16(p + 28, true);
+      var extraLen = dv.getUint16(p + 30, true);
+      var commentLen = dv.getUint16(p + 32, true);
+      var local = dv.getUint32(p + 42, true);
+      var name = new TextDecoder().decode(bytes.slice(p + 46, p + 46 + nameLen));
+      var start = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
+      out.push({ name: name, data: bytes.slice(start, start + size) });
+      p += 46 + nameLen + extraLen + commentLen;
+    }
+    return out;
+  }
+
+  /* A PNG announces its own size in bytes 16 to 23, big-endian. */
+  function pngSize(data) {
+    var sig = [137, 80, 78, 71, 13, 10, 26, 10];
+    for (var i = 0; i < 8; i++) { if (data[i] !== sig[i]) { return null; } }
+    var dv = new DataView(data.buffer, data.byteOffset, data.byteLength);
+    return { w: dv.getUint32(16), h: dv.getUint32(20) };
+  }
+
+  /* The colour of one pixel of a PNG, by decoding it for real. */
+  function pixelOf(data, x, y, then) {
+    var img = new Image();
+    img.onload = function () {
+      var c = document.createElement("canvas");
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      var ctx = c.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      var p = ctx.getImageData(x, y, 1, 1).data;
+      then([p[0], p[1], p[2], p[3]]);
+    };
+    img.src = URL.createObjectURL(new Blob([data], { type: "image/png" }));
+  }
+/* Builds EXIF blocks by hand, for testing the reader against.
+
+   Shared by the node probe and by the browser test (the test body is
+   assembled from this file), so both are exercising the reader with the same
+   bytes. Written independently of the reader on purpose: it shares no code
+   with it, so a mistake in one cannot be repeated in the other.
+
+   An entry is { tag, type, data } where data is a list of raw bytes already in
+   the file's byte order, or { tag, ptr: "exif" | "gps" } for the two pointers
+   into sub-directories.
+
+   TIFF layout: 8-byte header, IFD0, Exif IFD, GPS IFD, then a data area that
+   holds every value too big for the four bytes inside an entry. */
+function exifBuilder(be) {
+  function u16(v) { return be ? [(v >> 8) & 255, v & 255] : [v & 255, (v >> 8) & 255]; }
+  function u32(v) {
+    var b = [(v >>> 24) & 255, (v >>> 16) & 255, (v >>> 8) & 255, v & 255];
+    return be ? b : b.reverse();
+  }
+  function ascii(s) {
+    var out = [];
+    for (var i = 0; i < s.length; i++) { out.push(s.charCodeAt(i)); }
+    out.push(0);
+    return out;
+  }
+  function rational(n, d) { return u32(n).concat(u32(d)); }
+
+  var api = {
+    ascii: function (tag, s) { var d = ascii(s); return { tag: tag, type: 2, count: d.length, data: d }; },
+    short: function (tag, v) { return { tag: tag, type: 3, count: 1, data: u16(v) }; },
+    byte: function (tag, v) { return { tag: tag, type: 1, count: 1, data: [v] }; },
+    rational: function (tag, n, d) { return { tag: tag, type: 5, count: 1, data: rational(n, d) }; },
+    rationals: function (tag, list) {
+      var d = [];
+      list.forEach(function (p) { d = d.concat(rational(p[0], p[1])); });
+      return { tag: tag, type: 5, count: list.length, data: d };
+    },
+    undefinedBytes: function (tag, bytes) { return { tag: tag, type: 7, count: bytes.length, data: bytes }; },
+    ptr: function (tag, which) { return { tag: tag, ptr: which }; }
+  };
+
+  api.build = function (spec) {
+    var sets = [
+      { key: "ifd0", list: (spec.ifd0 || []).slice() },
+      { key: "exif", list: (spec.exif || []).slice() },
+      { key: "gps",  list: (spec.gps  || []).slice() }
+    ];
+    /* An empty directory that nothing points at is simply left out. */
+    sets = sets.filter(function (s) { return s.key === "ifd0" || s.list.length; });
+
+    var size = function (s) { return 2 + 12 * s.list.length + 4; };
+    var at = 8;
+    var offsets = {};
+    sets.forEach(function (s) { offsets[s.key] = at; at += size(s); });
+    var dataStart = at;
+
+    var blob = [];
+    var out = (be ? [0x4D, 0x4D] : [0x49, 0x49]).concat(u16(42), u32(8));
+
+    sets.forEach(function (s) {
+      out = out.concat(u16(s.list.length));
+      s.list.forEach(function (e) {
+        var entry = u16(e.tag);
+        if (e.ptr) {
+          entry = entry.concat(u16(4), u32(1), u32(offsets[e.ptr] || 0));
+        } else if (e.data.length <= 4) {
+          var inline = e.data.slice();
+          while (inline.length < 4) { inline.push(0); }
+          entry = entry.concat(u16(e.type), u32(e.count), inline);
+        } else {
+          entry = entry.concat(u16(e.type), u32(e.count), u32(dataStart + blob.length));
+          blob = blob.concat(e.data);
+          if (blob.length % 2) { blob.push(0); }
+        }
+        out = out.concat(entry);
+      });
+      out = out.concat(u32(0));
+    });
+    return new Uint8Array(out.concat(blob));
+  };
+  return api;
+}
+
+/* The APP1 segment that carries a TIFF block inside a JPEG. */
+function jpegWithExif(tiff, extraSegments) {
+  var body = [69, 120, 105, 102, 0, 0].concat(Array.prototype.slice.call(tiff));
+  var len = body.length + 2;
+  var out = [0xFF, 0xD8, 0xFF, 0xE1, (len >> 8) & 255, len & 255].concat(body);
+  (extraSegments || []).forEach(function (seg) { out = out.concat(seg); });
+  return new Uint8Array(out.concat([0xFF, 0xD9]));
+}
+
+/* The same fields every time, so every test asks about the same photograph. */
+function samplePhoto(be, overrides) {
+  var b = exifBuilder(be);
+  var o = overrides || {};
+  var gps = o.noGps ? [] : [
+    b.ascii(1, o.latRef || "N"),
+    b.rationals(2, o.lat || [[17, 1], [23, 1], [6, 1]]),
+    b.ascii(3, o.lonRef || "E"),
+    b.rationals(4, o.lon || [[78, 1], [29, 1], [12, 1]]),
+    b.byte(5, 0),
+    b.rational(6, 542, 1)
+  ];
+  return b.build({
+    ifd0: [
+      b.ascii(0x010F, o.make || "Canon"),
+      b.ascii(0x0110, "EOS 5D"),
+      b.short(0x0112, 6),
+      b.ascii(0x0131, "Editor 1.0"),
+      b.ascii(0x0132, "2026:09:13 09:00:00"),
+      b.ptr(0x8769, "exif")
+    ].concat(gps.length ? [b.ptr(0x8825, "gps")] : []),
+    exif: [
+      b.rational(0x829A, 1, 250),
+      b.rational(0x829D, 28, 10),
+      b.short(0x8827, 400),
+      b.ascii(0x9003, "2026:09:12 14:30:22"),
+      b.rational(0x920A, 50, 1),
+      b.short(0xA405, 75),
+      b.ascii(0xA434, "EF 50mm f/1.8"),
+      b.ascii(0xA431, "0123456789")
+    ],
+    gps: gps
+  });
+}
+
+  function rowsText() {
+    var out = [];
+    Array.prototype.forEach.call(document.querySelectorAll("#rows tr"), function (tr) {
+      var tds = tr.querySelectorAll("td");
+      if (tds.length === 2) { out.push(tds[0].textContent + ": " + tds[1].textContent); }
+    });
+    return out;
+  }
+  function has1(prefix) {
+    return rowsText().some(function (r) { return r.indexOf(prefix) === 0; });
+  }
+
+  /* A real JPEG from a canvas, with an EXIF block inserted after the marker
+     that opens the file - which is where a camera would put it. */
+  function insertExif(jpeg, tiff) {
+    var body = [69, 120, 105, 102, 0, 0].concat(Array.prototype.slice.call(tiff));
+    var len = body.length + 2;
+    var seg = [0xFF, 0xE1, (len >> 8) & 255, len & 255].concat(body);
+    var out = new Uint8Array(jpeg.length + seg.length);
+    out.set(jpeg.slice(0, 2), 0);
+    out.set(seg, 2);
+    out.set(jpeg.slice(2), 2 + seg.length);
+    return out;
+  }
+
+  function makeJpeg(overrides, then) {
+    var c = document.createElement("canvas");
+    c.width = 64; c.height = 48;
+    var ctx = c.getContext("2d");
+    ctx.fillStyle = "#336699"; ctx.fillRect(0, 0, 64, 48);
+    ctx.fillStyle = "#ffcc00"; ctx.fillRect(10, 10, 30, 20);
+    c.toBlob(function (blob) {
+      bytesOf(blob, function (jpeg) {
+        then(new File([insertExif(jpeg, samplePhoto(false, overrides))], "photo.jpg", { type: "image/jpeg" }));
+      });
+    }, "image/jpeg", 0.9);
+  }
+
+  makeJpeg({}, function (photo) {
+    feed("file", photo);
+    waitFor("the details are read",
+      function () { return rowsText().length > 8; },
+      function () {
+        eq("the format", txt("sFormat"), "JPEG");
+        ok("the file size is shown", txt("sSize") !== DASH, txt("sSize"));
+
+        ok("make", has1("Make: Canon"), rowsText().join(" | "));
+        ok("model", has1("Model: EOS 5D"));
+        ok("shutter, worked out from 1/250", has1("Shutter: 1/250 s"));
+        ok("aperture", has1("Aperture: f/2.8"));
+        ok("ISO", has1("ISO: 400"));
+        ok("focal length with its equivalent", has1("Focal length: 50 mm (75 mm equivalent)"));
+        ok("the serial number, which can identify a camera", has1("Serial number: 0123456789"));
+        ok("the date is tidied", has1("Taken: 2026-09-12 14:30:22"));
+        ok("the orientation in words", has1("Orientation: Stored sideways"));
+        ok("the latitude, hand-worked from 17 23 6", has1("Latitude: 17.385000"));
+        ok("and the longitude", has1("Longitude: 78.486667"));
+
+        eq("the location alert is shown", document.getElementById("alert").hidden, false);
+        has("and names the coordinates", txt("alert"), "17.385000, 78.486667");
+        has("and warns", txt("alert"), "Anyone you send this file to");
+        eq("there is deliberately no map link", document.querySelectorAll("#alert a, #rows a").length, 0);
+        has("the message says to clean it", txt("msg"), "clean copy");
+
+        waitFor("the picture is decoded",
+          function () { return txt("sDims") !== DASH; },
+          function () {
+            eq("its pixel size is as SHOWN - the browser applies the orientation tag", txt("sDims"), "48 " + TIMES + " 64");
+            ok("and the table says what is STORED", has1("Size as stored: 64 " + TIMES + " 48"), rowsText().join(" | "));
+            eq("the clean-copy button is available", document.getElementById("cleanBtn").disabled, false);
+
+            click("cleanBtn");
+            waitFor("the clean copy is produced",
+              function () { return window.__saved.length > 0; },
+              function () {
+                eq("named for the photo", lastSaved().name, "photo-clean.jpg");
+                eq("still a JPEG", lastSaved().blob.type, "image/jpeg");
+                bytesOf(lastSaved().blob, function (clean) {
+                  eq("it begins as a JPEG must", clean[0] + "," + clean[1], "255,216");
+                  var ascii = "";
+                  for (var i = 0; i < clean.length; i++) { ascii += String.fromCharCode(clean[i]); }
+                  eq("it holds no EXIF block", ascii.indexOf("Exif"), -1);
+                  eq("nor the camera's name", ascii.indexOf("Canon"), -1);
+                  eq("nor the serial number", ascii.indexOf("0123456789"), -1);
+
+                  /* Read it back with the same tool: what it writes, it must
+                     read as clean. */
+                  feed("file", new File([clean], "photo-clean.jpg", { type: "image/jpeg" }));
+                  waitFor("the clean copy is read",
+                    function () { return !has1("Make: Canon"); },
+                    function () {
+                      ok("no camera details remain", !has1("Make:") && !has1("Model:") && !has1("Serial number"));
+                      ok("and no location", !has1("Latitude") && !has1("Longitude"));
+                      eq("the location alert goes away", document.getElementById("alert").hidden, true);
+
+                      /* Hostile text in a camera field stays text. */
+                      makeJpeg({ make: "<iframe onload=zq>" }, function (evil) {
+                        feed("file", evil);
+                        waitFor("the hostile file is read",
+                          function () { return has1("Make: <iframe"); },
+                          function () {
+                            eq("a tag in a camera name never becomes an element",
+                               document.querySelectorAll("#rows iframe").length, 0);
+                            ok("it is shown as characters", has1("Make: <iframe onload=zq>"));
+
+                            feed("file", new File(["hello"], "note.txt", { type: "text/plain" }));
+                            waitFor("a text file is examined",
+                              function () { return txt("msg").indexOf("cannot be read here") > -1; },
+                              function () {
+                                eq("its type is reported instead", txt("sFormat"), "text/plain");
+
+                                makeImage("file", 40, 30, function () {
+                                  waitFor("a PNG is read",
+                                    function () { return txt("sFormat") === "PNG"; },
+                                    function () {
+                                      has("no EXIF is explained rather than shown as an error", txt("msg"), "No EXIF block");
+
+                                      click("resetBtn");
+                                      eq("reset empties the table", document.querySelectorAll("#rows tr").length, 0);
+                                      eq("and disables the clean copy", document.getElementById("cleanBtn").disabled, true);
+                                      finish();
+                                    });
+                                });
+                              });
+                          });
+                      });
+                    });
+                });
+              });
+          });
+      });
+  });
+"""
+
 # ===== END: the test bodies ================================================
+
+
+# ===== START: how long a test body may take ===============================
+# 12 virtual seconds is plenty for a text tool. It is not for a body that waits
+# on real work several times over - every waitFor poll spends 100ms of virtual
+# time, and while a canvas encodes or an image decodes the virtual clock runs
+# ahead of the real one. A tool that builds four zips can need twenty virtual
+# seconds and two real ones. Ask for more here, per tool; nothing else changes.
+BUDGET_MS = {
+    "favicon-generator": 40000,
+    "image-splitter": 40000,
+    "image-metadata-viewer": 40000,
+    "image-cropper": 25000,
+}
+
+
+def budget_for(slug):
+    return BUDGET_MS.get(slug, 12000)
+# ===== END: how long a test body may take =================================
 
 
 # ===== START: building and running one page ================================
 def build(slug):
     """Write tools/_test-<slug>.html: the real page plus the harness."""
     page = (SITE / "tools" / ("%s.html" % slug)).read_text(encoding="utf-8")
-    harness = HARNESS.replace("__TESTS__", COMMON + T[slug]).replace("__SLUG__", slug)
+    harness = (HARNESS.replace("__TESTS__", COMMON + T[slug])
+                       .replace("__SLUG__", slug)
+                       .replace("__BUDGET__", str(budget_for(slug))))
     target = SITE / "tools" / ("_test-%s.html" % slug)
     target.write_text(page.replace("</body>", harness + "\n</body>"),
                       encoding="utf-8")
@@ -4258,10 +5411,11 @@ def run_one(slug):
     try:
         dom = subprocess.run(
             [CHROME, "--headless", "--disable-gpu", "--no-sandbox",
-             "--window-size=1280,900", "--virtual-time-budget=15000",
+             "--window-size=1280,900",
+             "--virtual-time-budget=%d" % (budget_for(slug) + 3000),
              "--dump-dom", url],
             capture_output=True, text=True, encoding="utf-8",
-            errors="replace", timeout=90).stdout
+            errors="replace", timeout=max(90, budget_for(slug) // 200)).stdout
     except subprocess.TimeoutExpired:
         dom = ""
     finally:
