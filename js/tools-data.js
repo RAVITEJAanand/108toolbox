@@ -459,6 +459,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "markdown-previewer",
+    name: "Markdown Previewer",
+    desc: "Write Markdown and see it rendered as you type, then copy the HTML or download it. Nothing is uploaded and raw HTML is never run.",
+    category: "Developer",
+    icon: "\u{1F4DD}",
+    keywords: ["markdown previewer", "markdown preview", "markdown editor", "markdown to html", "markdown viewer", "render markdown", "readme preview", "commonmark", "gfm preview", "md to html"],
+    popular: false
+  },
+  {
     slug: "meme-generator",
     name: "Meme Generator",
     desc: "Top and bottom text on your own picture, wrapped and shrunk to fit.",

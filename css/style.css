@@ -92,6 +92,13 @@
   color-scheme: light dark;
 }
 
+/* An explicit choice has to decide how the browser draws ITS OWN controls too
+   (scrollbars, check boxes, selects). Left at "light dark" they follow the
+   operating system, so a visitor on a dark-mode device who picks the light
+   theme got a black scrollbar and black check boxes on a white page. */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"]  { color-scheme: dark; }
+
 /* ==========================================================================
    DARK THEME
    Only the tokens are redefined — no component rule is repeated.

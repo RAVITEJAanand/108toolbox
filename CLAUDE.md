@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 95 of a planned 108 tools are built, tested and live.
+**Where it stands:** 96 of a planned 108 tools are built, tested and live.
 Phase 2 is finished; Phase 3 has started.
 
 ---
@@ -34,11 +34,11 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`95 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`96 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">95</span> tools live
+<span data-tool-count="live">96</span> tools live
 <span data-tool-count="remaining">47</span> on the way
 ```
 
@@ -72,8 +72,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=26` → `?v=27` across all 105 pages (currently `?v=26`,
-507 occurrences), the template included.
+Find-and-replace `?v=28` → `?v=29` across all 106 pages (currently `?v=28`,
+512 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
 the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
@@ -108,7 +108,7 @@ python security.py     ATTACKS the files — hostile text in every box, hostile
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 95, not just the one you changed.** That is the
+**`test_tools.py` runs all 96, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -135,6 +135,24 @@ scripts and on thousands of variants with random line breaks and semicolons
 stripped. A test that only ever passes has not shown it can fail: plant bugs and
 see. The mutation runs for these three tools each found something a plain run
 missed, including two real bugs in `js-minifier` after every case had passed.
+
+`markdown-previewer` is judged the same way, by two other implementations of the
+standard: 630 hand-written documents and 21 task lists compared with markdown-it
+and marked before anything was locked, then 150,000 random documents with every
+difference adjudicated. Its preview is built from the converter's token stream
+with `createElement` and `textContent`, never by parsing a string of HTML, so a
+typed `<script>` has nowhere to go; `test_tools.py` audits every element and
+attribute in the preview after 30 hostile documents. Two real bugs came out of
+writing and running its test: a space between `*a* **b**` in a list item was
+thrown away as "structural" whitespace, and the message "1 image is not loaded"
+was shown about pictures that were in fact displayed.
+
+**The harness and the security probe go in front of the LAST `</body>`.** A page
+that builds an HTML document in its script has `"</body>"` inside a string, and
+`str.replace` put the harness in the middle of that string: the page then
+threw a syntax error and the test reported "produced no result at all", which
+looks exactly like a page that never loaded. Both `test_tools.py` and
+`security.py` use `rpartition` now.
 
 `security.py` exists because neither of the others asks what happens when the
 text is hostile. `json-formatter` printed the browser's own `JSON.parse` error
@@ -184,7 +202,7 @@ Umami or Cloudflare Web Analytics — or drop the claim. Not both.
 
 **Advertising is the same rule, and it is already decided.** The owner wants
 ads on once all 108 tools are live, and not before. The site currently
-promises "no ads" in the hero, in the footer of all 105 pages, in
+promises "no ads" in the hero, in the footer of all 106 pages, in
 `privacy.html` section 7 and in `disclaimer.html` section 9. Those promises
 get rewritten **first, in their own commit**, before a single line of ad code
 is added — otherwise the site starts lying to visitors on the day it starts
@@ -420,7 +438,7 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (95):** add-line-numbers, add-subtract-days, age-calculator,
+**Live (96):** add-line-numbers, add-subtract-days, age-calculator,
 area-converter, average-calculator, barcode-generator,
 base64-encoder-decoder, binary-decimal-hex-converter, bmi-calculator,
 calorie-calculator, case-converter, character-frequency-counter, coin-flip,
@@ -434,8 +452,8 @@ image-color-picker, image-compressor, image-cropper, image-converter,
 image-metadata-viewer, image-resizer, image-rotator, image-splitter,
 image-to-base64, js-minifier, json-formatter, json-to-csv, jwt-decoder,
 leap-year-checker, lorem-ipsum-generator, margin-markup-calculator,
-meme-generator, text-to-morse, nato-phonetic-converter, number-to-words,
-password-generator, percentage-calculator, photo-watermark,
+markdown-previewer, meme-generator, text-to-morse, nato-phonetic-converter,
+number-to-words, password-generator, percentage-calculator, photo-watermark,
 image-placeholder-generator, qr-code-generator, random-list-shuffler,
 random-number-generator, random-picker, ratio-calculator, readability-score,
 regex-tester, remove-duplicate-lines, remove-line-breaks, reverse-text,

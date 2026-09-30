@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Markdown Previewer — Live Preview and HTML Output</title>
+  <meta name="description" content="Write Markdown and see it rendered as you type, with tables, task lists and code. Copy the HTML or download it. Nothing is uploaded and raw HTML is never run.">
+  <link rel="canonical" href="https://108toolbox.in/tools/markdown-previewer.html">
+
+  <meta property="og:title" content="Markdown Previewer — Live Preview and HTML Output">
+  <meta property="og:description" content="Write Markdown and see it rendered as you type, with tables, task lists and code. Copy the HTML or download it. Nothing is uploaded and raw HTML is never run.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=28">
+  <link rel="stylesheet" href="../css/tool.css?v=28">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Which kind of Markdown is this?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CommonMark, the standard behind GitHub Flavored Markdown, plus the three GitHub additions people use most: tables, task lists and strikethrough with two tildes. Footnotes, emoji shortcodes, maths and diagrams are not supported."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my HTML shown as text?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because running it would be unsafe. Tags in your Markdown, including div, img and script, are displayed as the characters you typed rather than being run or rendered. If you need the HTML output, the HTML view and the copy button give you the conversion of your Markdown."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why do my images not appear?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Loading an image means asking another server for it, which tells that server you are previewing this document. The page shows a labelled box instead, and the HTML view keeps the image as you wrote it. Images embedded in the text as data:image addresses are shown."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why can I not click some links?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Web, mail and telephone links work. A relative link such as docs/setup.md would open a page on this site that does not exist, and an unusual scheme could launch another program, so those are shown as underlined text with the address on hover."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does it support footnotes, emoji, maths or automatic links?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Those are extensions that different sites implement differently. A web address must be written as a link or between angle brackets to become one."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much can I paste?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Up to 500,000 characters. Quotes and emphasis nested more than a hundred deep, and lists nested more than fifty, are left as the characters typed, because nobody can read them and they would exhaust the browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do character references such as &copy; work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Numbers work for any character (&#169; or &#xA9;), and so do the standard HTML 4 names such as &copy;, &mdash;, &euro; and &hellip;. A name outside that set is left exactly as you typed it. A single tilde is also left alone: only two on each side make strikethrough, so a rough price like ~5 to ~10 is not struck through."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use the HTML on my own site?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Copy it, or download a complete .html file. The output is plain HTML with no styles, so it takes on the look of the page it goes into. Read it through first, as you would any HTML you did not write."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
+        <span>Markdown Previewer</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Markdown Previewer</h1>
+        <p>Write Markdown on the left and read the result on the right, or switch to
+           the HTML it becomes. It follows the CommonMark standard with GitHub-style
+           tables and task lists, and it runs in your browser, so nothing is
+           uploaded.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <label class="panel__label" for="input">Markdown</label>
+          <textarea id="input" class="mono" rows="18" spellcheck="false"># Markdown preview
+
+Write on the left, read on the right. **Bold**, *italic*, ~~struck~~ and `code` all work.
+
+## A list
+
+- Buy milk
+- [x] Write the post
+- [ ] Publish it
+  1. Check the links
+  2. Proofread
+
+&gt; A quote can span
+&gt; several lines.
+
+## A table
+
+| Tool | Free | Uploads |
+|:-----|:----:|--------:|
+| This one | yes | none |
+
+## Code
+
+```js
+const total = items.reduce((sum, item) =&gt; sum + item.price, 0);
+```
+
+Read the [about page](https://108toolbox.in/about.html), or see ![a picture](https://108toolbox.in/x.png "pictures from the web are not loaded here").</textarea>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost"  type="button" id="sampleBtn">Load sample</button>
+            <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <div class="field">
+            <label for="view">Show</label>
+            <select id="view">
+              <option value="preview" selected>Preview</option>
+              <option value="html">The HTML</option>
+            </select>
+          </div>
+
+          <div class="md-preview" id="preview"></div>
+          <pre class="out mono" id="source" hidden></pre>
+
+          <div class="stats stats--3" style="margin-top:var(--s4)">
+            <div class="stat"><span class="stat__num" id="sWords">&mdash;</span><span class="stat__label">Words</span></div>
+            <div class="stat"><span class="stat__num" id="sHeadings">&mdash;</span><span class="stat__label">Headings</span></div>
+            <div class="stat"><span class="stat__num" id="sLinks">&mdash;</span><span class="stat__label">Links</span></div>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--primary" type="button" id="copyBtn">Copy HTML</button>
+            <button class="btn btn--ghost"   type="button" id="dlBtn">Download .html</button>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+          <p class="msg" style="margin-top:var(--s2)">This follows the CommonMark standard with GitHub-style tables, task lists and strikethrough. Other Markdown renderers differ in small ways, so check the result where you publish it.</p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>What it understands</h2>
+        <p>Headings, paragraphs, <strong>bold</strong>, <em>italic</em> and
+           <del>strikethrough</del>, bulleted and numbered lists (nested up to
+           fifty levels), task lists, block quotes (up to a hundred levels), code
+           spans and fenced code blocks, links and images, tables with left,
+           centred and right alignment, horizontal rules, hard line breaks and
+           backslash escapes. It follows the CommonMark standard, the same one
+           GitHub, GitLab and most editors are built on, so a README written
+           here reads the same in those places.</p>
+
+        <h2>Why raw HTML shows up as text</h2>
+        <p>If your Markdown contains tags such as <code>&lt;div&gt;</code> or
+           <code>&lt;script&gt;</code>, this page shows them as text instead of
+           running them. That is deliberate. A previewer that ran whatever it was
+           given would let a pasted document run code in your browser, and a
+           preview is the last place you want that. Markdown that only uses
+           Markdown behaves exactly as you expect. The preview is built from
+           elements the page creates itself, never from a string of HTML, so
+           there is nothing to inject into.</p>
+
+        <h2>Links and images in the preview</h2>
+        <p>Web, mail and telephone links work and open in a new tab. A link to
+           another page of your own site, or with an unusual scheme, is shown as
+           underlined text with its address on hover, because following it would
+           take you away from this page and lose what you typed. Images from the
+           web are shown as a small labelled box instead of being loaded:
+           fetching them would tell another server that you are previewing this
+           document. Images embedded in the text itself as
+           <code>data:image</code> are shown. In the HTML view every address and
+           every image is exactly as you wrote it.</p>
+
+        <h2>Check it where you publish it</h2>
+        <p>Markdown has one standard and many extensions, and each site adds its
+           own: footnotes, emoji shortcodes, maths, diagrams, automatic links for
+           bare web addresses. This page does not do those, so a document that
+           uses them will look plainer here than where it is published. What it
+           does render is checked against two widely used implementations of the
+           standard.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Which kind of Markdown is this?</h3>
+          <p>CommonMark, the standard behind GitHub Flavored Markdown, plus the three GitHub additions people use most: tables, task lists and strikethrough with two tildes. Footnotes, emoji shortcodes, maths and diagrams are not supported.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is my HTML shown as text?</h3>
+          <p>Because running it would be unsafe. Tags in your Markdown, including div, img and script, are displayed as the characters you typed rather than being run or rendered. If you need the HTML output, the HTML view and the copy button give you the conversion of your Markdown.</p>
+        </div>
+        <div class="faq">
+          <h3>Why do my images not appear?</h3>
+          <p>Loading an image means asking another server for it, which tells that server you are previewing this document. The page shows a labelled box instead, and the HTML view keeps the image as you wrote it. Images embedded in the text as data:image addresses are shown.</p>
+        </div>
+        <div class="faq">
+          <h3>Why can I not click some links?</h3>
+          <p>Web, mail and telephone links work. A relative link such as docs/setup.md would open a page on this site that does not exist, and an unusual scheme could launch another program, so those are shown as underlined text with the address on hover.</p>
+        </div>
+        <div class="faq">
+          <h3>Does it support footnotes, emoji, maths or automatic links?</h3>
+          <p>No. Those are extensions that different sites implement differently. A web address must be written as a link or between angle brackets to become one.</p>
+        </div>
+        <div class="faq">
+          <h3>How much can I paste?</h3>
+          <p>Up to 500,000 characters. Quotes and emphasis nested more than a hundred deep, and lists nested more than fifty, are left as the characters typed, because nobody can read them and they would exhaust the browser.</p>
+        </div>
+        <div class="faq">
+          <h3>Do character references such as &amp;copy; work?</h3>
+          <p>Numbers work for any character (&amp;#169; or &amp;#xA9;), and so do the standard HTML 4 names such as &amp;copy;, &amp;mdash;, &amp;euro; and &amp;hellip;. A name outside that set is left exactly as you typed it. A single tilde is also left alone: only two on each side make strikethrough, so a rough price like ~5 to ~10 is not struck through.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I use the HTML on my own site?</h3>
+          <p>Yes. Copy it, or download a complete .html file. The output is plain HTML with no styles, so it takes on the look of the page it goes into. Read it through first, as you would any HTML you did not write.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my text sent anywhere?</h3>
+          <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=28"></script>
+  <script src="../js/tool-helpers.js?v=28"></script>
+  <script>window.CURRENT_TOOL = "markdown-previewer";</script>
+  <script src="../js/main.js?v=28"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var input     = document.getElementById("input");
+    var preview   = document.getElementById("preview");
+    var sourceBox = document.getElementById("source");
+    var view      = document.getElementById("view");
+    var msg       = document.getElementById("msg");
+    var DASH      = String.fromCharCode(0x2014);
+
+    var MAX_INPUT = 500000;   /* far beyond any real document; a live preview of more is pointless */
+    var SAMPLE = ["# Markdown preview", "", "Write on the left, read on the right. **Bold**, *italic*, ~~struck~~ and `code` all work.", "", "## A list", "", "- Buy milk", "- [x] Write the post", "- [ ] Publish it", "  1. Check the links", "  2. Proofread", "", "> A quote can span", "> several lines.", "", "## A table", "", "| Tool | Free | Uploads |", "|:-----|:----:|--------:|", "| This one | yes | none |", "", "## Code", "", "```js", "const total = items.reduce((sum, item) => sum + item.price, 0);", "```", "", "Read the [about page](https://108toolbox.in/about.html), or see ![a picture](https://108toolbox.in/x.png \"pictures from the web are not loaded here\")."].join("\n");
+
+    var lastHtml = "";
+
+    /* ---- START: the tree every stage works on ----
+       A document is a tree of nodes. The block parser builds the outer shape
+       (paragraphs, lists, quotes, code) and leaves the text of each paragraph
+       and heading as a string; the inline parser then turns that string into
+       children (emphasis, links, code spans). Nothing in this tree is ever
+       HTML: text is text, and it is only escaped when it is written out. */
+    function Node(type) {
+      this.type = type;
+      this.parent = null;
+      this.firstChild = null;
+      this.lastChild = null;
+      this.prev = null;
+      this.next = null;
+      this.literal = null;
+      this.open = true;
+      this.content = "";
+      this.lastLineBlank = false;
+      this.lastLineChecked = false;
+    }
+
+    Node.prototype.appendChild = function (child) {
+      child.unlink();
+      child.parent = this;
+      if (this.lastChild) {
+        this.lastChild.next = child;
+        child.prev = this.lastChild;
+        this.lastChild = child;
+      } else {
+        this.firstChild = child;
+        this.lastChild = child;
+      }
+    };
+
+    Node.prototype.unlink = function () {
+      if (this.prev) { this.prev.next = this.next; }
+      else if (this.parent) { this.parent.firstChild = this.next; }
+      if (this.next) { this.next.prev = this.prev; }
+      else if (this.parent) { this.parent.lastChild = this.prev; }
+      this.parent = null;
+      this.next = null;
+      this.prev = null;
+    };
+
+    Node.prototype.insertAfter = function (sibling) {
+      sibling.unlink();
+      sibling.next = this.next;
+      if (sibling.next) { sibling.next.prev = sibling; }
+      sibling.prev = this;
+      this.next = sibling;
+      sibling.parent = this.parent;
+      if (!sibling.next) { sibling.parent.lastChild = sibling; }
+    };
+
+    function textNode(text) {
+      var node = new Node("text");
+      node.literal = text;
+      return node;
+    }
+    /* ---- END: the tree every stage works on ---- */
+
+    /* ---- START: patterns the parsers share ---- */
+    var ESCAPABLE = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+    var reEscapedChar = /\\[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/;
+    var reUnescape = /\\([!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~])|&(?:#x[a-f0-9]{1,6}|#[0-9]{1,7}|[a-z][a-z0-9]{1,31});/gi;
+    var reEntityHere = /^&(?:#x[a-f0-9]{1,6}|#[0-9]{1,7}|[a-z][a-z0-9]{1,31});/i;
+    var reNonSpace = /[^ \t\f\v\r\n]/;
+    var rePunctOrSymbol = /[\p{P}\p{S}]/u;
+    var reUnicodeSpace = /[\p{Zs}\t\n\f\r]/u;
+    /* ---- END: patterns the parsers share ---- */
+
+    /* ---- START: the named character references ----
+       The HTML 4 set: Latin-1, Greek, arrows, maths and typography. A name not
+       in this list is not turned into anything and stays as the text typed. */
+    var LATIN1 = ("nbsp iexcl cent pound curren yen brvbar sect uml copy ordf laquo not shy reg macr deg plusmn " +
+                  "sup2 sup3 acute micro para middot cedil sup1 ordm raquo frac14 frac12 frac34 iquest Agrave " +
+                  "Aacute Acirc Atilde Auml Aring AElig Ccedil Egrave Eacute Ecirc Euml Igrave Iacute Icirc Iuml " +
+                  "ETH Ntilde Ograve Oacute Ocirc Otilde Ouml times Oslash Ugrave Uacute Ucirc Uuml Yacute THORN " +
+                  "szlig agrave aacute acirc atilde auml aring aelig ccedil egrave eacute ecirc euml igrave iacute " +
+                  "icirc iuml eth ntilde ograve oacute ocirc otilde ouml divide oslash ugrave uacute ucirc uuml " +
+                  "yacute thorn yuml").split(" ");
+
+    /* name:code point, in hexadecimal */
+    var OTHER_ENTITIES = ("quot:22 amp:26 lt:3C gt:3E apos:27 OElig:152 oelig:153 Scaron:160 scaron:161 Yuml:178 " +
+                          "fnof:192 circ:2C6 tilde:2DC Alpha:391 Beta:392 Gamma:393 Delta:394 Epsilon:395 Zeta:396 " +
+                          "Eta:397 Theta:398 Iota:399 Kappa:39A Lambda:39B Mu:39C Nu:39D Xi:39E Omicron:39F Pi:3A0 " +
+                          "Rho:3A1 Sigma:3A3 Tau:3A4 Upsilon:3A5 Phi:3A6 Chi:3A7 Psi:3A8 Omega:3A9 alpha:3B1 beta:3B2 " +
+                          "gamma:3B3 delta:3B4 epsilon:3B5 zeta:3B6 eta:3B7 theta:3B8 iota:3B9 kappa:3BA lambda:3BB " +
+                          "mu:3BC nu:3BD xi:3BE omicron:3BF pi:3C0 rho:3C1 sigmaf:3C2 sigma:3C3 tau:3C4 upsilon:3C5 " +
+                          "phi:3C6 chi:3C7 psi:3C8 omega:3C9 thetasym:3D1 upsih:3D2 piv:3D6 ensp:2002 emsp:2003 " +
+                          "thinsp:2009 zwnj:200C zwj:200D lrm:200E rlm:200F ndash:2013 mdash:2014 lsquo:2018 rsquo:2019 " +
+                          "sbquo:201A ldquo:201C rdquo:201D bdquo:201E dagger:2020 Dagger:2021 bull:2022 hellip:2026 " +
+                          "permil:2030 prime:2032 Prime:2033 lsaquo:2039 rsaquo:203A oline:203E frasl:2044 euro:20AC " +
+                          "image:2111 weierp:2118 real:211C trade:2122 alefsym:2135 larr:2190 uarr:2191 rarr:2192 " +
+                          "darr:2193 harr:2194 crarr:21B5 lArr:21D0 uArr:21D1 rArr:21D2 dArr:21D3 hArr:21D4 " +
+                          "forall:2200 part:2202 exist:2203 empty:2205 nabla:2207 isin:2208 notin:2209 ni:220B " +
+                          "prod:220F sum:2211 minus:2212 lowast:2217 radic:221A prop:221D infin:221E ang:2220 " +
+                          "and:2227 or:2228 cap:2229 cup:222A int:222B there4:2234 sim:223C cong:2245 asymp:2248 " +
+                          "ne:2260 equiv:2261 le:2264 ge:2265 sub:2282 sup:2283 nsub:2284 sube:2286 supe:2287 " +
+                          "oplus:2295 otimes:2297 perp:22A5 sdot:22C5 lceil:2308 rceil:2309 lfloor:230A rfloor:230B " +
+                          "lang:2329 rang:232A loz:25CA spades:2660 clubs:2663 hearts:2665 diams:2666").split(" ");
+
+    function buildEntityTable() {
+      var table = Object.create(null);
+      for (var i = 0; i < LATIN1.length; i++) { table[LATIN1[i]] = String.fromCharCode(160 + i); }
+      for (var j = 0; j < OTHER_ENTITIES.length; j++) {
+        var pair = OTHER_ENTITIES[j].split(":");
+        table[pair[0]] = String.fromCharCode(parseInt(pair[1], 16));
+      }
+      return table;
+    }
+    var ENTITIES = buildEntityTable();
+    /* ---- END: the named character references ---- */
+
+    /* ---- START: turning a character reference into text ---- */
+    /* Returns the text for &amp; &#35; &#x23; and friends, or the reference
+       itself when it names nothing this page knows. */
+    function decodeReference(reference) {
+      var body = reference.slice(1, -1);
+      if (body.charAt(0) === "#") {
+        var isHex = body.charAt(1) === "x" || body.charAt(1) === "X";
+        var code = parseInt(body.slice(isHex ? 2 : 1), isHex ? 16 : 10);
+        /* Zero, the surrogate range and anything past the last code point
+           cannot be characters, so the standard says to use U+FFFD. This page
+           goes one step further and does the same for control characters and
+           the permanent non-characters, none of which belong in a document. */
+        if (code === 0 || (code >= 0xD800 && code <= 0xDFFF) || code > 0x10FFFF ||
+            (code >= 0xFDD0 && code <= 0xFDEF) || (code & 0xFFFF) === 0xFFFF || (code & 0xFFFF) === 0xFFFE ||
+            (code >= 0x01 && code <= 0x08) || code === 0x0B || (code >= 0x0E && code <= 0x1F) ||
+            (code >= 0x7F && code <= 0x9F)) {
+          return String.fromCharCode(0xFFFD);
+        }
+        return String.fromCodePoint(code);
+      }
+      return ENTITIES[body] !== undefined ? ENTITIES[body] : reference;
+    }
+    /* ---- END: turning a character reference into text ---- */
+
+    /* ---- START: removing backslashes and reading references in a string ---- */
+    function unescapeString(text) {
+      if (text.indexOf("\\") < 0 && text.indexOf("&") < 0) { return text; }
+      return text.replace(reUnescape, function (match, escaped) {
+        return escaped !== undefined ? escaped : decodeReference(match);
+      });
+    }
+    /* ---- END: removing backslashes and reading references in a string ---- */
+
+    /* ---- START: writing a link address safely ----
+       Everything except letters, digits and the characters a URL may keep is
+       written as %XX, but an existing %XX is left alone. Space and control
+       characters are always encoded, which is what stops a browser from
+       ignoring a tab in "java script:". */
+    var URL_KEEP = ";/?:@&=+$,-_.!~*'()#";
+
+    /* How deep quotes, lists and emphasis may nest before the rest is left as
+       the characters typed. Deeper than this is unreadable, and every step
+       down is a step of recursion when the tree is written out. */
+    var MAX_NESTING = 100;
+
+    function encodeUrl(url) {
+      var out = "";
+      for (var i = 0; i < url.length; i++) {
+        var ch = url.charAt(i);
+        var code = url.charCodeAt(i);
+        if (ch === "%" && /^[0-9a-fA-F]{2}$/.test(url.slice(i + 1, i + 3))) { out += url.slice(i, i + 3); i += 2; continue; }
+        if ((code >= 48 && code <= 57) || (code >= 65 && code <= 90) || (code >= 97 && code <= 122) || URL_KEEP.indexOf(ch) > -1) {
+          out += ch;
+          continue;
+        }
+        if (code >= 0xD800 && code <= 0xDBFF && i + 1 < url.length) {
+          var low = url.charCodeAt(i + 1);
+          if (low >= 0xDC00 && low <= 0xDFFF) { out += encodeURIComponent(url.slice(i, i + 2)); i += 1; continue; }
+        }
+        if (code >= 0xD800 && code <= 0xDFFF) { out += "%EF%BF%BD"; continue; }
+        out += encodeURIComponent(ch);
+      }
+      return out;
+    }
+    /* ---- END: writing a link address safely ---- */
+
+    /* ---- START: deciding whether an address may become a link ----
+       The list of schemes that run code or read local files. Checked on the
+       text as typed, after character references are read, and again on the
+       final address. A link that fails is left as the text that was typed. */
+    var reBadScheme = /^(?:vbscript|javascript|file|data):/;
+    var reGoodImageData = /^data:image\/(?:gif|png|jpeg|webp);/;
+
+    function linkAllowed(address) {
+      var probe = address.trim().toLowerCase();
+      return !reBadScheme.test(probe) || reGoodImageData.test(probe);
+    }
+    /* ---- END: deciding whether an address may become a link ---- */
+
+    /* ---- START: the inline parser ----
+       Turns the text of a paragraph or heading into emphasis, strong text,
+       links, images, code spans, line breaks and plain text. The two stacks
+       are the heart of it: one of "delimiter runs" (runs of * _ ~ that might
+       open or close emphasis) and one of open brackets, so that a ] can look
+       back for the [ it closes. Emphasis is resolved only when a run is
+       closed, which is why *a **b* c** comes out the way the standard says. */
+    var reTicksHere = /^`+/;
+    var reTicks = /`+/;
+    var reMain = /^[^\n`\[\]\\!<&*_~]+/;
+    var reLinkTitle = /^(?:"(?:\\[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]|[^"\x00])*"|'(?:\\[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]|[^'\x00])*'|\((?:\\[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]|[^()\x00])*\))/;
+    var reLinkDestinationBraces = /^(?:<(?:[^<>\n\\\x00]|\\.)*>)/;
+    var reLinkLabel = /^\[(?:[^\\\[\]]|\\.){0,1000}\]/s;
+    var reEmailAutolink = /^<([a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)>/;
+    var reAutolink = /^<[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*>/i;
+    var reSpnl = /^[ \t]*(?:\n[ \t]*)?/;
+    var reSpaceAtEndOfLine = /^[ \t]*(?:\n|$)/;
+    var reInitialSpace = /^ */;
+    var reFinalSpace = / *$/;
+
+    function InlineParser(refmap) {
+      this.subject = "";
+      this.pos = 0;
+      this.delimiters = null;
+      this.brackets = null;
+      this.tickRuns = null;
+      this.destinationBudget = 0;
+      this.refmap = refmap;
+    }
+
+    InlineParser.prototype.peek = function () {
+      return this.pos < this.subject.length ? this.subject.charAt(this.pos) : "";
+    };
+
+    /* Tries a pattern at the current position; returns the text or null. */
+    InlineParser.prototype.match = function (re) {
+      var m = re.exec(this.subject.slice(this.pos));
+      if (m === null) { return null; }
+      this.pos += m.index + m[0].length;
+      return m[0];
+    };
+
+    InlineParser.prototype.spnl = function () {
+      this.match(reSpnl);
+      return true;
+    };
+    /* ---- END: the inline parser ---- */
+
+    /* ---- START: reading a link label, address and title ---- */
+    /* Moves past a [label] if there is one, and says how long it was. Callers
+       that do not want to keep the position put it back themselves. */
+    InlineParser.prototype.parseLinkLabel = function () {
+      var m = this.match(reLinkLabel);
+      if (m === null || m.length > 1001) { return 0; }
+      return m.length;
+    };
+
+    InlineParser.prototype.parseLinkDestination = function () {
+      var res = this.match(reLinkDestinationBraces);
+      if (res === null) {
+        if (this.peek() === "<") { return null; }
+        var savepos = this.pos;
+        var openparens = 0;
+        var c;
+        while ((c = this.peek()) !== "") {
+          /* Every "](" starts a scan that may run to the end of the text, and a
+             document of 30,000 of them would read it 30,000 times. Honest links
+             read roughly the length of their own address, so the whole text is
+             allowed a budget proportional to its length; once it is spent, an
+             address that has not ended is treated as not a link. */
+          this.destinationBudget -= 1;
+          if (this.destinationBudget < 0) { return null; }
+          var code = c.charCodeAt(0);
+          if (c === "\\" && ESCAPABLE.indexOf(this.subject.charAt(this.pos + 1)) > -1 && this.subject.charAt(this.pos + 1) !== "") {
+            this.pos += 1;
+            if (this.peek() !== "") { this.pos += 1; }
+          } else if (c === "(") {
+            this.pos += 1;
+            openparens += 1;
+          } else if (c === ")") {
+            if (openparens < 1) { break; }
+            this.pos += 1;
+            openparens -= 1;
+          } else if (code <= 0x20 || code === 0x7F || reUnicodeSpace.test(c)) {
+            break;
+          } else {
+            this.pos += 1;
+          }
+        }
+        if (this.pos === savepos && c !== ")") { return null; }
+        if (openparens !== 0) { return null; }
+        return unescapeString(this.subject.substr(savepos, this.pos - savepos));
+      }
+      return unescapeString(res.substr(1, res.length - 2));
+    };
+
+    InlineParser.prototype.parseLinkTitle = function () {
+      var title = this.match(reLinkTitle);
+      if (title === null) { return null; }
+      return unescapeString(title.substr(1, title.length - 2));
+    };
+
+    /* A reference label ignores case and runs of whitespace. */
+    function normalizeReference(label) {
+      return label.slice(1, label.length - 1).trim().replace(/[ \t\r\n]+/g, " ").toLowerCase().toUpperCase();
+    }
+    /* ---- END: reading a link label, address and title ---- */
+
+    /* ---- START: link reference definitions, [label]: address "title" ---- */
+    InlineParser.prototype.parseReference = function (text, refmap) {
+      this.subject = text;
+      this.pos = 0;
+      this.destinationBudget = text.length * 20 + 100000;
+      var startpos = this.pos;
+
+      var matchChars = this.parseLinkLabel();
+      if (matchChars === 0) { return 0; }
+      var rawlabel = this.subject.substr(0, matchChars);
+
+      if (this.peek() === ":") { this.pos++; } else { this.pos = startpos; return 0; }
+
+      this.spnl();
+      var dest = this.parseLinkDestination();
+      /* an address that could run code is not accepted as a definition, so the
+         text stays on the page for its author to see */
+      if (dest === null || !linkAllowed(dest)) { this.pos = startpos; return 0; }
+
+      var beforetitle = this.pos;
+      this.spnl();
+      var title = null;
+      if (this.pos !== beforetitle) { title = this.parseLinkTitle(); }
+      if (title === null) {
+        title = "";
+        this.pos = beforetitle;
+      }
+
+      var atLineEnd = true;
+      if (this.match(reSpaceAtEndOfLine) === null) {
+        if (title === "") {
+          atLineEnd = false;
+        } else {
+          /* the title is not the last thing on its line, but the definition can
+             still be valid without it, if the address is */
+          title = "";
+          this.pos = beforetitle;
+          atLineEnd = this.match(reSpaceAtEndOfLine) !== null;
+        }
+      }
+      if (!atLineEnd) { this.pos = startpos; return 0; }
+
+      var normlabel = normalizeReference(rawlabel);
+      if (normlabel === "") { this.pos = startpos; return 0; }
+
+      if (!refmap[normlabel]) { refmap[normlabel] = { destination: dest, title: title }; }
+      return this.pos - startpos;
+    };
+    /* ---- END: link reference definitions, [label]: address "title" ---- */
+
+    /* ---- START: newlines, backslashes, backticks, entities, autolinks ---- */
+    InlineParser.prototype.parseNewline = function (block) {
+      this.pos += 1;
+      var last = block.lastChild;
+      if (last && last.type === "text" && last.literal.charAt(last.literal.length - 1) === " ") {
+        var hard = last.literal.charAt(last.literal.length - 2) === " ";
+        last.literal = last.literal.replace(reFinalSpace, "");
+        block.appendChild(new Node(hard ? "linebreak" : "softbreak"));
+      } else {
+        block.appendChild(new Node("softbreak"));
+      }
+      this.match(reInitialSpace);
+      return true;
+    };
+
+    InlineParser.prototype.parseBackslash = function (block) {
+      this.pos += 1;
+      if (this.peek() === "\n") {
+        this.pos += 1;
+        block.appendChild(new Node("linebreak"));
+      } else if (this.peek() !== "" && ESCAPABLE.indexOf(this.peek()) > -1) {
+        block.appendChild(textNode(this.peek()));
+        this.pos += 1;
+      } else {
+        block.appendChild(textNode("\\"));
+      }
+      return true;
+    };
+
+    /* Every run of backticks in the text, indexed by its length, found in one
+       pass. Looking for the run that closes a code span by scanning forward
+       from each opener would read the rest of the text again for every stray
+       backtick, which a document made of thousands of them turns into minutes. */
+    InlineParser.prototype.findClosingTicks = function (length, from) {
+      if (this.tickRuns === null) {
+        this.tickRuns = Object.create(null);
+        var re = /`+/g;
+        var m;
+        while ((m = re.exec(this.subject)) !== null) {
+          var key = String(m[0].length);
+          if (this.tickRuns[key] === undefined) { this.tickRuns[key] = []; }
+          this.tickRuns[key].push(m.index);
+        }
+      }
+      var starts = this.tickRuns[String(length)];
+      if (starts === undefined) { return -1; }
+      var lo = 0;
+      var hi = starts.length;
+      while (lo < hi) {
+        var mid = (lo + hi) >> 1;
+        if (starts[mid] < from) { lo = mid + 1; } else { hi = mid; }
+      }
+      return lo < starts.length ? starts[lo] : -1;
+    };
+
+    InlineParser.prototype.parseBackticks = function (block) {
+      var ticks = this.match(reTicksHere);
+      if (ticks === null) { return false; }
+      var afterOpenTicks = this.pos;
+      var closeAt = this.findClosingTicks(ticks.length, afterOpenTicks);
+      if (closeAt >= 0) {
+        var node = new Node("code");
+        var contents = this.subject.slice(afterOpenTicks, closeAt).replace(/\n/g, " ");
+        /* one space at each end is dropped, unless the span is all spaces */
+        if (contents.length > 0 && /[^ ]/.test(contents) && contents.charAt(0) === " " && contents.charAt(contents.length - 1) === " ") {
+          node.literal = contents.slice(1, contents.length - 1);
+        } else {
+          node.literal = contents;
+        }
+        block.appendChild(node);
+        this.pos = closeAt + ticks.length;
+        return true;
+      }
+      this.pos = afterOpenTicks;
+      block.appendChild(textNode(ticks));
+      return true;
+    };
+
+    InlineParser.prototype.parseEntity = function (block) {
+      var m = this.match(reEntityHere);
+      if (m === null) { return false; }
+      block.appendChild(textNode(decodeReference(m)));
+      return true;
+    };
+
+    InlineParser.prototype.parseAutolink = function (block) {
+      var m;
+      if ((m = this.match(reEmailAutolink))) {
+        var address = m.slice(1, -1);
+        var mail = new Node("link");
+        mail.destination = "mailto:" + address;
+        mail.title = "";
+        mail.appendChild(textNode(address));
+        block.appendChild(mail);
+        return true;
+      }
+      if ((m = this.match(reAutolink))) {
+        var url = m.slice(1, -1);
+        if (!linkAllowed(url)) {
+          block.appendChild(textNode(m));
+          return true;
+        }
+        var link = new Node("link");
+        link.destination = url;
+        link.title = "";
+        link.appendChild(textNode(url));
+        block.appendChild(link);
+        return true;
+      }
+      return false;
+    };
+    /* ---- END: newlines, backslashes, backticks, entities, autolinks ---- */
+
+    /* ---- START: runs of * _ ~ that may open or close emphasis ----
+       A run is "left-flanking" if what follows is not whitespace and, when it
+       is punctuation, what precedes is whitespace or punctuation; "right-
+       flanking" is the mirror. * may open if left-flanking and close if
+       right-flanking. _ is stricter, so that snake_case_names stay whole. */
+    InlineParser.prototype.scanDelims = function (ch) {
+      var startpos = this.pos;
+      var numdelims = 0;
+      while (this.peek() === ch) { numdelims += 1; this.pos += 1; }
+      if (numdelims === 0) { return null; }
+
+      var before = "\n";
+      if (startpos > 0) {
+        before = this.subject.charAt(startpos - 1);
+        var lowCode = before.charCodeAt(0);
+        if (lowCode >= 0xDC00 && lowCode <= 0xDFFF && startpos > 1) { before = this.subject.slice(startpos - 2, startpos); }
+      }
+      var after = "\n";
+      if (this.pos < this.subject.length) { after = String.fromCodePoint(this.subject.codePointAt(this.pos)); }
+
+      var afterSpace = reUnicodeSpace.test(after);
+      var afterPunct = rePunctOrSymbol.test(after);
+      var beforeSpace = reUnicodeSpace.test(before);
+      var beforePunct = rePunctOrSymbol.test(before);
+
+      var left = !afterSpace && (!afterPunct || beforeSpace || beforePunct);
+      var right = !beforeSpace && (!beforePunct || afterSpace || afterPunct);
+      var canOpen, canClose;
+      if (ch === "_") {
+        canOpen = left && (!right || beforePunct);
+        canClose = right && (!left || afterPunct);
+      } else {
+        canOpen = left;
+        canClose = right;
+      }
+      this.pos = startpos;
+      return { numdelims: numdelims, canOpen: canOpen, canClose: canClose };
+    };
+
+    InlineParser.prototype.handleDelim = function (ch, block) {
+      var res = this.scanDelims(ch);
+      if (!res) { return false; }
+      var startpos = this.pos;
+      this.pos += res.numdelims;
+      /* one tilde is not strikethrough: it is just a tilde */
+      if (ch === "~" && res.numdelims < 2) {
+        block.appendChild(textNode("~"));
+        return true;
+      }
+      var node = textNode(this.subject.slice(startpos, this.pos));
+      block.appendChild(node);
+      if (res.canOpen || res.canClose) {
+        this.delimiters = {
+          ch: ch, numdelims: res.numdelims, origdelims: res.numdelims, node: node,
+          previous: this.delimiters, next: null, canOpen: res.canOpen, canClose: res.canClose
+        };
+        if (this.delimiters.previous !== null) { this.delimiters.previous.next = this.delimiters; }
+      }
+      return true;
+    };
+
+    InlineParser.prototype.removeDelimiter = function (delim) {
+      if (delim.previous !== null) { delim.previous.next = delim.next; }
+      if (delim.next === null) { this.delimiters = delim.previous; }
+      else { delim.next.previous = delim.previous; }
+    };
+    /* ---- END: runs of * _ ~ that may open or close emphasis ---- */
+
+    /* ---- START: pairing emphasis openers with closers ----
+       Walks the delimiter stack upwards looking for closers and, for each,
+       back down for the nearest opener of the same kind. Two details of the
+       standard live here: a run of three or more may split into emphasis and
+       strong text, and a pair whose combined length is a multiple of three is
+       skipped when either side could both open and close. */
+    InlineParser.prototype.removeDelimitersBetween = function (bottom, top) {
+      if (bottom.next !== top) {
+        bottom.next = top;
+        top.previous = bottom;
+      }
+    };
+
+    InlineParser.prototype.processEmphasis = function (stackBottom) {
+      var openersBottom = Object.create(null);
+      var closer = this.delimiters;
+      while (closer !== null && closer.previous !== stackBottom) { closer = closer.previous; }
+
+      while (closer !== null) {
+        if (!closer.canClose) {
+          closer = closer.next;
+          continue;
+        }
+        var key = closer.ch + (closer.canOpen ? "1" : "0") + (closer.origdelims % 3);
+        var bottom = openersBottom[key] === undefined ? stackBottom : openersBottom[key];
+        var opener = closer.previous;
+        var openerFound = false;
+        while (opener !== null && opener !== stackBottom && opener !== bottom) {
+          var oddMatch = (closer.canOpen || opener.canClose) && closer.origdelims % 3 !== 0 &&
+                         (opener.origdelims + closer.origdelims) % 3 === 0;
+          if (opener.ch === closer.ch && opener.canOpen && !oddMatch) {
+            /* strikethrough pairs need two on each side */
+            if (closer.ch !== "~" || (opener.numdelims >= 2 && closer.numdelims >= 2)) { openerFound = true; break; }
+          }
+          opener = opener.previous;
+        }
+        var oldCloser = closer;
+
+        /* emphasis nested more than MAX_NESTING deep is left as the characters
+           typed: a reader cannot follow it, and the recursion that writes it
+           out would run out of stack */
+        if (openerFound) {
+          var deepest = 0;
+          for (var inner = opener.node.next; inner && inner !== closer.node; inner = inner.next) {
+            if (inner.depth && inner.depth > deepest) { deepest = inner.depth; }
+          }
+          if (deepest >= MAX_NESTING) { openerFound = false; }
+        }
+
+        if (openerFound) {
+          var useDelims = closer.ch === "~" ? 2 : (closer.numdelims >= 2 && opener.numdelims >= 2 ? 2 : 1);
+          var openerNode = opener.node;
+          var closerNode = closer.node;
+
+          opener.numdelims -= useDelims;
+          closer.numdelims -= useDelims;
+          openerNode.literal = openerNode.literal.slice(0, openerNode.literal.length - useDelims);
+          closerNode.literal = closerNode.literal.slice(0, closerNode.literal.length - useDelims);
+
+          var wrapper = new Node(closer.ch === "~" ? "strikethrough" : (useDelims === 1 ? "emph" : "strong"));
+          var tmp = openerNode.next;
+          var wrapperDepth = 0;
+          while (tmp && tmp !== closerNode) {
+            var nextNode = tmp.next;
+            if (tmp.depth && tmp.depth > wrapperDepth) { wrapperDepth = tmp.depth; }
+            tmp.unlink();
+            wrapper.appendChild(tmp);
+            tmp = nextNode;
+          }
+          wrapper.depth = wrapperDepth + 1;
+          openerNode.insertAfter(wrapper);
+
+          this.removeDelimitersBetween(opener, closer);
+
+          if (opener.numdelims === 0) {
+            openerNode.unlink();
+            this.removeDelimiter(opener);
+          }
+          if (closer.numdelims === 0) {
+            closerNode.unlink();
+            var after = closer.next;
+            this.removeDelimiter(closer);
+            closer = after;
+          }
+        } else {
+          closer = closer.next;
+          openersBottom[key] = oldCloser.previous;
+          if (!oldCloser.canOpen) { this.removeDelimiter(oldCloser); }
+        }
+      }
+
+      while (this.delimiters !== null && this.delimiters !== stackBottom) { this.removeDelimiter(this.delimiters); }
+    };
+    /* ---- END: pairing emphasis openers with closers ---- */
+
+    /* ---- START: brackets, links and images ---- */
+    InlineParser.prototype.addBracket = function (node, index, image) {
+      if (this.brackets !== null) { this.brackets.bracketAfter = true; }
+      this.brackets = {
+        node: node, previous: this.brackets, previousDelimiter: this.delimiters,
+        index: index, image: image, active: true, bracketAfter: false
+      };
+    };
+
+    InlineParser.prototype.removeBracket = function () {
+      this.brackets = this.brackets.previous;
+    };
+
+    InlineParser.prototype.parseOpenBracket = function (block) {
+      var startpos = this.pos;
+      this.pos += 1;
+      var node = textNode("[");
+      block.appendChild(node);
+      this.addBracket(node, startpos, false);
+      return true;
+    };
+
+    InlineParser.prototype.parseBang = function (block) {
+      var startpos = this.pos;
+      this.pos += 1;
+      if (this.peek() === "[") {
+        this.pos += 1;
+        var node = textNode("![");
+        block.appendChild(node);
+        this.addBracket(node, startpos + 1, true);
+      } else {
+        block.appendChild(textNode("!"));
+      }
+      return true;
+    };
+
+    InlineParser.prototype.parseCloseBracket = function (block) {
+      this.pos += 1;
+      var startpos = this.pos;
+      var opener = this.brackets;
+
+      if (opener === null) {
+        block.appendChild(textNode("]"));
+        return true;
+      }
+      if (!opener.active) {
+        block.appendChild(textNode("]"));
+        this.removeBracket();
+        return true;
+      }
+
+      var isImage = opener.image;
+      var savepos = this.pos;
+      var matched = false;
+      var dest = null;
+      var title = null;
+      var reflabel = null;
+
+      /* an inline link: ( address "title" ) */
+      if (this.peek() === "(") {
+        this.pos += 1;
+        this.spnl();
+        if ((dest = this.parseLinkDestination()) !== null) {
+          this.spnl();
+          /* a title must be separated from the address by whitespace */
+          if (/[ \t\n]/.test(this.subject.charAt(this.pos - 1))) { title = this.parseLinkTitle(); }
+          this.spnl();
+          if (this.peek() === ")") {
+            this.pos += 1;
+            matched = true;
+          } else {
+            this.pos = savepos;
+          }
+        } else {
+          this.pos = savepos;
+        }
+      }
+
+      /* otherwise a reference: [text][label], [label][] or [label] */
+      if (!matched) {
+        var beforelabel = this.pos;
+        var n = this.parseLinkLabel();
+        if (n > 2) {
+          reflabel = this.subject.slice(beforelabel, beforelabel + n);
+        } else if (!opener.bracketAfter) {
+          reflabel = this.subject.slice(opener.index, startpos);
+        }
+        if (n === 0) { this.pos = savepos; }
+        if (reflabel) {
+          var link = this.refmap[normalizeReference(reflabel)];
+          if (link) {
+            dest = link.destination;
+            title = link.title;
+            matched = true;
+          }
+        }
+      }
+
+      if (matched && !linkAllowed(dest)) {
+        /* an address that could run code is not made into a link */
+        matched = false;
+        this.pos = savepos;
+      }
+
+      if (matched) {
+        /* links and images nested past the limit stay as typed */
+        var kids = 0;
+        for (var probe = opener.node.next; probe; probe = probe.next) {
+          if (probe.depth && probe.depth > kids) { kids = probe.depth; }
+        }
+        if (kids >= MAX_NESTING) {
+          matched = false;
+          this.pos = savepos;
+        }
+      }
+
+      if (matched) {
+        var node = new Node(isImage ? "image" : "link");
+        node.destination = dest;
+        node.title = title || "";
+
+        var tmp = opener.node.next;
+        var deepestChild = 0;
+        while (tmp) {
+          var next = tmp.next;
+          if (tmp.depth && tmp.depth > deepestChild) { deepestChild = tmp.depth; }
+          tmp.unlink();
+          node.appendChild(tmp);
+          tmp = next;
+        }
+        node.depth = deepestChild + 1;
+        block.appendChild(node);
+        this.processEmphasis(opener.previousDelimiter);
+        this.removeBracket();
+        opener.node.unlink();
+
+        /* a link cannot contain another link, so earlier [ are switched off */
+        if (!isImage) {
+          opener = this.brackets;
+          while (opener !== null) {
+            if (!opener.image) { opener.active = false; }
+            opener = opener.previous;
+          }
+        }
+        return true;
+      }
+
+      this.removeBracket();
+      this.pos = startpos;
+      block.appendChild(textNode("]"));
+      return true;
+    };
+    /* ---- END: brackets, links and images ---- */
+
+    /* ---- START: reading one piece of inline text ---- */
+    InlineParser.prototype.parseString = function (block) {
+      var m = this.match(reMain);
+      if (m === null) { return false; }
+      block.appendChild(textNode(m));
+      return true;
+    };
+
+    InlineParser.prototype.parseInline = function (block) {
+      var c = this.peek();
+      if (c === "") { return false; }
+      var res = false;
+      switch (c) {
+        case "\n": res = this.parseNewline(block); break;
+        case "\\": res = this.parseBackslash(block); break;
+        case "`": res = this.parseBackticks(block); break;
+        case "*":
+        case "_":
+        case "~": res = this.handleDelim(c, block); break;
+        case "[": res = this.parseOpenBracket(block); break;
+        case "!": res = this.parseBang(block); break;
+        case "]": res = this.parseCloseBracket(block); break;
+        case "<": res = this.parseAutolink(block); break;
+        case "&": res = this.parseEntity(block); break;
+        default: res = this.parseString(block); break;
+      }
+      if (!res) {
+        var whole = String.fromCodePoint(this.subject.codePointAt(this.pos));
+        this.pos += whole.length;
+        block.appendChild(textNode(whole));
+      }
+      return true;
+    };
+
+    InlineParser.prototype.parse = function (block) {
+      this.subject = block.content.trim();
+      this.pos = 0;
+      this.delimiters = null;
+      this.brackets = null;
+      this.tickRuns = null;
+      this.destinationBudget = this.subject.length * 20 + 100000;
+      while (this.parseInline(block)) { /* one piece at a time */ }
+      block.content = "";
+      this.processEmphasis(null);
+    };
+    /* ---- END: reading one piece of inline text ---- */
+
+
+    /* ---- START: patterns the block parser uses ---- */
+    var CODE_INDENT = 4;
+    var reThematicBreak = /^(?:\*[ \t]*){3,}$|^(?:_[ \t]*){3,}$|^(?:-[ \t]*){3,}$/;
+    var reATXHeadingMarker = /^#{1,6}(?:[ \t]+|$)/;
+    var reCodeFence = /^`{3,}(?!.*`)|^~{3,}/;
+    var reClosingCodeFence = /^(?:`{3,}|~{3,})(?=[ \t]*$)/;
+    var reSetextHeadingLine = /^(?:=+|-+)[ \t]*$/;
+    var reBulletListMarker = /^[*+-]/;
+    var reOrderedListMarker = /^(\d{1,9})([.)])/;
+    var reMaybeSpecial = /^[#`~*+_=<>0-9|:-]/;
+    var reTaskMarker = /^\[([ xX])\][ \t]+(?=\S)/;
+
+    function peekChar(line, pos) { return pos < line.length ? line.charAt(pos) : ""; }
+    function isSpaceOrTab(ch) { return ch === " " || ch === "\t"; }
+    /* ---- END: patterns the block parser uses ---- */
+
+    /* ---- START: cutting a table row into cells ----
+       A row is split at every pipe that is not escaped with a backslash, after
+       one pipe is allowed at each end of the line. An escaped pipe stays in the
+       cell (the backslash is removed later, like any other escape). */
+    function splitTableRow(line) {
+      var text = line.trim();
+      if (text.charAt(0) === "|") { text = text.slice(1); }
+      var cells = [];
+      var current = "";
+      for (var i = 0; i < text.length; i++) {
+        var ch = text.charAt(i);
+        if (ch === "\\" && i + 1 < text.length) {
+          current += ch + text.charAt(i + 1);
+          i += 1;
+        } else if (ch === "|") {
+          cells.push(current);
+          current = "";
+        } else {
+          current += ch;
+        }
+      }
+      /* a trailing pipe leaves nothing after it; text after the last pipe is a cell */
+      if (current.trim() !== "" || (cells.length === 0 && text.trim() !== "")) { cells.push(current); }
+      return cells.map(function (cell) { return cell.trim(); });
+    }
+    /* ---- END: cutting a table row into cells ---- */
+
+    /* ---- START: recognising a table's delimiter row ----
+       |---|:---:|---:| : every cell is dashes with an optional colon at
+       either end, which also gives the alignment. Returns the list of
+       alignments, or null if the line is not a delimiter row. */
+    function parseDelimiterRow(line) {
+      var text = line.trim();
+      if (text === "" || !/^[|:\- \t]+$/.test(text) || text.indexOf("-") < 0) { return null; }
+      /* a lone run of dashes is a heading underline or a rule, not a table */
+      if (text.indexOf("|") < 0 && text.indexOf(":") < 0) { return null; }
+      var cells = splitTableRow(text);
+      if (cells.length === 0) { return null; }
+      var aligns = [];
+      for (var i = 0; i < cells.length; i++) {
+        var cell = cells[i];
+        if (!/^:?-+:?$/.test(cell)) { return null; }
+        var left = cell.charAt(0) === ":";
+        var right = cell.charAt(cell.length - 1) === ":";
+        aligns.push(left && right ? "center" : right ? "right" : left ? "left" : "");
+      }
+      return aligns;
+    }
+    /* ---- END: recognising a table's delimiter row ---- */
+
+    /* ---- START: how many blocks deep a block sits ---- */
+    function blockDepth(node) {
+      var depth = 0;
+      for (var p = node.parent; p; p = p.parent) { depth += 1; }
+      return depth;
+    }
+    /* ---- END: how many blocks deep a block sits ---- */
+
+    /* ---- START: does one list item continue the same list as the last ---- */
+    function listsMatch(listData, itemData) {
+      return listData.type === itemData.type && listData.delimiter === itemData.delimiter &&
+             listData.bulletChar === itemData.bulletChar;
+    }
+    /* ---- END: does one list item continue the same list as the last ---- */
+
+    /* ---- START: does a block end with a blank line ----
+       Needed to tell a tight list from a loose one: a list is loose if any two
+       of its items, or any two blocks directly inside one item, are separated
+       by a blank line. */
+    function endsWithBlankLine(block) {
+      while (block) {
+        if (block.lastLineBlank) { return true; }
+        var t = block.type;
+        if (!block.lastLineChecked && (t === "list" || t === "item")) {
+          block.lastLineChecked = true;
+          block = block.lastChild;
+        } else {
+          block.lastLineChecked = true;
+          break;
+        }
+      }
+      return false;
+    }
+    /* ---- END: does a block end with a blank line ---- */
+
+    /* ---- START: the block parser ----
+       Reads the document one line at a time. For each line it first works out
+       which of the blocks still open are continued by it (a block quote by a
+       leading >, a list item by enough indentation, a paragraph by any
+       non-blank line); then it checks whether the rest of the line opens new
+       blocks; and what remains is text, added to the innermost open block. */
+    function BlockParser() {
+      this.doc = new Node("document");
+      this.tip = this.doc;
+      this.oldtip = this.doc;
+      this.lineNumber = 0;
+      this.currentLine = "";
+      this.offset = 0;
+      this.column = 0;
+      this.nextNonspace = 0;
+      this.nextNonspaceColumn = 0;
+      this.indent = 0;
+      this.indented = false;
+      this.blank = false;
+      this.partiallyConsumedTab = false;
+      this.allClosed = true;
+      this.lastMatchedContainer = this.doc;
+      this.refmap = Object.create(null);
+      this.inlineParser = new InlineParser(this.refmap);
+    }
+
+    BlockParser.prototype.findNextNonspace = function () {
+      var line = this.currentLine;
+      var i = this.offset;
+      var cols = this.column;
+      var c;
+      while ((c = line.charAt(i)) !== "") {
+        if (c === " ") { i++; cols++; }
+        else if (c === "\t") { i++; cols += 4 - (cols % 4); }
+        else { break; }
+      }
+      this.blank = c === "\n" || c === "\r" || c === "";
+      this.nextNonspace = i;
+      this.nextNonspaceColumn = cols;
+      this.indent = this.nextNonspaceColumn - this.column;
+      this.indented = this.indent >= CODE_INDENT;
+    };
+
+    BlockParser.prototype.advanceNextNonspace = function () {
+      this.offset = this.nextNonspace;
+      this.column = this.nextNonspaceColumn;
+      this.partiallyConsumedTab = false;
+    };
+
+    /* Moves forward by a number of characters, or of columns when a tab may
+       have to be split between two blocks. */
+    BlockParser.prototype.advanceOffset = function (count, columns) {
+      var line = this.currentLine;
+      var c;
+      while (count > 0 && (c = line.charAt(this.offset)) !== "") {
+        if (c === "\t") {
+          var charsToTab = 4 - (this.column % 4);
+          if (columns) {
+            this.partiallyConsumedTab = charsToTab > count;
+            var advance = charsToTab > count ? count : charsToTab;
+            this.column += advance;
+            this.offset += this.partiallyConsumedTab ? 0 : 1;
+            count -= advance;
+          } else {
+            this.partiallyConsumedTab = false;
+            this.column += charsToTab;
+            this.offset += 1;
+            count -= 1;
+          }
+        } else {
+          this.partiallyConsumedTab = false;
+          this.offset += 1;
+          this.column += 1;
+          count -= 1;
+        }
+      }
+    };
+
+    BlockParser.prototype.addLine = function () {
+      if (this.partiallyConsumedTab) {
+        this.offset += 1;
+        var charsToTab = 4 - (this.column % 4);
+        this.tip.content += new Array(charsToTab + 1).join(" ");
+      }
+      this.tip.content += this.currentLine.slice(this.offset) + "\n";
+    };
+
+    BlockParser.prototype.addChild = function (type) {
+      while (!BLOCKS[this.tip.type].canContain(type)) { this.finalize(this.tip); }
+      var node = new Node(type);
+      node.startLine = this.lineNumber;
+      this.tip.appendChild(node);
+      this.tip = node;
+      return node;
+    };
+
+    BlockParser.prototype.closeUnmatchedBlocks = function () {
+      if (!this.allClosed) {
+        while (this.oldtip !== this.lastMatchedContainer) {
+          var parent = this.oldtip.parent;
+          this.finalize(this.oldtip);
+          this.oldtip = parent;
+        }
+        this.allClosed = true;
+      }
+    };
+
+    BlockParser.prototype.finalize = function (block) {
+      var above = block.parent;
+      block.open = false;
+      BLOCKS[block.type].finalize(this, block);
+      this.tip = above;
+    };
+    /* ---- END: the block parser ---- */
+
+    /* ---- START: what each kind of block does ----
+       For every block type: whether a line continues it (0 yes, 1 no, 2 the
+       line has been fully used up), what it does when it closes, what it can
+       hold, and whether ordinary text lines go straight into it. */
+    var BLOCKS = {
+      document: {
+        cont: function () { return 0; },
+        finalize: function () {},
+        canContain: function (t) { return t !== "item" && t !== "table_row" && t !== "table_cell"; },
+        acceptsLines: false
+      },
+      list: {
+        cont: function () { return 0; },
+        finalize: function (parser, block) {
+          var item = block.firstChild;
+          while (item) {
+            if (endsWithBlankLine(item) && item.next) { block.listData.tight = false; break; }
+            var sub = item.firstChild;
+            while (sub) {
+              if (endsWithBlankLine(sub) && (item.next || sub.next)) { block.listData.tight = false; break; }
+              sub = sub.next;
+            }
+            item = item.next;
+          }
+        },
+        canContain: function (t) { return t === "item"; },
+        acceptsLines: false
+      },
+      block_quote: {
+        cont: function (parser) {
+          var ln = parser.currentLine;
+          if (!parser.indented && peekChar(ln, parser.nextNonspace) === ">") {
+            parser.advanceNextNonspace();
+            parser.advanceOffset(1, false);
+            if (isSpaceOrTab(peekChar(ln, parser.offset))) { parser.advanceOffset(1, true); }
+            return 0;
+          }
+          return 1;
+        },
+        finalize: function () {},
+        canContain: function (t) { return t !== "item" && t !== "table_row" && t !== "table_cell"; },
+        acceptsLines: false
+      },
+      item: {
+        cont: function (parser, container) {
+          if (parser.blank) {
+            if (container.firstChild === null) { return 1; }
+            parser.advanceNextNonspace();
+          } else if (parser.indent >= container.listData.markerOffset + container.listData.padding) {
+            parser.advanceOffset(container.listData.markerOffset + container.listData.padding, true);
+          } else {
+            return 1;
+          }
+          return 0;
+        },
+        finalize: function () {},
+        canContain: function (t) { return t !== "item" && t !== "table_row" && t !== "table_cell"; },
+        acceptsLines: false
+      },
+      heading: {
+        cont: function () { return 1; },
+        finalize: function () {},
+        canContain: function () { return false; },
+        acceptsLines: false
+      },
+      thematic_break: {
+        cont: function () { return 1; },
+        finalize: function () {},
+        canContain: function () { return false; },
+        acceptsLines: false
+      },
+      code_block: {
+        cont: function (parser, container) {
+          var ln = parser.currentLine;
+          var indent = parser.indent;
+          if (container.isFenced) {
+            var match = indent <= 3 && ln.charAt(parser.nextNonspace) === container.fenceChar &&
+                        reClosingCodeFence.exec(ln.slice(parser.nextNonspace));
+            if (match && match[0].length >= container.fenceLength) {
+              parser.finalize(container);
+              return 2;
+            }
+            var i = container.fenceOffset;
+            while (i > 0 && isSpaceOrTab(peekChar(ln, parser.offset))) {
+              parser.advanceOffset(1, true);
+              i--;
+            }
+          } else if (indent >= CODE_INDENT) {
+            parser.advanceOffset(CODE_INDENT, true);
+          } else if (parser.blank) {
+            parser.advanceNextNonspace();
+          } else {
+            return 1;
+          }
+          return 0;
+        },
+        finalize: function (parser, block) {
+          if (block.isFenced) {
+            var content = block.content;
+            var newlinePos = content.indexOf("\n");
+            block.info = unescapeString(content.slice(0, newlinePos).trim());
+            block.literal = content.slice(newlinePos + 1);
+          } else {
+            block.literal = block.content.replace(/(\n *)+$/, "\n");
+          }
+          block.content = "";
+        },
+        canContain: function () { return false; },
+        acceptsLines: true
+      },
+      paragraph: {
+        cont: function (parser) { return parser.blank ? 1 : 0; },
+        finalize: function (parser, block) {
+          var pos;
+          while (peekChar(block.content, 0) === "[" && (pos = parser.inlineParser.parseReference(block.content, parser.refmap))) {
+            block.content = block.content.slice(pos);
+          }
+          /* a paragraph left holding nothing but spaces, once its definitions are gone, is not a paragraph */
+          if (!reNonSpace.test(block.content)) { block.unlink(); }
+        },
+        canContain: function () { return false; },
+        acceptsLines: true
+      },
+      table: {
+        cont: function (parser) { return parser.blank ? 1 : 0; },
+        finalize: function () {},
+        canContain: function (t) { return t === "table_row"; },
+        acceptsLines: false
+      },
+      table_row: {
+        cont: function () { return 1; },
+        finalize: function () {},
+        canContain: function (t) { return t === "table_cell"; },
+        acceptsLines: false
+      },
+      table_cell: {
+        cont: function () { return 1; },
+        finalize: function () {},
+        canContain: function () { return false; },
+        acceptsLines: false
+      }
+    };
+    /* ---- END: what each kind of block does ---- */
+
+    /* ---- START: reading a list marker ----
+       - * + for bullets; 1. or 1) for numbers, at most nine digits. The marker
+       must be followed by a space, tab or the end of the line. A numbered list
+       can only interrupt a paragraph if it starts at 1, and no list can
+       interrupt one with an empty first item. The padding worked out here is
+       how far later lines must be indented to belong to the item. */
+    function parseListMarker(parser, container) {
+      var rest = parser.currentLine.slice(parser.nextNonspace);
+      var match;
+      var data = { type: null, tight: true, bulletChar: null, start: null, delimiter: null, padding: null,
+                   markerOffset: parser.indent };
+      if (parser.indent >= 4) { return null; }
+      if ((match = reBulletListMarker.exec(rest))) {
+        data.type = "bullet";
+        data.bulletChar = match[0].charAt(0);
+      } else if ((match = reOrderedListMarker.exec(rest)) && (container.type !== "paragraph" || match[1] === "1")) {
+        data.type = "ordered";
+        data.start = parseInt(match[1], 10);
+        data.delimiter = match[2];
+      } else {
+        return null;
+      }
+      var nextc = peekChar(parser.currentLine, parser.nextNonspace + match[0].length);
+      if (!(nextc === "" || nextc === "\t" || nextc === " ")) { return null; }
+      if (container.type === "paragraph" && !reNonSpace.test(parser.currentLine.slice(parser.nextNonspace + match[0].length))) {
+        return null;
+      }
+
+      parser.advanceNextNonspace();
+      parser.advanceOffset(match[0].length, true);
+      var spacesStartCol = parser.column;
+      var spacesStartOffset = parser.offset;
+      do {
+        parser.advanceOffset(1, true);
+        nextc = peekChar(parser.currentLine, parser.offset);
+      } while (parser.column - spacesStartCol < 5 && isSpaceOrTab(nextc));
+      var blankItem = peekChar(parser.currentLine, parser.offset) === "";
+      var spacesAfterMarker = parser.column - spacesStartCol;
+      if (spacesAfterMarker >= 5 || spacesAfterMarker < 1 || blankItem) {
+        data.padding = match[0].length + 1;
+        parser.column = spacesStartCol;
+        parser.offset = spacesStartOffset;
+        if (isSpaceOrTab(peekChar(parser.currentLine, parser.offset))) { parser.advanceOffset(1, true); }
+      } else {
+        data.padding = match[0].length + spacesAfterMarker;
+      }
+      return data;
+    }
+    /* ---- END: reading a list marker ---- */
+
+    /* ---- START: what can start a new block, in order ----
+       Each returns 0 for "not here", 1 for "a container block started" (the
+       rest of the line may start more blocks) and 2 for "a leaf block
+       started" (the rest of the line is its content). */
+    var BLOCK_STARTS = [
+      /* block quote */
+      function (parser, container) {
+        if (!parser.indented && peekChar(parser.currentLine, parser.nextNonspace) === ">" && blockDepth(container) < MAX_NESTING) {
+          parser.advanceNextNonspace();
+          parser.advanceOffset(1, false);
+          if (isSpaceOrTab(peekChar(parser.currentLine, parser.offset))) { parser.advanceOffset(1, true); }
+          parser.closeUnmatchedBlocks();
+          parser.addChild("block_quote");
+          return 1;
+        }
+        return 0;
+      },
+
+      /* ATX heading: # to ###### */
+      function (parser) {
+        var match;
+        if (!parser.indented && (match = reATXHeadingMarker.exec(parser.currentLine.slice(parser.nextNonspace)))) {
+          parser.advanceNextNonspace();
+          parser.advanceOffset(match[0].length, false);
+          parser.closeUnmatchedBlocks();
+          var heading = parser.addChild("heading");
+          heading.level = match[0].trim().length;
+          heading.content = parser.currentLine.slice(parser.offset).replace(/^[ \t]*#+[ \t]*$/, "").replace(/[ \t]+#+[ \t]*$/, "");
+          parser.advanceOffset(parser.currentLine.length - parser.offset);
+          return 2;
+        }
+        return 0;
+      },
+
+      /* fenced code block */
+      function (parser) {
+        var match;
+        if (!parser.indented && (match = reCodeFence.exec(parser.currentLine.slice(parser.nextNonspace)))) {
+          var fenceLength = match[0].length;
+          parser.closeUnmatchedBlocks();
+          var block = parser.addChild("code_block");
+          block.isFenced = true;
+          block.fenceLength = fenceLength;
+          block.fenceChar = match[0].charAt(0);
+          block.fenceOffset = parser.indent;
+          parser.advanceNextNonspace();
+          parser.advanceOffset(fenceLength);
+          return 2;
+        }
+        return 0;
+      },
+
+      /* a table: the last line of the paragraph above is the header row and this
+         line is the delimiter row under it */
+      function (parser, container) {
+        if (container.type !== "paragraph" || parser.indented) { return 0; }
+        var aligns = parseDelimiterRow(parser.currentLine.slice(parser.nextNonspace));
+        if (aligns === null) { return 0; }
+        var lines = container.content.replace(/\n$/, "").split("\n");
+        var headerLine = lines[lines.length - 1];
+        if (headerLine.indexOf("|") < 0) { return 0; }
+        var headerCells = splitTableRow(headerLine);
+        if (headerCells.length !== aligns.length) { return 0; }
+
+        parser.closeUnmatchedBlocks();
+        var before = lines.slice(0, -1).join("\n");
+        var table = new Node("table");
+        table.aligns = aligns;
+        if (before.trim() === "") {
+          container.insertAfter(table);
+          container.unlink();
+        } else {
+          /* what came before the header row stays a paragraph, and closes here */
+          container.content = before + "\n";
+          container.insertAfter(table);
+          container.open = false;
+          BLOCKS.paragraph.finalize(parser, container);
+        }
+        table.open = true;
+        var head = new Node("table_row");
+        head.isHeader = true;
+        table.appendChild(head);
+        headerCells.forEach(function (text, i) {
+          var cell = new Node("table_cell");
+          cell.content = text;
+          cell.align = aligns[i];
+          cell.isHeader = true;
+          head.appendChild(cell);
+        });
+        head.open = false;
+        parser.tip = table;
+        parser.advanceOffset(parser.currentLine.length - parser.offset, false);
+        return 2;
+      },
+
+      /* setext heading: text underlined with === or --- */
+      function (parser, container) {
+        var match;
+        if (!parser.indented && container.type === "paragraph" &&
+            (match = reSetextHeadingLine.exec(parser.currentLine.slice(parser.nextNonspace)))) {
+          parser.closeUnmatchedBlocks();
+          var pos;
+          while (peekChar(container.content, 0) === "[" && (pos = parser.inlineParser.parseReference(container.content, parser.refmap))) {
+            container.content = container.content.slice(pos);
+          }
+          if (container.content.length > 0) {
+            var heading = new Node("heading");
+            heading.level = match[0].charAt(0) === "=" ? 1 : 2;
+            heading.content = container.content;
+            container.insertAfter(heading);
+            container.unlink();
+            parser.tip = heading;
+            parser.advanceOffset(parser.currentLine.length - parser.offset, false);
+            return 2;
+          }
+          return 0;
+        }
+        return 0;
+      },
+
+      /* thematic break: *** --- ___ */
+      function (parser) {
+        if (!parser.indented && reThematicBreak.test(parser.currentLine.slice(parser.nextNonspace))) {
+          parser.closeUnmatchedBlocks();
+          parser.addChild("thematic_break");
+          parser.advanceOffset(parser.currentLine.length - parser.offset, false);
+          return 2;
+        }
+        return 0;
+      },
+
+      /* list item */
+      function (parser, container) {
+        var data;
+        if ((!parser.indented || container.type === "list") && blockDepth(container) < MAX_NESTING &&
+            (data = parseListMarker(parser, container))) {
+          parser.closeUnmatchedBlocks();
+          if (parser.tip.type !== "list" || !listsMatch(container.listData, data)) {
+            container = parser.addChild("list");
+            container.listData = data;
+          }
+          container = parser.addChild("item");
+          container.listData = data;
+          return 1;
+        }
+        return 0;
+      },
+
+      /* indented code block */
+      function (parser) {
+        if (parser.indented && parser.tip.type !== "paragraph" && !parser.blank) {
+          parser.advanceOffset(CODE_INDENT, true);
+          parser.closeUnmatchedBlocks();
+          parser.addChild("code_block");
+          return 2;
+        }
+        return 0;
+      }
+    ];
+    /* ---- END: what can start a new block, in order ---- */
+
+    /* ---- START: adding one row to a table ---- */
+    function addTableRow(parser, table, line) {
+      var cells = splitTableRow(line);
+      var row = new Node("table_row");
+      table.appendChild(row);
+      for (var i = 0; i < table.aligns.length; i++) {
+        var cell = new Node("table_cell");
+        cell.content = i < cells.length ? cells[i] : "";
+        cell.align = table.aligns[i];
+        cell.isHeader = false;
+        row.appendChild(cell);
+      }
+      row.open = false;
+    }
+    /* ---- END: adding one row to a table ---- */
+
+    /* ---- START: reading one line of the document ---- */
+    BlockParser.prototype.incorporateLine = function (ln) {
+      var allMatched = true;
+      var container = this.doc;
+      this.oldtip = this.tip;
+      this.offset = 0;
+      this.column = 0;
+      this.blank = false;
+      this.partiallyConsumedTab = false;
+      this.lineNumber += 1;
+      this.currentLine = ln.replace(/\u0000/g, String.fromCharCode(0xFFFD));
+
+      var lastChild;
+      while ((lastChild = container.lastChild) && lastChild.open) {
+        container = lastChild;
+        this.findNextNonspace();
+        var result = BLOCKS[container.type].cont(this, container);
+        if (result === 1) { allMatched = false; }
+        else if (result === 2) { return; }
+        if (!allMatched) {
+          container = container.parent;
+          break;
+        }
+      }
+
+      this.allClosed = container === this.oldtip;
+      this.lastMatchedContainer = container;
+
+      var matchedLeaf = container.type !== "paragraph" && BLOCKS[container.type].acceptsLines;
+      while (!matchedLeaf) {
+        this.findNextNonspace();
+        if (!this.indented && !reMaybeSpecial.test(this.currentLine.slice(this.nextNonspace))) {
+          this.advanceNextNonspace();
+          break;
+        }
+        var i = 0;
+        while (i < BLOCK_STARTS.length) {
+          var res = BLOCK_STARTS[i](this, container);
+          if (res === 1) { container = this.tip; break; }
+          if (res === 2) { container = this.tip; matchedLeaf = true; break; }
+          i++;
+        }
+        if (i === BLOCK_STARTS.length) {
+          this.advanceNextNonspace();
+          break;
+        }
+      }
+
+      if (!this.allClosed && !this.blank && this.tip.type === "paragraph") {
+        /* a paragraph carries on across a line that does not belong to the
+           block it is in: "lazy continuation" */
+        this.addLine();
+      } else {
+        this.closeUnmatchedBlocks();
+        if (this.blank && container.lastChild) { container.lastChild.lastLineBlank = true; }
+
+        var t = container.type;
+        var lastLineBlank = this.blank && !(t === "block_quote" || (t === "code_block" && container.isFenced) ||
+                                            (t === "item" && !container.firstChild && container.startLine === this.lineNumber));
+        var cont = container;
+        while (cont) {
+          cont.lastLineBlank = lastLineBlank;
+          cont = cont.parent;
+        }
+
+        if (BLOCKS[t].acceptsLines) {
+          this.addLine();
+        } else if (t === "table") {
+          /* a line inside a table is a row, unless the delimiter row that started the table
+             has just used it up */
+          if (!this.blank && this.offset < this.currentLine.length) {
+            addTableRow(this, container, this.currentLine.slice(this.offset));
+          }
+        } else if (this.offset < this.currentLine.length && !this.blank) {
+          container = this.addChild("paragraph");
+          this.advanceNextNonspace();
+          this.addLine();
+        }
+      }
+    };
+    /* ---- END: reading one line of the document ---- */
+
+    /* ---- START: turning the collected text into inline content ---- */
+    function processInlines(parser, doc, options) {
+      var node = doc;
+      var tasks = !options || options.tasks !== false;
+      /* a plain iterative walk that visits every node once */
+      var stack = [];
+      while (node) {
+        if (tasks && node.type === "item" && node.firstChild && node.firstChild.type === "paragraph") {
+          var marker = reTaskMarker.exec(node.firstChild.content.replace(/^[ \t]+/, ""));
+          if (marker) {
+            node.checked = marker[1] !== " ";
+            node.firstChild.content = node.firstChild.content.replace(/^[ \t]+/, "").slice(marker[0].length);
+          }
+        }
+        if (node.type === "paragraph" || node.type === "heading" || node.type === "table_cell") {
+          parser.inlineParser.parse(node);
+        }
+        if (node.firstChild) {
+          stack.push(node);
+          node = node.firstChild;
+        } else {
+          while (node && !node.next) { node = stack.pop() || null; }
+          if (node) { node = node.next; }
+        }
+      }
+    }
+    /* ---- END: turning the collected text into inline content ---- */
+
+    /* ---- START: the parser's front door ---- */
+    function parseMarkdown(source, options) {
+      var parser = new BlockParser();
+      var lines = String(source).split(/\r\n|\n|\r/);
+      var count = lines.length;
+      /* a final newline does not start another, empty, line */
+      if (source.length > 0 && /[\r\n]$/.test(source)) { count -= 1; }
+      for (var i = 0; i < count; i++) { parser.incorporateLine(lines[i]); }
+      /* A code fence still open at the end of text that has no final line
+         break: its last line had no line break, so its code gets none either. */
+      if (count === lines.length && parser.tip.type === "code_block" && parser.tip.isFenced &&
+          (parser.tip.content.match(/\n/g) || []).length >= 2) {
+        parser.tip.content = parser.tip.content.slice(0, -1);
+      }
+      while (parser.tip) { parser.finalize(parser.tip); }
+      processInlines(parser, parser.doc, options);
+      return parser.doc;
+    }
+    /* ---- END: the parser's front door ---- */
+
+
+    /* ---- START: the plain text of some inline content ----
+       What an image's alt text is: the text inside its brackets with the
+       formatting taken away. */
+    function plainText(node) {
+      var out = "";
+      for (var child = node.firstChild; child; child = child.next) {
+        switch (child.type) {
+          case "text":
+          case "code": out += child.literal; break;
+          case "softbreak":
+          case "linebreak": out += "\n"; break;
+          default: out += plainText(child); break;
+        }
+      }
+      return out;
+    }
+    /* ---- END: the plain text of some inline content ---- */
+
+    /* ---- START: escaping text for HTML ---- */
+    function escapeHtmlText(text) {
+      return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+    /* ---- END: escaping text for HTML ---- */
+
+    /* ---- START: the stream of tags and text a document becomes ----
+       The tree is written out as a flat list of "open a tag", "close a tag",
+       "an empty tag" and "some text". Both the HTML view and the on-screen
+       preview are built from this one list, so they cannot disagree. The
+       newlines between block tags are part of the list, laid out the way the
+       standard's reference output does it. */
+    function Writer() {
+      this.tokens = [];
+      this.last = "\n";
+      this.pendingCheckbox = null;
+    }
+
+    Writer.prototype.text = function (s) {
+      if (s === "") { return; }
+      this.tokens.push({ k: "text", v: s });
+      this.last = s.charAt(s.length - 1);
+    };
+    Writer.prototype.open = function (tag, attrs) {
+      this.tokens.push({ k: "open", tag: tag, attrs: attrs || [] });
+      this.last = ">";
+    };
+    Writer.prototype.close = function (tag) {
+      this.tokens.push({ k: "close", tag: tag });
+      this.last = ">";
+    };
+    Writer.prototype.empty = function (tag, attrs) {
+      this.tokens.push({ k: "empty", tag: tag, attrs: attrs || [] });
+      this.last = ">";
+    };
+    /* start a new line, unless one has just been started */
+    Writer.prototype.cr = function () {
+      if (this.last !== "\n") { this.text("\n"); }
+    };
+
+    function codeLanguage(info) {
+      var first = String(info || "").split(/\s+/)[0];
+      return first;
+    }
+
+    function isTightItem(item) {
+      return item.parent && item.parent.listData && item.parent.listData.tight;
+    }
+
+    function writeChildren(w, node) {
+      for (var child = node.firstChild; child; child = child.next) { writeNode(w, child); }
+    }
+
+    function writeCheckbox(w, checked) {
+      w.empty("input", checked ? [["type", "checkbox"], ["disabled", true], ["checked", true]] : [["type", "checkbox"], ["disabled", true]]);
+      w.text(" ");
+    }
+
+    function writeTableRow(w, row, tag) {
+      w.open("tr");
+      w.cr();
+      for (var cell = row.firstChild; cell; cell = cell.next) {
+        w.open(tag, cell.align ? [["style", "text-align:" + cell.align]] : []);
+        writeChildren(w, cell);
+        w.close(tag);
+        w.cr();
+      }
+      w.close("tr");
+      w.cr();
+    }
+
+    function writeNode(w, node) {
+      switch (node.type) {
+        case "text": w.text(node.literal); break;
+        case "softbreak": w.text("\n"); break;
+        case "linebreak": w.empty("br"); w.cr(); break;
+        case "code": w.open("code"); w.text(node.literal); w.close("code"); break;
+        case "emph": w.open("em"); writeChildren(w, node); w.close("em"); break;
+        case "strong": w.open("strong"); writeChildren(w, node); w.close("strong"); break;
+        case "strikethrough": w.open("del"); writeChildren(w, node); w.close("del"); break;
+        case "link": {
+          var linkAttrs = [["href", encodeUrl(node.destination)]];
+          if (node.title) { linkAttrs.push(["title", node.title]); }
+          w.open("a", linkAttrs);
+          writeChildren(w, node);
+          w.close("a");
+          break;
+        }
+        case "image": {
+          var imgAttrs = [["src", encodeUrl(node.destination)], ["alt", plainText(node)]];
+          if (node.title) { imgAttrs.push(["title", node.title]); }
+          w.empty("img", imgAttrs);
+          break;
+        }
+        case "paragraph": {
+          var inTightItem = node.parent && node.parent.type === "item" && isTightItem(node.parent);
+          if (!inTightItem) {
+            w.cr();
+            w.open("p");
+            if (w.pendingCheckbox !== null) { writeCheckbox(w, w.pendingCheckbox); w.pendingCheckbox = null; }
+            writeChildren(w, node);
+            w.close("p");
+            w.cr();
+          } else {
+            writeChildren(w, node);
+          }
+          break;
+        }
+        case "heading":
+          w.cr();
+          w.open("h" + node.level);
+          writeChildren(w, node);
+          w.close("h" + node.level);
+          w.cr();
+          break;
+        case "block_quote":
+          w.cr();
+          w.open("blockquote");
+          w.cr();
+          writeChildren(w, node);
+          w.cr();
+          w.close("blockquote");
+          w.cr();
+          break;
+        case "list": {
+          var ordered = node.listData.type === "ordered";
+          var tag = ordered ? "ol" : "ul";
+          w.cr();
+          w.open(tag, ordered && node.listData.start !== 1 ? [["start", String(node.listData.start)]] : []);
+          w.cr();
+          writeChildren(w, node);
+          w.cr();
+          w.close(tag);
+          w.cr();
+          break;
+        }
+        case "item":
+          w.open("li");
+          if (node.checked !== undefined) {
+            if (isTightItem(node)) { writeCheckbox(w, node.checked); } else { w.pendingCheckbox = node.checked; }
+          }
+          writeChildren(w, node);
+          w.close("li");
+          w.cr();
+          break;
+        case "code_block": {
+          w.cr();
+          w.open("pre");
+          var language = codeLanguage(node.info);
+          w.open("code", language ? [["class", "language-" + language]] : []);
+          w.text(node.literal);
+          w.close("code");
+          w.close("pre");
+          w.cr();
+          break;
+        }
+        case "thematic_break": w.cr(); w.empty("hr"); w.cr(); break;
+        case "table": {
+          w.cr();
+          w.open("table");
+          w.cr();
+          w.open("thead");
+          w.cr();
+          writeTableRow(w, node.firstChild, "th");
+          w.close("thead");
+          w.cr();
+          if (node.firstChild.next) {
+            w.open("tbody");
+            w.cr();
+            for (var row = node.firstChild.next; row; row = row.next) { writeTableRow(w, row, "td"); }
+            w.close("tbody");
+            w.cr();
+          }
+          w.close("table");
+          w.cr();
+          break;
+        }
+        default: writeChildren(w, node); break;
+      }
+    }
+
+    function writeDocument(doc) {
+      var w = new Writer();
+      writeChildren(w, doc);
+      return w.tokens;
+    }
+    /* ---- END: the stream of tags and text a document becomes ---- */
+
+    /* ---- START: the HTML text of a stream ---- */
+    function tokensToHtml(tokens) {
+      var out = "";
+      for (var i = 0; i < tokens.length; i++) {
+        var t = tokens[i];
+        if (t.k === "text") { out += escapeHtmlText(t.v); continue; }
+        if (t.k === "close") { out += "</" + t.tag + ">"; continue; }
+        out += "<" + t.tag;
+        for (var a = 0; a < t.attrs.length; a++) {
+          out += t.attrs[a][1] === true ? " " + t.attrs[a][0] : " " + t.attrs[a][0] + "=\"" + escapeHtmlText(t.attrs[a][1]) + "\"";
+        }
+        out += ">";
+      }
+      return out;
+    }
+
+    function markdownToHtml(source, options) {
+      return tokensToHtml(writeDocument(parseMarkdown(source, options)));
+    }
+    /* ---- END: the HTML text of a stream ---- */
+
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: which addresses become links in the preview ----
+       Only web, mail and telephone addresses are followed. A relative address
+       would take the visitor away from this page to somewhere that does not
+       exist, and an unusual scheme could open another program, so those are
+       shown as underlined text with the address in a tooltip. The HTML view
+       always keeps every address exactly as written. */
+    var NAVIGABLE = /^(?:https?:|mailto:|tel:)/i;
+    var INLINE_IMAGE = /^data:image\/(?:png|gif|jpeg|webp);/i;
+    /* An item is not in this list on purpose: in a tight list its content is
+       inline, and the single space between "*a* **b**" is a text token that
+       must survive. Between block tags whitespace is invisible anyway. */
+    var STRUCTURAL = ["ul", "ol", "table", "thead", "tbody", "tr", "blockquote"];
+    var ALLOWED_TAGS = ["p", "h1", "h2", "h3", "h4", "h5", "h6", "em", "strong", "del", "code", "pre",
+                        "ul", "ol", "li", "blockquote", "table", "thead", "tbody", "tr", "th", "td", "a"];
+    /* ---- END: which addresses become links in the preview ---- */
+
+    /* ---- START: making one element for an opening tag ----
+       Only the tags the writer produces are made, and only the attributes each
+       needs, each checked on the way in. Nothing here is ever parsed as HTML. */
+    function makeElement(token) {
+      var tag = token.tag;
+      if (ALLOWED_TAGS.indexOf(tag) < 0) { tag = "span"; }
+      var el = document.createElement(tag);
+      token.attrs.forEach(function (attr) {
+        var name = attr[0];
+        var value = String(attr[1]);
+        if (tag === "a") {
+          if (name === "href") {
+            if (NAVIGABLE.test(value)) {
+              el.setAttribute("href", value);
+              el.setAttribute("target", "_blank");
+              el.setAttribute("rel", "noopener noreferrer nofollow");
+            } else {
+              el.className = "md-inert";
+              el.setAttribute("title", "Link to " + value + " (not followed in this preview)");
+            }
+          } else if (name === "title") {
+            el.setAttribute("title", value);
+          }
+        } else if (tag === "ol" && name === "start") {
+          if (/^[0-9]{1,9}$/.test(value)) { el.setAttribute("start", value); }
+        } else if ((tag === "th" || tag === "td") && name === "style") {
+          var align = /^text-align:(left|right|center)$/.exec(value);
+          if (align) { el.style.textAlign = align[1]; }
+        } else if (tag === "code" && name === "class") {
+          if (/^language-[A-Za-z0-9_+#.\-]{1,40}$/.test(value)) { el.className = value; }
+        }
+      });
+      return el;
+    }
+    /* ---- END: making one element for an opening tag ---- */
+
+    /* ---- START: making an element for a tag that has no content ---- */
+    function makeEmpty(token) {
+      var attrs = {};
+      token.attrs.forEach(function (attr) { attrs[attr[0]] = attr[1]; });
+      if (token.tag === "br" || token.tag === "hr") { return document.createElement(token.tag); }
+
+      if (token.tag === "input") {
+        var box = document.createElement("input");
+        box.type = "checkbox";
+        box.disabled = true;
+        box.checked = attrs.checked === true;
+        return box;
+      }
+
+      /* an image: shown only if it is data carried in the text itself, which
+         needs no request; anything else would ask another server for it */
+      var src = String(attrs.src || "");
+      var alt = String(attrs.alt || "");
+      if (INLINE_IMAGE.test(src)) {
+        var img = document.createElement("img");
+        img.setAttribute("src", src);
+        img.setAttribute("alt", alt);
+        if (attrs.title) { img.setAttribute("title", String(attrs.title)); }
+        return img;
+      }
+      var note = document.createElement("span");
+      note.className = "md-image";
+      note.textContent = "Image: " + (alt || "no description");
+      note.setAttribute("title", "Not loaded in this preview (the HTML view keeps it): " + src);
+      return note;
+    }
+    /* ---- END: making an element for a tag that has no content ---- */
+
+    /* ---- START: building the preview from the stream ----
+       Returns how many pictures were put back as a labelled box, so the
+       message counts what the preview really did and not every picture in
+       the text. */
+    function buildPreview(tokens, root) {
+      var stack = [root];
+      var standIns = 0;
+      for (var i = 0; i < tokens.length; i++) {
+        var token = tokens[i];
+        var parent = stack[stack.length - 1];
+        if (token.k === "text") {
+          /* the line breaks between block tags are for the HTML view, and mean
+             nothing directly inside a list or a table */
+          if (STRUCTURAL.indexOf(parent.tagName.toLowerCase()) > -1 && token.v.trim() === "") { continue; }
+          parent.appendChild(document.createTextNode(token.v));
+        } else if (token.k === "open") {
+          var el = makeElement(token);
+          parent.appendChild(el);
+          stack.push(el);
+        } else if (token.k === "close") {
+          if (stack.length > 1) { stack.pop(); }
+        } else {
+          var empty = makeEmpty(token);
+          if (empty.className === "md-image") { standIns += 1; }
+          parent.appendChild(empty);
+        }
+      }
+      return standIns;
+    }
+    /* ---- END: building the preview from the stream ---- */
+
+    /* ---- START: counting what is in a document ---- */
+    function summarize(doc) {
+      var words = 0, headings = 0, links = 0;
+      var node = doc;
+      var stack = [];
+      while (node) {
+        if (node.type === "heading") { headings += 1; }
+        if (node.type === "link") { links += 1; }
+        if (node.type === "paragraph" || node.type === "heading" || node.type === "table_cell") {
+          var text = plainText(node).split(/\s+/).filter(Boolean);
+          words += text.length;
+        }
+        if (node.firstChild) {
+          stack.push(node);
+          node = node.firstChild;
+        } else {
+          while (node && !node.next) { node = stack.pop() || null; }
+          if (node) { node = node.next; }
+        }
+      }
+      return { words: words, headings: headings, links: links };
+    }
+
+    function firstHeading(doc) {
+      for (var node = doc.firstChild; node; node = node.next) {
+        if (node.type === "heading") { return plainText(node); }
+      }
+      return "";
+    }
+    /* ---- END: counting what is in a document ---- */
+
+    /* ---- START: a whole HTML file around the converted text ---- */
+    function wholeDocument(html, title) {
+      return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n" +
+             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
+             "<title>" + escapeHtmlText(title || "Document") + "</title>\n</head>\n<body>\n" +
+             html + "</body>\n</html>\n";
+    }
+    /* ---- END: a whole HTML file around the converted text ---- */
+
+    /* ---- START: emptying the result ---- */
+    function blank() {
+      preview.textContent = "";
+      sourceBox.textContent = "";
+      lastHtml = "";
+      ["sWords", "sHeadings", "sLinks"].forEach(function (id) {
+        document.getElementById(id).textContent = DASH;
+      });
+    }
+    /* ---- END: emptying the result ---- */
+
+    /* ---- START: converting and showing ---- */
+    function run() {
+      var text = input.value;
+      if (text.trim() === "") {
+        blank();
+        setMessage("Type or paste some Markdown on the left.");
+        return;
+      }
+      if (text.length > MAX_INPUT) {
+        blank();
+        setMessage("That is " + formatNumber(text.length, 0) + " characters. A live preview stops at " +
+                   formatNumber(MAX_INPUT, 0) + "; paste a shorter piece.", "bad");
+        return;
+      }
+
+      try {
+        var doc = parseMarkdown(text);
+        var tokens = writeDocument(doc);
+        var html = tokensToHtml(tokens);
+        var counts = summarize(doc);
+
+        preview.textContent = "";
+        var standIns = buildPreview(tokens, preview);
+        sourceBox.textContent = html;
+        lastHtml = html;
+        lastTitle = firstHeading(doc);
+
+        document.getElementById("sWords").textContent = formatNumber(counts.words, 0);
+        document.getElementById("sHeadings").textContent = formatNumber(counts.headings, 0);
+        document.getElementById("sLinks").textContent = formatNumber(counts.links, 0);
+
+        var note = "";
+        if (standIns > 0) {
+          note = " " + standIns + (standIns === 1 ? " image is" : " images are") +
+                 " not loaded in the preview; the HTML view keeps " + (standIns === 1 ? "it" : "them") + ".";
+        }
+        setMessage("Raw HTML in the text is shown as text, never run." + note, "ok");
+      } catch (error) {
+        blank();
+        setMessage("This text could not be converted. Try a shorter piece.", "bad");
+      }
+    }
+    /* ---- END: converting and showing ---- */
+
+    /* ---- START: switching between the preview and the HTML ---- */
+    var lastTitle = "";
+
+    function showView() {
+      var html = view.value === "html";
+      preview.hidden = html;
+      sourceBox.hidden = !html;
+    }
+    /* ---- END: switching between the preview and the HTML ---- */
+
+    /* ---- START: wiring ---- */
+    input.addEventListener("input", run);
+    view.addEventListener("change", showView);
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      if (!lastHtml) { showToast("Nothing to copy"); return; }
+      copyText(lastHtml);
+    });
+
+    document.getElementById("dlBtn").addEventListener("click", function () {
+      if (!lastHtml) { showToast("Nothing to download"); return; }
+      downloadText(wholeDocument(lastHtml, lastTitle), "document.html", "text/html");
+    });
+
+    document.getElementById("sampleBtn").addEventListener("click", function () {
+      input.value = SAMPLE;
+      run();
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      input.value = "";
+      run();
+      input.focus();
+    });
+    /* ---- END: wiring ---- */
+
+    showView();
+    run();
+  })();
+  </script>
+</body>
+</html>

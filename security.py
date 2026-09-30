@@ -67,7 +67,11 @@ def probe_page(path, probe, tag):
     html = path.read_text(encoding="utf-8")
     if "</body>" not in html:
         return "NO BODY"
-    copy.write_text(html.replace("</body>", probe + "</body>"),
+    # The LAST </body>, never the first: a page that builds an HTML document in
+    # its script (the markdown previewer) has "</body>" inside a string, and
+    # putting the probe there cuts the string in half.
+    head, closing, tail = html.rpartition("</body>")
+    copy.write_text(head + probe + closing + tail,
                     encoding="utf-8", newline="\n")
     try:
         dom = subprocess.run(
