@@ -231,10 +231,10 @@ make; it is written here so it is made with the number in front of us.
 | Text | 16 | 16 |
 | Image | 14 | 14 |
 | Converter | 14 | 13 |
-| PDF | 10 | 8 |
+| PDF | 10 | 9 |
 | Date & Time | 8 | 8 |
 | Random | 8 | 8 |
-| **Total** | **108** | **104** |
+| **Total** | **108** | **105** |
 
 ---
 
@@ -368,7 +368,7 @@ which never leave the tab, so the overlap is narrower than the word suggests.
 | 7 | `protect-pdf` ✅ | medium — written by hand; AES-256 (PDF 2.0) with Web Crypto, judged by Chrome's PDF viewer and a Python decryptor on Windows' own AES |
 | 8 | `pdf-metadata-editor` ✅ | medium — written by hand; the whole document is written again, so old details and XMP copies are gone |
 | 9 | `pdf-to-image` | hard — needs `pdf.js` as well |
-| 10 | `compress-pdf` | hard — re-encodes images, test it a lot |
+| 10 | `compress-pdf` ✅ | hard — written by hand; object streams + deflate, colour photos saved again as JPEG; judged by Windows at all three levels |
 
 **This batch is the one that meets a real competitor.** Checked 20 Sep 2026.
 <https://123apps.com> has run since about 2014 and carries roughly 51 tools:
@@ -392,7 +392,7 @@ business.
 
 So when these ten get built, lead with the thing they structurally cannot say.
 Somebody merging a salary slip, a bank statement or an Aadhaar PDF is being
-asked to hand a stranger's server twelve hours with it. `pdf-lib` does the same
+asked to hand a stranger's server twelve hours with it. This site does the same
 job in the tab. On this shelf "nothing is uploaded" stops being a nice line in
 the footer and becomes the entire reason to pick this site.
 
@@ -447,7 +447,7 @@ under your real name and domain.
 
 Keep that promise literally true. It is your real differentiator against
 every other tool site, and it costs you nothing, because canvas, Web Crypto
-and `pdf-lib` all run client-side.
+and the hand-written PDF code all run client-side.
 
 ---
 
@@ -468,7 +468,7 @@ Libraries you will actually need:
 
 | Library | Licence | Used by |
 |---|---|---|
-| `pdf-lib` | MIT | PDF tools not written by hand; `image-to-pdf` ✅ needed none |
+| `pdf-lib` | MIT | not needed: the nine PDF tools are written by hand |
 | `pdf.js` | Apache-2.0 | `pdf-to-image` |
 | `PapaParse` | MIT | `csv-to-json`, `json-to-csv` ✅ |
 
@@ -490,19 +490,19 @@ than one photograph. It is fine. Do not split it.
    word counter must never download the PDF code. This is the whole reason
    the site will still be fast at 108 tools.
 
-2. **Lazy-load the heavy libraries.** `pdf-lib` is around 400 KB. Do not put
+2. **Lazy-load the heavy libraries.** `pdf.js` is several hundred KB. Do not put
    it in the `<head>` of a PDF tool page — load it the first time the user
    actually picks a file:
 
    ```js
-   let pdfLib = null;
-   async function getPdfLib() {
-     if (!pdfLib) pdfLib = await import("../js/lib/pdf-lib.esm.js");
-     return pdfLib;
+   let pdfjs = null;
+   async function getPdfJs() {
+     if (!pdfjs) pdfjs = await import("../js/lib/pdf.min.mjs");
+     return pdfjs;
    }
    ```
 
-   The page then loads in 60 KB like every other page, and the 400 KB only
+   The page then loads in 60 KB like every other page, and the library only
    arrives for someone who is definitely going to use it.
 
 3. **Script the sitemap after about 30 tools.** Hand-editing `sitemap.xml`

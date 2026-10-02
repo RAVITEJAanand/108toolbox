@@ -171,6 +171,15 @@ const TOOLS = [
     popular: true
   },
   {
+    slug: "compress-pdf",
+    name: "Compress PDF",
+    desc: "Make a PDF smaller: text packed tighter, photos saved again at the level you choose. Nothing is uploaded.",
+    category: "PDF",
+    icon: "\u{1F5DC}\u{FE0F}",
+    keywords: ["compress pdf", "reduce pdf size", "make pdf smaller", "shrink pdf", "pdf compressor", "compress pdf to 1mb", "reduce pdf file size", "optimize pdf", "pdf size reducer", "compress pdf for email"],
+    popular: false
+  },
+  {
     slug: "cooking-measurement-converter",
     name: "Cooking Measurement Converter",
     desc: "Cups, spoons, ml and grams per ingredient, with the 200 ml Indian cup.",

@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 104 of a planned 108 tools are built, tested and live.
+**Where it stands:** 105 of a planned 108 tools are built, tested and live.
 Phase 2 is finished; Phase 3 has started.
 
 ---
@@ -34,11 +34,11 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`104 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`105 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">104</span> tools live
+<span data-tool-count="live">105</span> tools live
 <span data-tool-count="remaining">47</span> on the way
 ```
 
@@ -72,8 +72,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=36` → `?v=37` across all 114 pages (currently `?v=36`,
-552 occurrences), the template included.
+Find-and-replace `?v=37` → `?v=38` across all 115 pages (currently `?v=37`,
+557 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
 the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
@@ -108,7 +108,7 @@ python security.py     ATTACKS the files — hostile text in every box, hostile
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 104, not just the one you changed.** That is the
+**`test_tools.py` runs all 105, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -199,6 +199,20 @@ only one run in eight or so. Passwords are printable ASCII only: readers
 turn other characters into bytes differently (SASLprep), and a file that
 opens in one reader and not another is worse than a refused character.
 
+`compress-pdf` writes the packed layout of PDF 1.5 (small objects in object
+streams, a cross-reference stream), packs streams with the browser's own
+`CompressionStream`, and saves colour pictures again as JPEG through a
+canvas. Without the object streams, rewriting a PDF from Chrome made it
+*bigger*. Only 8-bit RGB pictures (DeviceRGB, or an ICC profile with N 3)
+are touched: a canvas can only write colour JPEG, and the grey JPEGs in
+Chrome's PDFs are often the soft edges of shadows, so grey, CMYK, indexed,
+16-bit, masks, colour-key /Mask and /Decode pictures keep every byte. A
+JPEG's EXIF block is cut out before the browser decodes it, or the browser
+would turn the picture that the PDF's own drawing already places. A
+picture, a stream and the whole file are each replaced only when smaller.
+Judged by Windows on ten PDFs at all three levels: lossless pages render
+identical (0.000), lossy ones within 1.5, text-only pages 0.000.
+
 **Headless Chrome's clock is virtual, so a long wait needs a big budget.**
 Reading 201 pictures took six real seconds and several hundred virtual ones;
 the 1 ms heartbeat makes the virtual clock run far ahead of the real one
@@ -250,7 +264,7 @@ shows the pattern.
 
 ### 6. Nothing is ever uploaded
 
-Every tool runs client-side — canvas, Web Crypto, `pdf-lib`. The homepage
+Every tool runs client-side — canvas, Web Crypto, the hand-written PDF code. The homepage
 promises "nothing is uploaded, nothing is stored" and that promise must stay
 literally true. It is the site's only real differentiator. See the
 "Tools to never build" section of `ROADMAP.md` before adding anything that
@@ -263,7 +277,7 @@ Umami or Cloudflare Web Analytics — or drop the claim. Not both.
 
 **Advertising is the same rule, and it is already decided.** The owner wants
 ads on once all 108 tools are live, and not before. The site currently
-promises "no ads" in the hero, in the footer of all 114 pages, in
+promises "no ads" in the hero, in the footer of all 115 pages, in
 `privacy.html` section 7 and in `disclaimer.html` section 9. Those promises
 get rewritten **first, in their own commit**, before a single line of ad code
 is added — otherwise the site starts lying to visitors on the day it starts
@@ -499,11 +513,11 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (104):** add-line-numbers, add-subtract-days, add-pdf-page-numbers,
+**Live (105):** add-line-numbers, add-subtract-days, add-pdf-page-numbers,
 age-calculator, area-converter, average-calculator, barcode-generator,
 base64-encoder-decoder, binary-decimal-hex-converter, bmi-calculator,
 calorie-calculator, case-converter, character-frequency-counter, coin-flip,
-color-code-converter, compound-interest-calculator,
+color-code-converter, compound-interest-calculator, compress-pdf,
 cooking-measurement-converter, cron-expression-parser, css-minifier,
 csv-to-json, data-storage-converter, date-difference-calculator,
 days-until-countdown, dice-roller, discount-calculator, emi-calculator,
