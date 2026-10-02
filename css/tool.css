@@ -37,15 +37,20 @@
 }
 
 /* ---- The two-panel workspace -------------------------------------------- */
+/* minmax(0, ...) and not a bare 1fr: a bare fr column can never be narrower
+   than its widest content - the longest option of a <select>, a wide table -
+   so on a phone the panel pushed the whole page sideways. 16 tools did that
+   at 375px until it was measured. Now the column holds the screen's width,
+   selects shrink, and tables scroll inside their .table-wrap. */
 .workspace {
   display: grid;
-  grid-template-columns: 1fr;     /* mobile: stacked */
+  grid-template-columns: minmax(0, 1fr);     /* mobile: stacked */
   gap: var(--s4);
   margin-bottom: var(--s8);
 }
 @media (min-width: 900px) {
-  .workspace--split { grid-template-columns: 1fr 1fr; }
-  .workspace--wide  { grid-template-columns: 1.4fr 1fr; }
+  .workspace--split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .workspace--wide  { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
 }
 
 .panel {
@@ -122,12 +127,19 @@ input[type="range"] {
 .check input:disabled + label { opacity: .45; cursor: not-allowed; }
 
 /* ---- Stat tiles (the output of counters/calculators) -------------------- */
+/* minmax(0, 1fr) for the same reason as .workspace: a big rupee figure
+   must not push a phone's page sideways. Three tiles stack on a phone, and
+   the figures shrink a little with the screen; anywhere-wrapping is only the
+   last resort for a figure no screen could hold. */
 .stats {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--s2);
 }
-.stats--3 { grid-template-columns: repeat(3, 1fr); }
+.stats--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 520px) {
+  .stats--3 { grid-template-columns: minmax(0, 1fr); }
+}
 .stat {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -137,7 +149,8 @@ input[type="range"] {
 }
 .stat__num {
   display: block;
-  font-size: 1.5rem;
+  font-size: clamp(1.125rem, 5vw, 1.5rem);
+  overflow-wrap: anywhere;
   font-weight: 750;
   letter-spacing: -.03em;
   line-height: 1.15;

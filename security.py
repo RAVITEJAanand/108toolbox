@@ -60,7 +60,7 @@ def ok(msg):
 
 
 # ---- START: running one page in a real browser with a probe attached -------
-def probe_page(path, probe, tag):
+def probe_page(path, probe, tag, size="1280,900"):
     """Load `path` with `probe` injected, return what the probe wrote."""
     copy = path.with_name("_sec_" + path.name)
     profile = WORK / (tag + "_" + path.stem)
@@ -77,7 +77,7 @@ def probe_page(path, probe, tag):
         dom = subprocess.run(
             [CHROME, "--headless", "--disable-gpu", "--no-sandbox",
              "--user-data-dir=" + str(profile),
-             "--window-size=1280,900", "--virtual-time-budget=20000",
+             "--window-size=" + size, "--virtual-time-budget=20000",
              "--dump-dom", copy.as_uri()],
             capture_output=True, text=True, encoding="utf-8",
             errors="replace", timeout=120).stdout
@@ -307,6 +307,109 @@ def check_tools_survive_hostile_files(tools):
 # ---- END: part 4, hand every file input a hostile file --------------------
 
 
+# ---- START: part 5, every page fits a phone's screen -----------------------
+# Sixteen tool pages scrolled sideways on a 375px phone and nothing noticed:
+# a bare 1fr grid column cannot be narrower than its widest content (the
+# longest option of a <select>, a big rupee figure), so the panel pushed the
+# page wider than the screen. A plain headless window cannot be made that
+# narrow (Chrome keeps it at 485px or more, and it then caught only six of
+# the sixteen), so each page is opened as a phone: Chrome's own device
+# emulation, over the DevTools protocol, driven by Node's built-in
+# WebSocket. 320px is the narrowest phone still sold; 375px the commonest.
+# A table that scrolls inside its own .table-wrap is fine.
+PHONE_JS = r"""
+const { spawn } = require("child_process");
+const fs = require("fs"), path = require("path"), os = require("os");
+const [chrome, ...urls] = process.argv.slice(2);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+(async () => {
+  const port = 9400 + Math.floor(Math.random() * 400);
+  const prof = fs.mkdtempSync(path.join(os.tmpdir(), "phone-"));
+  const proc = spawn(chrome, ["--headless=new", "--remote-debugging-port=" + port, "--user-data-dir=" + prof,
+                              "--no-first-run", "--no-default-browser-check", "about:blank"], { stdio: "ignore" });
+  let ver = null;
+  for (let i = 0; i < 150 && !ver; i++) {
+    try { ver = await (await fetch("http://127.0.0.1:" + port + "/json/version")).json(); } catch (e) { await sleep(100); }
+  }
+  const ws = new WebSocket(ver.webSocketDebuggerUrl);
+  await new Promise((res, rej) => { ws.onopen = res; ws.onerror = rej; });
+  let id = 0;
+  const waiting = new Map();
+  ws.onmessage = ev => {
+    const m = JSON.parse(ev.data);
+    if (m.id && waiting.has(m.id)) { const w = waiting.get(m.id); waiting.delete(m.id); m.error ? w.rej(new Error(JSON.stringify(m.error))) : w.res(m.result); }
+  };
+  const send = (method, params, sessionId) => new Promise((res, rej) => {
+    const msg = { id: ++id, method, params: params || {} };
+    if (sessionId) { msg.sessionId = sessionId; }
+    waiting.set(msg.id, { res, rej });
+    ws.send(JSON.stringify(msg));
+  });
+  try {
+    const { targetId } = await send("Target.createTarget", { url: "about:blank" });
+    const { sessionId } = await send("Target.attachToTarget", { targetId, flatten: true });
+    await send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 5 }, sessionId);
+    for (const width of [320, 375]) {
+      await send("Emulation.setDeviceMetricsOverride", { width, height: 800, deviceScaleFactor: 2, mobile: true }, sessionId);
+      for (const url of urls) {
+        await send("Page.navigate", { url }, sessionId);
+        await sleep(700);
+        const r = await send("Runtime.evaluate", { returnByValue: true, expression: `(() => {
+          const root = document.documentElement, vw = root.clientWidth, sw = root.scrollWidth;
+          let worst = "", max = 0;
+          if (sw > vw) {
+            document.querySelectorAll("body *").forEach(el => {
+              const b = el.getBoundingClientRect();
+              if (b.width > 0 && b.right > vw + 1 && b.right > max) {
+                max = b.right;
+                worst = el.tagName.toLowerCase() + (el.id ? "#" + el.id : "") +
+                        (typeof el.className === "string" && el.className ? "." + el.className.split(" ").join(".") : "");
+              }
+            });
+          }
+          return sw > vw ? "WIDE: " + sw + "px on a " + vw + "px screen, " + worst : "FITS";
+        })()` }, sessionId);
+        console.log(JSON.stringify([width, url, r.result.value]));
+      }
+    }
+  } finally {
+    ws.close();
+    proc.kill();
+    await sleep(300);
+    try { fs.rmSync(prof, { recursive: true, force: true }); } catch (e) { /* still held */ }
+  }
+})().catch(e => { console.log(JSON.stringify(["error", "", String(e && e.stack || e)])); process.exit(2); });
+"""
+
+
+def check_pages_fit_phone(pages):
+    print("\n5. Every page fits a phone's screen")
+    node = shutil.which("node")
+    if not node:
+        fail("Node is needed to open the pages as a phone, and it is not installed")
+        return
+    script = WORK / "phone.js"
+    script.write_text(PHONE_JS, encoding="utf-8")
+    out = subprocess.run([node, str(script), CHROME] + [p.as_uri() for p in pages],
+                         capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=1200).stdout
+    import json
+    seen, bad = 0, 0
+    for line in out.splitlines():
+        width, url, verdict = json.loads(line)
+        if width == "error":
+            fail("the phone check could not run: %s" % verdict[:200])
+            return
+        seen += 1
+        if verdict != "FITS":
+            fail("%s at %dpx: %s" % (url.rsplit("/", 1)[-1], width, verdict))
+            bad += 1
+    if seen != 2 * len(pages):
+        fail("the phone check saw %d of %d page loads" % (seen, 2 * len(pages)))
+    elif not bad:
+        ok("%d pages opened as a 320px and a 375px phone - none wider than the screen" % len(pages))
+# ---- END: part 5, every page fits a phone's screen -------------------------
+
+
 # ---- START: part 3, the static promises that keep the exits shut -----------
 def check_policy_present(pages):
     print("\n3. The policy is on every page")
@@ -361,6 +464,7 @@ if __name__ == "__main__":
         check_pages_load_clean(pages)
         check_tools_reject_markup(tools)
         check_tools_survive_hostile_files(tools)
+        check_pages_fit_phone(pages)
     finally:
         shutil.rmtree(WORK, ignore_errors=True)
         for leftover in list(ROOT.glob("_sec_*.html")) + list(

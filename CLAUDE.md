@@ -72,7 +72,7 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=39` → `?v=40` across all 117 pages (currently `?v=39`,
+Find-and-replace `?v=40` → `?v=41` across all 117 pages (currently `?v=40`,
 567 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
@@ -284,7 +284,20 @@ somebody else wrote, and it was negative-tested: changing one `title =` to
 no other. If a tool shows a file's name anywhere, it goes in with
 `textContent` or an attribute, never `innerHTML` (rule 11).
 
-It needs Chrome and takes about a minute. `check.py` and `test_tools.py` run
+**Every page is opened as a phone, too (part 5).** On 2 Oct 2026, 16 tool
+pages scrolled sideways on a 375px phone (25 at 320px) and no check had
+noticed: `.workspace` and `.stats` used bare `1fr` columns, and a bare `fr`
+column can never be narrower than its widest content — the longest option
+of a `<select>`, a big rupee figure — so the panel pushed the page wider
+than the screen. The columns are `minmax(0, 1fr)` now, three stat tiles
+stack below 520px and their figures scale with the screen. Part 5 opens
+every page with Chrome's own device emulation at 320px and 375px (over the
+DevTools protocol, from Node, because a headless window will not go below
+about 485px, where it caught only six of the sixteen) and fails any page
+wider than the screen. It was negative-tested against the old CSS. **Never
+write a bare `1fr` in a grid that holds form controls or figures.**
+
+It needs Chrome and Node, and takes about twelve minutes. `check.py` and `test_tools.py` run
 every time; `security.py` runs before a deploy that touched any tool's own
 code, and always when a tool is added.
 
