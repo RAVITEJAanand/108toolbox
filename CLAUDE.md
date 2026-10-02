@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 97 of a planned 108 tools are built, tested and live.
+**Where it stands:** 99 of a planned 108 tools are built, tested and live.
 Phase 2 is finished; Phase 3 has started.
 
 ---
@@ -34,11 +34,11 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`97 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`99 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">97</span> tools live
+<span data-tool-count="live">99</span> tools live
 <span data-tool-count="remaining">47</span> on the way
 ```
 
@@ -72,8 +72,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=30` → `?v=31` across all 107 pages (currently `?v=30`,
-517 occurrences), the template included.
+Find-and-replace `?v=32` → `?v=33` across all 109 pages (currently `?v=32`,
+527 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
 the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
@@ -108,7 +108,7 @@ python security.py     ATTACKS the files — hostile text in every box, hostile
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 97, not just the one you changed.** That is the
+**`test_tools.py` runs all 99, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -157,6 +157,20 @@ ten PDFs, all eight EXIF turns, transparency, A4 and Letter, margins, a 1-pixel
 picture and one wider than any reader accepts). Inside `test_tools.py` the
 browser is the referee for EXIF: the PDF's own drawing matrix is replayed on a
 canvas and compared pixel for pixel with the file as the browser shows it.
+
+`merge-pdf` and `split-pdf` share a hand-written reader and page copier
+(about 1,200 lines: lexer, cross-reference tables and streams, the hybrid
+layout, object streams, row predictors, a Flate unpacker of its own, and a
+repair pass that finds the objects of a damaged file by scanning it). It was
+judged the same way: the reader opens real files from Chrome and Pillow plus
+eight layouts written from them (object streams, raw and predicted
+cross-reference streams, hybrid, CR LF, ASCIIHex over Flate, an incremental
+update, a type-less /W) and three damaged ones; Windows certified every valid
+layout, and every page the copier produced from any of them renders
+identical to its source. The unpacker matches Node's zlib on 3,920 streams;
+3,000 randomly damaged PDFs never crashed or hung the reader. Writing the
+layouts found a real bug: a hybrid file was read as damaged, because the
+table's "free" entries were allowed to hide the /XRefStm ones.
 
 **Headless Chrome's clock is virtual, so a long wait needs a big budget.**
 Reading 201 pictures took six real seconds and several hundred virtual ones;
@@ -219,7 +233,7 @@ Umami or Cloudflare Web Analytics — or drop the claim. Not both.
 
 **Advertising is the same rule, and it is already decided.** The owner wants
 ads on once all 108 tools are live, and not before. The site currently
-promises "no ads" in the hero, in the footer of all 107 pages, in
+promises "no ads" in the hero, in the footer of all 109 pages, in
 `privacy.html` section 7 and in `disclaimer.html` section 9. Those promises
 get rewritten **first, in their own commit**, before a single line of ad code
 is added — otherwise the site starts lying to visitors on the day it starts
@@ -455,7 +469,7 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (97):** add-line-numbers, add-subtract-days, age-calculator,
+**Live (99):** add-line-numbers, add-subtract-days, age-calculator,
 area-converter, average-calculator, barcode-generator,
 base64-encoder-decoder, binary-decimal-hex-converter, bmi-calculator,
 calorie-calculator, case-converter, character-frequency-counter, coin-flip,
@@ -469,15 +483,15 @@ image-color-picker, image-compressor, image-cropper, image-converter,
 image-metadata-viewer, image-resizer, image-rotator, image-splitter,
 image-to-base64, image-to-pdf, js-minifier, json-formatter, json-to-csv,
 jwt-decoder, leap-year-checker, lorem-ipsum-generator,
-margin-markup-calculator, markdown-previewer, meme-generator, text-to-morse,
-nato-phonetic-converter, number-to-words, password-generator,
+margin-markup-calculator, markdown-previewer, meme-generator, merge-pdf,
+text-to-morse, nato-phonetic-converter, number-to-words, password-generator,
 percentage-calculator, photo-watermark, image-placeholder-generator,
 qr-code-generator, random-list-shuffler, random-number-generator,
 random-picker, ratio-calculator, readability-score, regex-tester,
 remove-duplicate-lines, remove-line-breaks, reverse-text,
 roman-numeral-converter, salary-calculator, scientific-calculator,
 hash-generator, shoe-size-converter, simple-interest-calculator,
-sip-calculator, sort-text-lines, speed-converter, sql-formatter,
+sip-calculator, sort-text-lines, speed-converter, split-pdf, sql-formatter,
 stopwatch-timer, svg-to-png, temperature-converter, text-diff-checker,
 text-repeater, text-to-speech, time-zone-converter, tip-calculator,
 unit-converter, unit-price-comparison, timestamp-converter,

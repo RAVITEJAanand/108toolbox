@@ -231,10 +231,10 @@ make; it is written here so it is made with the number in front of us.
 | Text | 16 | 16 |
 | Image | 14 | 14 |
 | Converter | 14 | 13 |
-| PDF | 10 | 1 |
+| PDF | 10 | 3 |
 | Date & Time | 8 | 8 |
 | Random | 8 | 8 |
-| **Total** | **108** | **97** |
+| **Total** | **108** | **99** |
 
 ---
 
@@ -359,8 +359,8 @@ which never leave the tab, so the overlap is narrower than the word suggests.
 
 | # | Slug | Difficulty |
 |---|---|---|
-| 1 | `merge-pdf` | medium |
-| 2 | `split-pdf` | medium |
+| 1 | `merge-pdf` ✅ | medium — written by hand, no library; judged by Windows' own PDF engine |
+| 2 | `split-pdf` ✅ | medium — written by hand, no library; judged by Windows' own PDF engine |
 | 3 | `remove-pdf-pages` | medium |
 | 4 | `rotate-pdf` | medium |
 | 5 | `image-to-pdf` ✅ | medium — written by hand, no library; judged by Windows' own PDF engine |

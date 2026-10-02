@@ -486,6 +486,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "merge-pdf",
+    name: "Merge PDF",
+    desc: "Join PDF files into one, in the order you choose. Nothing is uploaded, so private documents stay private.",
+    category: "PDF",
+    icon: "\u{1F4CE}",
+    keywords: ["merge pdf", "combine pdf", "join pdf", "merge pdf files", "combine pdf files", "pdf merger", "pdf joiner", "merge pdf offline", "append pdf", "bind pdf"],
+    popular: false
+  },
+  {
     slug: "text-to-morse",
     name: "Morse Code Translator",
     desc: "Text to Morse and Morse back to text, punctuation included.",
@@ -717,6 +726,15 @@ const TOOLS = [
     category: "Converter",
     icon: "\u{1F3CE}\u{FE0F}",
     keywords: ["kmh to mph", "mph to kmh", "m/s to km/h", "knots to mph", "running pace", "min per km", "pace converter"],
+    popular: false
+  },
+  {
+    slug: "split-pdf",
+    name: "Split PDF",
+    desc: "Cut a PDF into single pages, the page ranges you type, or equal parts. Nothing is uploaded.",
+    category: "PDF",
+    icon: "\u{2702}\u{FE0F}",
+    keywords: ["split pdf", "split pdf pages", "extract pages from pdf", "separate pdf pages", "pdf splitter", "cut pdf", "divide pdf", "split pdf into multiple files", "extract pdf pages", "pdf page extractor"],
     popular: false
   },
   {

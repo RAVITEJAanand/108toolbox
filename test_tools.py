@@ -7604,6 +7604,609 @@ T["image-to-pdf"] = r"""
   });
 """
 
+T["merge-pdf"] = r"""
+  var DASH = String.fromCharCode(0x2014);
+  var list = document.getElementById("list");
+  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+
+  /* ================= helpers ================= */
+  function feed(files) {
+    var dt = new DataTransfer();
+    files.forEach(function (f) { dt.items.add(f); });
+    var input = document.getElementById("file");
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  function settled() { return txt("msg") !== "" && !/^Reading/.test(txt("msg")); }
+  function wait(label, test, budget) { return new Promise(function (resolve) { waitFor(label, test, resolve, budget); }); }
+  function pause(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+  function bytesOfText(s) { var u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { u[i] = s.charCodeAt(i) & 255; } return u; }
+  function fromB64(s) { return bytesOfText(atob(s)); }
+  function latin1(bytes) {
+    var parts = [];
+    for (var i = 0; i < bytes.length; i += 32768) { parts.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 32768))); }
+    return parts.join("");
+  }
+
+  /* A PDF written by hand for the test: numbered bodies, an exact table.
+     A body is a string, or { dict, data } for a stream ("LEN" in the
+     dictionary becomes the length of data). */
+  function makePdf(bodies, trailerExtra) {
+    var out = "%PDF-1.4\n", offsets = [];
+    bodies.forEach(function (b, i) {
+      offsets.push(out.length);
+      out += (i + 1) + " 0 obj\n" + (typeof b === "string" ? b : b.dict.replace("LEN", b.data.length) + "\nstream\n" + b.data + "\nendstream") + "\nendobj\n";
+    });
+    var x = out.length;
+    out += "xref\n0 " + (bodies.length + 1) + "\n0000000000 65535 f \n";
+    offsets.forEach(function (o) { out += ("0000000000" + o).slice(-10) + " 00000 n \n"; });
+    out += "trailer\n<<\/Size " + (bodies.length + 1) + " /Root 1 0 R" + (trailerExtra || "") + ">>\nstartxref\n" + x + "\n%%EOF\n";
+    return bytesOfText(out);
+  }
+  function text(s) { return { dict: "<<\/Length LEN>>", data: "BT /F1 12 Tf 10 10 Td (" + s + ") Tj ET" }; }
+
+  /* Three pages under a middle node that hands down a paper size, a turn and
+     a font; links from page 1 to page 2 and from page 3 to page 1. */
+  var DOC_A = makePdf([
+    "<<\/Type /Catalog /Pages 2 0 R>>",
+    "<<\/Type /Pages /Kids [3 0 R 6 0 R] /Count 3>>",
+    "<<\/Type /Pages /Parent 2 0 R /Kids [4 0 R 5 0 R] /Count 2 /MediaBox [0 0 200 100] /Rotate 90 /Resources <<\/Font <<\/F1 9 0 R>>>>>>",
+    "<<\/Type /Page /Parent 3 0 R /Contents 7 0 R /Annots [<<\/Type /Annot /Subtype /Link /Rect [0 0 50 50] /Dest [5 0 R /Fit]>>]>>",
+    "<<\/Type /Page /Parent 3 0 R /Contents 8 0 R /Annots [<<\/Type /Annot /Subtype /Text /Rect [0 0 5 5] /P 3 0 R>>]>>",
+    "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 300 300] /Resources <<\/Font <<\/F1 9 0 R>>>> /Contents 10 0 R /Annots [<<\/Type /Annot /Subtype /Link /Rect [0 0 9 9] /Dest [4 0 R /Fit]>>]>>",
+    text("A1"), text("A2"),
+    "<<\/Type /Font /Subtype /Type1 /BaseFont /Helvetica>>",
+    text("A3")
+  ]);
+  /* one page whose drawing is in two streams, with its resources and size from the root */
+  var DOC_B = makePdf([
+    "<<\/Type /Catalog /Pages 2 0 R>>",
+    "<<\/Type /Pages /Kids [3 0 R] /Count 1 /MediaBox [0 0 100 50] /Resources <<\/Font <<\/F1 6 0 R>>>>>>",
+    "<<\/Type /Page /Parent 2 0 R /CropBox [0.5 0.25 99.5 49.75] /Contents [4 0 R 5 0 R]>>",
+    text("B1a"), text("B1b"),
+    "<<\/Type /Font /Subtype /Type1 /BaseFont /Courier#20New#2FBold>>"
+  ]);
+  var DOC_ENC = makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/Filter /Standard /V 2 /R 3>>"], " /Encrypt 4 0 R");
+  var DOC_EMPTY = makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [] /Count 0>>"]);
+
+  var F = {
+    a: new File([DOC_A], "a-report.pdf", { type: "application/pdf" }),
+    b: new File([DOC_B], "b-letter.pdf", { type: "application/pdf" }),
+    packed: new File([fromB64(TINY.objstm)], "c-packed.pdf", { type: "application/pdf" }),
+    hybrid: new File([fromB64(TINY.hybrid)], "d-hybrid.pdf", { type: "application/pdf" }),
+    damaged: new File([fromB64(TINY.bad_offsets)], "e-damaged.pdf", { type: "application/pdf" }),
+    updated: new File([fromB64(TINY.incremental)], "f-updated.pdf", { type: "application/pdf" }),
+    enc: new File([DOC_ENC], "locked.pdf", { type: "application/pdf" }),
+    empty: new File([DOC_EMPTY], "empty.pdf", { type: "application/pdf" }),
+    notPdf: new File([bytesOfText("just some text")], "notes.pdf", { type: "application/pdf" }),
+    hostile: new File([DOC_B], "<iframe onload=zq>.pdf", { type: "application/pdf" })
+  };
+
+  /* A reader for the joined file, sharing nothing with the page: it follows
+     the table to every object and fails if any position or length is off. */
+  function readOut(bytes) {
+    var t = latin1(bytes);
+    var sx = /startxref\n(\d+)\n%%EOF\n$/.exec(t);
+    if (!sx) { throw new Error("no startxref at the end"); }
+    var at = Number(sx[1]);
+    var head = /^xref\n0 (\d+)\n/.exec(t.slice(at));
+    if (!head) { throw new Error("startxref does not point at the table"); }
+    var count = Number(head[1]), first = at + head[0].length, objs = {};
+    for (var n = 1; n < count; n++) {
+      var m = /^(\d{10}) 00000 n \n$/.exec(t.substr(first + n * 20, 20));
+      if (!m) { throw new Error("entry " + n + " is malformed"); }
+      var off = Number(m[1]), tag = n + " 0 obj\n";
+      if (t.substr(off, tag.length) !== tag) { throw new Error("object " + n + " is not where the table says"); }
+      var start = off + tag.length, si = t.indexOf("\nstream\n", start), ei = t.indexOf("\nendobj\n", start);
+      var o = { body: t.slice(start, ei), data: null };
+      if (si > -1 && si < ei) {
+        o.body = t.slice(start, si);
+        var len = Number(/\/Length (\d+)/.exec(o.body)[1]);
+        o.data = t.substr(si + 8, len);
+        if (t.substr(si + 8 + len, 18) !== "\nendstream\nendobj\n") { throw new Error("object " + n + " has the wrong /Length"); }
+      }
+      objs[n] = o;
+    }
+    var trailer = t.slice(first + count * 20);
+    var root = objs[Number(/\/Root (\d+) 0 R/.exec(trailer)[1])];
+    var pagesNum = Number(/\/Pages (\d+) 0 R/.exec(root.body)[1]);
+    var kids = /\/Kids \[([^\]]*)\]/.exec(objs[pagesNum].body)[1].match(/\d+ 0 R/g).map(function (k) { return parseInt(k, 10); });
+    var pages = kids.map(function (k) {
+      var body = objs[k].body;
+      var refs = [];
+      var single = /\/Contents (\d+) 0 R/.exec(body), many = /\/Contents \[([^\]]*)\]/.exec(body);
+      if (single) { refs = [Number(single[1])]; }
+      else if (many) { refs = many[1].match(/\d+ 0 R/g).map(function (r) { return parseInt(r, 10); }); }
+      var font = /\/F1 (\d+) 0 R/.exec(body);
+      if (!font) {
+        var res = /\/Resources (\d+) 0 R/.exec(body);
+        if (res) { font = /\/F1 (\d+) 0 R/.exec(objs[Number(res[1])].body); }
+      }
+      return {
+        num: k, body: body,
+        drawn: refs.map(function (r) { var m2 = /\(([^)]*)\) Tj/.exec(objs[r].data || ""); return m2 ? m2[1] : "?"; }).join("+"),
+        box: (/\/MediaBox \[([^\]]*)\]/.exec(body) || [])[1],
+        turn: (/\/Rotate (\d+)/.exec(body) || [0, "0"])[1],
+        parent: Number((/\/Parent (\d+) 0 R/.exec(body) || [])[1]),
+        dests: (body.match(/\/Dest \[(\d+) 0 R/g) || []).map(function (d) { return parseInt(d.slice(7), 10); }),
+        font: font ? Number(font[1]) : 0
+      };
+    });
+    return { objs: objs, pages: pages, pagesNum: pagesNum, trailer: trailer, count: /\/Count (\d+)/.exec(objs[pagesNum].body)[1], text: t };
+  }
+  function download() {
+    var before = window.__saved.length;
+    click("dlBtn");
+    if (window.__saved.length !== before + 1) { return Promise.resolve(null); }
+    var saved = window.__saved[window.__saved.length - 1];
+    return saved.blob.arrayBuffer().then(function (b) {
+      var bytes = new Uint8Array(b), out = null, error = "";
+      try { out = readOut(bytes); } catch (e) { error = e.message; }
+      return { saved: saved, bytes: bytes, out: out, error: error };
+    });
+  }
+  function row(i) { return list.children[i]; }
+  function nameOf(i) { return row(i).querySelector(".file-list__name").firstChild.data; }
+  function metaOf(i) { return row(i).querySelector(".file-list__meta").textContent; }
+  function btn(i, k) { return row(i).querySelectorAll("button")[k]; }
+  function drawnOrder(d) { return d.out.pages.map(function (p) { return p.drawn; }).join(","); }
+
+  var chain = Promise.resolve();
+  function step(fn) { chain = chain.then(fn); }
+
+  /* ================= the page as it opens ================= */
+  eq("it asks for PDFs", txt("msg"), "Choose two or more PDFs.");
+  ok("download starts disabled", document.getElementById("dlBtn").disabled);
+  eq("the tiles start blank", txt("sPages") + txt("sIn") + txt("sOut"), DASH + DASH + DASH);
+  ok("the file input takes many PDFs", document.getElementById("file").multiple && /pdf/.test(document.getElementById("file").accept));
+
+  /* ================= ten files, five of them good ================= */
+  step(function () {
+    feed([F.a, F.notPdf, F.b, F.packed, F.enc, F.hybrid, F.damaged, F.empty, F.updated, F.hostile]);
+    return wait("the ten files are read", function () { return settled() && list.children.length === 7; }, 30000);
+  });
+  step(function () {
+    eq("the good ones are listed in the order given", [0, 1, 2, 3, 4, 5, 6].map(nameOf).join("|"),
+       "1. a-report.pdf|2. b-letter.pdf|3. c-packed.pdf|4. d-hybrid.pdf|5. e-damaged.pdf|6. f-updated.pdf|7. <iframe onload=zq>.pdf");
+    eq("a name written as markup stays text", document.querySelectorAll("iframe").length, 0);
+    eq("each says how many pages it has", metaOf(0), "3 pages, " + formatBytes(F.a.size));
+    eq("one page is one page", metaOf(1), "1 page, " + formatBytes(F.b.size));
+    eq("a damaged file read anyway says so", metaOf(4), "1 page, " + formatBytes(F.damaged.size) + ", damaged but readable");
+    eq("sound ones, packed or hybrid, do not", [0, 1, 2, 3, 5].map(function (i) { return /damaged/.test(metaOf(i)); }).join(), "false,false,false,false,false");
+    has("a file that is not a PDF is named", txt("msg"), "notes.pdf (not a PDF)");
+    has("a protected one is named", txt("msg"), "locked.pdf (protected with a password)");
+    has("an empty one is named", txt("msg"), "empty.pdf (has no pages)");
+    has("and the rest are ready", txt("msg"), "Ready: 7 PDFs, 9 pages.");
+    eq("nine pages", txt("sPages"), "9");
+    eq("the sizes added up", txt("sIn"), formatBytes([F.a, F.b, F.packed, F.hybrid, F.damaged, F.updated, F.hostile].reduce(function (s, f) { return s + f.size; }, 0)));
+    return download();
+  });
+  step(function (d) {
+    ok("the joined PDF reads back cleanly: every object where the table says, every length right", d && d.out, d ? d.error : "no download");
+    if (!d || !d.out) { return; }
+    var p = d.out.pages;
+    eq("named merged.pdf", d.saved.name, "merged.pdf");
+    eq("as a PDF", d.saved.blob.type, "application/pdf");
+    eq("the PDF tile is the file's size", txt("sOut"), formatBytes(d.bytes.length));
+    eq("nine pages, in order", drawnOrder(d), "A1,A2,A3,B1a+B1b,T1,T1,T1,T1,B1a+B1b");
+    eq("the page tree says nine", d.out.count, "9");
+    eq("pages under the middle node keep the size it gave them", p[0].box + "|" + p[1].box, "0 0 200 100|0 0 200 100");
+    eq("and its turn", p[0].turn + "|" + p[1].turn, "90|90");
+    eq("a page with its own size keeps it, and no turn", p[2].box + "|" + p[2].turn, "0 0 300 300|0");
+    eq("a page takes its size from the root too", p[3].box, "0 0 100 50");
+    ok("the shared font is copied once and shared still", p[0].font > 0 && p[0].font === p[1].font && p[1].font === p[2].font,
+       p[0].font + " " + p[1].font + " " + p[2].font);
+    ok("a different file's font is a different object", p[3].font > 0 && p[3].font !== p[0].font);
+    eq("the link on page 1 now points at the new page 2", p[0].dests.join(), String(p[1].num));
+    eq("the link on page 3 points at the new page 1", p[2].dests.join(), String(p[0].num));
+    eq("every page belongs to the new page tree", p.every(function (x) { return x.parent === d.out.pagesNum; }), true);
+    eq("the old middle node did not come along", (d.out.text.match(/\/Type \/Pages/g) || []).length, 1);
+    eq("one catalog", (d.out.text.match(/\/Type \/Catalog/g) || []).length, 1);
+    eq("the updated file's turn is kept", p[7].turn, "90");
+    has("a crop box with fractions is written exactly", p[3].body, "/CropBox [0.5 0.25 99.5 49.75]");
+    has("a font name with a space and a slash keeps them, escaped", d.out.text, "/BaseFont /Courier#20New#2FBold");
+    eq("a note pointing at the page tree's node points at nothing instead", /\/P null/.test(p[1].body), true);
+    eq("the packed, hybrid and damaged files' pages are their own size", [4, 5, 6].map(function (i) { return p[i].box; }).join("|"),
+       "0 0 150 80|0 0 150 80|0 0 150 80");
+    has("it says what made it", d.out.text, "/Producer <313038746F6F6C626F782E696E204D6572676520504446>");
+    eq("and it is not encrypted", /\/Encrypt/.test(d.out.trailer), false);
+  });
+
+  /* ================= changing the list ================= */
+  step(function () {
+    eq("the first can not move up", btn(0, 0).disabled, true);
+    eq("the last can not move down", btn(6, 1).disabled, true);
+    btn(1, 0).click();
+    eq("up moves a file up", nameOf(0) + "|" + nameOf(1), "1. b-letter.pdf|2. a-report.pdf");
+    return download();
+  });
+  step(function (d) {
+    eq("and its pages come first", drawnOrder(d).split(",").slice(0, 4).join(","), "B1a+B1b,A1,A2,A3");
+    eq("the links still find their pages after the move", d.out.pages[1].dests.join(), String(d.out.pages[2].num));
+    btn(6, 2).click();
+    eq("remove takes one out", list.children.length, 6);
+    eq("and its pages", txt("sPages"), "8");
+    click("sortBtn");
+    eq("sort puts them in order of name", [0, 1, 2, 3, 4, 5].map(nameOf).join("|"),
+       "1. a-report.pdf|2. b-letter.pdf|3. c-packed.pdf|4. d-hybrid.pdf|5. e-damaged.pdf|6. f-updated.pdf");
+    return download();
+  });
+  step(function (d) {
+    eq("and the joined file follows", drawnOrder(d), "A1,A2,A3,B1a+B1b,T1,T1,T1,T1");
+  });
+
+  /* ================= one file, clearing, a clear mid-way ================= */
+  step(function () {
+    click("resetBtn");
+    eq("clear empties the list", list.children.length, 0);
+    eq("and asks again", txt("msg"), "Choose two or more PDFs.");
+    eq("and blanks the tiles", txt("sPages") + txt("sIn") + txt("sOut"), DASH + DASH + DASH);
+    feed([F.a]);
+    return wait("one PDF is read", function () { return settled() && list.children.length === 1; }, 10000);
+  });
+  step(function () {
+    eq("one PDF is not enough", txt("msg"), "Add at least one more PDF to join it to.");
+    ok("so there is nothing to download", document.getElementById("dlBtn").disabled);
+    var before = window.__saved.length;
+    click("dlBtn");
+    eq("and nothing is saved", window.__saved.length, before);
+    click("resetBtn");
+    /* A slow disk, made here: reading a file's bytes takes 200 ms. The
+       clear comes while the first file is being read, so a read already
+       under way must be dropped when it finishes. */
+    var realArrayBuffer = Blob.prototype.arrayBuffer;
+    Blob.prototype.arrayBuffer = function () {
+      var self = this;
+      return pause(200).then(function () { return realArrayBuffer.call(self); });
+    };
+    feed([F.a, F.b, F.packed]);
+    return pause(50).then(function () {
+      click("resetBtn");
+      return pause(1500);
+    }).then(function () { Blob.prototype.arrayBuffer = realArrayBuffer; });
+  });
+  step(function () {
+    eq("a clear while files are being read leaves the list empty", list.children.length, 0);
+    eq("and nothing half-read turns up", txt("msg"), "Choose two or more PDFs.");
+    feed([F.notPdf, F.enc]);
+    return wait("two bad files are turned away", function () { return settled(); }, 10000);
+  });
+  step(function () {
+    has("both are named", txt("msg"), "Left out: notes.pdf (not a PDF); locked.pdf (protected with a password).");
+    eq("and nothing from before the clear has crept into the list", list.children.length, 0);
+    ok("and there is no PDF", document.getElementById("dlBtn").disabled);
+    click("resetBtn");
+    var many = [];
+    for (var i = 0; i < 101; i++) { many.push(new File([DOC_B], "doc" + i + ".pdf", { type: "application/pdf" })); }
+    feed(many);
+    return wait("a hundred and one PDFs are read", function () { return settled(); }, 400000);
+  });
+  step(function () {
+    eq("a hundred go in", list.children.length, 100);
+    has("and the visitor is told the rest were left out", txt("msg"), "Only 100 PDFs can be joined at once");
+    return download();
+  });
+  step(function (d) {
+    eq("the joined file has a hundred pages", d && d.out ? d.out.count : "no pdf", "100");
+    click("resetBtn");
+
+    /* ================= two more layouts, and numbers in names ================= */
+    feed([new File([fromB64(TINY.xref_notype)], "part 10.pdf", { type: "application/pdf" }),
+          new File([fromB64(TINY.objstm_badindex)], "part 2.pdf", { type: "application/pdf" }),
+          new File([DOC_A], "part 1.pdf", { type: "application/pdf" })]);
+    return wait("three more PDFs are read", function () { return settled() && list.children.length === 3; }, 20000);
+  });
+  step(function () {
+    eq("a cross-reference stream with no type column is read as sound", /damaged/.test(metaOf(0)), false);
+    eq("so is one whose packed objects are only findable by number", /damaged/.test(metaOf(1)), false);
+    click("sortBtn");
+    eq("sort puts part 2 before part 10", [0, 1, 2].map(nameOf).join("|"), "1. part 1.pdf|2. part 2.pdf|3. part 10.pdf");
+    return download();
+  });
+  step(function (d) {
+    eq("and every page is there, in that order", drawnOrder(d), "A1,A2,A3,T1,T1");
+    click("resetBtn");
+  });
+
+  chain.then(function () { finish(); }, function (e) {
+    ok("the test ran to the end", false, String(e && e.stack || e));
+    finish();
+  });
+"""
+
+T["split-pdf"] = r"""
+  var DASH = String.fromCharCode(0x2014);
+  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
+  var planned = document.getElementById("planned");
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+
+  /* ================= helpers ================= */
+  function feed(file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById("file");
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  function wait(label, test, budget) { return new Promise(function (resolve) { waitFor(label, test, resolve, budget); }); }
+  function read() { return !/^Reading/.test(txt("msg")); }
+  function bytesOfText(s) { var u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { u[i] = s.charCodeAt(i) & 255; } return u; }
+  function fromB64(s) { return bytesOfText(atob(s)); }
+  function latin1(bytes) {
+    var parts = [];
+    for (var i = 0; i < bytes.length; i += 32768) { parts.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 32768))); }
+    return parts.join("");
+  }
+  function makePdf(bodies, trailerExtra) {
+    var out = "%PDF-1.4\n", offsets = [];
+    bodies.forEach(function (b, i) {
+      offsets.push(out.length);
+      out += (i + 1) + " 0 obj\n" + (typeof b === "string" ? b : b.dict.replace("LEN", b.data.length) + "\nstream\n" + b.data + "\nendstream") + "\nendobj\n";
+    });
+    var x = out.length;
+    out += "xref\n0 " + (bodies.length + 1) + "\n0000000000 65535 f \n";
+    offsets.forEach(function (o) { out += ("0000000000" + o).slice(-10) + " 00000 n \n"; });
+    out += "trailer\n<<\/Size " + (bodies.length + 1) + " /Root 1 0 R" + (trailerExtra || "") + ">>\nstartxref\n" + x + "\n%%EOF\n";
+    return bytesOfText(out);
+  }
+  function text(s) { return { dict: "<<\/Length LEN>>", data: "BT /F1 12 Tf 10 10 Td (" + s + ") Tj ET" }; }
+
+  /* three pages; links from page 1 to page 2 and from page 3 to page 1 */
+  var DOC_A = makePdf([
+    "<<\/Type /Catalog /Pages 2 0 R>>",
+    "<<\/Type /Pages /Kids [3 0 R 6 0 R] /Count 3>>",
+    "<<\/Type /Pages /Parent 2 0 R /Kids [4 0 R 5 0 R] /Count 2 /MediaBox [0 0 200 100] /Resources <<\/Font <<\/F1 9 0 R>>>>>>",
+    "<<\/Type /Page /Parent 3 0 R /Contents 7 0 R /Annots [<<\/Type /Annot /Subtype /Link /Rect [0 0 50 50] /Dest [5 0 R /Fit]>>]>>",
+    "<<\/Type /Page /Parent 3 0 R /Contents 8 0 R>>",
+    "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 300 300] /Resources <<\/Font <<\/F1 9 0 R>>>> /Contents 10 0 R /Annots [<<\/Type /Annot /Subtype /Link /Rect [0 0 9 9] /Dest [4 0 R /Fit]>>]>>",
+    text("A1"), text("A2"),
+    "<<\/Type /Font /Subtype /Type1 /BaseFont /Helvetica>>",
+    text("A3")
+  ]);
+  /* forty pages, one stream each */
+  var DOC_40 = (function () {
+    var bodies = ["<<\/Type /Catalog /Pages 2 0 R>>", ""];
+    var kids = [];
+    for (var i = 0; i < 40; i++) {
+      kids.push((3 + i * 2) + " 0 R");
+      bodies.push("<<\/Type /Page /Parent 2 0 R /Contents " + (4 + i * 2) + " 0 R>>");
+      bodies.push(text("P" + (i + 1)));
+    }
+    bodies[1] = "<<\/Type /Pages /Kids [" + kids.join(" ") + "] /Count 40 /MediaBox [0 0 100 100]>>";
+    return makePdf(bodies);
+  })();
+  var DOC_ENC = makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/Filter /Standard /V 2 /R 3>>"], " /Encrypt 4 0 R");
+  var F = {
+    a: new File([DOC_A], "a-report.pdf", { type: "application/pdf" }),
+    forty: new File([DOC_40], "forty.pdf", { type: "application/pdf" }),
+    damaged: new File([fromB64(TINY.bad_offsets)], "scan.pdf", { type: "application/pdf" }),
+    enc: new File([DOC_ENC], "locked.pdf", { type: "application/pdf" }),
+    notPdf: new File([bytesOfText("plain words")], "notes.pdf", { type: "application/pdf" }),
+    hostile: new File([DOC_A], "<iframe onload=zq>.pdf", { type: "application/pdf" })
+  };
+
+  /* a reader for the PDFs that come out, sharing nothing with the page */
+  function readOut(bytes) {
+    var t = latin1(bytes);
+    var sx = /startxref\n(\d+)\n%%EOF\n$/.exec(t);
+    if (!sx) { throw new Error("no startxref at the end"); }
+    var at = Number(sx[1]);
+    var head = /^xref\n0 (\d+)\n/.exec(t.slice(at));
+    if (!head) { throw new Error("startxref does not point at the table"); }
+    var count = Number(head[1]), first = at + head[0].length, objs = {};
+    for (var n = 1; n < count; n++) {
+      var m = /^(\d{10}) 00000 n \n$/.exec(t.substr(first + n * 20, 20));
+      if (!m) { throw new Error("entry " + n + " is malformed"); }
+      var off = Number(m[1]), tag = n + " 0 obj\n";
+      if (t.substr(off, tag.length) !== tag) { throw new Error("object " + n + " is not where the table says"); }
+      var start = off + tag.length, si = t.indexOf("\nstream\n", start), ei = t.indexOf("\nendobj\n", start);
+      var o = { body: t.slice(start, ei), data: null };
+      if (si > -1 && si < ei) {
+        o.body = t.slice(start, si);
+        var len = Number(/\/Length (\d+)/.exec(o.body)[1]);
+        o.data = t.substr(si + 8, len);
+        if (t.substr(si + 8 + len, 18) !== "\nendstream\nendobj\n") { throw new Error("object " + n + " has the wrong /Length"); }
+      }
+      objs[n] = o;
+    }
+    var trailer = t.slice(first + count * 20);
+    var root = objs[Number(/\/Root (\d+) 0 R/.exec(trailer)[1])];
+    var pagesNum = Number(/\/Pages (\d+) 0 R/.exec(root.body)[1]);
+    var kids = /\/Kids \[([^\]]*)\]/.exec(objs[pagesNum].body)[1].match(/\d+ 0 R/g).map(function (k) { return parseInt(k, 10); });
+    var pages = kids.map(function (k) {
+      var body = objs[k].body;
+      var c = /\/Contents (\d+) 0 R/.exec(body);
+      var drawn = c ? (/\(([^)]*)\) Tj/.exec(objs[Number(c[1])].data || "") || [0, "?"])[1] : "?";
+      return { num: k, body: body, drawn: drawn,
+               dests: (body.match(/\/Dest \[(\d+) 0 R/g) || []).map(function (d) { return parseInt(d.slice(7), 10); }) };
+    });
+    return { objs: objs, pages: pages, text: t, drawn: pages.map(function (p) { return p.drawn; }).join(",") };
+  }
+  /* a ZIP reader: walk the local headers of a stored (uncompressed) ZIP */
+  function readZip(bytes) {
+    var view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength), pos = 0, files = [];
+    var decoder = new TextDecoder();
+    while (pos + 30 <= bytes.length && view.getUint32(pos, true) === 0x04034B50) {
+      var method = view.getUint16(pos + 8, true), size = view.getUint32(pos + 18, true);
+      var nameLen = view.getUint16(pos + 26, true), extra = view.getUint16(pos + 28, true);
+      var name = decoder.decode(bytes.subarray(pos + 30, pos + 30 + nameLen));
+      var start = pos + 30 + nameLen + extra;
+      if (method !== 0) { throw new Error("an entry is compressed"); }
+      files.push({ name: name, bytes: bytes.subarray(start, start + size) });
+      pos = start + size;
+    }
+    if (view.getUint32(pos, true) !== 0x02014B50) { throw new Error("the central directory is not where it should be"); }
+    return files;
+  }
+  function download() {
+    var before = window.__saved.length;
+    click("dlBtn");
+    return wait("the files are made", function () { return window.__saved.length === before + 1; }, 30000).then(function () {
+      var saved = window.__saved[window.__saved.length - 1];
+      if (!saved) { return null; }
+      return saved.blob.arrayBuffer().then(function (b) {
+        var bytes = new Uint8Array(b), result = { saved: saved, files: [], error: "" };
+        try {
+          var list = /\.zip$/.test(saved.name) ? readZip(bytes) : [{ name: saved.name, bytes: bytes }];
+          result.files = list.map(function (f) { return { name: f.name, pdf: readOut(f.bytes) }; });
+        } catch (e) { result.error = e.message; }
+        return result;
+      });
+    });
+  }
+  function plannedText() { return Array.prototype.map.call(planned.children, function (li) { return li.textContent; }).join(" | "); }
+
+  var chain = Promise.resolve();
+  function step(fn) { chain = chain.then(fn); }
+
+  /* ================= the page as it opens ================= */
+  eq("it asks for a PDF", txt("msg"), "Choose a PDF to split.");
+  ok("the button starts disabled", document.getElementById("dlBtn").disabled);
+  eq("the tiles start blank", txt("sFiles") + txt("sPages") + txt("sIn"), DASH + DASH + DASH);
+  eq("ranges is the starting choice", val("mode"), "ranges");
+  eq("so its box shows and the part length does not",
+     (getComputedStyle(document.getElementById("rangesField")).display !== "none") + "," + getComputedStyle(document.getElementById("everyField")).display, "true,none");
+  eq("one file at a time", document.getElementById("file").multiple, false);
+
+  /* ================= ranges ================= */
+  step(function () {
+    feed(F.a);
+    return wait("the PDF is read", read, 10000);
+  });
+  step(function () {
+    eq("the ranges box is filled in with a sensible first guess", val("ranges"), "1-2, 3-");
+    eq("which plans two files", plannedText(), "a-report-pages-1-2.pdf " + DASH + " pages 1 to 2 | a-report-page-3.pdf " + DASH + " page 3");
+    eq("the tiles count them", txt("sFiles") + "|" + txt("sPages") + "|" + txt("sIn"), "2|3|" + formatBytes(F.a.size));
+    eq("and the message says so", txt("msg"), "a-report.pdf: 3 pages. 2 PDFs will be made, in one ZIP file.");
+    return download();
+  });
+  step(function (d) {
+    ok("the ZIP and both PDFs in it read back cleanly", d && !d.error && d.files.length === 2, d ? d.error : "nothing saved");
+    if (!d || d.error) { return; }
+    eq("the ZIP is named after the PDF", d.saved.name, "a-report-split.zip");
+    eq("the files in it, in order", d.files.map(function (f) { return f.name; }).join("|"), "a-report-pages-1-2.pdf|a-report-page-3.pdf");
+    eq("the first has pages 1 and 2", d.files[0].pdf.drawn, "A1,A2");
+    eq("the second has page 3", d.files[1].pdf.drawn, "A3");
+    eq("a link between two pages in the same file still works", d.files[0].pdf.pages[0].dests.join(), String(d.files[0].pdf.pages[1].num));
+    eq("a link to a page now in another file goes nowhere", d.files[1].pdf.pages[0].dests.length + "," + /\/Dest \[null/.test(d.files[1].pdf.pages[0].body), "0,true");
+    eq("and it did not drag that page along", (d.files[1].pdf.text.match(/\/Type \/Page\b/g) || []).length, 1);
+    has("the done message counts what was made", txt("msg"), "Done: 2 PDFs in one ZIP file");
+    set("ranges", "2");
+    eq("one range plans one file", plannedText(), "a-report-page-2.pdf " + DASH + " page 2");
+    has("and says so", txt("msg"), "One PDF will be made.");
+    return download();
+  });
+  step(function (d) {
+    eq("one file comes as a PDF, not a ZIP", d.saved.name + "|" + d.saved.blob.type, "a-report-page-2.pdf|application/pdf");
+    eq("with that page", d.files[0].pdf.drawn, "A2");
+    set("ranges", "1, 1");
+    eq("the same range twice gets two names", plannedText(), "a-report-page-1.pdf " + DASH + " page 1 | a-report-page-1 (2).pdf " + DASH + " page 1");
+    set("ranges", "1-2, 2-3");
+    eq("ranges may overlap", txt("sFiles") + "|" + txt("sPages"), "2|4");
+    set("ranges", "-2");
+    eq("an open start runs from page 1", plannedText(), "a-report-pages-1-2.pdf " + DASH + " pages 1 to 2");
+    set("ranges", "2 - 3");
+    eq("spaces around a dash are fine", plannedText(), "a-report-pages-2-3.pdf " + DASH + " pages 2 to 3");
+    set("ranges", "2-");
+    eq("an open end runs to the last page", plannedText(), "a-report-pages-2-3.pdf " + DASH + " pages 2 to 3");
+    set("ranges", "1" + String.fromCharCode(0x2013) + "2");
+    eq("an en dash works like a hyphen", plannedText(), "a-report-pages-1-2.pdf " + DASH + " pages 1 to 2");
+    set("ranges", "2-9");
+    eq("a range that runs past the end is named", txt("msg"), String.fromCharCode(0x201C) + "2-9" + String.fromCharCode(0x201D) + ": this PDF has only 3 pages.");
+    set("ranges", "5");
+    eq("a page that does not exist is named", txt("msg"), String.fromCharCode(0x201C) + "5" + String.fromCharCode(0x201D) + ": this PDF has only 3 pages.");
+    ok("and nothing can be made", document.getElementById("dlBtn").disabled && planned.children.length === 0);
+    eq("and the tiles say so", txt("sFiles") + txt("sPages"), DASH + DASH);
+    set("ranges", "3-1");
+    has("a range written backwards", txt("msg"), ": write the smaller number first, as in 1-3.");
+    set("ranges", "two");
+    has("a word", txt("msg"), "is not a page number or a range like 4-7.");
+    set("ranges", "  ");
+    eq("nothing typed", txt("msg"), "Type at least one page number.");
+    set("ranges", "0");
+    has("page 0", txt("msg"), "pages are numbered from 1.");
+  });
+
+  /* ================= every page, and parts of the same length ================= */
+  step(function () {
+    set("mode", "each");
+    eq("the ranges box hides", getComputedStyle(document.getElementById("rangesField")).display, "none");
+    eq("every page makes three files", txt("sFiles"), "3");
+    return download();
+  });
+  step(function (d) {
+    eq("one per page", d.files.map(function (f) { return f.name + ":" + f.pdf.drawn; }).join("|"), "a-report-page-1.pdf:A1|a-report-page-2.pdf:A2|a-report-page-3.pdf:A3");
+    eq("and none links into another", d.files.every(function (f) { return f.pdf.pages[0].dests.length === 0; }), true);
+    set("mode", "every");
+    eq("the part length shows", getComputedStyle(document.getElementById("everyField")).display !== "none", true);
+    set("every", "2");
+    eq("parts of two: two files, the last shorter", plannedText(), "a-report-pages-1-2.pdf " + DASH + " pages 1 to 2 | a-report-page-3.pdf " + DASH + " page 3");
+    set("every", "5");
+    eq("a part longer than the PDF is the whole PDF", plannedText(), "a-report-pages-1-3.pdf " + DASH + " pages 1 to 3");
+    set("every", "0");
+    eq("zero is refused", txt("msg"), "Type how many pages each file should have, from 1 up.");
+    set("every", "1.5");
+    eq("so is a fraction", txt("msg"), "Type how many pages each file should have, from 1 up.");
+    set("every", "1");
+    eq("one makes a file per page", txt("sFiles"), "3");
+  });
+
+  /* ================= a long plan, a damaged file, files that cannot be used ================= */
+  step(function () {
+    click("resetBtn");
+    eq("clear asks again", txt("msg"), "Choose a PDF to split.");
+    eq("and empties the ranges box", val("ranges"), "");
+    set("mode", "each");
+    feed(F.forty);
+    return wait("forty pages are read", read, 10000);
+  });
+  step(function () {
+    eq("thirty files are named, then the rest are counted", planned.children.length + "|" + planned.lastChild.textContent, "31|and 10 more");
+    return download();
+  });
+  step(function (d) {
+    eq("forty files in the ZIP", d.files.length, 40);
+    eq("each with its own page", d.files.map(function (f) { return f.pdf.drawn; }).join(","),
+       Array.from({ length: 40 }, function (_, i) { return "P" + (i + 1); }).join(","));
+    set("mode", "ranges");
+    feed(F.damaged);
+    return wait("a damaged PDF is read", read, 10000);
+  });
+  step(function () {
+    has("a damaged file is read anyway, and the visitor told", txt("msg"), "scan.pdf: 1 page (damaged, but its pages could be found).");
+    feed(F.notPdf);
+    return wait("a file that is not a PDF is looked at", read, 10000);
+  });
+  step(function () {
+    eq("it is turned away by name", txt("msg"), "Could not use notes.pdf: not a PDF.");
+    ok("with nothing to make", document.getElementById("dlBtn").disabled);
+    eq("and blank tiles", txt("sFiles") + txt("sIn"), DASH + DASH);
+    feed(F.enc);
+    return wait("a protected file is looked at", read, 10000);
+  });
+  step(function () {
+    eq("a protected one too", txt("msg"), "Could not use locked.pdf: protected with a password.");
+    feed(F.hostile);
+    return wait("a file named as markup is read", read, 10000);
+  });
+  step(function () {
+    has("its name is shown as text", plannedText(), "<iframe onload=zq>-page-1.pdf");
+    eq("and made no element", document.querySelectorAll("iframe").length, 0);
+    click("resetBtn");
+    eq("clear empties everything", txt("msg") + "|" + planned.children.length, "Choose a PDF to split.|0");
+  });
+
+  chain.then(function () { finish(); }, function (e) {
+    ok("the test ran to the end", false, String(e && e.stack || e));
+    finish();
+  });
+"""
+
 # ===== END: the test bodies ================================================
 
 
@@ -7614,6 +8217,7 @@ T["image-to-pdf"] = r"""
 # ahead of the real one. A tool that builds four zips can need twenty virtual
 # seconds and two real ones. Ask for more here, per tool; nothing else changes.
 BUDGET_MS = {
+    "split-pdf": 500000,
     "favicon-generator": 40000,
     "image-splitter": 40000,
     "image-metadata-viewer": 40000,
@@ -7623,6 +8227,7 @@ BUDGET_MS = {
     "js-minifier": 30000,
     "markdown-previewer": 60000,
     "image-to-pdf": 500000,
+    "merge-pdf": 500000,
 }
 
 

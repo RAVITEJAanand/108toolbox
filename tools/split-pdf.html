@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Split PDF — Pull Out Pages or Cut a PDF into Parts</title>
+  <meta name="description" content="Split a PDF into single pages, the page ranges you type, or equal parts, in your browser. Nothing is uploaded and every page is kept as it is.">
+  <link rel="canonical" href="https://108toolbox.in/tools/split-pdf.html">
+
+  <meta property="og:title" content="Split PDF — Pull Out Pages or Cut a PDF into Parts">
+  <meta property="og:description" content="Split a PDF into single pages, the page ranges you type, or equal parts, in your browser. Nothing is uploaded and every page is kept as it is.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=32">
+  <link rel="stylesheet" href="../css/tool.css?v=32">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I take out just one or two pages?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Choose Into the page ranges I type and type the pages: 5 gives a file with page 5, and 3-4 a file with pages 3 and 4. Each range you type becomes its own file."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can the same page go into more than one file?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Ranges may overlap: 1-5, 3-8 makes two files that both contain pages 3, 4 and 5."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is the ZIP bigger than my PDF?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Each new file has to carry everything its pages use, fonts included, so a font shared by all the pages is copied into every file. The pages themselves are not changed or compressed."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens to bookmarks and fillable forms?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bookmarks belong to the whole document and are not carried into the parts. Forms keep what was typed in them, but their boxes can no longer be filled in."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I split a password-protected PDF?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, its pages are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and split that copy."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a size limit?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The PDF can be up to 500 MB, and the files made from it can add up to 1 GB, which is about what a browser can safely hold. For more, split into fewer, larger parts."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my PDF uploaded?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The PDF is read and split by JavaScript inside your own browser, and the files are saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=pdf">PDF</a><span>&rsaquo;</span>
+        <span>Split PDF</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Split PDF</h1>
+        <p>Cut one PDF into several: every page on its own, the ranges you type,
+           or parts of the same length. It all happens inside your browser, so
+           the document never leaves your device.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">1. Choose a PDF</span>
+
+          <label class="drop" id="drop" for="file">
+            <span class="drop__big" aria-hidden="true">&#9986;&#65039;</span>
+            <p><strong>Click to choose</strong> or drag a PDF here</p>
+            <p style="margin-top:var(--s1)">One PDF, up to 500 MB</p>
+            <input type="file" id="file" accept="application/pdf,.pdf">
+          </label>
+
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="mode">2. How to split it</label>
+            <select id="mode">
+              <option value="ranges" selected>Into the page ranges I type</option>
+              <option value="each">Every page on its own</option>
+              <option value="every">Into parts of the same length</option>
+            </select>
+          </div>
+
+          <div class="field" id="rangesField">
+            <label for="ranges">Page ranges, one file each</label>
+            <input type="text" id="ranges" placeholder="1-3, 4-8, 9-" autocomplete="off" spellcheck="false">
+            <p class="hint">A comma between files. 9- means page 9 to the end; a single number is a single page.</p>
+          </div>
+
+          <div class="field" id="everyField">
+            <label for="every">Pages in each part</label>
+            <input type="number" id="every" min="1" value="2">
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">3. The new files</span>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sFiles">&mdash;</span><span class="stat__label">Files</span></div>
+            <div class="stat"><span class="stat__num" id="sPages">&mdash;</span><span class="stat__label">Pages in them</span></div>
+            <div class="stat"><span class="stat__num" id="sIn">&mdash;</span><span class="stat__label">The PDF</span></div>
+          </div>
+
+          <ol class="plan-list" id="planned" aria-label="The files that will be made"></ol>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Split and download</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Clear</button>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>Three ways to split</h2>
+        <p><strong>Into the page ranges I type</strong> makes one file for
+           each range: 1-3, 4-8, 9- gives three files, the last running from
+           page 9 to the end. A single number is a single page, so typing just
+           7 pulls page 7 out on its own. <strong>Every page on its
+           own</strong> makes one file per page. <strong>Into parts of the
+           same length</strong> cuts the document every so many pages; the
+           last part takes whatever is left. More than one file comes as a
+           single ZIP, because browsers will not save dozens of downloads at
+           once.</p>
+
+        <h2>Every file is complete, and nothing is redrawn</h2>
+        <p>The pages are copied exactly as they were: text stays text you
+           can select, pictures are not compressed again. Each new file carries
+           everything its pages need, fonts included, so it opens on its own.
+           That is also why ten files cut from one PDF can add up to more than
+           the original: each of them has its own copy of the fonts. A link
+           from one page to another still works when both pages land in the
+           same file, and does nothing when they do not.</p>
+
+        <h2>Why it matters that nothing is uploaded</h2>
+        <p>Splitting is often how people send one page of something private:
+           a single month from a bank statement, one page of a contract, the
+           page of a report that matters. This page does the cutting inside
+           your browser and saves the files straight to your device; the
+           document is never sent anywhere.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How do I take out just one or two pages?</h3>
+          <p>Choose Into the page ranges I type and type the pages: 5 gives a file with page 5, and 3-4 a file with pages 3 and 4. Each range you type becomes its own file.</p>
+        </div>
+        <div class="faq">
+          <h3>Can the same page go into more than one file?</h3>
+          <p>Yes. Ranges may overlap: 1-5, 3-8 makes two files that both contain pages 3, 4 and 5.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is the ZIP bigger than my PDF?</h3>
+          <p>Each new file has to carry everything its pages use, fonts included, so a font shared by all the pages is copied into every file. The pages themselves are not changed or compressed.</p>
+        </div>
+        <div class="faq">
+          <h3>What happens to bookmarks and fillable forms?</h3>
+          <p>Bookmarks belong to the whole document and are not carried into the parts. Forms keep what was typed in them, but their boxes can no longer be filled in.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I split a password-protected PDF?</h3>
+          <p>No, its pages are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and split that copy.</p>
+        </div>
+        <div class="faq">
+          <h3>Is there a size limit?</h3>
+          <p>The PDF can be up to 500 MB, and the files made from it can add up to 1 GB, which is about what a browser can safely hold. For more, split into fewer, larger parts.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my PDF uploaded?</h3>
+          <p>No. The PDF is read and split by JavaScript inside your own browser, and the files are saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=pdf">PDF tools</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+            <li><a href="../tools.html?q=random">Random tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=32"></script>
+  <script src="../js/tool-helpers.js?v=32"></script>
+  <script>window.CURRENT_TOOL = "split-pdf";</script>
+  <script src="../js/main.js?v=32"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var fileInput = document.getElementById("file");
+    var drop      = document.getElementById("drop");
+    var modeSel   = document.getElementById("mode");
+    var rangesIn  = document.getElementById("ranges");
+    var everyIn   = document.getElementById("every");
+    var plannedEl = document.getElementById("planned");
+    var dlBtn     = document.getElementById("dlBtn");
+    var msg       = document.getElementById("msg");
+    var DASH      = String.fromCharCode(0x2014);
+
+    var MAX_INPUT  = 500 * 1024 * 1024;   /* what a phone's browser can hold twice over */
+    var MAX_OUTPUT = 1024 * 1024 * 1024;  /* every file has its own fonts, so the parts can add up to more */
+    var SHOWN      = 30;                  /* names listed before "and N more" */
+
+    var current = null;        /* { name, size, doc, pages } */
+    var groups = null;         /* [[first, last], ...] for the current settings */
+    var generation = 0;
+    var busy = false;
+    var problem = "";          /* why the last chosen file could not be used */
+
+    /* ---- START: writing a PDF file ----
+       A PDF is a header, a list of numbered objects, and at the end a table
+       (the "xref") giving the byte position where each object starts. A
+       reader jumps straight to an object through that table, so the
+       positions must be exact to the byte. This writer keeps count of every
+       byte it emits, so it always knows them.
+
+       The file is kept as a list of pieces rather than one big array, so a
+       PDF of many large photos never needs a second copy of itself in
+       memory: the pieces go straight into a Blob. */
+    function PdfWriter() {
+      this.parts = [];
+      this.length = 0;
+      this.offsets = [];
+      this.count = 0;
+    }
+
+    /* text here is always plain ASCII: names, numbers and operators */
+    PdfWriter.prototype.text = function (s) {
+      this.bytes(pdfBytes(s));
+    };
+
+    PdfWriter.prototype.bytes = function (u8) {
+      this.parts.push(u8);
+      this.length += u8.length;
+    };
+
+    /* the number the next object will have; it must be written later */
+    PdfWriter.prototype.reserve = function () {
+      this.count += 1;
+      return this.count;
+    };
+
+    /* "%PDF-1.4", then a comment of four bytes above 127, which tells any
+       program that copies the file that it is binary and must not be
+       "fixed" as text */
+    PdfWriter.prototype.header = function (version) {
+      this.text("%PDF-" + (version || "1.4") + "\n");
+      this.bytes(new Uint8Array([0x25, 0xE2, 0xE3, 0xCF, 0xD3, 0x0A]));
+    };
+
+    /* one object: its dictionary (or other value) and, for a stream, its bytes */
+    PdfWriter.prototype.object = function (num, value, stream) {
+      if (this.offsets[num] !== undefined) { throw new Error("object " + num + " written twice"); }
+      this.offsets[num] = this.length;
+      this.text(num + " 0 obj\n" + value);
+      if (stream) {
+        this.text("\nstream\n");
+        this.bytes(stream);
+        this.text("\nendstream");
+      }
+      this.text("\nendobj\n");
+    };
+
+    /* the cross-reference table and the trailer; returns the finished pieces */
+    PdfWriter.prototype.finish = function (rootNum, infoNum) {
+      var start = this.length;
+      var lines = ["xref\n0 " + (this.count + 1) + "\n0000000000 65535 f \n"];
+      for (var n = 1; n <= this.count; n++) {
+        if (this.offsets[n] === undefined) { throw new Error("object " + n + " was reserved but never written"); }
+        lines.push(("0000000000" + this.offsets[n]).slice(-10) + " 00000 n \n");
+      }
+      this.text(lines.join(""));
+      this.text("trailer\n<< /Size " + (this.count + 1) + " /Root " + rootNum + " 0 R" +
+                (infoNum ? " /Info " + infoNum + " 0 R" : "") + " >>\nstartxref\n" + start + "\n%%EOF\n");
+      return this.parts;
+    };
+
+    /* the bytes of a string of ASCII text */
+    function pdfBytes(s) {
+      var out = new Uint8Array(s.length);
+      for (var i = 0; i < s.length; i++) { out[i] = s.charCodeAt(i) & 0xFF; }
+      return out;
+    }
+
+    /* A number as a PDF wants it: at most four decimals, never an exponent
+       (1e-7 is not valid PDF), never "-0". */
+    function pdfNum(x) {
+      var r = Math.round(x * 10000) / 10000;
+      if (r === 0) { return "0"; }
+      var s = r.toFixed(4).replace(/0+$/, "").replace(/\.$/, "");
+      return s;
+    }
+    /* ---- END: writing a PDF file ---- */
+
+    /* ---- START: unpacking Flate data (zlib), written out in full ----
+       Inside a PDF, the cross-reference table and many objects are packed
+       with Flate, the same method as ZIP files. The browser has an unpacker,
+       but it refuses data with a damaged ending, which old PDFs often have,
+       and it only works asynchronously. This one follows the published
+       standard (RFC 1950 and 1951) the way the short reference decoder by
+       its author does: read a bit at a time, decode Huffman codes by
+       counting. It keeps whatever it unpacked before any damage, and it
+       stops at a size limit so a booby-trapped file cannot fill the memory. */
+    var LEN_BASE = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258];
+    var LEN_EXTRA = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0];
+    var DIST_BASE = [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537,
+                     2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577];
+    var DIST_EXTRA = [0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13];
+    var CODE_ORDER = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15];
+    var INFLATE_LIMIT = 512 * 1024 * 1024;
+
+    /* a canonical Huffman code from its code lengths: how many codes of each
+       length, and the symbols in code order */
+    function huffmanTable(lengths, start, n) {
+      var counts = new Uint16Array(16);
+      var symbols = new Uint16Array(n);
+      var offsets = new Uint16Array(16);
+      var i;
+      for (i = 0; i < n; i++) { counts[lengths[start + i]] += 1; }
+      counts[0] = 0;
+      for (i = 1; i < 16; i++) { offsets[i] = offsets[i - 1] + counts[i - 1]; }
+      for (i = 0; i < n; i++) {
+        var len = lengths[start + i];
+        if (len) { symbols[offsets[len]++] = i; }
+      }
+      return { counts: counts, symbols: symbols };
+    }
+
+    var FIXED_TABLES = (function () {
+      var lengths = new Uint8Array(288 + 30);
+      for (var i = 0; i < 288; i++) { lengths[i] = i < 144 ? 8 : i < 256 ? 9 : i < 280 ? 7 : 8; }
+      for (var j = 288; j < 318; j++) { lengths[j] = 5; }
+      return { lit: huffmanTable(lengths, 0, 288), dist: huffmanTable(lengths, 288, 30) };
+    })();
+
+    function inflateBytes(data) {
+      var pos = 0;
+      var bitBuf = 0;
+      var bitCnt = 0;
+      var out = new Uint8Array(Math.max(4096, Math.min(data.length * 4, 64 * 1024 * 1024)));
+      var outLen = 0;
+
+      /* zlib's two-byte header, if there is one; some producers write raw deflate */
+      if (data.length >= 2 && (data[0] & 0x0F) === 8 && (data[0] >> 4) <= 7 &&
+          ((data[0] << 8) | data[1]) % 31 === 0 && (data[1] & 0x20) === 0) {
+        pos = 2;
+      }
+
+      function fail(why) { var e = new Error(why); e.inflateError = true; throw e; }
+      function bit() {
+        if (bitCnt === 0) {
+          if (pos >= data.length) { fail("the packed data ends too soon"); }
+          bitBuf = data[pos++];
+          bitCnt = 8;
+        }
+        var b = bitBuf & 1;
+        bitBuf >>= 1;
+        bitCnt -= 1;
+        return b;
+      }
+      function bits(n) {
+        var v = 0;
+        for (var i = 0; i < n; i++) { v |= bit() << i; }
+        return v;
+      }
+      function room(n) {
+        if (outLen + n <= out.length) { return; }
+        if (outLen + n > INFLATE_LIMIT) {
+          var tooBig = new Error("the packed data unpacks to more than 512 MB");
+          tooBig.tooBig = true;
+          throw tooBig;
+        }
+        var bigger = new Uint8Array(Math.min(INFLATE_LIMIT, Math.max(out.length * 2, outLen + n)));
+        bigger.set(out.subarray(0, outLen));
+        out = bigger;
+      }
+      function decode(table) {
+        var code = 0, first = 0, index = 0;
+        for (var len = 1; len < 16; len++) {
+          code |= bit();
+          var count = table.counts[len];
+          if (code - count < first) { return table.symbols[index + (code - first)]; }
+          index += count;
+          first += count;
+          first <<= 1;
+          code <<= 1;
+        }
+        fail("a code that is not in the table");
+      }
+      function codes(lit, dist) {
+        for (;;) {
+          var sym = decode(lit);
+          if (sym < 256) {
+            room(1);
+            out[outLen++] = sym;
+          } else if (sym === 256) {
+            return;
+          } else {
+            sym -= 257;
+            if (sym >= 29) { fail("a length code out of range"); }
+            var len = LEN_BASE[sym] + bits(LEN_EXTRA[sym]);
+            var dsym = decode(dist);
+            if (dsym >= 30) { fail("a distance code out of range"); }
+            var back = DIST_BASE[dsym] + bits(DIST_EXTRA[dsym]);
+            if (back > outLen) { fail("a distance further back than the start"); }
+            room(len);
+            for (var k = 0; k < len; k++) { out[outLen] = out[outLen - back]; outLen++; }
+          }
+        }
+      }
+      function dynamicTables() {
+        var nlen = bits(5) + 257;
+        var ndist = bits(5) + 1;
+        var ncode = bits(4) + 4;
+        if (nlen > 286 || ndist > 30) { fail("too many codes"); }
+        var lengths = new Uint8Array(320);
+        var i;
+        for (i = 0; i < ncode; i++) { lengths[CODE_ORDER[i]] = bits(3); }
+        var lencode = huffmanTable(lengths, 0, 19);
+        var all = new Uint8Array(nlen + ndist);
+        i = 0;
+        while (i < nlen + ndist) {
+          var sym = decode(lencode);
+          if (sym < 16) {
+            all[i++] = sym;
+          } else {
+            var value = 0, repeat;
+            if (sym === 16) {
+              if (i === 0) { fail("a repeat with nothing before it"); }
+              value = all[i - 1];
+              repeat = 3 + bits(2);
+            } else if (sym === 17) {
+              repeat = 3 + bits(3);
+            } else {
+              repeat = 11 + bits(7);
+            }
+            if (i + repeat > nlen + ndist) { fail("too many code lengths"); }
+            while (repeat--) { all[i++] = value; }
+          }
+        }
+        if (all[256] === 0) { fail("no end-of-block code"); }
+        return { lit: huffmanTable(all, 0, nlen), dist: huffmanTable(all, nlen, ndist) };
+      }
+
+      var complete = false;
+      try {
+        var last = 0;
+        while (!last) {
+          last = bit();
+          var type = bits(2);
+          if (type === 0) {
+            bitBuf = 0;
+            bitCnt = 0;
+            if (pos + 4 > data.length) { fail("the packed data ends too soon"); }
+            var len = data[pos] | (data[pos + 1] << 8);
+            var nlen = data[pos + 2] | (data[pos + 3] << 8);
+            pos += 4;
+            if (len !== (~nlen & 0xFFFF)) { fail("a stored block with a damaged length"); }
+            if (pos + len > data.length) { fail("the packed data ends too soon"); }
+            room(len);
+            out.set(data.subarray(pos, pos + len), outLen);
+            outLen += len;
+            pos += len;
+          } else if (type === 1) {
+            codes(FIXED_TABLES.lit, FIXED_TABLES.dist);
+          } else if (type === 2) {
+            var tables = dynamicTables();
+            codes(tables.lit, tables.dist);
+          } else {
+            fail("a block of an unknown kind");
+          }
+        }
+        complete = true;
+      } catch (error) {
+        if (!error.inflateError) { throw error; }
+        if (outLen === 0) { throw error; }
+      }
+      var result = out.slice(0, outLen);
+      result.complete = complete;
+      return result;
+    }
+    /* ---- END: unpacking Flate data (zlib), written out in full ---- */
+
+    /* ---- START: the kinds of value inside a PDF ----
+       A PDF object is a number, a name (/Type), a string, an array, a
+       dictionary (<< /Key value >>), a stream (a dictionary with bytes after
+       it), true, false, null, or a reference ("12 0 R") to a numbered object
+       elsewhere in the file. Numbers, booleans and arrays are kept as plain
+       JavaScript values; the rest get a small type of their own. */
+    function PdfName(name) { this.name = name; }
+    function PdfRef(num, gen) { this.num = num; this.gen = gen; }
+    function PdfString(bytes, hex) { this.bytes = bytes; this.hex = !!hex; }
+    function PdfStream(dict, data) { this.dict = dict; this.data = data; }
+    function PdfDict() { this.map = new Map(); }
+    PdfDict.prototype.get = function (key) { return this.map.has(key) ? this.map.get(key) : undefined; };
+    PdfDict.prototype.set = function (key, value) { this.map.set(key, value); return this; };
+    PdfDict.prototype.has = function (key) { return this.map.has(key); };
+    PdfDict.prototype.remove = function (key) { this.map.delete(key); };
+    PdfDict.prototype.keys = function () { return Array.from(this.map.keys()); };
+    var PDF_NULL = { pdfNull: true };
+
+    function isName(v, name) { return v instanceof PdfName && (name === undefined || v.name === name); }
+    function pdfError(message) { var e = new Error(message); e.pdfError = true; return e; }
+    /* ---- END: the kinds of value inside a PDF ---- */
+
+    /* ---- START: reading the characters of a PDF ---- */
+    var WHITE = new Uint8Array(256);
+    var DELIM = new Uint8Array(256);
+    [0, 9, 10, 12, 13, 32].forEach(function (c) { WHITE[c] = 1; });
+    [40, 41, 60, 62, 91, 93, 123, 125, 47, 37].forEach(function (c) { DELIM[c] = 1; });
+
+    function PdfLexer(bytes, pos) {
+      this.b = bytes;
+      this.pos = pos || 0;
+    }
+
+    PdfLexer.prototype.skipSpace = function () {
+      var b = this.b;
+      while (this.pos < b.length) {
+        var c = b[this.pos];
+        if (WHITE[c]) { this.pos++; }
+        else if (c === 37) {
+          while (this.pos < b.length && b[this.pos] !== 10 && b[this.pos] !== 13) { this.pos++; }
+        } else { break; }
+      }
+    };
+
+    /* the next token: a number, a name, a string, a delimiter or a word */
+    PdfLexer.prototype.token = function () {
+      this.skipSpace();
+      var b = this.b;
+      if (this.pos >= b.length) { return null; }
+      var c = b[this.pos];
+      if (c === 91 || c === 93 || c === 123 || c === 125) { this.pos++; return { t: String.fromCharCode(c) }; }
+      if (c === 60) {
+        if (b[this.pos + 1] === 60) { this.pos += 2; return { t: "<<" }; }
+        return { t: "str", v: this.hexString() };
+      }
+      if (c === 62) {
+        if (b[this.pos + 1] === 62) { this.pos += 2; return { t: ">>" }; }
+        this.pos++;
+        return { t: "junk" };
+      }
+      if (c === 40) { return { t: "str", v: this.literalString() }; }
+      if (c === 47) { return { t: "name", v: this.name() }; }
+      var start = this.pos;
+      while (this.pos < b.length && !WHITE[b[this.pos]] && !DELIM[b[this.pos]]) { this.pos++; }
+      if (this.pos === start) { this.pos++; return { t: "junk" }; }
+      var word = "";
+      for (var i = start; i < this.pos; i++) { word += String.fromCharCode(b[i]); }
+      if (/^[+-]?(\d+\.?\d*|\.\d+)$/.test(word)) { return { t: "num", v: parseFloat(word), int: /^[+-]?\d+$/.test(word) }; }
+      if (/^[+-]{2,}\d/.test(word)) { return { t: "num", v: parseFloat(word.replace(/^[+-]+/, "-")), int: false }; }
+      return { t: "word", v: word };
+    };
+
+    PdfLexer.prototype.name = function () {
+      var b = this.b;
+      this.pos++;
+      var out = "";
+      while (this.pos < b.length && !WHITE[b[this.pos]] && !DELIM[b[this.pos]]) {
+        var c = b[this.pos];
+        if (c === 35 && this.pos + 2 < b.length && /^[0-9A-Fa-f]{2}$/.test(String.fromCharCode(b[this.pos + 1], b[this.pos + 2]))) {
+          out += String.fromCharCode(parseInt(String.fromCharCode(b[this.pos + 1], b[this.pos + 2]), 16));
+          this.pos += 3;
+        } else {
+          out += String.fromCharCode(c);
+          this.pos++;
+        }
+      }
+      return new PdfName(out);
+    };
+
+    PdfLexer.prototype.literalString = function () {
+      var b = this.b;
+      this.pos++;
+      var out = [];
+      var depth = 1;
+      while (this.pos < b.length) {
+        var c = b[this.pos++];
+        if (c === 40) { depth++; out.push(c); }
+        else if (c === 41) { depth--; if (depth === 0) { break; } out.push(c); }
+        else if (c === 92) {
+          if (this.pos >= b.length) { break; }
+          var e = b[this.pos++];
+          if (e === 110) { out.push(10); }
+          else if (e === 114) { out.push(13); }
+          else if (e === 116) { out.push(9); }
+          else if (e === 98) { out.push(8); }
+          else if (e === 102) { out.push(12); }
+          else if (e === 13) { if (b[this.pos] === 10) { this.pos++; } }
+          else if (e === 10) { /* a backslash at the end of a line joins the lines */ }
+          else if (e >= 48 && e <= 55) {
+            var v = e - 48;
+            for (var k = 0; k < 2 && b[this.pos] >= 48 && b[this.pos] <= 55; k++) { v = v * 8 + b[this.pos++] - 48; }
+            out.push(v & 0xFF);
+          } else { out.push(e); }
+        } else if (c === 13) {
+          /* a bare end of line inside a string counts as one line feed */
+          if (b[this.pos] === 10) { this.pos++; }
+          out.push(10);
+        } else { out.push(c); }
+      }
+      return new PdfString(new Uint8Array(out), false);
+    };
+
+    PdfLexer.prototype.hexString = function () {
+      var b = this.b;
+      this.pos++;
+      var out = [];
+      var high = -1;
+      while (this.pos < b.length) {
+        var c = b[this.pos++];
+        if (c === 62) { break; }
+        var d = c >= 48 && c <= 57 ? c - 48 : c >= 65 && c <= 70 ? c - 55 : c >= 97 && c <= 102 ? c - 87 : -1;
+        if (d < 0) { continue; }
+        if (high < 0) { high = d; } else { out.push(high * 16 + d); high = -1; }
+      }
+      if (high >= 0) { out.push(high * 16); }
+      return new PdfString(new Uint8Array(out), true);
+    };
+
+    /* One value, with "12 0 R" read as a reference. Depth is limited so a
+       file of a million "[" cannot use up the stack. */
+    PdfLexer.prototype.value = function (depth) {
+      depth = depth || 0;
+      if (depth > 200) { throw pdfError("values nested too deeply"); }
+      var tok = this.token();
+      if (!tok) { throw pdfError("the file ends in the middle of a value"); }
+      return this.fromToken(tok, depth);
+    };
+
+    PdfLexer.prototype.fromToken = function (tok, depth) {
+      if (tok.t === "num") {
+        if (tok.int && tok.v >= 0) {
+          var save = this.pos;
+          var t2 = this.token();
+          if (t2 && t2.t === "num" && t2.int && t2.v >= 0) {
+            var t3 = this.token();
+            if (t3 && t3.t === "word" && t3.v === "R") { return new PdfRef(tok.v, t2.v); }
+          }
+          this.pos = save;
+        }
+        return tok.v;
+      }
+      if (tok.t === "name") { return tok.v; }
+      if (tok.t === "str") { return tok.v; }
+      if (tok.t === "[") {
+        var arr = [];
+        for (;;) {
+          var t = this.token();
+          if (!t) { throw pdfError("an array that never ends"); }
+          if (t.t === "]") { break; }
+          if (t.t === "word" && (t.v === "endobj" || t.v === "stream")) { throw pdfError("an array that never ends"); }
+          arr.push(this.fromToken(t, depth + 1));
+        }
+        return arr;
+      }
+      if (tok.t === "<<") {
+        var dict = new PdfDict();
+        for (;;) {
+          var k = this.token();
+          if (!k) { throw pdfError("a dictionary that never ends"); }
+          if (k.t === ">>") { break; }
+          if (k.t === "word" && (k.v === "endobj" || k.v === "stream")) { throw pdfError("a dictionary that never ends"); }
+          if (k.t !== "name") { continue; }
+          var vt = this.token();
+          if (!vt) { throw pdfError("a dictionary that never ends"); }
+          if (vt.t === ">>") { dict.set(k.v.name, PDF_NULL); break; }
+          dict.set(k.v.name, this.fromToken(vt, depth + 1));
+        }
+        return dict;
+      }
+      if (tok.t === "word") {
+        if (tok.v === "true") { return true; }
+        if (tok.v === "false") { return false; }
+        if (tok.v === "null") { return PDF_NULL; }
+        return { pdfWord: tok.v };
+      }
+      return PDF_NULL;
+    };
+    /* ---- END: reading the characters of a PDF ---- */
+
+    /* ---- START: unpacking a stream's bytes ----
+       Only what is needed to read the file's own structure: Flate (with the
+       PNG and TIFF row predictors the cross-reference streams use), LZW,
+       and the two text encodings. Pages' drawings and pictures are never
+       unpacked: they are copied as they are. */
+    function decodeStream(doc, stream) {
+      var filters = doc.resolve(stream.dict.get("Filter"));
+      var parms = doc.resolve(stream.dict.get("DecodeParms"));
+      if (filters === undefined || filters === PDF_NULL) { return stream.data; }
+      if (!Array.isArray(filters)) { filters = [filters]; parms = [parms]; }
+      if (!Array.isArray(parms)) { parms = [parms]; }
+      var data = stream.data;
+      for (var i = 0; i < filters.length; i++) {
+        var f = doc.resolve(filters[i]);
+        var p = doc.resolve(parms[i]);
+        var name = f instanceof PdfName ? f.name : "";
+        if (name === "FlateDecode" || name === "Fl") { data = applyPredictor(doc, inflateBytes(data), p); }
+        else if (name === "LZWDecode" || name === "LZW") { data = applyPredictor(doc, lzwDecode(data, p instanceof PdfDict ? doc.resolve(p.get("EarlyChange")) : 1), p); }
+        else if (name === "ASCIIHexDecode" || name === "AHx") { data = asciiHexDecode(data); }
+        else if (name === "ASCII85Decode" || name === "A85") { data = ascii85Decode(data); }
+        else { throw pdfError("this PDF packs its structure with " + (name || "an unknown method") + ", which this page cannot read"); }
+      }
+      return data;
+    }
+
+    function applyPredictor(doc, data, parms) {
+      if (!(parms instanceof PdfDict)) { return data; }
+      var predictor = doc.resolve(parms.get("Predictor")) || 1;
+      if (predictor === 1) { return data; }
+      var colors = doc.resolve(parms.get("Colors")) || 1;
+      var bpc = doc.resolve(parms.get("BitsPerComponent")) || 8;
+      var columns = doc.resolve(parms.get("Columns")) || 1;
+      var bpp = Math.max(1, Math.ceil(colors * bpc / 8));
+      var rowLen = Math.ceil(colors * bpc * columns / 8);
+      if (predictor === 2) {
+        if (bpc !== 8) { throw pdfError("a TIFF predictor this page cannot undo"); }
+        var outT = new Uint8Array(data);
+        for (var r = 0; r + rowLen <= outT.length; r += rowLen) {
+          for (var x = bpp; x < rowLen; x++) { outT[r + x] = (outT[r + x] + outT[r + x - bpp]) & 0xFF; }
+        }
+        return outT;
+      }
+      var rows = Math.floor(data.length / (rowLen + 1));
+      var out = new Uint8Array(rows * rowLen);
+      var prev = new Uint8Array(rowLen);
+      for (var row = 0; row < rows; row++) {
+        var type = data[row * (rowLen + 1)];
+        var src = row * (rowLen + 1) + 1;
+        var dst = row * rowLen;
+        for (var i = 0; i < rowLen; i++) {
+          var raw = data[src + i];
+          var left = i >= bpp ? out[dst + i - bpp] : 0;
+          var up = prev[i];
+          var upLeft = i >= bpp ? prev[i - bpp] : 0;
+          var v;
+          if (type === 0) { v = raw; }
+          else if (type === 1) { v = raw + left; }
+          else if (type === 2) { v = raw + up; }
+          else if (type === 3) { v = raw + ((left + up) >> 1); }
+          else if (type === 4) {
+            var pa = Math.abs(up - upLeft), pb = Math.abs(left - upLeft), pc = Math.abs(left + up - 2 * upLeft);
+            v = raw + (pa <= pb && pa <= pc ? left : pb <= pc ? up : upLeft);
+          } else { throw pdfError("a row predictor this page cannot undo"); }
+          out[dst + i] = v & 0xFF;
+        }
+        prev = out.subarray(dst, dst + rowLen);
+      }
+      return out;
+    }
+
+    function lzwDecode(data, earlyChange) {
+      var early = earlyChange === 0 ? 0 : 1;
+      var out = [];
+      var table = [];
+      var codeLen = 9, bitPos = 0, prev = null;
+      function reset() { table = []; for (var i = 0; i < 256; i++) { table.push([i]); } table.push(null, null); codeLen = 9; }
+      reset();
+      while (bitPos + codeLen <= data.length * 8) {
+        var code = 0;
+        for (var k = 0; k < codeLen; k++) {
+          code = (code << 1) | ((data[(bitPos + k) >> 3] >> (7 - ((bitPos + k) & 7))) & 1);
+        }
+        bitPos += codeLen;
+        if (code === 256) { reset(); prev = null; continue; }
+        if (code === 257) { break; }
+        var entry;
+        if (code < table.length && table[code]) { entry = table[code]; }
+        else if (prev && code === table.length) { entry = prev.concat([prev[0]]); }
+        else { break; }
+        for (var j = 0; j < entry.length; j++) { out.push(entry[j]); }
+        if (prev) { table.push(prev.concat([entry[0]])); }
+        prev = entry;
+        if (table.length + early >= (1 << codeLen) && codeLen < 12) { codeLen++; }
+        if (out.length > INFLATE_LIMIT) { throw pdfError("the packed data unpacks to more than 512 MB"); }
+      }
+      return new Uint8Array(out);
+    }
+
+    function asciiHexDecode(data) {
+      var out = [], high = -1;
+      for (var i = 0; i < data.length; i++) {
+        var c = data[i];
+        if (c === 62) { break; }
+        var d = c >= 48 && c <= 57 ? c - 48 : c >= 65 && c <= 70 ? c - 55 : c >= 97 && c <= 102 ? c - 87 : -1;
+        if (d < 0) { continue; }
+        if (high < 0) { high = d; } else { out.push(high * 16 + d); high = -1; }
+      }
+      if (high >= 0) { out.push(high * 16); }
+      return new Uint8Array(out);
+    }
+
+    function ascii85Decode(data) {
+      var out = [], group = [];
+      for (var i = 0; i < data.length; i++) {
+        var c = data[i];
+        if (c === 126) { break; }
+        if (WHITE[c]) { continue; }
+        if (c === 122 && group.length === 0) { out.push(0, 0, 0, 0); continue; }
+        if (c < 33 || c > 117) { continue; }
+        group.push(c - 33);
+        if (group.length === 5) {
+          var v = (((group[0] * 85 + group[1]) * 85 + group[2]) * 85 + group[3]) * 85 + group[4];
+          out.push((v >>> 24) & 255, (v >>> 16) & 255, (v >>> 8) & 255, v & 255);
+          group = [];
+        }
+      }
+      if (group.length > 1) {
+        var n = group.length;
+        while (group.length < 5) { group.push(84); }
+        var w = (((group[0] * 85 + group[1]) * 85 + group[2]) * 85 + group[3]) * 85 + group[4];
+        var tail = [(w >>> 24) & 255, (w >>> 16) & 255, (w >>> 8) & 255, w & 255];
+        for (var t = 0; t < n - 1; t++) { out.push(tail[t]); }
+      }
+      return new Uint8Array(out);
+    }
+    /* ---- END: unpacking a stream's bytes ---- */
+
+    /* ---- START: opening a PDF file ----
+       The end of the file says where the cross-reference table starts; the
+       table says where every numbered object starts; each newer table
+       points back to the one it updates (/Prev). Read newest first, so the
+       newest version of each object wins. If any of that is broken, the
+       whole file is scanned for "N 0 obj" instead, which is how a damaged
+       PDF still opens. */
+    function PdfDocument(bytes) {
+      this.bytes = bytes;
+      this.entries = new Map();
+      this.cache = new Map();
+      this.objStreams = new Map();
+      this.trailer = null;
+      this.repaired = false;
+      this.lastXrefIsStream = false;
+      this.startxref = -1;
+      this.version = "1.4";
+      var head = latin1Slice(bytes, 0, Math.min(bytes.length, 1024));
+      var hv = /%PDF-(\d\.\d)/.exec(head);
+      if (!hv) { throw pdfError("this is not a PDF file"); }
+      this.version = hv[1];
+      try {
+        this.readXrefChain();
+        this.checkRoot();
+      } catch (error) {
+        if (!error.pdfError && !error.inflateError) { throw error; }
+        this.repair();
+        this.checkRoot();
+      }
+      this.encrypted = this.trailer.has("Encrypt");
+    }
+
+    function latin1Slice(bytes, start, end) {
+      var parts = [];
+      for (var i = start; i < end; i += 32768) {
+        parts.push(String.fromCharCode.apply(null, bytes.subarray(i, Math.min(end, i + 32768))));
+      }
+      return parts.join("");
+    }
+
+    PdfDocument.prototype.readXrefChain = function () {
+      var tail = latin1Slice(this.bytes, Math.max(0, this.bytes.length - 2048), this.bytes.length);
+      var at = tail.lastIndexOf("startxref");
+      if (at < 0) { throw pdfError("no startxref"); }
+      var m = /^startxref\s+(\d+)/.exec(tail.slice(at));
+      if (!m) { throw pdfError("no startxref"); }
+      var offset = Number(m[1]);
+      this.startxref = offset;
+      var seen = new Set();
+      var first = true;
+      while (offset >= 0 && !seen.has(offset)) {
+        if (seen.size > 1000) { throw pdfError("too many cross-reference sections"); }
+        seen.add(offset);
+        if (offset >= this.bytes.length) { throw pdfError("a cross-reference offset beyond the end of the file"); }
+        var lx = new PdfLexer(this.bytes, offset);
+        lx.skipSpace();
+        var trailer, isStream;
+        var section = new Map();
+        if (latin1Slice(this.bytes, lx.pos, lx.pos + 4) === "xref") {
+          lx.pos += 4;
+          trailer = this.readXrefTable(lx, section);
+          isStream = false;
+          /* A "hybrid" file: the table lists the packed objects as free, so
+             that old readers skip them, and /XRefStm says where they really
+             are. Within this one section the stream overrides those frees. */
+          var xrefStm = trailer.get("XRefStm");
+          if (typeof xrefStm === "number" && !seen.has(xrefStm)) {
+            var hidden = new Map();
+            this.readXrefStream(xrefStm, hidden);
+            hidden.forEach(function (e, num) {
+              var own = section.get(num);
+              if (!own || own.type === 0) { section.set(num, e); }
+            });
+          }
+        } else {
+          trailer = this.readXrefStream(offset, section);
+          isStream = true;
+        }
+        /* between sections, the newer one (read first) wins */
+        var entries = this.entries;
+        section.forEach(function (e, num) { if (!entries.has(num)) { entries.set(num, e); } });
+        if (first) {
+          this.trailer = trailer;
+          this.lastXrefIsStream = isStream;
+          first = false;
+        }
+        var prev = trailer.get("Prev");
+        offset = typeof prev === "number" ? prev : -1;
+      }
+    };
+
+    PdfDocument.prototype.readXrefTable = function (lx, section) {
+      for (;;) {
+        var t = lx.token();
+        if (!t) { throw pdfError("a cross-reference table with no trailer"); }
+        if (t.t === "word" && t.v === "trailer") { break; }
+        if (t.t !== "num") { throw pdfError("a damaged cross-reference table"); }
+        var startNum = t.v;
+        var countTok = lx.token();
+        if (!countTok || countTok.t !== "num") { throw pdfError("a damaged cross-reference table"); }
+        for (var i = 0; i < countTok.v; i++) {
+          var off = lx.token(), gen = lx.token(), kind = lx.token();
+          if (!off || !gen || !kind || off.t !== "num" || gen.t !== "num" || kind.t !== "word") { throw pdfError("a damaged cross-reference entry"); }
+          var num = startNum + i;
+          if (!section.has(num)) {
+            if (kind.v === "n") { section.set(num, { type: 1, offset: off.v, gen: gen.v }); }
+            else { section.set(num, { type: 0 }); }
+          }
+        }
+      }
+      var trailer = lx.value();
+      if (!(trailer instanceof PdfDict)) { throw pdfError("a damaged trailer"); }
+      return trailer;
+    };
+
+    PdfDocument.prototype.readXrefStream = function (offset, section) {
+      var obj = this.parseObjectAt(offset, null);
+      if (!(obj instanceof PdfStream) || !isName(obj.dict.get("Type"), "XRef")) { throw pdfError("the cross-reference stream is not where the file says"); }
+      var dict = obj.dict;
+      var w = dict.get("W");
+      if (!Array.isArray(w) || w.length < 3) { throw pdfError("a damaged cross-reference stream"); }
+      var data = decodeStream(this, obj);
+      var size = dict.get("Size");
+      var index = dict.get("Index");
+      if (!Array.isArray(index)) { index = [0, size]; }
+      var rowLen = w[0] + w[1] + w[2];
+      var pos = 0;
+      function field(width, fallback) {
+        if (width === 0) { return fallback; }
+        var v = 0;
+        for (var k = 0; k < width; k++) { v = v * 256 + data[pos++]; }
+        return v;
+      }
+      for (var s = 0; s + 1 < index.length; s += 2) {
+        for (var i = 0; i < index[s + 1]; i++) {
+          if (pos + rowLen > data.length) { throw pdfError("a cross-reference stream that is too short"); }
+          var type = field(w[0], 1), f2 = field(w[1], 0), f3 = field(w[2], 0);
+          var num = index[s] + i;
+          if (section.has(num)) { continue; }
+          if (type === 1) { section.set(num, { type: 1, offset: f2, gen: f3 }); }
+          else if (type === 2) { section.set(num, { type: 2, stream: f2, index: f3 }); }
+          else { section.set(num, { type: 0 }); }
+        }
+      }
+      return dict;
+    };
+
+    /* "N G obj value endobj", with the bytes of a stream after its dictionary */
+    PdfDocument.prototype.parseObjectAt = function (offset, expectNum) {
+      var lx = new PdfLexer(this.bytes, offset);
+      var n = lx.token(), g = lx.token(), o = lx.token();
+      if (!n || !g || !o || n.t !== "num" || g.t !== "num" || o.t !== "word" || o.v !== "obj") {
+        throw pdfError("no object at the position the table gives");
+      }
+      if (expectNum !== null && n.v !== expectNum) { throw pdfError("a different object at the position the table gives"); }
+      var value = lx.value();
+      if (value instanceof PdfDict) {
+        var save = lx.pos;
+        var t = lx.token();
+        if (t && t.t === "word" && t.v === "stream") {
+          return new PdfStream(value, this.streamBytes(value, lx.pos));
+        }
+        lx.pos = save;
+      }
+      return value;
+    };
+
+    /* A stream's bytes: /Length of them after the end of the line that
+       follows "stream". If /Length is wrong (it often is in damaged files),
+       the bytes up to "endstream" instead. */
+    PdfDocument.prototype.streamBytes = function (dict, pos) {
+      var b = this.bytes;
+      if (b[pos] === 13 && b[pos + 1] === 10) { pos += 2; }
+      else if (b[pos] === 10 || b[pos] === 13) { pos += 1; }
+      var length = dict.get("Length");
+      if (length instanceof PdfRef) {
+        try { length = this.getObject(length.num); } catch (e) { length = -1; }
+      }
+      if (typeof length === "number" && length >= 0 && pos + length <= b.length) {
+        var after = new PdfLexer(b, pos + length);
+        after.skipSpace();
+        if (latin1Slice(b, after.pos, after.pos + 9) === "endstream") { return b.subarray(pos, pos + length); }
+      }
+      var end = indexOfBytes(b, "endstream", pos);
+      if (end < 0) { throw pdfError("a stream that never ends"); }
+      var stop = end;
+      if (b[stop - 1] === 10) { stop--; }
+      if (b[stop - 1] === 13) { stop--; }
+      return b.subarray(pos, Math.max(pos, stop));
+    };
+
+    function indexOfBytes(b, text, from) {
+      var first = text.charCodeAt(0);
+      outer: for (var i = from; i <= b.length - text.length; i++) {
+        if (b[i] !== first) { continue; }
+        for (var k = 1; k < text.length; k++) { if (b[i + k] !== text.charCodeAt(k)) { continue outer; } }
+        return i;
+      }
+      return -1;
+    }
+
+    /* one numbered object, read once and remembered */
+    PdfDocument.prototype.getObject = function (num) {
+      if (this.cache.has(num)) { return this.cache.get(num); }
+      var entry = this.entries.get(num);
+      var value = PDF_NULL;
+      if (entry && entry.type === 1) {
+        this.cache.set(num, PDF_NULL);   /* a /Length that refers to itself must not loop */
+        value = this.parseObjectAt(entry.offset, num);
+      } else if (entry && entry.type === 2) {
+        value = this.fromObjectStream(entry.stream, entry.index, num);
+      }
+      this.cache.set(num, value);
+      return value;
+    };
+
+    /* objects packed many to a stream: a header of "number offset" pairs, then the objects */
+    PdfDocument.prototype.fromObjectStream = function (streamNum, index, num) {
+      var unpacked = this.objStreams.get(streamNum);
+      if (!unpacked) {
+        var stm = this.getObject(streamNum);
+        if (!(stm instanceof PdfStream)) { throw pdfError("an object stream is missing"); }
+        var data = decodeStream(this, stm);
+        var count = stm.dict.get("N"), first = stm.dict.get("First");
+        var lx = new PdfLexer(data, 0);
+        var pairs = [];
+        for (var i = 0; i < count; i++) {
+          var a = lx.token(), b = lx.token();
+          if (!a || !b || a.t !== "num" || b.t !== "num") { break; }
+          pairs.push([a.v, b.v]);
+        }
+        unpacked = { data: data, first: first, pairs: pairs };
+        this.objStreams.set(streamNum, unpacked);
+      }
+      var pair = unpacked.pairs[index];
+      if (!pair || pair[0] !== num) {
+        pair = null;
+        for (var j = 0; j < unpacked.pairs.length; j++) { if (unpacked.pairs[j][0] === num) { pair = unpacked.pairs[j]; break; } }
+      }
+      if (!pair) { return PDF_NULL; }
+      return new PdfLexer(unpacked.data, unpacked.first + pair[1]).value();
+    };
+
+    PdfDocument.prototype.resolve = function (value) {
+      var guard = 0;
+      while (value instanceof PdfRef) {
+        if (++guard > 32) { return PDF_NULL; }
+        value = this.getObject(value.num);
+      }
+      return value;
+    };
+
+    PdfDocument.prototype.checkRoot = function () {
+      if (!this.trailer) { throw pdfError("no trailer"); }
+      var root = this.resolve(this.trailer.get("Root"));
+      if (!(root instanceof PdfDict)) { throw pdfError("no document catalog"); }
+      var pages = this.resolve(root.get("Pages"));
+      if (!(pages instanceof PdfDict)) { throw pdfError("no page tree"); }
+    };
+
+    /* the last resort for a damaged file: every "N G obj" in it, the last of each number winning */
+    PdfDocument.prototype.repair = function () {
+      this.repaired = true;
+      this.entries = new Map();
+      this.cache = new Map();
+      this.objStreams = new Map();
+      var b = this.bytes;
+      var text = latin1Slice(b, 0, b.length);
+      var found = [];
+      var objRe = /(\d{1,10})[\0\t\n\f\r ]+(\d{1,5})[\0\t\n\f\r ]+obj(?![A-Za-z])/g, om;
+      while ((om = objRe.exec(text)) !== null) {
+        found.push({ num: Number(om[1]), gen: Number(om[2]), offset: om.index });
+      }
+      var self = this;
+      found.forEach(function (f) { self.entries.set(f.num, { type: 1, offset: f.offset, gen: f.gen }); });
+      var trailers = [];
+      var re = /trailer\s*<</g, tm;
+      while ((tm = re.exec(text)) !== null) {
+        try {
+          var t = new PdfLexer(b, tm.index + 7).value();
+          if (t instanceof PdfDict && t.has("Root")) { trailers.push(t); }
+        } catch (e) { /* a damaged trailer: try the next one */ }
+      }
+      /* objects packed in object streams, and trailers kept in cross-reference streams */
+      found.forEach(function (f) {
+        var obj;
+        try { obj = self.getObject(f.num); } catch (e) { return; }
+        if (!(obj instanceof PdfStream)) { return; }
+        if (isName(obj.dict.get("Type"), "XRef") && obj.dict.has("Root")) { trailers.push(obj.dict); }
+        if (isName(obj.dict.get("Type"), "ObjStm")) {
+          try {
+            var data = decodeStream(self, obj);
+            var lx = new PdfLexer(data, 0);
+            for (var k = 0; k < obj.dict.get("N"); k++) {
+              var a = lx.token(), c = lx.token();
+              if (!a || !c || a.t !== "num") { break; }
+              if (!self.entries.has(a.v)) { self.entries.set(a.v, { type: 2, stream: f.num, index: k }); }
+            }
+          } catch (e2) { /* an unreadable object stream: its objects stay missing */ }
+        }
+      });
+      var trailer = trailers.length ? trailers[trailers.length - 1] : null;
+      if (!trailer || !(this.resolve(trailer.get("Root")) instanceof PdfDict)) {
+        /* no usable trailer: look for the catalog itself */
+        trailer = new PdfDict();
+        var catalogNum = -1;
+        this.entries.forEach(function (e, num) {
+          if (catalogNum >= 0) { return; }
+          var o;
+          try { o = self.getObject(num); } catch (err) { return; }
+          if (o instanceof PdfDict && isName(o.get("Type"), "Catalog")) { catalogNum = num; }
+        });
+        if (catalogNum < 0) { throw pdfError("this PDF is too damaged to read"); }
+        trailer.set("Root", new PdfRef(catalogNum, 0));
+      }
+      this.trailer = trailer;
+      this.lastXrefIsStream = false;
+    };
+    /* ---- END: opening a PDF file ---- */
+
+    /* ---- START: listing the pages ----
+       The page tree: /Pages nodes with /Kids, and /Page leaves at the ends.
+       Four things a page can take from the nodes above it (its resources,
+       its paper size, its crop and its turn) are collected on the way down,
+       so each page can be copied on its own later. */
+    var INHERITED = ["Resources", "MediaBox", "CropBox", "Rotate"];
+
+    PdfDocument.prototype.pages = function () {
+      var self = this;
+      var out = [];
+      var seen = new Set();
+      var root = this.resolve(this.trailer.get("Root"));
+      function walk(ref, node, inherited, depth) {
+        if (depth > 64) { throw pdfError("the page tree is nested too deeply"); }
+        if (!(node instanceof PdfDict)) { return; }
+        var mine = {};
+        INHERITED.forEach(function (key) {
+          mine[key] = node.has(key) ? node.get(key) : inherited[key];
+        });
+        var kids = self.resolve(node.get("Kids"));
+        if (isName(node.get("Type"), "Page") || !Array.isArray(kids)) {
+          out.push({ ref: ref, dict: node, inherited: mine });
+          return;
+        }
+        kids.forEach(function (kid) {
+          if (kid instanceof PdfRef) {
+            if (seen.has(kid.num)) { return; }
+            seen.add(kid.num);
+          }
+          walk(kid instanceof PdfRef ? kid : null, self.resolve(kid), mine, depth + 1);
+        });
+      }
+      var pagesRef = root.get("Pages");
+      if (pagesRef instanceof PdfRef) { seen.add(pagesRef.num); }
+      walk(pagesRef instanceof PdfRef ? pagesRef : null, this.resolve(pagesRef), {}, 0);
+      if (out.length > 100000) { throw pdfError("more pages than this page can handle"); }
+      return out;
+    };
+    /* ---- END: listing the pages ---- */
+
+    /* ---- START: writing a value back out as PDF text ----
+       Strings are always written in hex (<48656C6C6F>), which says exactly
+       the same bytes with nothing to escape. Names escape anything outside
+       plain printable ASCII as #xx. A number that is not whole is written
+       without an exponent, which PDF does not allow. */
+    var NAME_SPECIAL = "#()<>[]{}/%";
+
+    function pdfName(name) {
+      var out = "/";
+      for (var i = 0; i < name.length; i++) {
+        var c = name.charCodeAt(i) & 0xFF;
+        if (c < 0x21 || c > 0x7E || NAME_SPECIAL.indexOf(String.fromCharCode(c)) > -1) {
+          out += "#" + (c < 16 ? "0" : "") + c.toString(16).toUpperCase();
+        } else {
+          out += String.fromCharCode(c);
+        }
+      }
+      return out;
+    }
+
+    function pdfNumber(v) {
+      if (!isFinite(v)) { return "0"; }
+      if (Math.round(v) === v && Math.abs(v) < 1e15) { return String(v); }
+      var s = v.toFixed(10).replace(/0+$/, "").replace(/\.$/, "");
+      return s === "-0" ? "0" : s;
+    }
+
+    function pdfValue(v) {
+      if (typeof v === "number") { return pdfNumber(v); }
+      if (typeof v === "boolean") { return v ? "true" : "false"; }
+      if (v === undefined || v === null || v === PDF_NULL) { return "null"; }
+      if (v instanceof PdfName) { return pdfName(v.name); }
+      if (v instanceof PdfRef) { return v.num + " " + v.gen + " R"; }
+      if (v instanceof PdfString) {
+        var hex = "";
+        for (var i = 0; i < v.bytes.length; i++) { hex += (v.bytes[i] < 16 ? "0" : "") + v.bytes[i].toString(16).toUpperCase(); }
+        return "<" + hex + ">";
+      }
+      if (Array.isArray(v)) { return "[" + v.map(pdfValue).join(" ") + "]"; }
+      if (v instanceof PdfDict) {
+        return "<<" + v.keys().map(function (k) { return pdfName(k) + " " + pdfValue(v.get(k)); }).join(" ") + ">>";
+      }
+      if (v && typeof v.pdfWord === "string" && /^[A-Za-z]+$/.test(v.pdfWord)) { return v.pdfWord; }
+      return "null";
+    }
+    /* ---- END: writing a value back out as PDF text ---- */
+
+    /* ---- START: copying pages from one or more PDFs into a new one ----
+       A page is a dictionary that points at its drawing, its fonts, its
+       pictures, its links. Copying it means copying everything it points at,
+       and everything that points at, each object once, with new numbers.
+       Three kinds of pointer are not followed:
+         - a page's /Parent (the new file has its own page tree),
+         - a pointer to the catalog or to any node of the page tree, which
+           would drag every page of the old file along,
+         - a pointer to a page that is not being copied (a link to page 40
+           in an extract of pages 1 to 3); it becomes null, so the link does
+           nothing instead of pulling page 40 in.
+       A pointer to a page that IS copied (a link from page 1 to page 2) is
+       turned into a pointer to its new copy, so links inside the copy keep
+       working. */
+    var DOC_IDS = 0;
+
+    function PdfCopier(writer) {
+      this.w = writer;
+      this.numbers = new Map();
+      this.pageNumbers = new Map();
+      this.queue = [];
+      this.pagesNum = 0;
+    }
+
+    function docKey(doc, num) {
+      if (!doc.uid) { doc.uid = ++DOC_IDS; }
+      return doc.uid + ":" + num;
+    }
+
+    /* what of the old file must never be copied: the catalog and the page tree's own nodes */
+    function treeNodes(doc) {
+      if (doc.treeNodeSet) { return doc.treeNodeSet; }
+      var set = new Set();
+      var rootRef = doc.trailer.get("Root");
+      if (rootRef instanceof PdfRef) { set.add(rootRef.num); }
+      var root = doc.resolve(rootRef);
+      var seen = new Set();
+      function walk(ref, depth) {
+        if (!(ref instanceof PdfRef) || seen.has(ref.num) || depth > 64) { return; }
+        seen.add(ref.num);
+        var node = doc.resolve(ref);
+        if (!(node instanceof PdfDict)) { return; }
+        var kids = doc.resolve(node.get("Kids"));
+        if (isName(node.get("Type"), "Page") || !Array.isArray(kids)) { return; }
+        set.add(ref.num);
+        kids.forEach(function (k) { walk(k, depth + 1); });
+      }
+      walk(root instanceof PdfDict ? root.get("Pages") : null, 0);
+      doc.treeNodeSet = set;
+      doc.pageNumSet = new Set(doc.pages().filter(function (p) { return p.ref; }).map(function (p) { return p.ref.num; }));
+      return set;
+    }
+
+    PdfCopier.prototype.startPages = function () {
+      this.pagesNum = this.w.reserve();
+      return this.pagesNum;
+    };
+
+    /* step 1: give every page that will be copied its new number, before
+       anything is copied, so links between them can be pointed right */
+    PdfCopier.prototype.claimPage = function (doc, page) {
+      treeNodes(doc);
+      var num = this.w.reserve();
+      if (page.ref) { this.pageNumbers.set(docKey(doc, page.ref.num), num); }
+      return num;
+    };
+
+    PdfCopier.prototype.copyValue = function (doc, v, depth) {
+      depth = depth || 0;
+      if (depth > 200) { return PDF_NULL; }
+      if (v instanceof PdfRef) {
+        var key = docKey(doc, v.num);
+        if (this.pageNumbers.has(key)) { return new PdfRef(this.pageNumbers.get(key), 0); }
+        if (treeNodes(doc).has(v.num) || doc.pageNumSet.has(v.num)) { return PDF_NULL; }
+        if (!this.numbers.has(key)) {
+          var target;
+          try { target = doc.getObject(v.num); } catch (e) { target = PDF_NULL; }
+          if (target === PDF_NULL) { return PDF_NULL; }
+          var n = this.w.reserve();
+          this.numbers.set(key, n);
+          this.queue.push({ doc: doc, num: v.num, newNum: n });
+        }
+        return new PdfRef(this.numbers.get(key), 0);
+      }
+      if (Array.isArray(v)) {
+        var self = this;
+        return v.map(function (x) { return self.copyValue(doc, x, depth + 1); });
+      }
+      if (v instanceof PdfDict) {
+        var d = new PdfDict();
+        var me = this;
+        v.keys().forEach(function (k) { d.set(k, me.copyValue(doc, v.get(k), depth + 1)); });
+        return d;
+      }
+      return v;
+    };
+
+    /* step 2: write a claimed page, with what it took from the tree above it
+       written into it, and an extra quarter turn if asked */
+    PdfCopier.prototype.writePage = function (doc, page, num, extraTurns) {
+      var d = new PdfDict();
+      var self = this;
+      page.dict.keys().forEach(function (k) {
+        if (k === "Parent" || k === "StructParents" || INHERITED.indexOf(k) > -1) { return; }
+        d.set(k, self.copyValue(doc, page.dict.get(k)));
+      });
+      d.set("Type", new PdfName("Page"));
+      d.set("Parent", new PdfRef(this.pagesNum, 0));
+      ["Resources", "MediaBox", "CropBox"].forEach(function (k) {
+        if (page.inherited[k] !== undefined) { d.set(k, self.copyValue(doc, page.inherited[k])); }
+      });
+      if (!d.has("MediaBox")) { d.set("MediaBox", [0, 0, 612, 792]); }
+      if (!d.has("Resources")) { d.set("Resources", new PdfDict()); }
+      var turn = doc.resolve(page.inherited.Rotate);
+      turn = (typeof turn === "number" ? Math.round(turn / 90) * 90 : 0) + 90 * (extraTurns || 0);
+      turn = ((turn % 360) + 360) % 360;
+      if (turn) { d.set("Rotate", turn); }
+      this.w.object(num, pdfValue(d));
+    };
+
+    /* step 3: everything the pages pointed at, each object once */
+    PdfCopier.prototype.flush = function () {
+      while (this.queue.length) {
+        var job = this.queue.shift();
+        var obj = job.doc.getObject(job.num);
+        if (obj instanceof PdfStream) {
+          /* /Length is written fresh, as a plain number: an indirect length
+             would be one more object to copy for nothing */
+          var d = new PdfDict();
+          var self = this;
+          obj.dict.keys().forEach(function (k) {
+            if (k !== "Length") { d.set(k, self.copyValue(job.doc, obj.dict.get(k))); }
+          });
+          d.set("Length", obj.data.length);
+          this.w.object(job.newNum, pdfValue(d), obj.data);
+        } else {
+          this.w.object(job.newNum, pdfValue(this.copyValue(job.doc, obj)));
+        }
+      }
+    };
+
+    /* a whole new PDF out of a list of { doc, page, turns } */
+    function buildFromPages(list, producer) {
+      var w = new PdfWriter();
+      w.header("1.7");
+      var catalog = w.reserve();
+      var info = w.reserve();
+      var copier = new PdfCopier(w);
+      var pagesNum = copier.startPages();
+      var claimed = list.map(function (item) { return copier.claimPage(item.doc, item.page); });
+      list.forEach(function (item, i) { copier.writePage(item.doc, item.page, claimed[i], item.turns || 0); });
+      copier.flush();
+      w.object(pagesNum, "<</Type /Pages /Count " + claimed.length + " /Kids [" +
+               claimed.map(function (n) { return n + " 0 R"; }).join(" ") + "]>>");
+      w.object(catalog, "<</Type /Catalog /Pages " + pagesNum + " 0 R>>");
+      w.object(info, "<</Producer " + pdfValue(new PdfString(pdfBytes(producer), false)) + ">>");
+      return w.finish(catalog, info);
+    }
+    /* ---- END: copying pages from one or more PDFs into a new one ---- */
+
+    /* ---- START: reading page numbers the way people type them ----
+       "1-3, 5, 8-" : single pages, ranges, a range open at either end ("8-"
+       is page 8 to the last, "-3" is the first three). Commas, semicolons
+       and spaces all separate; an en dash works as well as a hyphen, and
+       spaces around a dash are ignored, so "1 - 3" is one range.
+       Returns { ranges: [[first, last], ...] } with 1-based page numbers,
+       or { error: "what is wrong, quoting the part that is wrong" }. */
+    var OPEN_QUOTE = String.fromCharCode(0x201C);
+    var CLOSE_QUOTE = String.fromCharCode(0x201D);
+
+    function parsePageRanges(text, pageCount) {
+      var cleaned = String(text || "").split(String.fromCharCode(0x2013)).join("-").replace(/\s*-\s*/g, "-");
+      var parts = cleaned.split(/[,;\s]+/).filter(Boolean);
+      if (parts.length === 0) { return { error: "Type at least one page number." }; }
+      if (parts.length > 1000) { return { error: "That is more than 1,000 ranges." }; }
+      var ranges = [];
+      for (var k = 0; k < parts.length; k++) {
+        var part = parts[k];
+        var quoted = OPEN_QUOTE + part + CLOSE_QUOTE;
+        var m = /^(\d*)-(\d*)$/.exec(part);
+        var first, last;
+        if (/^\d+$/.test(part)) {
+          first = last = Number(part);
+        } else if (m && (m[1] !== "" || m[2] !== "")) {
+          first = m[1] === "" ? 1 : Number(m[1]);
+          last = m[2] === "" ? pageCount : Number(m[2]);
+        } else {
+          return { error: quoted + " is not a page number or a range like 4-7." };
+        }
+        if (first < 1 || last < 1) { return { error: quoted + ": pages are numbered from 1." }; }
+        if (first > pageCount || last > pageCount) {
+          return { error: quoted + ": this PDF has only " + pageCount + (pageCount === 1 ? " page." : " pages.") };
+        }
+        if (first > last) { return { error: quoted + ": write the smaller number first, as in " + last + "-" + first + "." }; }
+        ranges.push([first, last]);
+      }
+      return { ranges: ranges };
+    }
+    /* ---- END: reading page numbers the way people type them ---- */
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: reading the chosen PDF, without uploading it ---- */
+    function readFile(file) {
+      if (file.size > MAX_INPUT) { return Promise.reject(new Error("over the 500 MB a browser can safely hold")); }
+      return file.arrayBuffer().then(function (buffer) {
+        var doc;
+        try {
+          doc = new PdfDocument(new Uint8Array(buffer));
+        } catch (error) {
+          if (error && (error.pdfError || error.inflateError || error.tooBig)) {
+            throw new Error(/not a PDF/.test(error.message) ? "not a PDF" : "too damaged to read");
+          }
+          throw error;
+        }
+        if (doc.encrypted) { throw new Error("protected with a password"); }
+        var pages = doc.pages();
+        if (pages.length === 0) { throw new Error("has no pages"); }
+        return { name: file.name || "document.pdf", size: file.size, doc: doc, pages: pages };
+      });
+    }
+    /* ---- END: reading the chosen PDF, without uploading it ---- */
+
+    /* ---- START: working out the files to make ----
+       Each group is the first and last page of one new file. */
+    function planGroups() {
+      var count = current.pages.length;
+      var out = [];
+      var i;
+      if (modeSel.value === "each") {
+        for (i = 1; i <= count; i++) { out.push([i, i]); }
+        return { groups: out };
+      }
+      if (modeSel.value === "every") {
+        var n = Number(everyIn.value);
+        if (!/^\d+$/.test(String(everyIn.value).trim()) || n < 1) { return { error: "Type how many pages each file should have, from 1 up." }; }
+        for (i = 1; i <= count; i += n) { out.push([i, Math.min(count, i + n - 1)]); }
+        return { groups: out };
+      }
+      var parsed = parsePageRanges(rangesIn.value, count);
+      if (parsed.error) { return { error: parsed.error }; }
+      return { groups: parsed.ranges };
+    }
+
+    function baseName() {
+      return current.name.replace(/\.pdf$/i, "") || "document";
+    }
+
+    /* "report-pages-1-3.pdf", "report-page-5.pdf"; a name used twice gets (2) */
+    function fileNames(list) {
+      var used = {};
+      return list.map(function (g) {
+        var name = baseName() + (g[0] === g[1] ? "-page-" + g[0] : "-pages-" + g[0] + "-" + g[1]);
+        var unique = name, k = 2;
+        while (used[unique]) { unique = name + " (" + (k++) + ")"; }
+        used[unique] = true;
+        return unique + ".pdf";
+      });
+    }
+    /* ---- END: working out the files to make ---- */
+
+    /* ---- START: showing the plan ---- */
+    function refresh() {
+      document.getElementById("rangesField").style.display = modeSel.value === "ranges" ? "" : "none";
+      document.getElementById("everyField").style.display = modeSel.value === "every" ? "" : "none";
+      plannedEl.textContent = "";
+      groups = null;
+      dlBtn.disabled = true;
+      if (!current) {
+        ["sFiles", "sPages", "sIn"].forEach(function (id) { document.getElementById(id).textContent = DASH; });
+        if (!busy) { setMessage(problem || "Choose a PDF to split.", problem ? "bad" : ""); }
+        return;
+      }
+      document.getElementById("sIn").textContent = formatBytes(current.size);
+      var plan = planGroups();
+      if (plan.error) {
+        document.getElementById("sFiles").textContent = DASH;
+        document.getElementById("sPages").textContent = DASH;
+        setMessage(plan.error, "bad");
+        return;
+      }
+      groups = plan.groups;
+      var names = fileNames(groups);
+      var pagesOut = groups.reduce(function (sum, g) { return sum + g[1] - g[0] + 1; }, 0);
+      document.getElementById("sFiles").textContent = formatNumber(groups.length, 0);
+      document.getElementById("sPages").textContent = formatNumber(pagesOut, 0);
+      names.slice(0, SHOWN).forEach(function (name, i) {
+        var li = document.createElement("li");
+        var g = groups[i];
+        li.textContent = name + " " + DASH + " " + (g[0] === g[1] ? "page " + g[0] : "pages " + g[0] + " to " + g[1]);
+        plannedEl.appendChild(li);
+      });
+      if (names.length > SHOWN) {
+        var more = document.createElement("li");
+        more.textContent = "and " + formatNumber(names.length - SHOWN, 0) + " more";
+        plannedEl.appendChild(more);
+      }
+      dlBtn.disabled = busy;
+      if (!busy) {
+        setMessage(current.name + ": " + formatNumber(current.pages.length, 0) + (current.pages.length === 1 ? " page" : " pages") +
+                   (current.doc.repaired ? " (damaged, but its pages could be found)" : "") + ". " +
+                   (groups.length === 1 ? "One PDF will be made." : formatNumber(groups.length, 0) + " PDFs will be made, in one ZIP file."),
+                   current.doc.repaired ? "bad" : "ok");
+      }
+    }
+    /* ---- END: showing the plan ---- */
+
+    /* ---- START: making the files ----
+       Built a few at a time, so a 500-page split never freezes the page,
+       and stopped if the files would add up to more than the browser can
+       hold. Every file is complete on its own, fonts and all. */
+    function pause() { return new Promise(function (resolve) { setTimeout(resolve, 0); }); }
+
+    function makeFiles() {
+      var gen = generation;
+      var list = groups.slice();
+      var names = fileNames(list);
+      var made = [];
+      var total = 0;
+      busy = true;
+      dlBtn.disabled = true;
+      function next(i) {
+        if (gen !== generation) { return Promise.resolve(null); }
+        if (i >= list.length) { return Promise.resolve(made); }
+        var g = list[i];
+        var order = [];
+        for (var p = g[0]; p <= g[1]; p++) { order.push({ doc: current.doc, page: current.pages[p - 1] }); }
+        var parts = buildFromPages(order, "108toolbox.in Split PDF");
+        var size = parts.reduce(function (sum, part) { return sum + part.length; }, 0);
+        total += size;
+        if (total > MAX_OUTPUT) {
+          return Promise.reject(new Error("too big"));
+        }
+        var bytes = new Uint8Array(size);
+        var at = 0;
+        parts.forEach(function (part) { bytes.set(part, at); at += part.length; });
+        made.push({ name: names[i], bytes: bytes });
+        if (i % 10 === 9) {
+          setMessage("Making the files" + String.fromCharCode(0x2026) + " " + (i + 1) + " of " + list.length + ".");
+          return pause().then(function () { return next(i + 1); });
+        }
+        return next(i + 1);
+      }
+      return next(0).then(function (files) {
+        busy = false;
+        if (!files || gen !== generation) { return; }
+        if (files.length === 1) {
+          downloadBlob(new Blob([files[0].bytes], { type: "application/pdf" }), files[0].name);
+        } else {
+          downloadBlob(buildZip(files), baseName() + "-split.zip");
+        }
+        refresh();
+        setMessage("Done: " + (files.length === 1 ? "one PDF" : formatNumber(files.length, 0) + " PDFs in one ZIP file") +
+                   ", " + formatBytes(total) + ". Nothing has left your device.", "ok");
+      }, function (error) {
+        busy = false;
+        refresh();
+        setMessage(error && error.message === "too big"
+          ? "Those files would come to more than 1 GB, because each one carries its own copy of the fonts. Make fewer, larger files."
+          : "The files could not be made. The PDF may be damaged in a way this page cannot work around.", "bad");
+      });
+    }
+    /* ---- END: making the files ---- */
+
+    /* ---- START: taking the chosen file ---- */
+    function takeFile(file) {
+      if (!file) { return; }
+      var gen = ++generation;
+      current = null;
+      busy = true;
+      problem = "";
+      refresh();
+      setMessage("Reading " + (file.name || "the PDF") + String.fromCharCode(0x2026));
+      readFile(file).then(function (entry) {
+        if (gen !== generation) { return; }
+        busy = false;
+        current = entry;
+        if (modeSel.value === "ranges" && rangesIn.value.trim() === "") {
+          rangesIn.value = entry.pages.length > 1 ? "1-" + Math.ceil(entry.pages.length / 2) + ", " + (Math.ceil(entry.pages.length / 2) + 1) + "-" : "1";
+        }
+        refresh();
+      }, function (error) {
+        if (gen !== generation) { return; }
+        busy = false;
+        var why = error && /^(not a PDF|too damaged to read|protected with a password|has no pages|over the 500 MB)/.test(error.message)
+          ? error.message : "could not be read";
+        problem = "Could not use " + String(file.name || "that file") + ": " + why + ".";
+        refresh();
+      });
+    }
+    /* ---- END: taking the chosen file ---- */
+
+    /* ---- START: wiring ---- */
+    fileInput.addEventListener("change", function () {
+      takeFile(fileInput.files[0]);
+      fileInput.value = "";
+    });
+    ["dragenter", "dragover"].forEach(function (type) {
+      drop.addEventListener(type, function (e) { e.preventDefault(); drop.classList.add("is-over"); });
+    });
+    ["dragleave", "drop"].forEach(function (type) {
+      drop.addEventListener(type, function (e) { e.preventDefault(); drop.classList.remove("is-over"); });
+    });
+    drop.addEventListener("drop", function (e) { takeFile(e.dataTransfer && e.dataTransfer.files[0]); });
+    modeSel.addEventListener("change", refresh);
+    rangesIn.addEventListener("input", refresh);
+    everyIn.addEventListener("input", refresh);
+
+    dlBtn.addEventListener("click", function () {
+      if (current && groups && !busy) { makeFiles(); }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      generation += 1;
+      current = null;
+      busy = false;
+      problem = "";
+      fileInput.value = "";
+      rangesIn.value = "";
+      refresh();
+    });
+    /* ---- END: wiring ---- */
+
+    refresh();
+  })();
+  </script>
+</body>
+</html>
