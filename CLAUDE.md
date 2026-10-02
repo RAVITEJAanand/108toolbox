@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 105 of a planned 108 tools are built, tested and live.
+**Where it stands:** 106 of a planned 108 tools are built, tested and live.
 Phase 2 is finished; Phase 3 has started.
 
 ---
@@ -34,11 +34,11 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`105 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`106 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">105</span> tools live
+<span data-tool-count="live">106</span> tools live
 <span data-tool-count="remaining">47</span> on the way
 ```
 
@@ -72,8 +72,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=37` → `?v=38` across all 115 pages (currently `?v=37`,
-557 occurrences), the template included.
+Find-and-replace `?v=38` → `?v=39` across all 116 pages (currently `?v=38`,
+562 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
 the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
@@ -108,7 +108,7 @@ python security.py     ATTACKS the files — hostile text in every box, hostile
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 105, not just the one you changed.** That is the
+**`test_tools.py` runs all 106, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -213,6 +213,43 @@ picture, a stream and the whole file are each replaced only when smaller.
 Judged by Windows on ten PDFs at all three levels: lossless pages render
 identical (0.000), lossy ones within 1.5, text-only pages 0.000.
 
+`pdf-to-image` is the one PDF tool that does not use the hand-written code:
+drawing a page needs fonts, shadings, JPEG 2000 and the rest of the PDF
+imaging model, which is a renderer, not a reader. It runs **pdf.js 6.3.289**
+(Apache 2.0), kept in `js/lib/pdfjs/` with its LICENSE and a README giving the
+source and npm's integrity hash; nothing comes from anywhere else. It is
+loaded the first time a PDF is chosen, never before. Before touching it:
+
+- Its worker resolves relative addresses from its own folder, so every
+  address given to `getDocument` is absolute (`new URL(LIB, location.href)`).
+  A relative `wasmUrl` once became `js/lib/js/lib/pdfjs/wasm/`.
+- Over http(s) the **worker** fetches the character maps, fonts, wasm and
+  ICC files, and a worker is not bound by the page's `<meta>` CSP. Opened
+  from `file://`, pdf.js fetches them from the page instead, where
+  `connect-src 'none'` refuses them - Japanese text silently vanished. So
+  `test_tools.py` serves the slugs in `HTTP_SLUGS` from Python's own server
+  on 127.0.0.1, and fails the test if anything asked that server for a file
+  that is not there: a wrong standard-font address shows on the page only as
+  a fallback glyph, but always as a 404.
+- `PDFDocumentProxy.destroy()` is gone in 6.x. A document is closed with
+  `doc.loadingTask.destroy()`, and a refused loading task is destroyed too,
+  or every wrong password leaves a worker running. The test counts workers
+  started and closed.
+- The worker's work does not hold the virtual clock. The test body runs a
+  "pacer" interval that spends real time on every tick; without it an
+  AES-256 password check (a fifth of a real second) timed out at 60
+  virtual seconds.
+
+Judged against Windows.Data.Pdf drawing the same pages at the same pixel
+size: 16 PDFs (Chrome-printed pages, turned, cropped and empty pages, RC4
+and AES-256 with their passwords, JPEG 2000, fonts missing from the file;
+72, 150 and 300 DPI; PNG and JPG) agree within a mean difference of 1.1,
+where two different pages differ by 7.4 or more. Two differences are known
+and are not pdf.js's: Windows draws text filled with a clipped gradient (the
+home page's heading) as a solid bar, and a font missing from the file is
+drawn in each renderer's own substitute, so those pages are compared by
+layout instead.
+
 **Headless Chrome's clock is virtual, so a long wait needs a big budget.**
 Reading 201 pictures took six real seconds and several hundred virtual ones;
 the 1 ms heartbeat makes the virtual clock run far ahead of the real one
@@ -264,7 +301,8 @@ shows the pattern.
 
 ### 6. Nothing is ever uploaded
 
-Every tool runs client-side — canvas, Web Crypto, the hand-written PDF code. The homepage
+Every tool runs client-side — canvas, Web Crypto, the hand-written PDF code,
+and pdf.js served from this site for `pdf-to-image`. The homepage
 promises "nothing is uploaded, nothing is stored" and that promise must stay
 literally true. It is the site's only real differentiator. See the
 "Tools to never build" section of `ROADMAP.md` before adding anything that
@@ -277,7 +315,7 @@ Umami or Cloudflare Web Analytics — or drop the claim. Not both.
 
 **Advertising is the same rule, and it is already decided.** The owner wants
 ads on once all 108 tools are live, and not before. The site currently
-promises "no ads" in the hero, in the footer of all 115 pages, in
+promises "no ads" in the hero, in the footer of all 116 pages, in
 `privacy.html` section 7 and in `disclaimer.html` section 9. Those promises
 get rewritten **first, in their own commit**, before a single line of ad code
 is added — otherwise the site starts lying to visitors on the day it starts
@@ -405,6 +443,7 @@ js/tools-data.js   THE REGISTRY — one object per tool
 js/main.js         Renders grids, search, chips, theme, related strip
 js/tool-helpers.js copyText, downloadText, downloadBlob, showToast,
                    formatBytes, formatNumber
+js/lib/pdfjs/      pdf.js 6.3.289, as published; only pdf-to-image loads it
 tools/*.html       One self-contained file per tool
 tools/_template.html   Start here for a new tool (check.py skips `_` files)
 check.py           Reads the files — run before every push
@@ -513,7 +552,7 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (105):** add-line-numbers, add-subtract-days, add-pdf-page-numbers,
+**Live (106):** add-line-numbers, add-subtract-days, add-pdf-page-numbers,
 age-calculator, area-converter, average-calculator, barcode-generator,
 base64-encoder-decoder, binary-decimal-hex-converter, bmi-calculator,
 calorie-calculator, case-converter, character-frequency-counter, coin-flip,
@@ -529,7 +568,7 @@ image-to-base64, image-to-pdf, js-minifier, json-formatter, json-to-csv,
 jwt-decoder, leap-year-checker, lorem-ipsum-generator,
 margin-markup-calculator, markdown-previewer, meme-generator, merge-pdf,
 text-to-morse, nato-phonetic-converter, number-to-words, password-generator,
-pdf-metadata-editor, percentage-calculator, photo-watermark,
+pdf-metadata-editor, pdf-to-image, percentage-calculator, photo-watermark,
 image-placeholder-generator, protect-pdf, qr-code-generator,
 random-list-shuffler, random-number-generator, random-picker,
 ratio-calculator, readability-score, regex-tester, remove-duplicate-lines,

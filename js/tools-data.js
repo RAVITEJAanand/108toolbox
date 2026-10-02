@@ -558,6 +558,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "pdf-to-image",
+    name: "PDF to Image",
+    desc: "Save the pages of a PDF as PNG or JPG pictures, password-protected PDFs too. Nothing is uploaded.",
+    category: "PDF",
+    icon: "\u{1F4F8}",
+    keywords: ["pdf to image", "pdf to jpg", "pdf to png", "convert pdf to image", "pdf page to image", "pdf to jpeg", "save pdf as image", "pdf to picture", "extract pdf page as image", "pdf screenshot"],
+    popular: false
+  },
+  {
     slug: "percentage-calculator",
     name: "Percentage Calculator",
     desc: "Work out X% of Y, what percent one number is of another, and change.",

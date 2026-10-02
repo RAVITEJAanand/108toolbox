@@ -464,3 +464,16 @@ table.data tbody tr:hover td { background: var(--surface); }
 }
 .plan-list:empty { display: none; }
 .plan-list li { margin: 0 0 var(--s1); }
+
+/* ---- A small picture of a PDF's first page ------------------------------ */
+/* The page is drawn on white whatever the theme: it is paper. */
+.pdf-preview {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: var(--s4) auto 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+}

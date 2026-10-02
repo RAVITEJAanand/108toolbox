@@ -231,10 +231,10 @@ make; it is written here so it is made with the number in front of us.
 | Text | 16 | 16 |
 | Image | 14 | 14 |
 | Converter | 14 | 13 |
-| PDF | 10 | 9 |
+| PDF | 10 | 10 |
 | Date & Time | 8 | 8 |
 | Random | 8 | 8 |
-| **Total** | **108** | **105** |
+| **Total** | **108** | **106** |
 
 ---
 
@@ -367,7 +367,7 @@ which never leave the tab, so the overlap is narrower than the word suggests.
 | 6 | `add-pdf-page-numbers` ✅ | medium — written by hand; built-in Helvetica, incremental update |
 | 7 | `protect-pdf` ✅ | medium — written by hand; AES-256 (PDF 2.0) with Web Crypto, judged by Chrome's PDF viewer and a Python decryptor on Windows' own AES |
 | 8 | `pdf-metadata-editor` ✅ | medium — written by hand; the whole document is written again, so old details and XMP copies are gone |
-| 9 | `pdf-to-image` | hard — needs `pdf.js` as well |
+| 9 | `pdf-to-image` ✅ | hard — `pdf.js` 6.3.289, self-hosted in `js/lib/pdfjs`, loaded only when a PDF is chosen; judged by Windows' renderer |
 | 10 | `compress-pdf` ✅ | hard — written by hand; object streams + deflate, colour photos saved again as JPEG; judged by Windows at all three levels |
 
 **This batch is the one that meets a real competitor.** Checked 20 Sep 2026.
@@ -469,7 +469,7 @@ Libraries you will actually need:
 | Library | Licence | Used by |
 |---|---|---|
 | `pdf-lib` | MIT | not needed: the nine PDF tools are written by hand |
-| `pdf.js` | Apache-2.0 | `pdf-to-image` |
+| `pdf.js` | Apache-2.0 | `pdf-to-image` ✅ |
 | `PapaParse` | MIT | `csv-to-json`, `json-to-csv` ✅ |
 
 ---

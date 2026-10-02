@@ -1,0 +1,2 @@
+# pdf.js is kept exactly as published: no line-ending conversion, ever
+js/lib/pdfjs/** -text

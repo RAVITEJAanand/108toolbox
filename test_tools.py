@@ -20,10 +20,13 @@ nothing that breaks the next validation.
 """
 
 import concurrent.futures
+import functools
+import http.server
 import pathlib
 import re
 import subprocess
 import sys
+import threading
 import urllib.parse
 import html as htmllib
 
@@ -10410,6 +10413,552 @@ T["compress-pdf"] = r"""
   });
 """
 
+T["pdf-to-image"] = r"""  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
+  var RC4_PDF = "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMjAwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzOT4+CnN0cmVhbQqreggKebynsir3Iev6CDjCV/GAiArFJrs6yU+rUTJO595LoG2huMoKZW5kc3RyZWFtCmVuZG9iago1IDAgb2JqCjw8L1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhPj4KZW5kb2JqCjYgMCBvYmoKPDwvVGl0bGUgPDI4Yjc4MzU3M2M3NmEwNjgyNDNhOTE4ZT4+PgplbmRvYmoKNyAwIG9iago8PC9GaWx0ZXIgL1N0YW5kYXJkIC9WIDIgL1IgMyAvTGVuZ3RoIDEyOCAvUCAtNCAvTyA8OWY1NGRhNzRhYjZkOWI3YzkxZTVhY2ZiZmZmMmRiY2QxZDMzYTk3OTMxZTQyMThkZTY3NTIyZTRkMWZlNTcxMD4gL1UgPDgyNTJjMTBlMWVmZmE1ZGYwMjk3YjdmMmFjOGU3Nzc2MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA+Pj4KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDYyIDAwMDAwIG4gCjAwMDAwMDAxNDAgMDAwMDAgbiAKMDAwMDAwMDIzNiAwMDAwMCBuIAowMDAwMDAwMzIzIDAwMDAwIG4gCjAwMDAwMDAzOTEgMDAwMDAgbiAKMDAwMDAwMDQ0NCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvSW5mbyA2IDAgUiAvRW5jcnlwdCA3IDAgUiAvSUQgWzxmNTIxODRlNTc4YjZjM2M3NzE0YjEwMGEzZWRmMTk3ZD4gPGY1MjE4NGU1NzhiNmMzYzc3MTRiMTAwYTNlZGYxOTdkPl0+PgpzdGFydHhyZWYKNjQ5CiUlRU9GCg==";
+  var AES_PDF = "JVBERi0xLjcKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUiAvRXh0ZW5zaW9ucyA8PC9BREJFIDw8L0Jhc2VWZXJzaW9uIC8xLjcgL0V4dGVuc2lvbkxldmVsIDg+Pj4+Pj4KZW5kb2JqCjIgMCBvYmoKPDwvVHlwZSAvUGFnZXMgL0tpZHMgWzMgMCBSXSAvQ291bnQgMT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCAyMDAgMTAwXSAvQ29udGVudHMgNCAwIFI+PgplbmRvYmoKNCAwIG9iago8PC9MZW5ndGggODA+PgpzdHJlYW0KZZ+sjVm9EBZygh0eIQhrv7fU2DAY+Idnvt3ADK36uGc8qpWWPropMgqllvn4u8gO4xtaDIkcKROdjYzJJGG6k4enyJa/ogBiAYU3WBVZDNAKZW5kc3RyZWFtCmVuZG9iago1IDAgb2JqCjw8L0ZpbHRlciAvU3RhbmRhcmQgL1YgNSAvUiA2IC9MZW5ndGggMjU2IC9DRiA8PC9TdGRDRiA8PC9UeXBlIC9DcnlwdEZpbHRlciAvQ0ZNIC9BRVNWMyAvQXV0aEV2ZW50IC9Eb2NPcGVuIC9MZW5ndGggMzI+Pj4+IC9TdG1GIC9TdGRDRiAvU3RyRiAvU3RkQ0YgL08gPEQ2Nzg3MkQ5QTZEMzc1OTEzQzY3RjE2MTlCQjE4Q0JCN0YwRTgxMEU1REVFNzg1QjNBQ0Y1OEE5NTg2REZEMzU4MTNBRDA1MjExRjRGQTQ2Q0ZFRDJDNUUzQUE1QTY2MD4gL1UgPDg0Qzg2OTVBNTU2RDhGREFFODdDMjExREIxRERBOTYyQkVGRENGRDBDOTA1REYyQTkwNjlEOTQ5QTMwOTUxN0RDMUJGMjdGN0M4MkE4RDU4N0RDNDU1RTYwOEYxRTg4Nz4gL09FIDw0RENBNzVDQjNFRDVEQUE4OEI5NDIyRUNFQTFDMEE3REI4NTUyQTI5OTVFMEQ0MzExMDM4OEMzRkFEREZCQ0U4PiAvVUUgPDExMDEzMjE1N0Y3OTgzOTFCMjE5MENBNUJCNDg5RkQxNENFNDJBNDgyMTY1M0E2QUUxRURCQTE1RUFBMTU5RTU+IC9QIC00IC9QZXJtcyA8N0Q3M0I4QTc5RTU5RkMzMTJDQzkzMTAxNzYxODE0NUI+IC9FbmNyeXB0TWV0YWRhdGEgdHJ1ZT4+CmVuZG9iagp4cmVmCjAgNgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMTUgMDAwMDAgbiAKMDAwMDAwMDEyNCAwMDAwMCBuIAowMDAwMDAwMTc5IDAwMDAwIG4gCjAwMDAwMDAyNjQgMDAwMDAgbiAKMDAwMDAwMDM5MiAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDYgL1Jvb3QgMSAwIFIgL0VuY3J5cHQgNSAwIFIgL0lEIFs8QzU1QjNBRjdGM0FGNzRDNzg4QzNENDgwMTlEMURGNTY+IDxDNTVCM0FGN0YzQUY3NEM3ODhDM0Q0ODAxOUQxREY1Nj5dID4+CnN0YXJ0eHJlZgo5NzQKJSVFT0YK";
+  var FONTS_PDF = "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUiA1IDAgUiAxMSAwIFJdIC9Db3VudCAzPj4KZW5kb2JqCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9NZWRpYUJveCBbMCAwIDI0MCAxMDBdIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA3IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSPj4KZW5kb2JqCjQgMCBvYmoKPDwvTGVuZ3RoIDM5Pj4Kc3RyZWFtCkJUIC9GMSAzNiBUZiAxMCAzMCBUZCAoSGVsbG8gMTA4KSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9NZWRpYUJveCBbMCAwIDI0MCAxMDBdIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMiA4IDAgUj4+Pj4gL0NvbnRlbnRzIDYgMCBSPj4KZW5kb2JqCjYgMCBvYmoKPDwvTGVuZ3RoIDU0Pj4Kc3RyZWFtCkJUIC9GMiAzNiBUZiAxMCAzMCBUZCA8NjVFNTY3MkM4QTlFMzBDNjMwQjkzMEM4PiBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2EgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2Rpbmc+PgplbmRvYmoKOCAwIG9iago8PC9UeXBlIC9Gb250IC9TdWJ0eXBlIC9UeXBlMCAvQmFzZUZvbnQgL0tvek1pblByNk4tUmVndWxhciAvRW5jb2RpbmcgL1VuaUpJUy1VQ1MyLUggL0Rlc2NlbmRhbnRGb250cyBbOSAwIFJdPj4KZW5kb2JqCjkgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvQ0lERm9udFR5cGUwIC9CYXNlRm9udCAvS296TWluUHI2Ti1SZWd1bGFyIC9DSURTeXN0ZW1JbmZvIDw8L1JlZ2lzdHJ5IChBZG9iZSkgL09yZGVyaW5nIChKYXBhbjEpIC9TdXBwbGVtZW50IDY+PiAvRm9udERlc2NyaXB0b3IgMTAgMCBSIC9EVyAxMDAwPj4KZW5kb2JqCjEwIDAgb2JqCjw8L1R5cGUgL0ZvbnREZXNjcmlwdG9yIC9Gb250TmFtZSAvS296TWluUHI2Ti1SZWd1bGFyIC9GbGFncyA2IC9Gb250QkJveCBbLTQzNyAtMzQwIDExNDcgMTMxN10gL0l0YWxpY0FuZ2xlIDAgL0FzY2VudCAxMTM3IC9EZXNjZW50IC0zNDkgL0NhcEhlaWdodCA3NDIgL1N0ZW1WIDgwPj4KZW5kb2JqCjExIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCAyNDAgMTAwXSAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjMgMTMgMCBSPj4+PiAvQ29udGVudHMgMTIgMCBSPj4KZW5kb2JqCjEyIDAgb2JqCjw8L0xlbmd0aCAzND4+CnN0cmVhbQpCVCAvRjMgNDggVGYgMTAgMzAgVGQgKDQ0NDQpIFRqIEVUCmVuZHN0cmVhbQplbmRvYmoKMTMgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9aYXBmRGluZ2JhdHM+PgplbmRvYmoKeHJlZgowIDE0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU2IDAwMDAwIG4gCjAwMDAwMDAxMjQgMDAwMDAgbiAKMDAwMDAwMDI0NCAwMDAwMCBuIAowMDAwMDAwMzMxIDAwMDAwIG4gCjAwMDAwMDA0NTEgMDAwMDAgbiAKMDAwMDAwMDU1MyAwMDAwMCBuIAowMDAwMDAwNjQ4IDAwMDAwIG4gCjAwMDAwMDA3NzUgMDAwMDAgbiAKMDAwMDAwMDk2MSAwMDAwMCBuIAowMDAwMDAxMTQxIDAwMDAwIG4gCjAwMDAwMDEyNjQgMDAwMDAgbiAKMDAwMDAwMTM0NyAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgMTQgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMTQxOQolJUVPRgo=";
+  var JPX_PDF = "JVBERi0xLjUKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDE+PgplbmRvYmoKMyAwIG9iago8PC9UeXBlIC9QYWdlIC9QYXJlbnQgMiAwIFIgL01lZGlhQm94IFswIDAgNjEyIDc5Ml0gL0NvbnRlbnRzIDQgMCBSIC9SZXNvdXJjZXMgPDwvWE9iamVjdCA8PC9JbSA1IDAgUj4+Pj4+PgplbmRvYmoKNCAwIG9iago8PC9MZW5ndGggMzM+PgpzdHJlYW0KcSA0MDAgMCAwIDIwMCAxMDAgMzAwIGNtIC9JbSBEbyBRCmVuZHN0cmVhbQplbmRvYmoKNSAwIG9iago8PC9UeXBlIC9YT2JqZWN0IC9TdWJ0eXBlIC9JbWFnZSAvV2lkdGggMjAwIC9IZWlnaHQgMTAwIC9GaWx0ZXIgL0pQWERlY29kZSAvTGVuZ3RoIDQ5OT4+CnN0cmVhbQoAAAAMalAgIA0KhwoAAAAUZnR5cGpwMiAAAAAAanAyIAAAAC1qcDJoAAAAFmloZHIAAABkAAAAyAADBwcAAAAAAA9jb2xyAQAAAAAAEAAAAaZqcDJj/0//UQAvAAAAAADIAAAAZAAAAAAAAAAAAAAAyAAAAGQAAAAAAAAAAAADBwEBBwEBBwEB/1IADAAAAAEABQQEAAH/XAATQEBISFBISFBISFBISFBISFD/ZAAlAAFDcmVhdGVkIGJ5IE9wZW5KUEVHIHZlcnNpb24gMi41LjT/kAAKAAAAAAEfAAH/k8+0ZBQAKtDvzdN+7wEjaNcXPaKoBnfaMzyjiunPtDgRUFSutA4AAGEXdVj/f8+0VBFQItDm9tqAqijWABFhJ4yJY7pQGsfaEAAhbdklpNJN14DH2hAAIhnbJaTSTdfH2hYAMNGnKq/Uib2yug+Ax9oWADF9qSqv1Im9ssQfw+oRAE+XxRY8XHE5ueHTP39490PugMPqEQBQQ8cWPFxxObnhtr5vp8iyUcfaMACD7a9mQxAkC59PEXqqv5BeESYYtbrqxD+Ax9oSAIPCruZ/XUPMD+P2jYCeijHP/sPQX7AAAMJCGtJhIRLx4wkIgDwYSEeA4/aNgJ5fMU/+w9BfsAAAwkIa0mEhEvHjCQiAPBhIR//ZCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDExMSAwMDAwMCBuIAowMDAwMDAwMjM0IDAwMDAwIG4gCjAwMDAwMDAzMTUgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKOTM2CiUlRU9GCg==";
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+  var realBitmap = window.createImageBitmap;
+
+  /* pdf.js does its work in a worker, a thread of its own that the test's
+     virtual clock does not wait for: with nothing to do but wait, the page
+     let the clock run a hundred times faster than the worker, and a
+     password check that takes a fifth of a second really took "a minute".
+     Each tick of this timer spends a little real time, so the clock keeps
+     closer pace with the work. It stops when the test does. */
+  var pacer = setInterval(function () {
+    var x = 0;
+    for (var i = 0; i < 300000; i++) { x = (x + i) % 9973; }
+    window.__pace = x;
+  }, 1);
+
+  /* ================= helpers ================= */
+  function feed(file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById("file");
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  function wait(label, test, budget) { return new Promise(function (resolve) { waitFor(label, test, resolve, budget); }); }
+  function read() { return !/^(Reading|Opening)/.test(txt("msg")); }
+  function bytesOfText(s) { var u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { u[i] = s.charCodeAt(i) & 255; } return u; }
+  function fromB64(s) { return bytesOfText(atob(s)); }
+  function shown(id) { return document.getElementById(id).style.display !== "none"; }
+  function disabled(id) { return document.getElementById(id).disabled; }
+  function makePdf(bodies) {
+    var out = "%PDF-1.4\n", offsets = [];
+    bodies.forEach(function (b, i) {
+      offsets.push(out.length);
+      out += (i + 1) + " 0 obj\n" + (typeof b === "string" ? b : "<<\/Length " + b.data.length + ">>\nstream\n" + b.data + "\nendstream") + "\nendobj\n";
+    });
+    var x = out.length;
+    out += "xref\n0 " + (bodies.length + 1) + "\n0000000000 65535 f \n";
+    offsets.forEach(function (o) { out += ("0000000000" + o).slice(-10) + " 00000 n \n"; });
+    out += "trailer\n<<\/Size " + (bodies.length + 1) + " /Root 1 0 R>>\nstartxref\n" + x + "\n%%EOF\n";
+    return bytesOfText(out);
+  }
+  /* pages: [{ box: "0 0 200 100", extra: " /Rotate 90", draw: "1 0 0 rg ..." }], objects 1 and 2 are
+     the catalog and the page tree, then each page and its drawing */
+  function pagesPdf(pages) {
+    var kids = pages.map(function (p, i) { return (3 + i * 2) + " 0 R"; }).join(" ");
+    var bodies = ["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [" + kids + "] /Count " + pages.length + ">>"];
+    pages.forEach(function (p, i) {
+      bodies.push("<<\/Type /Page /Parent 2 0 R /MediaBox [" + p.box + "]" + (p.extra || "") + " /Contents " + (4 + i * 2) + " 0 R>>");
+      bodies.push({ data: p.draw || "" });
+    });
+    return makePdf(bodies);
+  }
+  function readZip(bytes) {
+    var view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength), pos = 0, files = [];
+    var decoder = new TextDecoder();
+    while (pos + 30 <= bytes.length && view.getUint32(pos, true) === 0x04034B50) {
+      var method = view.getUint16(pos + 8, true), size = view.getUint32(pos + 18, true);
+      var nameLen = view.getUint16(pos + 26, true), extra = view.getUint16(pos + 28, true);
+      var name = decoder.decode(bytes.subarray(pos + 30, pos + 30 + nameLen));
+      var start = pos + 30 + nameLen + extra;
+      if (method !== 0) { throw new Error("an entry is compressed"); }
+      files.push({ name: name, bytes: bytes.subarray(start, start + size) });
+      pos = start + size;
+    }
+    if (view.getUint32(pos, true) !== 0x02014B50) { throw new Error("the central directory is not where it should be"); }
+    return files;
+  }
+  /* a picture, decoded by the browser: its size and the colour at a point */
+  function picture(bytes, type) {
+    return realBitmap(new Blob([bytes], { type: type })).then(function (bmp) {
+      var c = new OffscreenCanvas(bmp.width, bmp.height), ctx = c.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(bmp, 0, 0);
+      var data = ctx.getImageData(0, 0, bmp.width, bmp.height).data;
+      return {
+        w: bmp.width, h: bmp.height,
+        at: function (x, y) { var i = (Math.floor(y) * bmp.width + Math.floor(x)) * 4; return [data[i], data[i + 1], data[i + 2], data[i + 3]]; },
+        dark: function () { var n = 0; for (var i = 0; i < data.length; i += 4) { if (data[i] + data[i + 1] + data[i + 2] < 200) { n += 1; } } return n; }
+      };
+    });
+  }
+  function near(px, want, slack) {
+    for (var i = 0; i < want.length; i++) { if (Math.abs(px[i] - want[i]) > slack) { return false; } }
+    return true;
+  }
+  function magic(bytes) { return Array.prototype.slice.call(bytes.subarray(0, 4)).join(","); }
+  var PNG_MAGIC = "137,80,78,71", JPEG_MAGIC = "255,216,255";
+
+  function download() {
+    var before = window.__saved.length;
+    click("dlBtn");
+    return wait("the pictures are made", function () {
+      return window.__saved.length === before + 1 || /^A page could not/.test(txt("msg"));
+    }, 120000).then(function () {
+      var saved = window.__saved[before];
+      if (!saved) { return null; }
+      return saved.blob.arrayBuffer().then(function (b) { return { name: saved.name, type: saved.blob.type, bytes: new Uint8Array(b) }; });
+    });
+  }
+
+  var chain = Promise.resolve();
+  function step(fn) { chain = chain.then(fn); }
+  var history = [];
+  new MutationObserver(function () { history.push(txt("msg")); }).observe(document.getElementById("msg"), { childList: true, characterData: true, subtree: true });
+  /* every worker the reader starts, and every one it closes */
+  var workers = [], closed = 0, RealWorker = window.Worker;
+  window.Worker = function (url, options) {
+    var w = new RealWorker(url, options), terminate = w.terminate;
+    workers.push(String(url));
+    w.terminate = function () { closed += 1; return terminate.call(w); };
+    return w;
+  };
+  window.Worker.prototype = RealWorker.prototype;
+
+  /* ================= the files ================= */
+  var RED = "1 0 0 rg 0 0 200 100 re f", GREEN = "0 1 0 rg 0 0 200 100 re f", BLUE = "0 0 1 rg 0 0 200 100 re f";
+  var COLOURS = pagesPdf([{ box: "0 0 200 100", draw: RED }, { box: "0 0 200 100", draw: GREEN }, { box: "0 0 200 100", draw: BLUE }]);
+  /* the left half red, the right half blue: once turned a quarter clockwise, red is on top */
+  var HALVES = "1 0 0 rg 0 0 100 100 re f 0 0 1 rg 100 0 100 100 re f";
+  var SHAPES = pagesPdf([{ box: "0 0 200 100", extra: " /Rotate 90", draw: HALVES },
+                         { box: "0 0 200 100", extra: " /CropBox [100 0 200 100]", draw: HALVES },
+                         { box: "0 0 200 100", draw: "" },
+                         { box: "0 0 14000 100", draw: "1 0 0 rg 0 0 14000 100 re f" },
+                         { box: "0 0 7000 7000", draw: "0 0 1 rg 0 0 7000 7000 re f" }]);
+  var many = [];
+  for (var k = 0; k < 400; k++) { many.push({ box: "0 0 200 100", draw: k === 4 ? GREEN : RED }); }
+  var MANY = pagesPdf(many);
+  var oneMB = new Blob([new Uint8Array(1024 * 1024)]);
+  var parts = [];
+  for (var m = 0; m < 301; m++) { parts.push(oneMB); }
+  var F = {
+    colours: new File([COLOURS], "doc.pdf", { type: "application/pdf" }),
+    shapes: new File([SHAPES], "Shapes.PDF", { type: "application/pdf" }),
+    many: new File([MANY], "big.pdf", { type: "application/pdf" }),
+    rc4: new File([fromB64(RC4_PDF)], "statement.pdf", { type: "application/pdf" }),
+    aes: new File([fromB64(AES_PDF)], "locked.pdf", { type: "application/pdf" }),
+    fonts: new File([fromB64(FONTS_PDF)], "fonts.pdf", { type: "application/pdf" }),
+    jpx: new File([fromB64(JPX_PDF)], "jpx.pdf", { type: "application/pdf" }),
+    damaged: new File([fromB64(TINY.bad_offsets)], "scan.pdf", { type: "application/pdf" }),
+    empty: new File([makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [] /Count 0>>"])], "empty.pdf", { type: "application/pdf" }),
+    notPdf: new File([bytesOfText("not a pdf at all")], "notes.pdf", { type: "application/pdf" }),
+    huge: new File(parts, "huge.pdf", { type: "application/pdf" }),
+    hostile: new File([COLOURS], "<iframe onload=zq>.pdf", { type: "application/pdf" })
+  };
+
+  /* ================= the page as it opens ================= */
+  eq("it asks for a PDF", txt("msg"), "Choose a PDF to turn its pages into pictures.");
+  ok("with nothing to convert", disabled("dlBtn"));
+  eq("all pages, PNG and 150 DPI to start with", val("which") + "|" + val("format") + "|" + val("dpi"), "all|png|150");
+  ok("the page numbers and the password are hidden", !shown("pagesField") && !shown("pwField"));
+  set("which", "some");
+  ok("some pages shows the page numbers", shown("pagesField"));
+  eq("and with no PDF there is nothing to say about them", txt("msg"), "Choose a PDF to turn its pages into pictures.");
+  set("which", "all");
+  ok("all pages hides them again", !shown("pagesField"));
+  eq("the PDF reader is not started before a PDF is chosen", workers.length + "|" + document.querySelectorAll("script[src*=pdfjs]").length, "0|0");
+
+  /* ================= three coloured pages ================= */
+  step(function () {
+    feed(F.colours);
+    return wait("the PDF is read", read, 60000);
+  });
+  step(function () {
+    eq("the PDF is described", txt("msg"), "doc.pdf: 3 pages. 3 pages will become PNG pictures in a ZIP file.");
+    eq("as good news", document.getElementById("msg").className, "msg msg--ok");
+    ok("and can be converted", !disabled("dlBtn"));
+    var here = location.href.replace(/tools\/[^\/]*$/, "");
+    eq("the reader was started from this site, now that it is needed", workers.join(), here + "js/lib/pdfjs/pdf.worker.min.mjs");
+    return wait("the first page is shown", function () { return !!document.querySelector("#preview canvas"); }, 60000);
+  });
+  step(function () {
+    var c = document.querySelector("#preview canvas");
+    eq("the preview is 260 pixels wide, in proportion", c.width + "x" + c.height + " " + c.style.width, "260x130 260px");
+    eq("styled and described for screen readers", c.className + "|" + c.getAttribute("role") + "|" + c.getAttribute("aria-label"),
+       "pdf-preview|img|The first page of doc.pdf");
+    var p = c.getContext("2d").getImageData(130, 65, 1, 1).data;
+    eq("and it is the first page: red", [p[0], p[1], p[2]].join(), "255,0,0");
+    set("format", "jpeg");
+    eq("the message follows the format, named as the menu names it", txt("msg"), "doc.pdf: 3 pages. 3 pages will become JPG pictures in a ZIP file.");
+    set("format", "png");
+    set("which", "some");
+    eq("some pages, with none typed, asks for one", txt("msg"), "Type at least one page number.");
+    eq("as a problem", document.getElementById("msg").className, "msg msg--bad");
+    ok("with nothing to convert", disabled("dlBtn"));
+    set("pages", "5");
+    eq("a page past the end is refused, quoting it", txt("msg"), String.fromCharCode(0x201C) + "5" + String.fromCharCode(0x201D) + ": this PDF has only 3 pages.");
+    set("pages", "2");
+    eq("one page is one picture", txt("msg"), "doc.pdf: 3 pages. 1 page will become one PNG picture.");
+    ok("and can be converted", !disabled("dlBtn"));
+    return download();
+  });
+  step(function (d) {
+    ok("one picture is saved", d, txt("msg"));
+    if (!d) { return; }
+    eq("named for the PDF and the page, padded to two digits", d.name, "doc-page-02.png");
+    eq("as a PNG", d.type + "|" + magic(d.bytes), "image/png|" + PNG_MAGIC);
+    ok("the message says what was made", /^Done: 1 page as PNG at 150 DPI, [\d.]+ (B|KB)\. Nothing has left your device\.$/.test(txt("msg")), txt("msg"));
+    ok("and that the files are ready while it is done", !disabled("dlBtn"));
+    ok("it said which page it was working on", history.indexOf("Turning page 2 into a picture" + String.fromCharCode(0x2026) + " (1 of 1)") >= 0, history.join(" / "));
+    return picture(d.bytes, "image/png");
+  });
+  step(function (pic) {
+    if (!pic) { return; }
+    eq("150 DPI: 200 by 100 points is 416 by 208 pixels", pic.w + "x" + pic.h, "416x208");
+    eq("and it is page 2: green, solid", pic.at(208, 104).join() + " " + pic.at(0, 0).join() + " " + pic.at(415, 207).join(),
+       "0,255,0,255 0,255,0,255 0,255,0,255");
+    set("pages", "3, 1-2, 2");
+    set("format", "jpeg");
+    set("dpi", "72");
+    eq("pages typed twice count once", txt("msg"), "doc.pdf: 3 pages. 3 pages will become JPG pictures in a ZIP file.");
+    return download();
+  });
+  step(function (d) {
+    ok("a ZIP is saved", d, txt("msg"));
+    if (!d) { return; }
+    eq("named for the PDF", d.name, "doc-pages.zip");
+    ok("the message gives its size", /^Done: 3 pages as JPG at 72 DPI, [\d.]+ (B|KB)\. Nothing has left your device\.$/.test(txt("msg")), txt("msg"));
+    var files;
+    try { files = readZip(d.bytes); } catch (e) { ok("the ZIP reads back", false, e.message); return; }
+    eq("three pictures, in the order typed", files.map(function (f) { return f.name; }).join(), "doc-page-03.jpg,doc-page-01.jpg,doc-page-02.jpg");
+    ok("all JPEG", files.every(function (f) { return magic(f.bytes).indexOf(JPEG_MAGIC) === 0; }));
+    return Promise.all(files.map(function (f) { return picture(f.bytes, "image/jpeg"); }));
+  });
+  step(function (pics) {
+    if (!pics) { return; }
+    eq("72 DPI: one pixel a point", pics.map(function (p) { return p.w + "x" + p.h; }).join(), "200x100,200x100,200x100");
+    ok("page 3 is blue", near(pics[0].at(100, 50), [0, 0, 255], 8), pics[0].at(100, 50).join());
+    ok("page 1 is red", near(pics[1].at(100, 50), [255, 0, 0], 8), pics[1].at(100, 50).join());
+    ok("page 2 is green", near(pics[2].at(100, 50), [0, 255, 0], 8), pics[2].at(100, 50).join());
+    set("which", "all");
+    set("format", "png");
+    set("dpi", "300");
+    return download();
+  });
+  step(function (d) {
+    var files = d ? readZip(d.bytes) : [];
+    eq("all pages, numbered in order", files.map(function (f) { return f.name; }).join(), "doc-page-01.png,doc-page-02.png,doc-page-03.png");
+    return Promise.all(files.map(function (f) { return picture(f.bytes, "image/png"); }));
+  });
+  step(function (pics) {
+    eq("300 DPI: 833 by 416 pixels", pics.map(function (p) { return p.w + "x" + p.h; }).join(), "833x416,833x416,833x416");
+    eq("red, green, blue", pics.map(function (p) { return p.at(400, 200).slice(0, 3).join(" "); }).join(", "), "255 0 0, 0 255 0, 0 0 255");
+  });
+
+  /* ================= turned, cropped, empty and very large pages ================= */
+  step(function () {
+    set("which", "some");
+    set("pages", "1-3");
+    set("dpi", "72");
+    feed(F.shapes);
+    return wait("the shapes PDF is read", read, 60000);
+  });
+  step(function () {
+    eq("choices are kept for the next PDF", txt("msg"), "Shapes.PDF: 5 pages. 3 pages will become PNG pictures in a ZIP file.");
+    return wait("its first page is shown", function () { return !!document.querySelector("#preview canvas"); }, 60000);
+  });
+  step(function () {
+    var c = document.querySelector("#preview canvas");
+    eq("the preview of a turned page is upright, no taller than an A4 one", c.width + "x" + c.height + " " + c.style.width, "184x368 184px");
+    return download();
+  });
+  step(function (d) {
+    var files = d ? readZip(d.bytes) : [];
+    eq("the .PDF ending is dropped whatever its case", d && d.name, "Shapes-pages.zip");
+    eq("three pictures", files.map(function (f) { return f.name; }).join(), "Shapes-page-01.png,Shapes-page-02.png,Shapes-page-03.png");
+    return Promise.all(files.map(function (f) { return picture(f.bytes, "image/png"); }));
+  });
+  step(function (pics) {
+    if (pics.length !== 3) { return; }
+    eq("a page turned a quarter is saved upright: 100 wide, 200 high", pics[0].w + "x" + pics[0].h, "100x200");
+    eq("its left half now on top", pics[0].at(50, 50).join() + " / " + pics[0].at(50, 150).join(), "255,0,0,255 / 0,0,255,255");
+    eq("a cropped page is saved as cropped", pics[1].w + "x" + pics[1].h + " " + pics[1].at(5, 50).join() + " " + pics[1].at(95, 50).join(),
+       "100x100 0,0,255,255 0,0,255,255");
+    eq("an empty page is white, not see-through", pics[2].at(100, 50).join() + " " + pics[2].at(0, 0).join(), "255,255,255,255 255,255,255,255");
+    set("pages", "4");
+    return download();
+  });
+  step(function (d) {
+    eq("a very long page is saved", d && d.name, "Shapes-page-04.png");
+    eq("and the visitor told it was drawn smaller", txt("msg").replace(/[\d.]+ (B|KB|MB)\./, "N."),
+       "Done: 1 page as PNG at 72 DPI, N. One page was too big for that resolution and drawn smaller. Nothing has left your device.");
+    return d ? picture(d.bytes, "image/png") : null;
+  });
+  step(function (pic) {
+    if (!pic) { return; }
+    ok("no side past 10,000 pixels", pic.w >= 9998 && pic.w <= 10000 && pic.h === 71, pic.w + "x" + pic.h);
+    ok("the whole page is in it", near(pic.at(pic.w - 2, 35), [255, 0, 0, 255], 0) && near(pic.at(1, 35), [255, 0, 0, 255], 0),
+       pic.at(pic.w - 2, 35).join() + " " + pic.at(1, 35).join());
+    set("pages", "5");
+    set("format", "jpeg");
+    return download();
+  });
+  step(function (d) {
+    eq("a very large page is saved", d && d.name, "Shapes-page-05.jpg");
+    has("drawn smaller too", txt("msg"), "One page was too big for that resolution and drawn smaller.");
+    return d ? picture(d.bytes, "image/jpeg") : null;
+  });
+  step(function (pic) {
+    if (!pic) { return; }
+    ok("held to about 40 million pixels", pic.w === pic.h && pic.w * pic.h <= 40000000 && pic.w > 6300, pic.w + "x" + pic.h);
+    ok("blue to the corner", near(pic.at(pic.w - 3, pic.h - 3), [0, 0, 255], 8), pic.at(pic.w - 3, pic.h - 3).join());
+    set("pages", "3-");
+    set("format", "png");
+    eq("open-ended ranges run to the last page", txt("msg"), "Shapes.PDF: 5 pages. 3 pages will become PNG pictures in a ZIP file.");
+  });
+
+  /* ================= many pages ================= */
+  step(function () {
+    set("which", "all");
+    feed(F.many);
+    return wait("the long PDF is read", read, 60000);
+  });
+  step(function () {
+    eq("more than 300 pages at once are refused", txt("msg"), "Choose up to 300 pages at a time; this would be 400.");
+    ok("with nothing to convert", disabled("dlBtn"));
+    set("which", "some");
+    set("pages", "1-300");
+    eq("300 are fine", txt("msg"), "big.pdf: 400 pages. 300 pages will become PNG pictures in a ZIP file.");
+    set("pages", "1-301");
+    eq("301 are not", txt("msg"), "Choose up to 300 pages at a time; this would be 301.");
+    set("pages", "5");
+    return download();
+  });
+  step(function (d) {
+    eq("numbers are padded to the longest page number", d && d.name, "big-page-005.png");
+    return d ? picture(d.bytes, "image/png") : null;
+  });
+  step(function (pic) {
+    eq("and it is page 5, the green one", pic ? pic.at(100, 50).join() : "none", "0,255,0,255");
+  });
+
+  /* ================= what pdf.js fetches as it needs it =================
+     Helvetica, not in the file (the standard fonts); Japanese text in a font
+     not in the file (the character maps); a JPEG 2000 picture (the picture
+     decoder). Each comes from js/lib/pdfjs, fetched by the reader's worker. */
+  step(function () {
+    set("which", "all");
+    set("format", "png");
+    set("dpi", "150");
+    feed(F.fonts);
+    return wait("the fonts PDF is read", read, 60000);
+  });
+  step(function () { return download(); });
+  step(function (d) {
+    var files = d ? readZip(d.bytes) : [];
+    eq("three pages of text", files.map(function (f) { return f.name; }).join(), "fonts-page-01.png,fonts-page-02.png,fonts-page-03.png");
+    return Promise.all(files.map(function (f) { return picture(f.bytes, "image/png"); }));
+  });
+  step(function (pics) {
+    if (pics.length !== 3) { return; }
+    ok("Helvetica is drawn", pics[0].dark() > 2500, pics[0].dark());
+    /* six characters of 36 points from x = 10 points: one in each cell */
+    var cells = [];
+    for (var k = 0; k < 6; k++) {
+      var n = 0;
+      for (var x = Math.ceil((10 + k * 36) * 150 / 72); x < Math.floor((10 + (k + 1) * 36) * 150 / 72); x++) {
+        for (var y = 0; y < pics[1].h; y++) { var p = pics[1].at(x, y); if (p[0] + p[1] + p[2] < 200) { n += 1; } }
+      }
+      cells.push(n);
+    }
+    ok("the Japanese text is drawn, one character in each place", cells.every(function (n) { return n > 150; }), cells.join());
+    /* four check marks in ZapfDingbats: four runs of inked columns */
+    var runs = 0, inked = false;
+    for (var cx = 0; cx < pics[2].w; cx++) {
+      var any = false;
+      for (var cy = 0; cy < pics[2].h && !any; cy++) { var q = pics[2].at(cx, cy); any = q[0] + q[1] + q[2] < 200; }
+      if (any && !inked) { runs += 1; }
+      inked = any;
+    }
+    eq("ZapfDingbats is drawn: four check marks", runs, 4);
+    set("dpi", "72");
+    feed(F.jpx);
+    return wait("the JPEG 2000 PDF is read", read, 60000);
+  });
+  step(function () { return download(); });
+  step(function (d) {
+    eq("a page with a JPEG 2000 picture is saved", d && d.name, "jpx-page-01.png");
+    return d ? picture(d.bytes, "image/png") : null;
+  });
+  step(function (pic) {
+    if (!pic) { return; }
+    eq("a letter-size page at 72 DPI", pic.w + "x" + pic.h, "612x792");
+    ok("its picture is decoded: red on the left, blue on the right, white round it",
+       near(pic.at(150, 392), [200, 30, 30], 12) && near(pic.at(450, 392), [30, 30, 200], 12) && near(pic.at(50, 50), [255, 255, 255], 0),
+       pic.at(150, 392).join() + " / " + pic.at(450, 392).join() + " / " + pic.at(50, 50).join());
+  });
+
+  /* ================= passwords ================= */
+  step(function () {
+    set("which", "all");
+    set("dpi", "150");
+    feed(F.rc4);
+    return wait("the RC4 PDF is looked at", read, 60000);
+  });
+  step(function () {
+    eq("a PDF with a password asks for it", txt("msg"), "statement.pdf is protected with a password. Type it to open the PDF; it stays in this page.");
+    ok("the password box is shown", shown("pwField"));
+    ok("with nothing to convert yet", disabled("dlBtn"));
+    click("pwBtn");
+    eq("an empty password is not tried", txt("msg"), "statement.pdf is protected with a password. Type it to open the PDF; it stays in this page.");
+    set("pw", "open sesam");
+    click("pwBtn");
+    return wait("the wrong password is tried", read, 60000);
+  });
+  step(function () {
+    eq("a wrong password is refused", txt("msg"), "That password is not right. Try again.");
+    eq("as a problem", document.getElementById("msg").className, "msg msg--bad");
+    ok("the box stays, to try again", shown("pwField"));
+    set("pw", "open sesame");
+    var input = document.getElementById("pw");
+    input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    return wait("the right password is tried", read, 60000);
+  });
+  step(function () {
+    eq("Enter opens it with the right one", txt("msg"), "statement.pdf: 1 page. 1 page will become one PNG picture.");
+    ok("the password box is hidden and emptied", !shown("pwField") && val("pw") === "");
+    return download();
+  });
+  step(function (d) {
+    eq("the page of the protected PDF is saved", d && d.name, "statement-page-01.png");
+    return d ? picture(d.bytes, "image/png") : null;
+  });
+  step(function (pic) {
+    if (!pic) { return; }
+    eq("200 by 80 points at 150 DPI", pic.w + "x" + pic.h, "416x166");
+    ok("its words are drawn: dark pixels on white", pic.dark() > 500 && near(pic.at(2, 2), [255, 255, 255, 255], 0), pic.dark());
+    feed(F.aes);
+    return wait("the AES-256 PDF is looked at", read, 60000);
+  });
+  step(function () {
+    eq("AES-256 asks too", txt("msg"), "locked.pdf is protected with a password. Type it to open the PDF; it stays in this page.");
+    set("pw", "Open sesame");
+    click("pwBtn");
+    return wait("the wrong password is tried", read, 60000);
+  });
+  step(function () {
+    eq("passwords are matched exactly, capitals too", txt("msg"), "That password is not right. Try again.");
+    set("pw", "open sesame");
+    click("pwBtn");
+    return wait("the right password is tried", read, 60000);
+  });
+  step(function () {
+    eq("the right one opens it", txt("msg"), "locked.pdf: 1 page. 1 page will become one PNG picture.");
+    return download();
+  });
+  step(function (d) { return d ? picture(d.bytes, "image/png") : null; });
+  step(function (pic) {
+    ok("its drawing comes out: green round the edge, white in the middle",
+       pic && near(pic.at(5, 5), [0, 128, 0, 255], 1) && near(pic.at(208, 104), [255, 255, 255, 255], 0),
+       pic && pic.at(5, 5).join() + " / " + pic.at(208, 104).join());
+    feed(F.rc4);
+    return wait("the RC4 PDF is looked at again", read, 60000);
+  });
+  step(function () {
+    set("pw", "something");
+    click("resetBtn");
+    ok("clear hides the password box and empties it", !shown("pwField") && val("pw") === "");
+    eq("and asks for a PDF again", txt("msg"), "Choose a PDF to turn its pages into pictures.");
+  });
+
+  /* ================= files that cannot be used ================= */
+  step(function () {
+    feed(F.notPdf);
+    return wait("a file that is not a PDF is looked at", read, 60000);
+  });
+  step(function () {
+    eq("one that is not a PDF is turned away", txt("msg"), "Could not use notes.pdf: not a PDF, or too damaged to read.");
+    eq("as a problem", document.getElementById("msg").className, "msg msg--bad");
+    ok("with nothing to convert", disabled("dlBtn"));
+    eq("and no preview", document.getElementById("preview").children.length, 0);
+    feed(F.empty);
+    return wait("a PDF without pages is looked at", read, 60000);
+  });
+  step(function () {
+    eq("one without pages too", txt("msg"), "Could not use empty.pdf: it has no pages.");
+    ok("with nothing to convert", disabled("dlBtn"));
+    feed(F.huge);
+    eq("one over 300 MB is turned away before it is read", txt("msg"), "Could not use huge.pdf: over the 300 MB this page can read.");
+    feed(F.damaged);
+    return wait("a PDF with a damaged index is read", read, 60000);
+  });
+  step(function () {
+    ok("a damaged index is worked around", /^scan\.pdf: \d+ pages?\. /.test(txt("msg")), txt("msg"));
+    ok("and it can be converted", !disabled("dlBtn"));
+    feed(F.hostile);
+    return wait("a file named as markup is read", read, 60000);
+  });
+  step(function () {
+    eq("its name is shown as text", txt("msg"), "<iframe onload=zq>.pdf: 3 pages. 3 pages will become PNG pictures in a ZIP file.");
+    return wait("its first page is shown", function () { return !!document.querySelector("#preview canvas"); }, 60000);
+  });
+  step(function () {
+    eq("the name made no element", document.querySelectorAll("iframe").length, 0);
+    eq("the preview's label holds it as text", document.querySelector("#preview canvas").getAttribute("aria-label"), "The first page of <iframe onload=zq>.pdf");
+  });
+
+  /* ================= stopping half-way ================= */
+  step(function () {
+    feed(F.colours);
+    return wait("the PDF is read again", read, 60000);
+  });
+  step(function () {
+    set("dpi", "300");
+    var before = window.__saved.length;
+    history.length = 0;
+    click("dlBtn");
+    ok("the button is off while it works", disabled("dlBtn"));
+    click("resetBtn");
+    eq("clear stops it at once", txt("msg"), "Choose a PDF to turn its pages into pictures.");
+    eq("and puts every choice back", val("which") + "|" + val("pages") + "|" + val("format") + "|" + val("dpi"), "all||png|150");
+    ok("with the page numbers hidden and no preview", !shown("pagesField") && document.getElementById("preview").children.length === 0);
+    /* another PDF, converted to the end: by then the stopped work has had
+       every chance to save something, and must not have */
+    feed(F.shapes);
+    return wait("another PDF is read", read, 60000).then(function () {
+      set("which", "some");
+      set("pages", "3");
+      set("dpi", "72");
+      return download();
+    }).then(function (d) {
+      eq("only the new picture was saved", window.__saved.slice(before).map(function (s) { return s.name; }).join(), "Shapes-page-03.png");
+      ok("the stopped work said nothing after it was stopped",
+         !history.some(function (h) { return /^Done: 3 pages|^A page could not|\([23] of 3\)/.test(h); }), history.join(" / "));
+    });
+  });
+  step(function () {
+    click("resetBtn");
+    ok("clear leaves nothing to convert", disabled("dlBtn") && txt("msg") === "Choose a PDF to turn its pages into pictures.");
+    return wait("every reader started has been closed", function () { return closed === workers.length; }, 30000);
+  });
+  step(function () {
+    ok("one for each PDF and each try at a password, and none left open", workers.length >= 15 && closed === workers.length, closed + " of " + workers.length);
+  });
+
+  chain.then(function () { clearInterval(pacer); finish(); }, function (e) {
+    ok("the test ran to the end", false, String(e && e.stack || e));
+    clearInterval(pacer);
+    finish();
+  });
+"""
+
 # ===== END: the test bodies ================================================
 
 
@@ -10420,6 +10969,7 @@ T["compress-pdf"] = r"""
 # ahead of the real one. A tool that builds four zips can need twenty virtual
 # seconds and two real ones. Ask for more here, per tool; nothing else changes.
 BUDGET_MS = {
+    "pdf-to-image": 400000,
     "compress-pdf": 600000,
     "protect-pdf": 300000,
     "pdf-metadata-editor": 300000,
@@ -10462,11 +11012,57 @@ def build(slug):
     return target
 
 
+# ===== START: a local web server, for pages that need one ==================
+# pdf-to-image runs pdf.js, which fetches its character maps, fonts and
+# picture decoders as it needs them. Served over http, as the real site is,
+# its worker fetches them; opened from a file, the page fetches them itself,
+# and the page's own rules (connect-src 'none') refuse - so a file:// test
+# would test something the site never does. These pages are served from
+# this folder by Python's own server, on this machine only, and Chrome opens
+# them from there. The server notes every request, and a request for a file
+# that is not there fails the test: a wrong address for one of pdf.js's
+# files may only show as a fallback font on the page, but never as a 404.
+HTTP_SLUGS = {"pdf-to-image"}
+REQUESTS = []
+
+
+class QuietHandler(http.server.SimpleHTTPRequestHandler):
+    extensions_map = dict(http.server.SimpleHTTPRequestHandler.extensions_map,
+                          **{".mjs": "text/javascript", ".wasm": "application/wasm",
+                             ".bcmap": "application/octet-stream", ".pfb": "application/octet-stream",
+                             ".icc": "application/vnd.iccprofile"})
+
+    def log_message(self, *args):
+        pass
+
+    def log_request(self, code="-", size="-"):
+        REQUESTS.append((self.path, int(code) if str(code).isdigit() else 0))
+
+
+_server = None
+_server_lock = threading.Lock()
+
+
+def local_server():
+    """The address of a server for this folder, started the first time it is asked for."""
+    global _server
+    with _server_lock:
+        if _server is None:
+            handler = functools.partial(QuietHandler, directory=str(SITE))
+            _server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+            threading.Thread(target=_server.serve_forever, daemon=True).start()
+    return "http://127.0.0.1:%d" % _server.server_address[1]
+# ===== END: a local web server =============================================
+
+
 def run_one(slug):
     """Open the test page in Chrome and return its PASS/FAIL lines."""
     target = build(slug)
-    url = "file:///" + urllib.parse.quote(
-        str(SITE).replace("\\", "/") + "/tools/" + target.name)
+    if slug in HTTP_SLUGS:
+        url = local_server() + "/tools/" + urllib.parse.quote(target.name)
+    else:
+        url = "file:///" + urllib.parse.quote(
+            str(SITE).replace("\\", "/") + "/tools/" + target.name)
     try:
         dom = subprocess.run(
             [CHROME, "--headless", "--disable-gpu", "--no-sandbox",
@@ -10490,9 +11086,16 @@ def run_one(slug):
         return slug, ["FAIL  the page produced no result at all - its script "
                       "probably threw before the harness ran"]
     body = htmllib.unescape(match.group(1))
-    return slug, [ln for ln in body.splitlines()
-                  if ln.startswith("PASS") or ln.startswith("FAIL")
-                  or ln.startswith("        ")]
+    lines = [ln for ln in body.splitlines()
+             if ln.startswith("PASS") or ln.startswith("FAIL")
+             or ln.startswith("        ")]
+    if slug in HTTP_SLUGS:
+        mine = [r for r in REQUESTS if "_test-" + slug in r[0] or "/js/" in r[0] or "/css/" in r[0]]
+        missing = sorted(set(path for path, code in REQUESTS if code >= 400))
+        lines.append(("FAIL" if missing or not mine else "PASS") +
+                     "  every file the page asked the server for was there (%d requests)" % len(REQUESTS))
+        lines.extend("        missing: " + m for m in missing)
+    return slug, lines
 # ===== END: building and running one page ==================================
 
 
