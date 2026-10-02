@@ -216,6 +216,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "currency-converter",
+    name: "Currency Converter",
+    desc: "Convert between the rupee, dollar, euro, dirham and 30 more currencies at the day's reference rates.",
+    category: "Converter",
+    icon: "\u{1F4B1}",
+    keywords: ["currency converter", "usd to inr", "dollar to rupee", "euro to inr", "aed to inr", "dirham to rupee", "riyal to rupee", "pound to rupee", "exchange rate", "forex rate today"],
+    popular: false
+  },
+  {
     slug: "data-storage-converter",
     name: "Data Storage Converter",
     desc: "Bytes, KB, MB, GB and TB, with the 1024-based units kept separate.",

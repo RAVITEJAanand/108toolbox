@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Currency Converter — Rupee, Dollar, Euro and Dirham Rates</title>
+  <meta name="description" content="Convert between the rupee, US dollar, euro, pound, dirham and 30 more currencies at the day's reference rates. Free, nothing to sign up for.">
+  <link rel="canonical" href="https://108toolbox.in/tools/currency-converter.html">
+
+  <meta property="og:title" content="Currency Converter — Rupee, Dollar, Euro and Dirham Rates">
+  <meta property="og:description" content="Convert between the rupee, US dollar, euro, pound, dirham and 30 more currencies at the day's reference rates. Free, nothing to sign up for.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=39">
+  <link rel="stylesheet" href="../css/tool.css?v=39">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How often are the rates updated?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Once every working day, in the evening Indian time, after the European Central Bank publishes them. The date of the rates is shown on the page, and the page warns you if they are more than four days old."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this the rate I will get when I send money?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Usually not. Banks, cards and transfer services add a margin to the reference rate, and some charge a fee as well. Use this rate to see how much they add."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I convert rupees to dirhams or riyals?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Choose INR and AED or SAR. Gulf currencies are fixed to the US dollar, so their rate is worked out from the dollar's rate."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is a currency missing?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The page lists the currencies that have a daily reference rate, the euro, and six currencies fixed to one of them. Others, such as the Pakistani rupee or the Sri Lankan rupee, have no reference rate here, so they are left out rather than guessed."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is anything I type sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The rates are a small file on this site that loads with the page, and the conversion happens in your own browser. Nothing you type is sent anywhere or stored."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
+        <span>Currency Converter</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Currency Converter</h1>
+        <p>Convert any amount between 36 currencies at the day's reference rates,
+           and see the same amount in the currencies people use most.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">1. Amount and currencies</span>
+
+          <div class="field">
+            <label for="amount">Amount</label>
+            <input type="text" id="amount" value="1" inputmode="decimal" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="from">From</label>
+            <select id="from"></select>
+          </div>
+          <div class="field">
+            <label for="to">To</label>
+            <select id="to"></select>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--ghost" type="button" id="swapBtn">&#8646; Swap</button>
+            <button class="btn btn--danger" type="button" id="resetBtn">Reset</button>
+          </div>
+
+          <p class="hint" id="dateLine"></p>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">2. Converted</span>
+
+          <div class="result">
+            <span class="result__num" id="result">&mdash;</span>
+            <span class="result__label" id="resultLabel"></span>
+          </div>
+          <p class="hint" id="rateLine"></p>
+          <p class="hint" id="pegLine"></p>
+          <p class="msg" id="msg" aria-live="polite"></p>
+
+          <div class="table-wrap" style="margin-top:var(--s4)">
+            <table class="data">
+              <thead><tr><th scope="col">The same amount in</th><th scope="col">Amount</th></tr></thead>
+              <tbody id="others"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>Where the rates come from</h2>
+        <p>The rates are the euro reference rates the European Central Bank
+           publishes every working day at about 4 pm Central European Time.
+           This site picks them up the same evening, so the page shows the
+           latest working day's rates, with their date above the result. On
+           weekends and bank holidays nothing new is published and the last
+           working day's rates stay. A rate between two currencies other than
+           the euro, such as dollars to rupees, is worked out through the
+           euro.</p>
+
+        <h2>Why your bank gives a different rate</h2>
+        <p>These are reference rates: the middle of the market, with nothing
+           added. A bank, a card or a money transfer service adds its own
+           margin, often 1 to 4 percent, and sometimes a fee on top. That
+           makes this page a good way to check what a transfer really costs:
+           convert the amount here, compare it with what will arrive, and the
+           difference is the margin.</p>
+
+        <h2>Dirham, riyal and other fixed currencies</h2>
+        <p>The UAE dirham, Saudi riyal, Qatari riyal, Omani rial and Bahraini
+           dinar are fixed by their central banks to the US dollar, and the
+           Nepalese rupee to the Indian rupee at 1.6. They are not among the
+           reference rates, so the page works them out from the currency they
+           are fixed to, and says so under the result.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How often are the rates updated?</h3>
+          <p>Once every working day, in the evening Indian time, after the European Central Bank publishes them. The date of the rates is shown on the page, and the page warns you if they are more than four days old.</p>
+        </div>
+        <div class="faq">
+          <h3>Is this the rate I will get when I send money?</h3>
+          <p>Usually not. Banks, cards and transfer services add a margin to the reference rate, and some charge a fee as well. Use this rate to see how much they add.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I convert rupees to dirhams or riyals?</h3>
+          <p>Yes. Choose INR and AED or SAR. Gulf currencies are fixed to the US dollar, so their rate is worked out from the dollar&#x27;s rate.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is a currency missing?</h3>
+          <p>The page lists the currencies that have a daily reference rate, the euro, and six currencies fixed to one of them. Others, such as the Pakistani rupee or the Sri Lankan rupee, have no reference rate here, so they are left out rather than guessed.</p>
+        </div>
+        <div class="faq">
+          <h3>Is anything I type sent anywhere?</h3>
+          <p>No. The rates are a small file on this site that loads with the page, and the conversion happens in your own browser. Nothing you type is sent anywhere or stored.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=pdf">PDF tools</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+            <li><a href="../tools.html?q=random">Random tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=39"></script>
+  <script src="../js/tool-helpers.js?v=39"></script>
+  <script>window.CURRENT_TOOL = "currency-converter";</script>
+  <script src="../js/main.js?v=39"></script>
+  <script src="../data/rates.js"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var amountIn   = document.getElementById("amount");
+    var fromSel    = document.getElementById("from");
+    var toSel      = document.getElementById("to");
+    var resultNum  = document.getElementById("result");
+    var resultText = document.getElementById("resultLabel");
+    var rateLine   = document.getElementById("rateLine");
+    var pegLine    = document.getElementById("pegLine");
+    var dateLine   = document.getElementById("dateLine");
+    var msg        = document.getElementById("msg");
+    var others     = document.getElementById("others");
+
+    /* ---- START: the currencies ---- */
+    var NAMES = {
+      AED: "UAE dirham", AUD: "Australian dollar", BHD: "Bahraini dinar", BRL: "Brazilian real",
+      CAD: "Canadian dollar", CHF: "Swiss franc", CNY: "Chinese yuan", CZK: "Czech koruna",
+      DKK: "Danish krone", EUR: "Euro", GBP: "British pound", HKD: "Hong Kong dollar",
+      HUF: "Hungarian forint", IDR: "Indonesian rupiah", ILS: "Israeli shekel", INR: "Indian rupee",
+      ISK: "Icelandic krona", JPY: "Japanese yen", KRW: "South Korean won", MXN: "Mexican peso",
+      MYR: "Malaysian ringgit", NOK: "Norwegian krone", NPR: "Nepalese rupee", NZD: "New Zealand dollar",
+      OMR: "Omani rial", PHP: "Philippine peso", PLN: "Polish zloty", QAR: "Qatari riyal",
+      RON: "Romanian leu", SAR: "Saudi riyal", SEK: "Swedish krona", SGD: "Singapore dollar",
+      THB: "Thai baht", TRY: "Turkish lira", USD: "US dollar", ZAR: "South African rand"
+    };
+    /* Fixed by their central banks to another currency: [that currency,
+       units of this one for one of it]. Their rate follows that currency. */
+    var PEGS = {
+      AED: ["USD", 3.6725], SAR: ["USD", 3.75], QAR: ["USD", 3.64],
+      OMR: ["USD", 0.3845], BHD: ["USD", 0.376], NPR: ["INR", 1.6]
+    };
+    var COMMON = ["INR", "USD", "EUR", "GBP", "AED", "SAR", "SGD", "AUD", "CAD", "JPY"];
+    var MONTHS = ["January", "February", "March", "April", "May", "June", "July",
+                  "August", "September", "October", "November", "December"];
+
+    function nameOf(code) { return NAMES[code] || code; }
+    /* ---- END: the currencies ---- */
+
+    /* ---- START: reading the rates the site publishes ----
+       data/rates.js sets window.EXCHANGE_RATES: the euro reference rates of
+       one working day, as units of each currency for one euro. Read each
+       time they are used, and checked, since a page with no rate is better
+       than a page with a wrong one. */
+    function readRates() {
+      var data = window.EXCHANGE_RATES;
+      if (!data || typeof data !== "object" || !/^\d{4}-\d{2}-\d{2}$/.test(String(data.date)) ||
+          data.base !== "EUR" || !data.rates || typeof data.rates !== "object") {
+        return null;
+      }
+      var perEuro = { EUR: 1 };
+      Object.keys(data.rates).forEach(function (code) {
+        var r = data.rates[code];
+        if (/^[A-Z]{3}$/.test(code) && typeof r === "number" && isFinite(r) && r > 0) { perEuro[code] = r; }
+      });
+      if (!perEuro.USD) { return null; }
+      Object.keys(PEGS).forEach(function (code) {
+        var anchor = perEuro[PEGS[code][0]];
+        if (!perEuro[code] && anchor) { perEuro[code] = anchor * PEGS[code][1]; }
+      });
+      return { date: String(data.date), perEuro: perEuro };
+    }
+
+    function convert(amount, from, to, perEuro) {
+      return amount / perEuro[from] * perEuro[to];
+    }
+    /* ---- END: reading the rates the site publishes ---- */
+
+    /* ---- START: writing numbers ----
+       Rupees in the Indian way (1,00,000), everything else in thousands.
+       An amount of one or more to two decimals; a smaller one to four
+       significant figures, so 0.0104 does not become 0.01. */
+    function grouping(code) { return code === "INR" || code === "NPR" ? "en-IN" : "en-US"; }
+
+    function money(value, code) {
+      if (value === 0) { return "0"; }
+      var opts = Math.abs(value) >= 1 ? { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                                       : { maximumSignificantDigits: 4 };
+      return new Intl.NumberFormat(grouping(code), opts).format(value);
+    }
+
+    function rate(value, code) {
+      var opts = value >= 1 ? { maximumFractionDigits: 4 } : { maximumSignificantDigits: 5 };
+      return new Intl.NumberFormat(grouping(code), opts).format(value);
+    }
+
+    function longDate(iso) {
+      var p = iso.split("-");
+      return Number(p[2]) + " " + MONTHS[Number(p[1]) - 1] + " " + p[0];
+    }
+
+    function readAmount() {
+      var text = amountIn.value.replace(/[\s,]/g, "");
+      if (text === "") { return { error: "Type an amount." }; }
+      if (!/^\d*\.?\d+$|^\d+\.$/.test(text)) { return { error: "Type the amount as a number, such as 1500 or 99.50." }; }
+      var value = Number(text);
+      if (value > 1e15) { return { error: "That amount is too large to convert." }; }
+      return { value: value };
+    }
+    /* ---- END: writing numbers ---- */
+
+    /* ---- START: the currency lists ---- */
+    function fillLists() {
+      var known = readRates();
+      var codes = Object.keys(NAMES);
+      if (known) { Object.keys(known.perEuro).forEach(function (c) { if (codes.indexOf(c) < 0) { codes.push(c); } }); }
+      codes.sort(function (a, b) { return nameOf(a) < nameOf(b) ? -1 : nameOf(a) > nameOf(b) ? 1 : 0; });
+      [fromSel, toSel].forEach(function (sel) {
+        var common = document.createElement("optgroup"), all = document.createElement("optgroup");
+        common.label = "Most used";
+        all.label = "All currencies";
+        COMMON.forEach(function (c) { common.appendChild(option(c)); });
+        codes.forEach(function (c) { if (COMMON.indexOf(c) < 0) { all.appendChild(option(c)); } });
+        sel.appendChild(common);
+        sel.appendChild(all);
+      });
+      fromSel.value = "USD";
+      toSel.value = "INR";
+    }
+
+    function option(code) {
+      var o = document.createElement("option");
+      o.value = code;
+      o.textContent = code + " " + String.fromCharCode(0x2014) + " " + nameOf(code);
+      return o;
+    }
+    /* ---- END: the currency lists ---- */
+
+    /* ---- START: showing the conversion ---- */
+    function clearOutput() {
+      resultNum.textContent = String.fromCharCode(0x2014);
+      resultText.textContent = "";
+      rateLine.textContent = "";
+      pegLine.textContent = "";
+      others.textContent = "";
+    }
+
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+
+    function refresh() {
+      var known = readRates();
+      if (!known) {
+        clearOutput();
+        dateLine.textContent = "";
+        setMessage("The exchange rates could not be loaded. Check the connection and reload the page.", "bad");
+        return;
+      }
+      var age = Math.floor((Date.now() - Date.parse(known.date + "T00:00:00Z")) / 86400000);
+      dateLine.textContent = "Rates of " + longDate(known.date) + ": the euro reference rates of the European " +
+        "Central Bank, published around 4 pm Central European Time on working days.";
+      var from = fromSel.value, to = toSel.value;
+      var missing = [from, to].filter(function (c) { return !known.perEuro[c]; });
+      var amount = readAmount();
+      if (missing.length || amount.error) {
+        clearOutput();
+        setMessage(amount.error || "There is no rate for " + missing[0] + " in these rates.", "bad");
+        return;
+      }
+      setMessage(age > 4 ? "These rates are " + age + " days old: the page has not been updated since. " +
+                           "Check a current rate before you rely on it." : "", age > 4 ? "bad" : "");
+
+      var value = convert(amount.value, from, to, known.perEuro);
+      resultNum.textContent = money(value, to) + " " + to;
+      resultText.textContent = money(amount.value, from) + " " + from + " (" + nameOf(from) + ") = " +
+                               money(value, to) + " " + to + " (" + nameOf(to) + ")";
+      rateLine.textContent = "1 " + from + " = " + rate(convert(1, from, to, known.perEuro), to) + " " + to +
+                             "  " + String.fromCharCode(0x00B7) + "  1 " + to + " = " +
+                             rate(convert(1, to, from, known.perEuro), from) + " " + from;
+      var pegged = [from, to].filter(function (c, i, list) { return PEGS[c] && list.indexOf(c) === i; });
+      pegLine.textContent = pegged.map(function (c) {
+        return c + " is fixed at " + PEGS[c][1] + " to the " + nameOf(PEGS[c][0]) + ", so its rate follows the " +
+               nameOf(PEGS[c][0]).split(" ").pop() + "'s.";
+      }).join(" ");
+
+      others.textContent = "";
+      COMMON.filter(function (c) { return c !== from && c !== to && known.perEuro[c]; }).forEach(function (c) {
+        var row = document.createElement("tr"), name = document.createElement("td"), sum = document.createElement("td");
+        name.textContent = c + " " + String.fromCharCode(0x2014) + " " + nameOf(c);
+        sum.textContent = money(convert(amount.value, from, c, known.perEuro), c);
+        row.appendChild(name);
+        row.appendChild(sum);
+        others.appendChild(row);
+      });
+    }
+    /* ---- END: showing the conversion ---- */
+
+    /* ---- START: wiring ---- */
+    fillLists();
+    amountIn.addEventListener("input", refresh);
+    fromSel.addEventListener("change", refresh);
+    toSel.addEventListener("change", refresh);
+    document.getElementById("swapBtn").addEventListener("click", function () {
+      var from = fromSel.value;
+      fromSel.value = toSel.value;
+      toSel.value = from;
+      refresh();
+    });
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      amountIn.value = "1";
+      fromSel.value = "USD";
+      toSel.value = "INR";
+      refresh();
+    });
+    /* ---- END: wiring ---- */
+
+    refresh();
+  })();
+  </script>
+</body>
+</html>

@@ -10959,6 +10959,224 @@ T["pdf-to-image"] = r"""  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago
   });
 """
 
+T["currency-converter"] = r"""  /* ================= independent arithmetic and formatting =================
+     Numbers are written here with toFixed and hand-made grouping, not with
+     Intl as the page does, so a formatting slip on the page shows. */
+  function group(digits, indian) {
+    if (!indian || digits.length <= 3) { return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+    var head = digits.slice(0, -3), tail = digits.slice(-3);
+    return head.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + tail;
+  }
+  function fixed(x, d, indian) {
+    var s = x.toFixed(d), p = s.split(".");
+    return group(p[0], indian) + (p[1] ? "." + p[1] : "");
+  }
+  function trimmed(s) { return s.indexOf(".") < 0 ? s : s.replace(/0+$/, "").replace(/\.$/, ""); }
+  function sig(x, n) { return trimmed(Number(x.toPrecision(n)).toString()); }
+  function isIndian(code) { return code === "INR" || code === "NPR"; }
+  function money(x, code) {
+    if (x === 0) { return "0"; }
+    return Math.abs(x) >= 1 ? fixed(x, 2, isIndian(code)) : sig(x, 4);
+  }
+  function rateText(x, code) {
+    if (x >= 1) { var p = trimmed(x.toFixed(4)).split("."); return group(p[0], isIndian(code)) + (p[1] ? "." + p[1] : ""); }
+    return sig(x, 5);
+  }
+  var PEG = { AED: ["USD", 3.6725], SAR: ["USD", 3.75], QAR: ["USD", 3.64], OMR: ["USD", 0.3845], BHD: ["USD", 0.376], NPR: ["INR", 1.6] };
+  function perEuro(data, code) {
+    if (code === "EUR") { return 1; }
+    return data.rates[code] || data.rates[PEG[code][0]] * PEG[code][1];
+  }
+  function expect(data, amount, from, to) { return amount / perEuro(data, from) * perEuro(data, to); }
+  function iso(ms) { return new Date(ms).toISOString().slice(0, 10); }
+  var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  function spoken(isoDate) { var p = isoDate.split("-"); return Number(p[2]) + " " + MONTHS[Number(p[1]) - 1] + " " + p[0]; }
+  var DOT = String.fromCharCode(0x00B7), DASH = String.fromCharCode(0x2014);
+  function shown(id) { return txt(id); }
+  function rows() {
+    return Array.prototype.map.call(document.querySelectorAll("#others tr"), function (tr) {
+      return tr.children[0].textContent + "=" + tr.children[1].textContent;
+    });
+  }
+
+  /* ================= the real file, data/rates.js ================= */
+  var REAL = window.EXCHANGE_RATES;
+  ok("data/rates.js loaded and set the rates", REAL && typeof REAL === "object");
+  ok("with a date", REAL && /^\d{4}-\d{2}-\d{2}$/.test(REAL.date), REAL && REAL.date);
+  eq("on the euro", REAL && REAL.base, "EUR");
+  var realCodes = REAL ? Object.keys(REAL.rates) : [];
+  ok("twenty or more currencies, the dollar and the rupee among them",
+     realCodes.length >= 20 && REAL.rates.USD > 0 && REAL.rates.INR > 0, realCodes.join());
+  ok("every rate a positive number under a three-letter code", realCodes.every(function (c) {
+    return /^[A-Z]{3}$/.test(c) && typeof REAL.rates[c] === "number" && REAL.rates[c] > 0;
+  }));
+  if (REAL) {
+    eq("the page opens on 1 US dollar in rupees, from the real rates", shown("result"), money(expect(REAL, 1, "USD", "INR"), "INR") + " INR");
+    eq("and says which day's rates they are", shown("dateLine"),
+       "Rates of " + spoken(REAL.date) + ": the euro reference rates of the European Central Bank, published around 4 pm Central European Time on working days.");
+  }
+
+  /* ================= from here on, fixed rates dated today ================= */
+  var R = {
+    date: iso(Date.now()), base: "EUR",
+    rates: { AUD: 1.6176, BRL: 5.8610, CAD: 1.5984, CHF: 0.9279, CNY: 7.5259, CZK: 24.470, DKK: 7.4736, GBP: 0.85033,
+             HKD: 8.8084, HUF: 369.18, IDR: 20149.32, ILS: 3.4408, INR: 108.1245, ISK: 137.00, JPY: 176.99, KRW: 1513.44,
+             MXN: 20.5806, MYR: 4.5849, NOK: 10.8315, NZD: 2.0002, PHP: 70.265, PLN: 4.3775, RON: 5.3488, SEK: 11.2900,
+             SGD: 1.4366, THB: 37.710, TRY: 55.1650, USD: 1.1225, ZAR: 18.7839 }
+  };
+  function use(data) { window.EXCHANGE_RATES = data; set("amount", val("amount")); }
+  use(R);
+
+  /* ================= the lists ================= */
+  var fromGroups = document.querySelectorAll("#from optgroup");
+  eq("two groups in each list", fromGroups.length + "," + document.querySelectorAll("#to optgroup").length, "2,2");
+  eq("the most used first", fromGroups[0].label + ": " + Array.prototype.map.call(fromGroups[0].children, function (o) { return o.value; }).join(" "),
+     "Most used: INR USD EUR GBP AED SAR SGD AUD CAD JPY");
+  var rest = Array.prototype.map.call(fromGroups[1].children, function (o) { return o.textContent; });
+  eq("then the other 26, by name", fromGroups[1].label + ": " + rest.length, "All currencies: 26");
+  var names = rest.map(function (t) { return t.split(DASH + " ")[1]; });
+  ok("in alphabetical order", names.join("|") === names.slice().sort().join("|"), names.join("|"));
+  var allValues = Array.prototype.map.call(document.querySelectorAll("#from option"), function (o) { return o.value; });
+  eq("36 currencies, none twice", allValues.length + "," + allValues.filter(function (v, i) { return allValues.indexOf(v) === i; }).length, "36,36");
+  ok("each written as code and name", document.querySelector('#from option[value="INR"]').textContent === "INR " + DASH + " Indian rupee" &&
+     document.querySelector('#from option[value="AED"]').textContent === "AED " + DASH + " UAE dirham");
+
+  /* ================= converting ================= */
+  set("amount", "1");
+  var usdInr = expect(R, 1, "USD", "INR");
+  eq("1 US dollar in rupees", shown("result"), money(usdInr, "INR") + " INR");
+  eq("in words below it", shown("resultLabel"), "1.00 USD (US dollar) = " + money(usdInr, "INR") + " INR (Indian rupee)");
+  eq("both ways round, to four decimals or five figures", shown("rateLine"),
+     "1 USD = " + rateText(usdInr, "INR") + " INR  " + DOT + "  1 INR = " + rateText(1 / usdInr, "USD") + " USD");
+  eq("worked out through the euro: 108.1245 / 1.1225", rateText(usdInr, "INR"), "96.3247");
+  eq("no warning on today's rates", shown("msg") + "|" + document.getElementById("msg").className, "|msg");
+  eq("no fixed-rate note for these two", shown("pegLine"), "");
+  eq("the same amount in the other most-used currencies", rows().join("; "),
+     ["EUR", "GBP", "AED", "SAR", "SGD", "AUD", "CAD", "JPY"].map(function (c) {
+       return c + " " + DASH + " " + document.querySelector('#from option[value="' + c + '"]').textContent.split(DASH + " ")[1] + "=" + money(expect(R, 1, "USD", c), c);
+     }).join("; "));
+
+  set("amount", "1,00,000");
+  eq("commas in the amount are fine, and rupees are grouped the Indian way", shown("result"), money(expect(R, 100000, "USD", "INR"), "INR") + " INR");
+  set("amount", "200000");
+  eq("so nearly two crore rupees reads as 1,92,64,944.32", shown("result"), "1,92,64,944.32 INR");
+  set("from", "INR"); set("to", "USD"); set("amount", "100000");
+  eq("other currencies are grouped in thousands", shown("result"), money(expect(R, 100000, "INR", "USD"), "USD") + " USD");
+  eq("which is 1,038.16 (100000 x 1.1225 / 108.1245 = 1038.1555)", shown("result"), "1,038.16 USD");
+  set("from", "USD"); set("to", "EUR"); set("amount", "1000000");
+  eq("a million dollars in euros, in thousands: 890,868.60", shown("result"), "890,868.60 EUR");
+  set("from", "INR"); set("to", "USD");
+  set("amount", "1");
+  eq("an amount under one keeps four figures", shown("result"), sig(expect(R, 1, "INR", "USD"), 4) + " USD");
+  eq("which is 0.01038", shown("result"), "0.01038 USD");
+  set("amount", "0");
+  eq("nothing converts to nothing", shown("result"), "0 USD");
+  set("amount", " 2 500.50 ");
+  eq("spaces in the amount are fine", shown("result"), money(expect(R, 2500.5, "INR", "USD"), "USD") + " USD");
+  set("amount", ".5");
+  eq("so is a leading point", shown("result"), money(expect(R, 0.5, "INR", "USD"), "USD") + " USD");
+
+  set("from", "EUR"); set("to", "INR"); set("amount", "1");
+  eq("1 euro is the published rate itself", shown("result"), "108.12 INR");
+  eq("and its rate line shows it in full", shown("rateLine").split("  ")[0], "1 EUR = 108.1245 INR");
+  set("from", "INR"); set("to", "INR");
+  eq("a currency into itself", shown("result"), "1.00 INR");
+  ok("and neither appears in the table", rows().every(function (r) { return r.indexOf("INR") !== 0; }) && rows().length === 9, rows().join("; "));
+
+  /* ================= currencies fixed to another ================= */
+  set("from", "AED"); set("to", "INR");
+  eq("dirhams to rupees, through the dollar", shown("result"), money(expect(R, 1, "AED", "INR"), "INR") + " INR");
+  eq("which is 108.1245 / (1.1225 x 3.6725)", shown("result"), "26.23 INR");
+  eq("with a note saying why", shown("pegLine"), "AED is fixed at 3.6725 to the US dollar, so its rate follows the dollar's.");
+  set("from", "NPR");
+  eq("Nepalese rupees: 1.6 to the Indian rupee exactly", shown("result"), "0.625 INR");
+  eq("its own note", shown("pegLine"), "NPR is fixed at 1.6 to the Indian rupee, so its rate follows the rupee's.");
+  set("from", "INR"); set("to", "NPR"); set("amount", "100000");
+  eq("Nepalese rupees are grouped the Indian way too", shown("result"), "1,60,000.00 NPR");
+  set("amount", "1");
+  set("from", "AED"); set("to", "SAR");
+  eq("two fixed currencies, two notes", shown("pegLine"),
+     "AED is fixed at 3.6725 to the US dollar, so its rate follows the dollar's. SAR is fixed at 3.75 to the US dollar, so its rate follows the dollar's.");
+  eq("and their rate is the ratio of the two pegs", shown("rateLine").split("  ")[0], "1 AED = " + rateText(3.75 / 3.6725, "SAR") + " SAR");
+  set("from", "OMR"); set("to", "USD");
+  eq("the Omani rial: 0.3845 to the dollar", shown("result"), money(1 / 0.3845, "USD") + " USD");
+  set("from", "BHD"); set("to", "QAR"); set("amount", "10");
+  eq("Bahraini dinars to Qatari riyals", shown("result"), money(10 / 0.376 * 3.64, "QAR") + " QAR");
+
+  /* ================= swap and reset ================= */
+  set("from", "GBP"); set("to", "JPY"); set("amount", "250");
+  click("swapBtn");
+  eq("swap turns the pair round", val("from") + ">" + val("to"), "JPY>GBP");
+  eq("and converts again", shown("result"), money(expect(R, 250, "JPY", "GBP"), "GBP") + " GBP");
+  click("resetBtn");
+  eq("reset goes back to 1 US dollar in rupees", val("amount") + " " + val("from") + ">" + val("to") + " " + shown("result"),
+     "1 USD>INR " + money(usdInr, "INR") + " INR");
+
+  /* ================= amounts it refuses ================= */
+  [["", "Type an amount."], ["abc", "Type the amount as a number, such as 1500 or 99.50."],
+   ["-5", "Type the amount as a number, such as 1500 or 99.50."], ["1.2.3", "Type the amount as a number, such as 1500 or 99.50."],
+   ["1e5", "Type the amount as a number, such as 1500 or 99.50."], ["2000000000000000", "That amount is too large to convert."]
+  ].forEach(function (c) {
+    set("amount", c[0]);
+    eq("refused: \"" + c[0] + "\"", shown("msg") + "|" + document.getElementById("msg").className, c[1] + "|msg msg--bad");
+    eq("  with no result left showing", shown("result") + "|" + shown("rateLine") + "|" + rows().length, DASH + "||0");
+  });
+  set("amount", "<img src=x onerror=zq>");
+  eq("markup typed as an amount is refused as text", document.querySelectorAll("#msg *, #result *, #others img").length, 0);
+  set("amount", "1");
+  eq("a good amount clears the message", shown("msg"), "");
+
+  /* ================= rates that are old, missing or broken ================= */
+  var MONTH_AGO = JSON.parse(JSON.stringify(R));
+  MONTH_AGO.date = iso(Date.now() - 30 * 86400000);
+  use(MONTH_AGO);
+  eq("rates a month old are converted, with a warning", shown("msg"),
+     "These rates are 30 days old: the page has not been updated since. Check a current rate before you rely on it.");
+  eq("as a problem", document.getElementById("msg").className, "msg msg--bad");
+  eq("and the date says so too", shown("dateLine").slice(0, 9 + spoken(MONTH_AGO.date).length), "Rates of " + spoken(MONTH_AGO.date));
+  var FOUR = JSON.parse(JSON.stringify(R));
+  FOUR.date = iso(Date.now() - 4 * 86400000);
+  use(FOUR);
+  eq("four days old is a long weekend, not a warning", shown("msg"), "");
+  FOUR.date = iso(Date.now() - 5 * 86400000);
+  use(FOUR);
+  has("five days is", shown("msg"), "These rates are 5 days old");
+
+  use(undefined);
+  eq("no rates at all: said plainly", shown("msg"), "The exchange rates could not be loaded. Check the connection and reload the page.");
+  eq("with nothing converted and no date", shown("result") + "|" + shown("dateLine") + "|" + rows().length, DASH + "||0");
+  var BROKEN = JSON.parse(JSON.stringify(R));
+  BROKEN.rates.USD = "1.1225";
+  use(BROKEN);
+  eq("a dollar rate written as text is not trusted", shown("msg"), "The exchange rates could not be loaded. Check the connection and reload the page.");
+  BROKEN = JSON.parse(JSON.stringify(R));
+  BROKEN.date = "2 October";
+  use(BROKEN);
+  eq("nor rates with a date that is not a date", shown("result") + "|" + shown("dateLine"), String.fromCharCode(0x2014) + "|");
+  BROKEN = JSON.parse(JSON.stringify(R));
+  BROKEN.base = "USD";
+  use(BROKEN);
+  eq("nor rates on another base", shown("result"), DASH);
+  BROKEN = JSON.parse(JSON.stringify(R));
+  BROKEN.rates.GBP = -0.85;
+  BROKEN.rates["<b>X<\/b>"] = 2;
+  use(BROKEN);
+  set("from", "GBP");
+  eq("a negative rate is left out, and the page says which", shown("msg"), "There is no rate for GBP in these rates.");
+  set("from", "USD");
+  eq("the other currencies still convert", shown("result"), money(usdInr, "INR") + " INR");
+  eq("and a code that is not a code makes nothing", document.querySelectorAll("#others b, #msg b").length, 0);
+  BROKEN = JSON.parse(JSON.stringify(R));
+  delete BROKEN.rates.ZAR;
+  use(BROKEN);
+  set("to", "ZAR");
+  eq("a currency missing from a day's rates is named", shown("msg"), "There is no rate for ZAR in these rates.");
+  use(R);
+  eq("and converts again when it is back", shown("result"), money(expect(R, 1, "USD", "ZAR"), "ZAR") + " ZAR");
+  window.EXCHANGE_RATES = REAL;
+  finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 
@@ -10969,6 +11187,7 @@ T["pdf-to-image"] = r"""  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago
 # ahead of the real one. A tool that builds four zips can need twenty virtual
 # seconds and two real ones. Ask for more here, per tool; nothing else changes.
 BUDGET_MS = {
+    "currency-converter": 15000,
     "pdf-to-image": 400000,
     "compress-pdf": 600000,
     "protect-pdf": 300000,

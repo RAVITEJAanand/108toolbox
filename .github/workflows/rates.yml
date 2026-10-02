@@ -1,0 +1,51 @@
+# Fetches the euro reference rates of the European Central Bank each working
+# day and commits data/rates.js when they are new. The currency converter's
+# visitors load that file from this site, so their browsers fetch nothing from
+# anywhere else. The checks a feed must pass are in .github/rates/update_rates.py.
+name: Exchange rates
+
+on:
+  schedule:
+    # The rates appear around 16:00 Central European Time on working days,
+    # which is 15:00 UTC in winter and 14:00 UTC in summer. A second try
+    # later in the day covers a late publication.
+    - cron: "40 15 * * 1-5"
+    - cron: "40 19 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: exchange-rates
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Fetch and check the rates
+        run: python3 .github/rates/update_rates.py
+
+      - name: Commit them if they are new
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add data/rates.js
+          if git diff --cached --quiet; then
+            echo "No new rates."
+            exit 0
+          fi
+          day=$(grep -o '"date": "[0-9-]*"' data/rates.js | cut -d'"' -f4)
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "Exchange rates of $day"
+          git push || { git pull --rebase && git push; }
+          # A push made with this workflow's token may not start a Pages build
+          # on its own, so one is asked for.
+          gh api --method POST "repos/${{ github.repository }}/pages/builds" \
+            || echo "Could not request a Pages build; the next push publishes the rates."

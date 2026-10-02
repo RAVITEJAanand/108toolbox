@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 106 of a planned 108 tools are built, tested and live.
+**Where it stands:** 107 of a planned 108 tools are built, tested and live.
 Phase 2 is finished; Phase 3 has started.
 
 ---
@@ -34,11 +34,11 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`106 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`107 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">106</span> tools live
+<span data-tool-count="live">107</span> tools live
 <span data-tool-count="remaining">47</span> on the way
 ```
 
@@ -72,8 +72,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=38` → `?v=39` across all 116 pages (currently `?v=38`,
-562 occurrences), the template included.
+Find-and-replace `?v=39` → `?v=40` across all 117 pages (currently `?v=39`,
+567 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
 the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
@@ -108,7 +108,7 @@ python security.py     ATTACKS the files — hostile text in every box, hostile
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 106, not just the one you changed.** That is the
+**`test_tools.py` runs all 107, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -302,7 +302,10 @@ shows the pattern.
 ### 6. Nothing is ever uploaded
 
 Every tool runs client-side — canvas, Web Crypto, the hand-written PDF code,
-and pdf.js served from this site for `pdf-to-image`. The homepage
+and pdf.js served from this site for `pdf-to-image`. `currency-converter`'s
+rates are a file on this site (`data/rates.js`, kept fresh by a GitHub
+Action, see Deployment), so even that tool's visitors fetch nothing from
+anywhere else. The homepage
 promises "nothing is uploaded, nothing is stored" and that promise must stay
 literally true. It is the site's only real differentiator. See the
 "Tools to never build" section of `ROADMAP.md` before adding anything that
@@ -315,7 +318,7 @@ Umami or Cloudflare Web Analytics — or drop the claim. Not both.
 
 **Advertising is the same rule, and it is already decided.** The owner wants
 ads on once all 108 tools are live, and not before. The site currently
-promises "no ads" in the hero, in the footer of all 116 pages, in
+promises "no ads" in the hero, in the footer of all 117 pages, in
 `privacy.html` section 7 and in `disclaimer.html` section 9. Those promises
 get rewritten **first, in their own commit**, before a single line of ad code
 is added — otherwise the site starts lying to visitors on the day it starts
@@ -444,6 +447,8 @@ js/main.js         Renders grids, search, chips, theme, related strip
 js/tool-helpers.js copyText, downloadText, downloadBlob, showToast,
                    formatBytes, formatNumber
 js/lib/pdfjs/      pdf.js 6.3.289, as published; only pdf-to-image loads it
+data/rates.js      Exchange rates, written by the bot below; never by hand
+.github/           workflows/rates.yml + rates/update_rates.py: the rates bot
 tools/*.html       One self-contained file per tool
 tools/_template.html   Start here for a new tool (check.py skips `_` files)
 check.py           Reads the files — run before every push
@@ -484,6 +489,24 @@ Domain  108toolbox.in — GoDaddy DNS, 4 A records to GitHub + www CNAME
 
 Push to `main` and it deploys in under a minute. Before pushing: run
 `check.py`, and open the changed pages in a browser.
+
+**Pull before you push: a bot commits too.** `.github/workflows/rates.yml`
+runs on working days (15:40 and 19:40 UTC, after the European Central Bank
+publishes its reference rates around 16:00 CET), runs
+`.github/rates/update_rates.py`, and commits `data/rates.js` when the rates
+are new, then asks GitHub for a Pages build. So `main` on GitHub moves
+without you; `git pull --rebase` first, and the only file it ever touches
+is `data/rates.js`. The updater refuses a feed that does not look like the
+reference rates (codes, numbers, dates, at least 20 currencies, no rate
+halving or doubling overnight) and leaves yesterday's file in place;
+`check.py` check 4j refuses a `data/rates.js` that is anything but one
+comment and one assignment of JSON, because the page loads it as a script.
+GitHub switches off a schedule in a public repository after 60 days without
+activity; the bot's own commits count, but if the page's "these rates are
+N days old" warning ever shows on the live site, look at the workflow's runs
+first. Local Python on this machine cannot verify the ECB's certificate (no
+CA bundle); to run the updater here, fetch the XML with `curl` and pass the
+file: `python .github/rates/update_rates.py ecb.xml`.
 
 **HTTPS is live and enforced.** Resolved 19 Sep 2026. The certificate covers
 `108toolbox.in` and `www.108toolbox.in`, and **Enforce HTTPS** is on, so
@@ -552,34 +575,35 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (106):** add-line-numbers, add-subtract-days, add-pdf-page-numbers,
+**Live (107):** add-line-numbers, add-subtract-days, add-pdf-page-numbers,
 age-calculator, area-converter, average-calculator, barcode-generator,
 base64-encoder-decoder, binary-decimal-hex-converter, bmi-calculator,
 calorie-calculator, case-converter, character-frequency-counter, coin-flip,
 color-code-converter, compound-interest-calculator, compress-pdf,
 cooking-measurement-converter, cron-expression-parser, css-minifier,
-csv-to-json, data-storage-converter, date-difference-calculator,
-days-until-countdown, dice-roller, discount-calculator, emi-calculator,
-favicon-generator, find-and-replace, fraction-calculator,
-fuel-cost-calculator, gst-calculator, html-encoder-decoder, html-minifier,
-image-color-picker, image-compressor, image-cropper, image-converter,
-image-metadata-viewer, image-resizer, image-rotator, image-splitter,
-image-to-base64, image-to-pdf, js-minifier, json-formatter, json-to-csv,
-jwt-decoder, leap-year-checker, lorem-ipsum-generator,
-margin-markup-calculator, markdown-previewer, meme-generator, merge-pdf,
-text-to-morse, nato-phonetic-converter, number-to-words, password-generator,
-pdf-metadata-editor, pdf-to-image, percentage-calculator, photo-watermark,
-image-placeholder-generator, protect-pdf, qr-code-generator,
-random-list-shuffler, random-number-generator, random-picker,
-ratio-calculator, readability-score, regex-tester, remove-duplicate-lines,
-remove-line-breaks, remove-pdf-pages, reverse-text, roman-numeral-converter,
-rotate-pdf, salary-calculator, scientific-calculator, hash-generator,
-shoe-size-converter, simple-interest-calculator, sip-calculator,
-sort-text-lines, speed-converter, split-pdf, sql-formatter, stopwatch-timer,
-svg-to-png, temperature-converter, text-diff-checker, text-repeater,
-text-to-speech, time-zone-converter, tip-calculator, unit-converter,
-unit-price-comparison, timestamp-converter, url-encoder-decoder,
-slug-generator, username-generator, uuid-generator, week-number-calculator,
+csv-to-json, currency-converter, data-storage-converter,
+date-difference-calculator, days-until-countdown, dice-roller,
+discount-calculator, emi-calculator, favicon-generator, find-and-replace,
+fraction-calculator, fuel-cost-calculator, gst-calculator,
+html-encoder-decoder, html-minifier, image-color-picker, image-compressor,
+image-cropper, image-converter, image-metadata-viewer, image-resizer,
+image-rotator, image-splitter, image-to-base64, image-to-pdf, js-minifier,
+json-formatter, json-to-csv, jwt-decoder, leap-year-checker,
+lorem-ipsum-generator, margin-markup-calculator, markdown-previewer,
+meme-generator, merge-pdf, text-to-morse, nato-phonetic-converter,
+number-to-words, password-generator, pdf-metadata-editor, pdf-to-image,
+percentage-calculator, photo-watermark, image-placeholder-generator,
+protect-pdf, qr-code-generator, random-list-shuffler,
+random-number-generator, random-picker, ratio-calculator, readability-score,
+regex-tester, remove-duplicate-lines, remove-line-breaks, remove-pdf-pages,
+reverse-text, roman-numeral-converter, rotate-pdf, salary-calculator,
+scientific-calculator, hash-generator, shoe-size-converter,
+simple-interest-calculator, sip-calculator, sort-text-lines,
+speed-converter, split-pdf, sql-formatter, stopwatch-timer, svg-to-png,
+temperature-converter, text-diff-checker, text-repeater, text-to-speech,
+time-zone-converter, tip-calculator, unit-converter, unit-price-comparison,
+timestamp-converter, url-encoder-decoder, slug-generator,
+username-generator, uuid-generator, week-number-calculator,
 whitespace-remover, word-counter, working-days-calculator.
 
 That count is checked: `check.py` fails if it drifts from the registry.

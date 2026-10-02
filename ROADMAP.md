@@ -230,11 +230,11 @@ make; it is written here so it is made with the number in front of us.
 | Developer | 18 | 18 |
 | Text | 16 | 16 |
 | Image | 14 | 14 |
-| Converter | 14 | 13 |
+| Converter | 14 | 14 |
 | PDF | 10 | 10 |
 | Date & Time | 8 | 8 |
 | Random | 8 | 8 |
-| **Total** | **108** | **106** |
+| **Total** | **108** | **107** |
 
 ---
 
@@ -353,7 +353,7 @@ which never leave the tab, so the overlap is narrower than the word suggests.
 | 11 | `shoe-size-converter` ✅ | easy |
 | 12 | `text-to-morse` ✅ | easy |
 | 13 | `nato-phonetic-converter` ✅ | easy |
-| 14 | `currency-converter` | hard — **the only tool needing a live API** |
+| 14 | `currency-converter` ✅ | hard — rates in `data/rates.js`, written each working day by a GitHub Action from the European Central Bank's reference rates; visitors' browsers fetch nothing |
 
 ### PDF (10) — all in the browser
 
@@ -531,9 +531,12 @@ calculator has no news cycle. Three are not:
   February. Put it in your calendar, and stamp the page with "Updated for
   FY 2026-27" so visitors can trust it.
 - `gst-calculator` — rate changes are occasional but real.
-- `currency-converter` — the only tool with a live dependency. If the free
-  API tier disappears the tool breaks silently, so show the rate's timestamp
-  and handle a failed fetch with a visible message rather than a blank box.
+- `currency-converter` — the only tool with a live dependency, and it is not
+  the visitor's: `.github/workflows/rates.yml` fetches the reference rates on
+  working days and commits `data/rates.js`. The page shows the rates' date,
+  warns when they are more than four days old, and says so plainly if the
+  file is missing. If the warning ever shows on the live site, look at the
+  workflow's runs: a refused feed or a disabled schedule stops the updates.
 
 Everything else: build it, verify it, move on.
 

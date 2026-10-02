@@ -10,6 +10,7 @@ push a site with example.com still in the canonical tags.
 """
 
 import collections
+import datetime
 import hashlib
 import html
 import json
@@ -496,6 +497,39 @@ if roadmap.exists():
 
     if roadmap_ok:
         ok("ROADMAP.md agrees with the registry, ticks included")
+
+# ---- 4j. The exchange rates are data, and only data -----------------------
+# data/rates.js is written by a bot (.github/rates/update_rates.py, run by
+# .github/workflows/rates.yml) and loaded as a script by currency-converter.
+# It must stay one comment and one assignment of JSON: anything else in it
+# would run on the page.
+rates_path = ROOT / "data" / "rates.js"
+if (ROOT / "tools" / "currency-converter.html").exists() and not rates_path.exists():
+    fail("currency-converter is live but data/rates.js does not exist")
+if rates_path.exists():
+    rates_text = rates_path.read_text(encoding="utf-8")
+    m = re.fullmatch(r"/\*[^*]*(?:\*(?!/)[^*]*)*\*/\nwindow\.EXCHANGE_RATES = (\{[^;]*\});\n", rates_text)
+    rates_problem = ""
+    if not m:
+        rates_problem = "is not one comment and one assignment"
+    else:
+        try:
+            rates_data = json.loads(m.group(1))
+            datetime.date.fromisoformat(rates_data["date"])
+            rates = rates_data["rates"]
+            if rates_data.get("base") != "EUR" or set(rates_data) != {"date", "base", "rates"}:
+                rates_problem = "has the wrong base or extra fields"
+            elif len(rates) < 20 or not {"USD", "INR"} <= set(rates):
+                rates_problem = "has too few currencies, or no USD or INR"
+            elif not all(re.fullmatch(r"[A-Z]{3}", c) and isinstance(v, (int, float)) and not isinstance(v, bool)
+                         and v > 0 for c, v in rates.items()):
+                rates_problem = "has a code or a rate that is not right"
+        except (ValueError, KeyError, TypeError) as e:
+            rates_problem = "does not read: %s" % e
+    if rates_problem:
+        fail("data/rates.js " + rates_problem)
+    else:
+        ok("data/rates.js: %d rates of %s, data only" % (len(rates), rates_data["date"]))
 
 # ---- 5. No dead internal links --------------------------------------------
 for path in list(ROOT.glob("*.html")) + tool_pages():
