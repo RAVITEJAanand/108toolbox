@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- ===== SEO ===== -->
-  <title>Merge PDF — Join PDF Files into One, Free and Private</title>
-  <meta name="description" content="Join PDF files into one in your browser, in the order you choose. Nothing is uploaded, so statements and ID scans never leave your device.">
-  <link rel="canonical" href="https://108toolbox.in/tools/merge-pdf.html">
+  <title>Add Page Numbers to a PDF — Free, Nothing Uploaded</title>
+  <meta name="description" content="Number the pages of a PDF in your browser: bottom or top, left, centre or right, “Page 1 of 9” or just 1. Nothing is uploaded and nothing else changes.">
+  <link rel="canonical" href="https://108toolbox.in/tools/add-pdf-page-numbers.html">
 
-  <meta property="og:title" content="Merge PDF — Join PDF Files into One, Free and Private">
-  <meta property="og:description" content="Join PDF files into one in your browser, in the order you choose. Nothing is uploaded, so statements and ID scans never leave your device.">
+  <meta property="og:title" content="Add Page Numbers to a PDF — Free, Nothing Uploaded">
+  <meta property="og:description" content="Number the pages of a PDF in your browser: bottom or top, left, centre or right, “Page 1 of 9” or just 1. Nothing is uploaded and nothing else changes.">
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
@@ -49,58 +49,50 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Does joining reduce the quality?",
+        "name": "Will the numbers cover my text?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. Every page is copied as it was, byte for byte: text stays text and pictures are not compressed again."
+          "text": "They sit 10 mm in from the edge of the page, where most documents leave a margin. If a page has text right at the edge, choose another position or a smaller size."
         }
       },
       {
         "@type": "Question",
-        "name": "How many PDFs can I join?",
+        "name": "Can I start from a number other than 1?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Up to 100 at a time, as long as together they come to no more than 500 MB, which is about as much as a browser on a phone can safely hold."
+          "text": "Yes. Type the first number to print; each following page counts up from it. With the cover left unnumbered, the first number goes on page 2."
         }
       },
       {
         "@type": "Question",
-        "name": "Can I join a password-protected PDF?",
+        "name": "What does Page 1 of 9 count?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No, its pages are encrypted. If you know the password, open the file in your PDF reader, save or print a copy without protection, and add that copy here."
+          "text": "The last number printed: the first number plus the pages that get a number, less one. A 10-page document with an unnumbered cover, starting at 1, reads Page 1 of 9 to Page 9 of 9."
         }
       },
       {
         "@type": "Question",
-        "name": "What happens to bookmarks and fillable forms?",
+        "name": "Are bookmarks and forms kept?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Bookmarks are not carried over, because they belong to a whole document. Forms keep what was typed in them, but their boxes can no longer be filled in."
+          "text": "Yes, the numbers are added to the end of the file without rewriting it. Only a file whose index is damaged has to be rebuilt, which keeps the pages but not bookmarks or forms, and the page tells you before you download."
         }
       },
       {
         "@type": "Question",
-        "name": "Can I choose single pages from each file?",
+        "name": "Can I number a password-protected PDF?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Not on this page: whole files are joined, in the order of the list. Use the arrows to change the order, or Sort by name to put them in the order of their file names."
+          "text": "No, its contents are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and number that copy."
         }
       },
       {
         "@type": "Question",
-        "name": "Why does the list say a file is damaged but readable?",
+        "name": "Is my PDF uploaded?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Its index, the table that says where each part of the file starts, was broken. The page found the parts by searching the whole file instead. Check the joined pages of that file before you rely on them."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Are my PDFs uploaded?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. The PDFs are read and joined by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone."
+          "text": "No. The PDF is read and changed by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone."
         }
       }
     ]
@@ -150,14 +142,14 @@
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=pdf">PDF</a><span>&rsaquo;</span>
-        <span>Merge PDF</span>
+        <span>Add PDF Page Numbers</span>
       </nav>
 
       <header class="tool-head">
-        <h1>Merge PDF</h1>
-        <p>Join two or more PDFs into one file, in the order you choose. The
-           joining happens inside your browser, so your documents never leave
-           your device.</p>
+        <h1>Add Page Numbers to a PDF</h1>
+        <p>Print page numbers on a PDF: at the bottom or the top, on the left,
+           in the middle or on the right, in the style you choose. It happens
+           inside your browser, so the document never leaves your device.</p>
       </header>
 
       <!--TOOL:START-->
@@ -165,39 +157,68 @@
 
         <!-- ---------- INPUT ---------- -->
         <div class="panel">
-          <span class="panel__label">1. Choose PDFs</span>
+          <span class="panel__label">1. Choose a PDF</span>
 
           <label class="drop" id="drop" for="file">
-            <span class="drop__big" aria-hidden="true">&#128206;</span>
-            <p><strong>Click to choose</strong> or drag PDF files here</p>
-            <p style="margin-top:var(--s1)">Two or more, up to 100 at a time</p>
-            <input type="file" id="file" accept="application/pdf,.pdf" multiple>
+            <span class="drop__big" aria-hidden="true">&#128290;</span>
+            <p><strong>Click to choose</strong> or drag a PDF here</p>
+            <p style="margin-top:var(--s1)">One PDF, up to 500 MB</p>
+            <input type="file" id="file" accept="application/pdf,.pdf">
           </label>
 
-          <ol class="file-list" id="list" aria-label="PDFs, in the order they will be joined"></ol>
-
-          <div class="btn-row" style="margin-top:var(--s3)">
-            <button class="btn btn--ghost" type="button" id="sortBtn">Sort by name</button>
+          <div class="field" style="margin-top:var(--s4)">
+            <label for="position">2. Where</label>
+            <select id="position">
+              <option value="bottom-center" selected>Bottom, in the middle</option>
+              <option value="bottom-right">Bottom right</option>
+              <option value="bottom-left">Bottom left</option>
+              <option value="top-center">Top, in the middle</option>
+              <option value="top-right">Top right</option>
+              <option value="top-left">Top left</option>
+            </select>
           </div>
+
+          <div class="field">
+            <label for="format">3. How it reads</label>
+            <select id="format">
+              <option value="plain" selected>1</option>
+              <option value="page">Page 1</option>
+              <option value="pageof">Page 1 of 9</option>
+              <option value="slash">1 / 9</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="start">First number</label>
+            <input type="number" id="start" min="0" value="1">
+          </div>
+
+          <div class="field">
+            <label for="size">Text size, in points</label>
+            <input type="number" id="size" min="6" max="36" value="11">
+          </div>
+
+          <label class="check"><input type="checkbox" id="skipFirst"> Leave the first page without a number (a cover)</label>
         </div>
 
         <!-- ---------- OUTPUT ---------- -->
         <div class="panel">
-          <span class="panel__label">2. The joined PDF</span>
+          <span class="panel__label">4. The numbered PDF</span>
 
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sPages">&mdash;</span><span class="stat__label">Pages</span></div>
-            <div class="stat"><span class="stat__num" id="sIn">&mdash;</span><span class="stat__label">The PDFs</span></div>
-            <div class="stat"><span class="stat__num" id="sOut">&mdash;</span><span class="stat__label">Joined</span></div>
+            <div class="stat"><span class="stat__num" id="sNumbered">&mdash;</span><span class="stat__label">To number</span></div>
+            <div class="stat"><span class="stat__num" id="sIn">&mdash;</span><span class="stat__label">The PDF</span></div>
           </div>
 
+          <p class="hint" id="example" style="margin-top:var(--s3)"></p>
+
           <div class="btn-row" style="margin-top:var(--s4)">
-            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Download PDF</button>
+            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Number and download</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Clear</button>
           </div>
 
           <p class="msg" id="msg" aria-live="polite"></p>
-          <p class="msg" style="margin-top:var(--s2)">The files are joined in the order of the list. Use the arrows to change it.</p>
         </div>
       </div>
       <!--TOOL:END-->
@@ -219,65 +240,53 @@
 
       <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
       <section class="tool-info prose">
+        <h2>The numbers are added; nothing else is touched</h2>
+        <p>Each page keeps everything it had: the text you can select, the
+           pictures, the fonts. The number is drawn on top in Helvetica, a font
+           every PDF reader has built in, 10 mm in from the edge of the page.
+           The change is added to the end of the file the way the PDF standard
+           provides for edits, so bookmarks, links and filled-in forms all stay
+           as they were.</p>
+
+        <h2>Sideways pages and covers</h2>
+        <p>A page stored on its side and shown turned still gets its number at
+           the bottom of what you see, the right way up. Tick <strong>Leave the
+           first page without a number</strong> for a document with a cover:
+           the numbering then starts on page 2, from the first number you
+           choose, so a report can start at 1 on its first page of text. The
+           example line under the button shows exactly what the first and last
+           numbers will read before you download.</p>
+
         <h2>Why it matters that nothing is uploaded</h2>
-        <p>The PDFs people join are usually the ones they least want to hand
-           to a stranger: bank statements for a loan, salary slips, an
-           Aadhaar or PAN scan, a signed agreement, medical reports. Most
-           online PDF joiners upload those to their own server to do the work.
-           This page reads each file inside your browser, puts the pages
-           together there, and saves the result straight to your device.</p>
-
-        <h2>The pages are copied, not redrawn</h2>
-        <p>Each page goes into the joined file exactly as it was: the same
-           text, which you can still select and search, the same fonts and the
-           same pictures, with nothing compressed again. A link from one page
-           to another inside the same document still works. The joined file
-           is often slightly smaller than the files together, because
-           anything a document stored but no page used is left out.</p>
-
-        <h2>What is not carried over</h2>
-        <p>Things that belong to a whole document rather than to its pages
-           do not survive joining: bookmarks (the outline in a reader's side
-           panel), file attachments, and the ability to fill in a form. A
-           filled-in form keeps what was typed in it, as it looks, but its
-           boxes can no longer be edited.</p>
-
-        <h2>Damaged and protected files</h2>
-        <p>A PDF whose index is damaged, which happens with files cut short by
-           a failed download or an email gateway, is read anyway by searching
-           it for its pages; the list says so when that happened. A PDF
-           protected with a password cannot be joined: its contents are
-           encrypted. Open it with the password in your PDF reader, save a
-           copy without protection, and add that copy here.</p>
+        <p>Documents get page numbers when they are about to be handed in or
+           sent: a thesis, a legal bundle, a tender, a set of statements. This
+           page adds them inside your browser and saves the result straight to
+           your device; the file is never sent anywhere.</p>
 
         <h2>Frequently asked questions</h2>
         <div class="faq">
-          <h3>Does joining reduce the quality?</h3>
-          <p>No. Every page is copied as it was, byte for byte: text stays text and pictures are not compressed again.</p>
+          <h3>Will the numbers cover my text?</h3>
+          <p>They sit 10 mm in from the edge of the page, where most documents leave a margin. If a page has text right at the edge, choose another position or a smaller size.</p>
         </div>
         <div class="faq">
-          <h3>How many PDFs can I join?</h3>
-          <p>Up to 100 at a time, as long as together they come to no more than 500 MB, which is about as much as a browser on a phone can safely hold.</p>
+          <h3>Can I start from a number other than 1?</h3>
+          <p>Yes. Type the first number to print; each following page counts up from it. With the cover left unnumbered, the first number goes on page 2.</p>
         </div>
         <div class="faq">
-          <h3>Can I join a password-protected PDF?</h3>
-          <p>No, its pages are encrypted. If you know the password, open the file in your PDF reader, save or print a copy without protection, and add that copy here.</p>
+          <h3>What does Page 1 of 9 count?</h3>
+          <p>The last number printed: the first number plus the pages that get a number, less one. A 10-page document with an unnumbered cover, starting at 1, reads Page 1 of 9 to Page 9 of 9.</p>
         </div>
         <div class="faq">
-          <h3>What happens to bookmarks and fillable forms?</h3>
-          <p>Bookmarks are not carried over, because they belong to a whole document. Forms keep what was typed in them, but their boxes can no longer be filled in.</p>
+          <h3>Are bookmarks and forms kept?</h3>
+          <p>Yes, the numbers are added to the end of the file without rewriting it. Only a file whose index is damaged has to be rebuilt, which keeps the pages but not bookmarks or forms, and the page tells you before you download.</p>
         </div>
         <div class="faq">
-          <h3>Can I choose single pages from each file?</h3>
-          <p>Not on this page: whole files are joined, in the order of the list. Use the arrows to change the order, or Sort by name to put them in the order of their file names.</p>
+          <h3>Can I number a password-protected PDF?</h3>
+          <p>No, its contents are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and number that copy.</p>
         </div>
         <div class="faq">
-          <h3>Why does the list say a file is damaged but readable?</h3>
-          <p>Its index, the table that says where each part of the file starts, was broken. The page found the parts by searching the whole file instead. Check the joined pages of that file before you rely on them.</p>
-        </div>
-        <div class="faq">
-          <h3>Are my PDFs uploaded?</h3>
-          <p>No. The PDFs are read and joined by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
+          <h3>Is my PDF uploaded?</h3>
+          <p>No. The PDF is read and changed by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
         </div>
 
         <h2>Related tools</h2>
@@ -341,7 +350,7 @@
   <!-- Shared scripts, in order -->
   <script src="../js/tools-data.js?v=34"></script>
   <script src="../js/tool-helpers.js?v=34"></script>
-  <script>window.CURRENT_TOOL = "merge-pdf";</script>
+  <script>window.CURRENT_TOOL = "add-pdf-page-numbers";</script>
   <script src="../js/main.js?v=34"></script>
 
   <!-- ===== This tool's own logic ===== -->
@@ -351,22 +360,23 @@
 
     var fileInput = document.getElementById("file");
     var drop      = document.getElementById("drop");
-    var list      = document.getElementById("list");
+    var posSel    = document.getElementById("position");
+    var fmtSel    = document.getElementById("format");
+    var startIn   = document.getElementById("start");
+    var sizeIn    = document.getElementById("size");
+    var skipBox   = document.getElementById("skipFirst");
     var dlBtn     = document.getElementById("dlBtn");
     var msg       = document.getElementById("msg");
     var DASH      = String.fromCharCode(0x2014);
 
-    var MAX_FILES = 100;
-    var MAX_TOTAL = 500 * 1024 * 1024;   /* what a phone's browser can hold twice over */
+    var MAX_INPUT = 500 * 1024 * 1024;   /* what a phone's browser can hold twice over */
+    var MARGIN    = 10 * 72 / 25.4;      /* 10 mm from the edge, in points */
 
-    var items = [];            /* the PDFs, in the order they will be joined */
-    var nextId = 1;
-    var resultParts = null;
-    var queue = Promise.resolve();
-    var waiting = 0;
-    var failed = [];
-    var notice = "";
+    var current = null;        /* { name, size, doc, pages } */
+    var settings = null;
     var generation = 0;
+    var busy = false;
+    var problem = "";
 
     /* ---- START: writing a PDF file ----
        A PDF is a header, a list of numbered objects, and at the end a table
@@ -1614,6 +1624,144 @@
       return w.finish(catalog, info);
     }
     /* ---- END: copying pages from one or more PDFs into a new one ---- */
+
+    /* ---- START: changing a PDF by adding to its end ----
+       The PDF standard's own way to edit a file without rewriting it: the
+       original bytes stay exactly as they were, the changed objects are
+       written again after them under the same numbers, and a new, small
+       cross-reference section says where those new versions are and points
+       back (/Prev) to the old section for everything else. Bookmarks,
+       forms, attachments, metadata: whatever the edit does not touch is
+       still there, untouched.
+       changes: Map of object number -> { gen, value } (the new version).
+       If the file's last section is a cross-reference stream, the new one is
+       a stream too, since some readers do not accept a mix. */
+    function incrementalUpdate(doc, changes, extraTrailer) {
+      if (doc.repaired || doc.startxref < 0) { throw pdfError("this PDF's index is damaged, so it cannot be added to"); }
+      var w = new PdfWriter();
+      w.bytes(doc.bytes);
+      if (doc.bytes[doc.bytes.length - 1] !== 10 && doc.bytes[doc.bytes.length - 1] !== 13) { w.text("\n"); }
+      var oldSize = doc.trailer.get("Size");
+      var size = typeof oldSize === "number" ? oldSize : 0;
+      var nums = Array.from(changes.keys()).sort(function (a, b) { return a - b; });
+      nums.forEach(function (n) { size = Math.max(size, n + 1); });
+      var offsets = new Map();
+      nums.forEach(function (n) {
+        var c = changes.get(n);
+        offsets.set(n, { offset: w.length, gen: c.gen });
+        if (c.value instanceof PdfStream) {
+          var d = new PdfDict();
+          c.value.dict.keys().forEach(function (k) { if (k !== "Length") { d.set(k, c.value.dict.get(k)); } });
+          d.set("Length", c.value.data.length);
+          w.text(n + " " + c.gen + " obj\n" + pdfValue(d) + "\nstream\n");
+          w.bytes(c.value.data);
+          w.text("\nendstream\nendobj\n");
+        } else {
+          w.text(n + " " + c.gen + " obj\n" + pdfValue(c.value) + "\nendobj\n");
+        }
+      });
+
+      var trailer = new PdfDict();
+      ["Root", "Info", "ID"].forEach(function (k) { if (doc.trailer.has(k)) { trailer.set(k, doc.trailer.get(k)); } });
+      if (extraTrailer) { extraTrailer.keys().forEach(function (k) { trailer.set(k, extraTrailer.get(k)); }); }
+      trailer.set("Prev", doc.startxref);
+
+      if (doc.lastXrefIsStream) {
+        var xrefNum = size;
+        size += 1;
+        var start = w.length;
+        offsets.set(xrefNum, { offset: start, gen: 0 });
+        var all = nums.concat([xrefNum]);
+        var index = [];
+        var rows = [];
+        all.forEach(function (n) {
+          if (index.length && index[index.length - 2] + index[index.length - 1] === n) { index[index.length - 1] += 1; }
+          else { index.push(n, 1); }
+          var e = offsets.get(n);
+          rows.push(1, (e.offset >>> 24) & 255, (e.offset >>> 16) & 255, (e.offset >>> 8) & 255, e.offset & 255, (e.gen >> 8) & 255, e.gen & 255);
+        });
+        if (start > 0xFFFFFFFF) { throw pdfError("this PDF is too large to be added to"); }
+        trailer.set("Type", new PdfName("XRef"));
+        trailer.set("Size", size);
+        trailer.set("W", [1, 4, 2]);
+        trailer.set("Index", index);
+        trailer.set("Length", rows.length);
+        w.text(xrefNum + " 0 obj\n" + pdfValue(trailer) + "\nstream\n");
+        w.bytes(new Uint8Array(rows));
+        w.text("\nendstream\nendobj\nstartxref\n" + start + "\n%%EOF\n");
+      } else {
+        var at = w.length;
+        var lines = ["xref\n"];
+        for (var i = 0; i < nums.length; ) {
+          var j = i;
+          while (j + 1 < nums.length && nums[j + 1] === nums[j] + 1) { j++; }
+          lines.push(nums[i] + " " + (j - i + 1) + "\n");
+          for (var k = i; k <= j; k++) {
+            var e2 = offsets.get(nums[k]);
+            lines.push(("0000000000" + e2.offset).slice(-10) + " " + ("00000" + e2.gen).slice(-5) + " n \n");
+          }
+          i = j + 1;
+        }
+        trailer.set("Size", size);
+        w.text(lines.join("") + "trailer\n" + pdfValue(trailer) + "\nstartxref\n" + at + "\n%%EOF\n");
+      }
+      return w.parts;
+    }
+    /* ---- END: changing a PDF by adding to its end ---- */
+
+    /* ---- START: how wide a line of Helvetica is ----
+       The page numbers are written in Helvetica, one of the fonts every PDF
+       reader has built in, so nothing has to be embedded. To centre a number
+       or put it against the right edge, its width is needed: these are
+       Helvetica's published widths, in thousandths of the font size, for the
+       only characters the numbers use. */
+    var HELVETICA_WIDTHS = {
+      "0": 556, "1": 556, "2": 556, "3": 556, "4": 556, "5": 556, "6": 556, "7": 556, "8": 556, "9": 556,
+      " ": 278, "/": 278, "P": 667, "a": 556, "g": 556, "e": 556, "o": 556, "f": 278, "-": 333
+    };
+
+    function helveticaWidth(text, size) {
+      var units = 0;
+      for (var i = 0; i < text.length; i++) { units += HELVETICA_WIDTHS[text.charAt(i)] || 556; }
+      return units / 1000 * size;
+    }
+    /* ---- END: how wide a line of Helvetica is ---- */
+
+    /* ---- START: drawing a number where a reader will see it ----
+       A page's visible area is its crop box (or, without one, its paper
+       size), shown turned by /Rotate. The number is placed in that visible,
+       upright page and then mapped back onto the page as it is stored, so it
+       sits at the bottom of what the reader shows and reads the right way up,
+       however the page is turned. Returns the drawing instructions. */
+    function numberDrawing(box, rotate, text, options) {
+      var x0 = Math.min(box[0], box[2]), y0 = Math.min(box[1], box[3]);
+      var x1 = Math.max(box[0], box[2]), y1 = Math.max(box[1], box[3]);
+      var w = x1 - x0, h = y1 - y0;
+      var turned = rotate === 90 || rotate === 270;
+      var vw = turned ? h : w, vh = turned ? w : h;
+      var size = options.size, margin = options.margin;
+      var tw = helveticaWidth(text, size);
+      var u = options.position.indexOf("left") > -1 ? margin
+            : options.position.indexOf("right") > -1 ? vw - margin - tw
+            : (vw - tw) / 2;
+      /* a baseline the margin above the bottom edge, or the margin plus the
+         letters' height below the top edge (capitals are about 0.72 of the size) */
+      var v = options.position.indexOf("top") === 0 ? vh - margin - 0.72 * size : margin;
+      var m = rotate === 90 ? [0, 1, -1, 0, x1, y0]
+            : rotate === 180 ? [-1, 0, 0, -1, x1, y1]
+            : rotate === 270 ? [0, -1, 1, 0, x0, y1]
+            : [1, 0, 0, 1, x0, y0];
+      return "q " + m.map(pdfNum).join(" ") + " cm BT " + pdfName(options.font) + " " + pdfNum(size) + " Tf 0 g " + pdfNum(u) + " " + pdfNum(v) +
+             " Td (" + text + ") Tj ET Q\n";
+    }
+
+    function numberText(format, n, total) {
+      if (format === "page") { return "Page " + n; }
+      if (format === "pageof") { return "Page " + n + " of " + total; }
+      if (format === "slash") { return n + " / " + total; }
+      return String(n);
+    }
+    /* ---- END: drawing a number where a reader will see it ---- */
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
       msg.textContent = text || "";
@@ -1621,17 +1769,13 @@
     }
     /* ---- END: speaking to the visitor ---- */
 
-    /* ---- START: reading one chosen PDF, without uploading it ----
-       The file is read whole into memory and opened by the reader above. A
-       protected PDF is turned away (its contents are encrypted and this
-       page cannot unlock them), and so is one with no pages. A damaged one
-       that could still be read says so in the list. */
+    /* ---- START: reading the chosen PDF, without uploading it ---- */
     function readFile(file) {
+      if (file.size > MAX_INPUT) { return Promise.reject(new Error("over the 500 MB a browser can safely hold")); }
       return file.arrayBuffer().then(function (buffer) {
-        var bytes = new Uint8Array(buffer);
         var doc;
         try {
-          doc = new PdfDocument(bytes);
+          doc = new PdfDocument(new Uint8Array(buffer));
         } catch (error) {
           if (error && (error.pdfError || error.inflateError || error.tooBig)) {
             throw new Error(/not a PDF/.test(error.message) ? "not a PDF" : "too damaged to read");
@@ -1641,161 +1785,193 @@
         if (doc.encrypted) { throw new Error("protected with a password"); }
         var pages = doc.pages();
         if (pages.length === 0) { throw new Error("has no pages"); }
-        return { id: nextId++, name: file.name || "document.pdf", size: file.size, doc: doc, pages: pages };
+        return { name: file.name || "document.pdf", size: file.size, doc: doc, pages: pages };
       });
     }
-    /* ---- END: reading one chosen PDF, without uploading it ---- */
+    /* ---- END: reading the chosen PDF, without uploading it ---- */
 
-    /* ---- START: showing the list of PDFs ----
-       Every name goes in as text, never as markup. */
-    function button(label, text, action, disabled) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.textContent = text;
-      b.setAttribute("aria-label", label);
-      b.title = label;
-      b.disabled = !!disabled;
-      b.addEventListener("click", action);
-      return b;
+    /* ---- START: reading the settings ---- */
+    function readSettings() {
+      var start = String(startIn.value).trim();
+      var size = String(sizeIn.value).trim();
+      if (!/^\d{1,6}$/.test(start)) { return { error: "Type the first number to print: a whole number, 0 or more." }; }
+      if (!/^\d{1,2}$/.test(size) || Number(size) < 6 || Number(size) > 36) { return { error: "Choose a text size from 6 to 36." }; }
+      var count = current.pages.length;
+      var first = skipBox.checked ? 2 : 1;
+      if (first > count) { return { error: "This PDF has only one page, and it is the one being left without a number." }; }
+      return { position: posSel.value, format: fmtSel.value, start: Number(start), size: Number(size), first: first,
+               last: Number(start) + count - first };
     }
+    /* ---- END: reading the settings ---- */
 
-    function renderList() {
-      list.textContent = "";
-      items.forEach(function (item, index) {
-        var li = document.createElement("li");
-        var icon = document.createElement("span");
-        icon.className = "file-list__icon";
-        icon.setAttribute("aria-hidden", "true");
-        icon.textContent = "PDF";
-        li.appendChild(icon);
-
-        var name = document.createElement("span");
-        name.className = "file-list__name";
-        name.textContent = (index + 1) + ". " + item.name;
-        var meta = document.createElement("span");
-        meta.className = "file-list__meta";
-        meta.textContent = formatNumber(item.pages.length, 0) + (item.pages.length === 1 ? " page, " : " pages, ") +
-                           formatBytes(item.size) + (item.doc.repaired ? ", damaged but readable" : "");
-        name.appendChild(meta);
-        li.appendChild(name);
-
-        var btns = document.createElement("span");
-        btns.className = "file-list__btns";
-        btns.appendChild(button("Move " + item.name + " up", String.fromCharCode(0x2191), function () { move(index, -1); }, index === 0));
-        btns.appendChild(button("Move " + item.name + " down", String.fromCharCode(0x2193), function () { move(index, 1); }, index === items.length - 1));
-        btns.appendChild(button("Remove " + item.name, String.fromCharCode(0x2715), function () { removeAt(index); }));
-        li.appendChild(btns);
-        list.appendChild(li);
-      });
-    }
-    /* ---- END: showing the list of PDFs ---- */
-
-    /* ---- START: changing the list ---- */
-    function move(index, step) {
-      var to = index + step;
-      if (to < 0 || to >= items.length) { return; }
-      var moved = items.splice(index, 1)[0];
-      items.splice(to, 0, moved);
-      refresh();
-    }
-
-    function removeAt(index) {
-      items.splice(index, 1);
-      refresh();
-    }
-
-    function sortByName() {
-      items.sort(function (a, b) {
-        return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }) || a.id - b.id;
-      });
-      refresh();
-    }
-    /* ---- END: changing the list ---- */
-
-    /* ---- START: joining the PDFs after any change ---- */
+    /* ---- START: showing what will be printed ---- */
     function refresh() {
-      renderList();
-      resultParts = null;
+      settings = null;
       dlBtn.disabled = true;
-      var pages = items.reduce(function (sum, item) { return sum + item.pages.length; }, 0);
-      var total = items.reduce(function (sum, item) { return sum + item.size; }, 0);
-      document.getElementById("sPages").textContent = items.length ? formatNumber(pages, 0) : DASH;
-      document.getElementById("sIn").textContent = items.length ? formatBytes(total) : DASH;
-      document.getElementById("sOut").textContent = DASH;
+      if (!current) {
+        ["sPages", "sNumbered", "sIn"].forEach(function (id) { document.getElementById(id).textContent = DASH; });
+        document.getElementById("example").textContent = "";
+        if (!busy) { setMessage(problem || "Choose a PDF.", problem ? "bad" : ""); }
+        return;
+      }
+      var count = current.pages.length;
+      document.getElementById("sPages").textContent = formatNumber(count, 0);
+      document.getElementById("sIn").textContent = formatBytes(current.size);
+      document.getElementById("sNumbered").textContent = DASH;
+      document.getElementById("example").textContent = "";
+      var s = readSettings();
+      if (s.error) { setMessage(s.error, "bad"); return; }
+      settings = s;
+      document.getElementById("sNumbered").textContent = formatNumber(count - s.first + 1, 0);
+      document.getElementById("example").textContent = "Page " + s.first + " will read " + String.fromCharCode(0x201C) +
+        numberText(s.format, s.start, s.last) + String.fromCharCode(0x201D) + ", the last page " + String.fromCharCode(0x201C) +
+        numberText(s.format, s.last, s.last) + String.fromCharCode(0x201D) + ".";
+      dlBtn.disabled = busy;
+      var note = current.doc.repaired ? " This file's index is damaged, so it will be rebuilt: its pages are kept, but bookmarks and forms are not."
+        : " Everything else in the file stays as it is.";
+      setMessage(current.name + ": " + formatNumber(count, 0) + (count === 1 ? " page." : " pages.") + note, current.doc.repaired ? "bad" : "ok");
+    }
+    /* ---- END: showing what will be printed ---- */
 
-      if (waiting > 0) {
-        setMessage("Reading PDFs" + String.fromCharCode(0x2026) + " " + waiting + " to go.");
-        return;
-      }
-      var problems = [notice, failed.length ? failureText() : ""].filter(Boolean).join(" ");
-      if (items.length < 2) {
-        var ask = items.length === 0 ? "Choose two or more PDFs." : "Add at least one more PDF to join it to.";
-        setMessage(problems ? problems + " " + ask : ask, problems ? "bad" : "");
-        return;
-      }
-      try {
-        var order = [];
-        items.forEach(function (item) {
-          item.pages.forEach(function (page) { order.push({ doc: item.doc, page: page }); });
-        });
-        resultParts = buildFromPages(order, "108toolbox.in Merge PDF");
-      } catch (error) {
-        resultParts = null;
-        setMessage("These PDFs could not be joined. One of them may be damaged in a way this page cannot work around.", "bad");
-        return;
-      }
-      var size = resultParts.reduce(function (sum, part) { return sum + part.length; }, 0);
-      document.getElementById("sOut").textContent = formatBytes(size);
-      dlBtn.disabled = false;
-      var ready = "Ready: " + items.length + " PDFs, " + formatNumber(pages, 0) + (pages === 1 ? " page." : " pages.") +
-                  " Nothing has left your device.";
-      setMessage(problems ? problems + " " + ready : ready, problems ? "bad" : "ok");
+    /* ---- START: adding the numbers ----
+       Each page's drawing is wrapped in q ... Q, so whatever state it leaves
+       (a scale, a colour, a clip) is undone before the number is drawn, and
+       the number is drawn in a new stream after it. The page gets its own
+       copy of its resources with Helvetica added under a name it does not
+       already use. Then the changed pages are added to the end of the file,
+       or, for a file whose index is damaged, the whole file is rebuilt. */
+    function outputName() {
+      return (current.name.replace(/\.pdf$/i, "") || "document") + " (numbered).pdf";
     }
 
-    function failureText() {
-      return "Left out: " + failed.join("; ") + ".";
+    function fontNameFor(fonts) {
+      var name = "F108tb", k = 1;
+      while (fonts instanceof PdfDict && fonts.has(name)) { name = "F108tb" + (k++); }
+      return name;
     }
-    /* ---- END: joining the PDFs after any change ---- */
 
-    /* ---- START: taking the files the visitor chose ----
-       One at a time, in the order given. */
-    function addFiles(fileList) {
-      var files = Array.prototype.slice.call(fileList || []);
-      if (files.length === 0) { return; }
-      if (waiting === 0) { failed = []; notice = ""; }
-      var gen = generation;
-      var room = MAX_FILES - items.length - waiting;
-      if (files.length > room) {
-        files = files.slice(0, Math.max(0, room));
-        notice = "Only " + MAX_FILES + " PDFs can be joined at once; the rest were left out.";
-      }
-      files.forEach(function (file) {
-        waiting += 1;
-        queue = queue.then(function () {
-          if (gen !== generation) { return null; }
-          var total = items.reduce(function (sum, item) { return sum + item.size; }, 0);
-          var attempt = total + file.size > MAX_TOTAL ? Promise.reject(new Error("over the 500 MB a browser can safely hold")) : readFile(file);
-          return attempt.then(function (entry) {
-            if (gen === generation) { items.push(entry); }
-          }, function (error) {
-            if (gen !== generation) { return; }
-            var why = error && /^(not a PDF|too damaged to read|protected with a password|has no pages|over the 500 MB)/.test(error.message)
-              ? error.message : "could not be read";
-            failed.push(String(file.name || "a file") + " (" + why + ")");
-          }).then(function () {
-            if (gen !== generation) { return; }
-            waiting -= 1;
-            refresh();
-          });
-        });
+    function makeFile() {
+      var s = settings;
+      var doc = current.doc;
+      var rebuild = doc.repaired || !current.pages.every(function (p) { return p.ref; });
+      var nextNum = Math.max(typeof doc.trailer.get("Size") === "number" ? doc.trailer.get("Size") : 0,
+                             Math.max.apply(null, Array.from(doc.entries.keys()).concat([0])) + 1);
+      var changes = new Map();
+      var newPages = [];
+      var font = new PdfDict();
+      font.set("Type", new PdfName("Font"));
+      font.set("Subtype", new PdfName("Type1"));
+      font.set("BaseFont", new PdfName("Helvetica"));
+      font.set("Encoding", new PdfName("WinAnsiEncoding"));
+      var fontNum = nextNum++;
+      changes.set(fontNum, { gen: 0, value: font });
+      var openNum = nextNum++;
+      changes.set(openNum, { gen: 0, value: new PdfStream(new PdfDict(), pdfBytes("q\n")) });
+
+      current.pages.forEach(function (page, i) {
+        var pageNo = i + 1;
+        var d = new PdfDict();
+        page.dict.keys().forEach(function (k) { d.set(k, page.dict.get(k)); });
+        if (pageNo < s.first) { newPages.push({ page: page, dict: null }); return; }
+        var n = s.start + pageNo - s.first;
+        var box = doc.resolve(page.inherited.CropBox);
+        if (!Array.isArray(box) || box.length !== 4) { box = doc.resolve(page.inherited.MediaBox); }
+        if (!Array.isArray(box) || box.length !== 4) { box = [0, 0, 612, 792]; }
+        box = box.map(function (v) { v = doc.resolve(v); return typeof v === "number" ? v : 0; });
+        var rot = doc.resolve(page.inherited.Rotate);
+        rot = typeof rot === "number" ? ((Math.round(rot / 90) * 90) % 360 + 360) % 360 : 0;
+
+        var res = doc.resolve(page.inherited.Resources);
+        var newRes = new PdfDict();
+        if (res instanceof PdfDict) { res.keys().forEach(function (k) { newRes.set(k, res.get(k)); }); }
+        var fonts = doc.resolve(newRes.get("Font"));
+        var newFonts = new PdfDict();
+        if (fonts instanceof PdfDict) { fonts.keys().forEach(function (k) { newFonts.set(k, fonts.get(k)); }); }
+        var fontName = fontNameFor(newFonts);
+        newFonts.set(fontName, new PdfRef(fontNum, 0));
+        newRes.set("Font", newFonts);
+        d.set("Resources", newRes);
+
+        var drawingNum = nextNum++;
+        var drawing = "Q\n" + numberDrawing(box, rot, numberText(s.format, n, s.last),
+                                            { position: s.position, size: s.size, margin: MARGIN, font: fontName });
+        changes.set(drawingNum, { gen: 0, value: new PdfStream(new PdfDict(), pdfBytes(drawing)) });
+        /* the page's drawing: one stream, a list of streams, or none at all */
+        var old = page.dict.get("Contents");
+        var resolved = doc.resolve(old);
+        var list = Array.isArray(resolved) ? resolved.slice() : (resolved === undefined || resolved === PDF_NULL ? [] : [old]);
+        d.set("Contents", [new PdfRef(openNum, 0)].concat(list, [new PdfRef(drawingNum, 0)]));
+        newPages.push({ page: page, dict: d });
+        if (!rebuild) { changes.set(page.ref.num, { gen: page.ref.gen, value: d }); }
       });
-      refresh();
+
+      var parts;
+      try {
+        if (!rebuild) {
+          parts = incrementalUpdate(doc, changes);
+        } else {
+          /* a damaged file: the changed pages are copied as new pages of a fresh file,
+             with the new objects living in a small document of their own */
+          parts = rebuildWithNumbers(doc, newPages, changes);
+        }
+      } catch (error) {
+        setMessage("The numbered PDF could not be made. The file may be damaged in a way this page cannot work around.", "bad");
+        return;
+      }
+      var total = parts.reduce(function (sum, part) { return sum + part.length; }, 0);
+      downloadBlob(new Blob(parts, { type: "application/pdf" }), outputName());
+      setMessage("Done: " + formatNumber(current.pages.length - s.first + 1, 0) + " pages numbered, " + formatBytes(total) +
+                 ". Nothing has left your device.", "ok");
     }
-    /* ---- END: taking the files the visitor chose ---- */
+
+    /* For a damaged file the new objects (the font, the drawings) exist only
+       in memory: they are put in front of the reader as extra objects so the
+       copier can follow references to them like any others. */
+    function rebuildWithNumbers(doc, newPages, changes) {
+      var originalGet = doc.getObject;
+      doc.getObject = function (num) {
+        if (changes.has(num)) { return changes.get(num).value; }
+        return originalGet.call(doc, num);
+      };
+      try {
+        return buildFromPages(newPages.map(function (p) {
+          return { doc: doc, page: p.dict ? { ref: p.page.ref, dict: p.dict, inherited: { Resources: p.dict.get("Resources"),
+            MediaBox: p.page.inherited.MediaBox, CropBox: p.page.inherited.CropBox, Rotate: p.page.inherited.Rotate } } : p.page };
+        }), "108toolbox.in Add PDF Page Numbers");
+      } finally {
+        doc.getObject = originalGet;
+      }
+    }
+    /* ---- END: adding the numbers ---- */
+
+    /* ---- START: taking the chosen file ---- */
+    function takeFile(file) {
+      if (!file) { return; }
+      var gen = ++generation;
+      current = null;
+      busy = true;
+      problem = "";
+      refresh();
+      setMessage("Reading " + (file.name || "the PDF") + String.fromCharCode(0x2026));
+      readFile(file).then(function (entry) {
+        if (gen !== generation) { return; }
+        busy = false;
+        current = entry;
+        refresh();
+      }, function (error) {
+        if (gen !== generation) { return; }
+        busy = false;
+        var why = error && /^(not a PDF|too damaged to read|protected with a password|has no pages|over the 500 MB)/.test(error.message)
+          ? error.message : "could not be read";
+        problem = "Could not use " + String(file.name || "that file") + ": " + why + ".";
+        refresh();
+      });
+    }
+    /* ---- END: taking the chosen file ---- */
 
     /* ---- START: wiring ---- */
     fileInput.addEventListener("change", function () {
-      addFiles(fileInput.files);
+      takeFile(fileInput.files[0]);
       fileInput.value = "";
     });
     ["dragenter", "dragover"].forEach(function (type) {
@@ -1804,19 +1980,19 @@
     ["dragleave", "drop"].forEach(function (type) {
       drop.addEventListener(type, function (e) { e.preventDefault(); drop.classList.remove("is-over"); });
     });
-    drop.addEventListener("drop", function (e) { addFiles(e.dataTransfer && e.dataTransfer.files); });
-    document.getElementById("sortBtn").addEventListener("click", sortByName);
+    drop.addEventListener("drop", function (e) { takeFile(e.dataTransfer && e.dataTransfer.files[0]); });
+    [posSel, fmtSel, skipBox].forEach(function (el) { el.addEventListener("change", refresh); });
+    [startIn, sizeIn].forEach(function (el) { el.addEventListener("input", refresh); });
 
     dlBtn.addEventListener("click", function () {
-      if (resultParts && waiting === 0) { downloadBlob(new Blob(resultParts, { type: "application/pdf" }), "merged.pdf"); }
+      if (current && settings && !busy) { makeFile(); }
     });
 
     document.getElementById("resetBtn").addEventListener("click", function () {
-      items = [];
-      failed = [];
-      notice = "";
-      waiting = 0;
       generation += 1;
+      current = null;
+      busy = false;
+      problem = "";
       fileInput.value = "";
       refresh();
     });

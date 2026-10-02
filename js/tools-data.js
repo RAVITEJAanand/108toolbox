@@ -45,6 +45,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "add-pdf-page-numbers",
+    name: "Add PDF Page Numbers",
+    desc: "Print page numbers on a PDF, at the top or bottom, in the style you choose. Nothing is uploaded.",
+    category: "PDF",
+    icon: "\u{1F522}",
+    keywords: ["add page numbers to pdf", "pdf page numbers", "number pdf pages", "insert page numbers pdf", "page numbering pdf", "bates numbering", "page x of y pdf", "add page number"],
+    popular: false
+  },
+  {
     slug: "age-calculator",
     name: "Age Calculator",
     desc: "Exact age in years, months and days, plus your next birthday.",
@@ -663,6 +672,15 @@ const TOOLS = [
     category: "Converter",
     icon: "\u{1F3DB}\u{FE0F}",
     keywords: ["roman numerals", "roman numeral converter", "number to roman", "roman to number", "mcmxciv", "roman numeral date"],
+    popular: false
+  },
+  {
+    slug: "rotate-pdf",
+    name: "Rotate PDF",
+    desc: "Turn every page, the odd or even ones, or the pages you choose. Bookmarks and forms are kept; nothing is uploaded.",
+    category: "PDF",
+    icon: "\u{1F504}",
+    keywords: ["rotate pdf", "rotate pdf pages", "turn pdf pages", "flip pdf", "rotate pdf 90 degrees", "rotate scanned pdf", "pdf rotator", "rotate pdf upside down", "rotate pdf permanently"],
     popular: false
   },
   {

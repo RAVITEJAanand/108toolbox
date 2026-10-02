@@ -231,10 +231,10 @@ make; it is written here so it is made with the number in front of us.
 | Text | 16 | 16 |
 | Image | 14 | 14 |
 | Converter | 14 | 13 |
-| PDF | 10 | 4 |
+| PDF | 10 | 6 |
 | Date & Time | 8 | 8 |
 | Random | 8 | 8 |
-| **Total** | **108** | **100** |
+| **Total** | **108** | **102** |
 
 ---
 
@@ -362,9 +362,9 @@ which never leave the tab, so the overlap is narrower than the word suggests.
 | 1 | `merge-pdf` ✅ | medium — written by hand, no library; judged by Windows' own PDF engine |
 | 2 | `split-pdf` ✅ | medium — written by hand, no library; judged by Windows' own PDF engine |
 | 3 | `remove-pdf-pages` ✅ | medium — written by hand, no library; a removed page's pictures are really gone |
-| 4 | `rotate-pdf` | medium |
+| 4 | `rotate-pdf` ✅ | medium — written by hand; an incremental update, so bookmarks and forms stay |
 | 5 | `image-to-pdf` ✅ | medium — written by hand, no library; judged by Windows' own PDF engine |
-| 6 | `add-pdf-page-numbers` | medium |
+| 6 | `add-pdf-page-numbers` ✅ | medium — written by hand; built-in Helvetica, incremental update |
 | 7 | `protect-pdf` | medium — add a password |
 | 8 | `pdf-metadata-editor` | medium |
 | 9 | `pdf-to-image` | hard — needs `pdf.js` as well |

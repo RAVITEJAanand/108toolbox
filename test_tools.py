@@ -8460,6 +8460,537 @@ T["remove-pdf-pages"] = r"""
   });
 """
 
+T["rotate-pdf"] = r"""
+  var DASH = String.fromCharCode(0x2014);
+  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+
+  /* ================= helpers ================= */
+  function feed(file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById("file");
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  function wait(label, test, budget) { return new Promise(function (resolve) { waitFor(label, test, resolve, budget); }); }
+  function read() { return !/^Reading/.test(txt("msg")); }
+  function bytesOfText(s) { var u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { u[i] = s.charCodeAt(i) & 255; } return u; }
+  function fromB64(s) { return bytesOfText(atob(s)); }
+  function latin1(bytes) {
+    var parts = [];
+    for (var i = 0; i < bytes.length; i += 32768) { parts.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 32768))); }
+    return parts.join("");
+  }
+  function makePdf(bodies, trailerExtra) {
+    var out = "%PDF-1.4\n", offsets = [];
+    bodies.forEach(function (b, i) {
+      offsets.push(out.length);
+      out += (i + 1) + " 0 obj\n" + (typeof b === "string" ? b : b.dict.replace("LEN", b.data.length) + "\nstream\n" + b.data + "\nendstream") + "\nendobj\n";
+    });
+    var x = out.length;
+    out += "xref\n0 " + (bodies.length + 1) + "\n0000000000 65535 f \n";
+    offsets.forEach(function (o) { out += ("0000000000" + o).slice(-10) + " 00000 n \n"; });
+    out += "trailer\n<<\/Size " + (bodies.length + 1) + " /Root 1 0 R" + (trailerExtra || "") + ">>\nstartxref\n" + x + "\n%%EOF\n";
+    return bytesOfText(out);
+  }
+  function text(s) { return { dict: "<<\/Length LEN>>", data: "BT /F1 12 Tf 10 10 Td (" + s + ") Tj ET" }; }
+
+  /* Four pages: 1 and 2 inherit a quarter turn from their node, 3 has three
+     quarters of its own, 4 has none. A bookmark and a title, which a rotation
+     must leave alone. */
+  var DOC = makePdf([
+    "<<\/Type /Catalog /Pages 2 0 R /Outlines 12 0 R>>",
+    "<<\/Type /Pages /Kids [3 0 R 6 0 R 7 0 R] /Count 4 /MediaBox [0 0 200 100]>>",
+    "<<\/Type /Pages /Parent 2 0 R /Kids [4 0 R 5 0 R] /Count 2 /Rotate 90>>",
+    "<<\/Type /Page /Parent 3 0 R /Contents 8 0 R>>",
+    "<<\/Type /Page /Parent 3 0 R /Contents 9 0 R>>",
+    "<<\/Type /Page /Parent 2 0 R /Rotate 270 /Contents 10 0 R>>",
+    "<<\/Type /Page /Parent 2 0 R /Contents 11 0 R>>",
+    text("R1"), text("R2"), text("R3"), text("R4"),
+    "<<\/Type /Outlines /First 13 0 R /Last 13 0 R /Count 1>>",
+    "<<\/Title (Chapter one) /Parent 12 0 R /Dest [4 0 R /Fit]>>",
+    "<<\/Title (Quarterly report) /Producer (a test)>>"
+  ], " /Info 14 0 R");
+  var ONE = makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>", "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 50 50]>>"]);
+  var DOC_ENC = makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/Filter /Standard /V 2 /R 3>>"], " /Encrypt 4 0 R");
+  var F = {
+    doc: new File([DOC], "report.pdf", { type: "application/pdf" }),
+    one: new File([ONE], "single.pdf", { type: "application/pdf" }),
+    packed: new File([fromB64(TINY.objstm)], "packed.pdf", { type: "application/pdf" }),
+    damaged: new File([fromB64(TINY.bad_offsets)], "scan.pdf", { type: "application/pdf" }),
+    enc: new File([DOC_ENC], "locked.pdf", { type: "application/pdf" }),
+    notPdf: new File([bytesOfText("not a pdf")], "notes.pdf", { type: "application/pdf" }),
+    hostile: new File([DOC], "<iframe onload=zq>.pdf", { type: "application/pdf" })
+  };
+
+  /* A reader for the result, sharing nothing with the page. It follows the
+     chain of classic tables from the newest back (/Prev), the newest entry
+     for each object winning, and checks every position it uses. */
+  function readChain(bytes) {
+    var t = latin1(bytes);
+    var sx = /startxref\n(\d+)\n%%EOF\n$/.exec(t);
+    if (!sx) { throw new Error("no startxref at the end"); }
+    var where = {}, trailers = [], at = Number(sx[1]), guard = 0;
+    while (at >= 0 && guard++ < 10) {
+      if (t.substr(at, 5) !== "xref\n") { throw new Error("no table at " + at); }
+      var pos = at + 5, m;
+      var sub = /^(\d+) (\d+)\n/;
+      while ((m = sub.exec(t.slice(pos, pos + 30)))) {
+        pos += m[0].length;
+        for (var i = 0; i < Number(m[2]); i++) {
+          var e = /^(\d{10}) (\d{5}) ([nf]) \n$/.exec(t.substr(pos, 20));
+          if (!e) { throw new Error("a malformed entry at " + pos); }
+          var num = Number(m[1]) + i;
+          if (!(num in where) && e[3] === "n") { where[num] = Number(e[1]); }
+          pos += 20;
+        }
+      }
+      if (t.substr(pos, 8) !== "trailer\n") { throw new Error("no trailer after the table at " + at); }
+      var trailer = t.slice(pos + 8, t.indexOf("\nstartxref", pos));
+      trailers.push(trailer);
+      var prev = /\/Prev (\d+)/.exec(trailer);
+      at = prev ? Number(prev[1]) : -1;
+    }
+    function obj(n) {
+      var off = where[n], tag = new RegExp("^" + n + " \\d+ obj\n");
+      if (off === undefined || !tag.test(t.slice(off, off + 20))) { throw new Error("object " + n + " is not where the table says"); }
+      return t.slice(off, t.indexOf("\nendobj\n", off));
+    }
+    return { text: t, trailers: trailers, obj: obj, sections: trailers.length };
+  }
+  function rotations(r, pageNums) { return pageNums.map(function (n) { return (/\/Rotate (\d+)/.exec(r.obj(n)) || [0, "-"])[1]; }).join(","); }
+  function download() {
+    var before = window.__saved.length;
+    click("dlBtn");
+    if (window.__saved.length !== before + 1) { return Promise.resolve(null); }
+    var saved = window.__saved[window.__saved.length - 1];
+    return saved.blob.arrayBuffer().then(function (b) { return { saved: saved, bytes: new Uint8Array(b) }; });
+  }
+  function startsWith(bytes, prefix) {
+    if (bytes.length < prefix.length) { return false; }
+    for (var i = 0; i < prefix.length; i++) { if (bytes[i] !== prefix[i]) { return false; } }
+    return true;
+  }
+
+  var chain = Promise.resolve();
+  function step(fn) { chain = chain.then(fn); }
+
+  /* ================= the page as it opens ================= */
+  eq("it asks for a PDF", txt("msg"), "Choose a PDF.");
+  ok("the button starts disabled", document.getElementById("dlBtn").disabled);
+  eq("every page and a quarter clockwise are the starting choices", val("which") + "|" + val("turn"), "all|90");
+  eq("the page box hides until it is wanted", getComputedStyle(document.getElementById("pagesField")).display, "none");
+
+  /* ================= every page, a quarter clockwise ================= */
+  step(function () {
+    feed(F.doc);
+    return wait("the PDF is read", read, 10000);
+  });
+  step(function () {
+    eq("the tiles count the pages", txt("sPages") + "|" + txt("sTurned") + "|" + txt("sIn"), "4|4|" + formatBytes(F.doc.size));
+    eq("and the message says what will happen, and what will not", txt("msg"),
+       "Every page will be turned a quarter turn clockwise. Everything else in the file, bookmarks and forms included, stays as it is.");
+    return download();
+  });
+  step(function (d) {
+    eq("named for what was done to it", d.saved.name, "report (rotated).pdf");
+    eq("as a PDF", d.saved.blob.type, "application/pdf");
+    ok("the original file is still there, byte for byte, at the start", startsWith(d.bytes, DOC));
+    var r;
+    try { r = readChain(d.bytes); } catch (e) { ok("the turned file reads back cleanly", false, e.message); return; }
+    eq("one section added to the original", r.sections, 2);
+    eq("each page's turn adds to the one it had: 90+90, 90+90, 270+90, 0+90", rotations(r, [4, 5, 6, 7]), "180,180,0,90");
+    has("the new section points back at the old one", r.trailers[0], "/Prev " + /startxref\n(\d+)\n%%EOF\n$/.exec(latin1(DOC))[1]);
+    has("and keeps the same catalog", r.trailers[0], "/Root 1 0 R");
+    has("and the same document details", r.trailers[0], "/Info 14 0 R");
+    eq("the bookmark is untouched", r.obj(13).indexOf("(Chapter one)") > -1 && r.obj(1).indexOf("/Outlines 12 0 R") > -1, true);
+    eq("only the pages were written again", (latin1(d.bytes.subarray(DOC.length)).match(/ 0 obj\n/g) || []).length, 4);
+    has("the done message counts the pages", txt("msg"), "Done: 4 pages turned");
+  });
+
+  /* ================= odd pages upside down, typed pages anticlockwise ================= */
+  step(function () {
+    set("which", "odd");
+    set("turn", "180");
+    eq("odd pages", txt("sTurned"), "2");
+    eq("named in the message", txt("msg").split(".")[0], "Pages 1, 3 will be turned upside down");
+    return download();
+  });
+  step(function (d) {
+    var r = readChain(d.bytes);
+    eq("pages 1 and 3 turn half way; 2 and 4 are not written again", rotations(r, [4, 6]) + "|" + latin1(d.bytes.subarray(DOC.length)).match(/^\d+ 0 obj$/gm).join(","),
+       "270,90|4 0 obj,6 0 obj");
+    set("which", "even");
+    eq("even pages", txt("sTurned") + "|" + txt("msg").split(".")[0], "2|Pages 2, 4 will be turned upside down");
+    set("which", "pages");
+    eq("the page box appears", getComputedStyle(document.getElementById("pagesField")).display !== "none", true);
+    eq("and asks", txt("msg"), "Type the pages to turn.");
+    ok("with nothing to download yet", document.getElementById("dlBtn").disabled);
+    set("pages", "2-3");
+    set("turn", "270");
+    eq("typed pages", txt("msg").split(".")[0], "Pages 2-3 will be turned a quarter turn anticlockwise");
+    return download();
+  });
+  step(function (d) {
+    var r = readChain(d.bytes);
+    eq("90-90 is upright and 270-90 is upside down", rotations(r, [5, 6]), "0,180");
+    set("pages", "4");
+    eq("one page is named as one", txt("msg").split(".")[0], "Page 4 will be turned a quarter turn anticlockwise");
+    set("pages", "9");
+    eq("a page that is not there is named", txt("msg"), String.fromCharCode(0x201C) + "9" + String.fromCharCode(0x201D) + ": this PDF has only 4 pages.");
+    ok("and nothing can be made", document.getElementById("dlBtn").disabled);
+  });
+
+  /* ================= other kinds of file ================= */
+  step(function () {
+    set("which", "even");
+    feed(F.one);
+    return wait("a one-page PDF is read", read, 10000);
+  });
+  step(function () {
+    eq("a one-page PDF has no even pages", txt("msg"), "This PDF has only one page, so it has no even pages to turn.");
+    ok("so nothing can be made", document.getElementById("dlBtn").disabled);
+    set("which", "all");
+    set("turn", "90");
+    feed(F.packed);
+    return wait("a PDF with a packed index is read", read, 10000);
+  });
+  step(function () { return download(); });
+  step(function (d) {
+    var original = fromB64(TINY.objstm);
+    ok("a file whose index is a stream keeps its bytes too", startsWith(d.bytes, original));
+    var tail = latin1(d.bytes.subarray(original.length));
+    has("and gets its addition as a stream as well", tail, "/Type /XRef");
+    has("pointing back at the old one", tail, "/Prev " + /startxref\n(\d+)\n%%EOF\n$/.exec(latin1(original))[1]);
+    has("with the page's new turn", tail, "/Rotate 90");
+    feed(F.damaged);
+    return wait("a damaged PDF is read", read, 10000);
+  });
+  step(function () {
+    has("a damaged file is rebuilt, and the visitor told what that costs", txt("msg"),
+        "This file's index is damaged, so it will be rebuilt: its pages are kept, but bookmarks and forms are not.");
+    return download();
+  });
+  step(function (d) {
+    var t = latin1(d.bytes);
+    eq("the rebuilt file has one index of its own", (t.match(/startxref/g) || []).length + "|" + /\/Prev/.test(t), "1|false");
+    has("and the page is turned", t, "/Rotate 90");
+    feed(F.notPdf);
+    return wait("a file that is not a PDF is looked at", read, 10000);
+  });
+  step(function () {
+    eq("it is turned away by name", txt("msg"), "Could not use notes.pdf: not a PDF.");
+    feed(F.enc);
+    return wait("a protected file is looked at", read, 10000);
+  });
+  step(function () {
+    eq("a protected one too", txt("msg"), "Could not use locked.pdf: protected with a password.");
+    feed(F.hostile);
+    return wait("a file named as markup is read", read, 10000);
+  });
+  step(function () { return download(); });
+  step(function (d) {
+    eq("its name stays text", d.saved.name, "<iframe onload=zq> (rotated).pdf");
+    eq("and made no element", document.querySelectorAll("iframe").length, 0);
+    click("resetBtn");
+    eq("clear empties everything", txt("msg") + "|" + val("pages") + "|" + txt("sPages"), "Choose a PDF.||" + DASH);
+  });
+
+  chain.then(function () { finish(); }, function (e) {
+    ok("the test ran to the end", false, String(e && e.stack || e));
+    finish();
+  });
+"""
+
+T["add-pdf-page-numbers"] = r"""
+  var DASH = String.fromCharCode(0x2014);
+  var LQ = String.fromCharCode(0x201C), RQ = String.fromCharCode(0x201D);
+  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+
+  /* ================= helpers ================= */
+  function feed(file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById("file");
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  function wait(label, test, budget) { return new Promise(function (resolve) { waitFor(label, test, resolve, budget); }); }
+  function read() { return !/^Reading/.test(txt("msg")); }
+  function bytesOfText(s) { var u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { u[i] = s.charCodeAt(i) & 255; } return u; }
+  function fromB64(s) { return bytesOfText(atob(s)); }
+  function latin1(bytes) {
+    var parts = [];
+    for (var i = 0; i < bytes.length; i += 32768) { parts.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 32768))); }
+    return parts.join("");
+  }
+  function makePdf(bodies, trailerExtra) {
+    var out = "%PDF-1.4\n", offsets = [];
+    bodies.forEach(function (b, i) {
+      offsets.push(out.length);
+      out += (i + 1) + " 0 obj\n" + (typeof b === "string" ? b : b.dict.replace("LEN", b.data.length) + "\nstream\n" + b.data + "\nendstream") + "\nendobj\n";
+    });
+    var x = out.length;
+    out += "xref\n0 " + (bodies.length + 1) + "\n0000000000 65535 f \n";
+    offsets.forEach(function (o) { out += ("0000000000" + o).slice(-10) + " 00000 n \n"; });
+    out += "trailer\n<<\/Size " + (bodies.length + 1) + " /Root 1 0 R" + (trailerExtra || "") + ">>\nstartxref\n" + x + "\n%%EOF\n";
+    return bytesOfText(out);
+  }
+  function text(s) { return { dict: "<<\/Length LEN>>", data: "BT /F1 12 Tf 10 10 Td (" + s + ") Tj ET" }; }
+
+  /* Four pages of 200 x 100 points. Page 2 is shown turned a quarter
+     clockwise; page 3 has a crop box; page 4's own fonts already use the name
+     the page would choose for its numbers. Resources are shared and
+     inherited, and there is a bookmark. */
+  var DOC = makePdf([
+    "<<\/Type /Catalog /Pages 2 0 R /Outlines 12 0 R>>",
+    "<<\/Type /Pages /Kids [3 0 R 4 0 R 5 0 R 6 0 R] /Count 4 /MediaBox [0 0 200 100] /Resources 11 0 R>>",
+    "<<\/Type /Page /Parent 2 0 R /Contents 7 0 R>>",
+    "<<\/Type /Page /Parent 2 0 R /Rotate 90 /Contents 8 0 R>>",
+    "<<\/Type /Page /Parent 2 0 R /CropBox [20 10 180 90] /Contents [9 0 R]>>",
+    "<<\/Type /Page /Parent 2 0 R /Resources <<\/Font <<\/F108tb 13 0 R>>>> /Contents 10 0 R>>",
+    text("N1"), text("N2"), text("N3"), text("N4"),
+    "<<\/Font <<\/F1 13 0 R>>>>",
+    "<<\/Type /Outlines /Count 0>>",
+    "<<\/Type /Font /Subtype /Type1 /BaseFont /Courier>>"
+  ]);
+  var DOC_ENC = makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/Filter /Standard /V 2 /R 3>>"], " /Encrypt 4 0 R");
+  var ONE = makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>", "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 50 50]>>"]);
+  var F = {
+    doc: new File([DOC], "thesis.pdf", { type: "application/pdf" }),
+    one: new File([ONE], "single.pdf", { type: "application/pdf" }),
+    packed: new File([fromB64(TINY.objstm)], "packed.pdf", { type: "application/pdf" }),
+    damaged: new File([fromB64(TINY.bad_offsets)], "scan.pdf", { type: "application/pdf" }),
+    enc: new File([DOC_ENC], "locked.pdf", { type: "application/pdf" }),
+    notPdf: new File([bytesOfText("not a pdf")], "notes.pdf", { type: "application/pdf" })
+  };
+
+  /* Helvetica's published widths for the characters the numbers use, kept
+     here separately from the page's own table */
+  var W = { "0": 556, "1": 556, "2": 556, "3": 556, "4": 556, "5": 556, "6": 556, "7": 556, "8": 556, "9": 556,
+            " ": 278, "/": 278, "P": 667, "a": 556, "g": 556, "e": 556, "o": 556, "f": 278 };
+  function width(s, size) { var u = 0; for (var i = 0; i < s.length; i++) { u += W[s.charAt(i)]; } return u / 1000 * size; }
+  var MARGIN = 10 * 72 / 25.4;
+
+  /* the reader from the rotate test: classic tables, newest first */
+  function readChain(bytes) {
+    var t = latin1(bytes);
+    var sx = /startxref\n(\d+)\n%%EOF\n$/.exec(t);
+    if (!sx) { throw new Error("no startxref at the end"); }
+    var where = {}, trailers = [], at = Number(sx[1]), guard = 0;
+    while (at >= 0 && guard++ < 10) {
+      if (t.substr(at, 5) !== "xref\n") { throw new Error("no table at " + at); }
+      var pos = at + 5, m, sub = /^(\d+) (\d+)\n/;
+      while ((m = sub.exec(t.slice(pos, pos + 30)))) {
+        pos += m[0].length;
+        for (var i = 0; i < Number(m[2]); i++) {
+          var e = /^(\d{10}) (\d{5}) ([nf]) \n$/.exec(t.substr(pos, 20));
+          if (!e) { throw new Error("a malformed entry at " + pos); }
+          var num = Number(m[1]) + i;
+          if (!(num in where) && e[3] === "n") { where[num] = Number(e[1]); }
+          pos += 20;
+        }
+      }
+      if (t.substr(pos, 8) !== "trailer\n") { throw new Error("no trailer after the table at " + at); }
+      var trailer = t.slice(pos + 8, t.indexOf("\nstartxref", pos));
+      trailers.push(trailer);
+      var prev = /\/Prev (\d+)/.exec(trailer);
+      at = prev ? Number(prev[1]) : -1;
+    }
+    function obj(n) {
+      var off = where[n], tag = new RegExp("^" + n + " \\d+ obj\n");
+      if (off === undefined || !tag.test(t.slice(off, off + 20))) { throw new Error("object " + n + " is not where the table says"); }
+      var end = t.indexOf("\nendobj\n", off);
+      var body = t.slice(off, end);
+      var si = body.indexOf("\nstream\n");
+      return si < 0 ? { body: body, data: null } : { body: body.slice(0, si), data: body.slice(si + 8, body.lastIndexOf("\nendstream")) };
+    }
+    return { text: t, trailers: trailers, obj: obj, sections: trailers.length };
+  }
+  /* the drawing added to a page, and the numbers in it */
+  function added(r, pageNum) {
+    var body = r.obj(pageNum).body;
+    var refs = /\/Contents \[([^\]]*)\]/.exec(body)[1].match(/\d+ 0 R/g).map(function (x) { return parseInt(x, 10); });
+    var first = r.obj(refs[0]).data, last = r.obj(refs[refs.length - 1]).data;
+    var m = /^Q\nq (\S+) (\S+) (\S+) (\S+) (\S+) (\S+) cm BT \/(\S+) (\S+) Tf 0 g (\S+) (\S+) Td \((.*)\) Tj ET Q\n$/.exec(last);
+    return { body: body, refs: refs, first: first, last: last, m: m,
+             matrix: m ? m.slice(1, 7).map(Number) : null, font: m ? m[7] : "", size: m ? Number(m[8]) : 0,
+             u: m ? Number(m[9]) : 0, v: m ? Number(m[10]) : 0, text: m ? m[11] : "" };
+  }
+  function near(a, b) { return Math.abs(a - b) < 0.0011; }
+  function download() {
+    var before = window.__saved.length;
+    click("dlBtn");
+    if (window.__saved.length !== before + 1) { return Promise.resolve(null); }
+    var saved = window.__saved[window.__saved.length - 1];
+    return saved.blob.arrayBuffer().then(function (b) { return { saved: saved, bytes: new Uint8Array(b) }; });
+  }
+  function startsWith(bytes, prefix) {
+    if (bytes.length < prefix.length) { return false; }
+    for (var i = 0; i < prefix.length; i++) { if (bytes[i] !== prefix[i]) { return false; } }
+    return true;
+  }
+
+  var chain = Promise.resolve();
+  function step(fn) { chain = chain.then(fn); }
+
+  /* ================= the page as it opens ================= */
+  eq("it asks for a PDF", txt("msg"), "Choose a PDF.");
+  ok("the button starts disabled", document.getElementById("dlBtn").disabled);
+  eq("the usual choices to start with", val("position") + "|" + val("format") + "|" + val("start") + "|" + val("size") + "|" +
+     document.getElementById("skipFirst").checked, "bottom-center|plain|1|11|false");
+
+  /* ================= plain numbers, bottom centre ================= */
+  step(function () {
+    feed(F.doc);
+    return wait("the PDF is read", read, 10000);
+  });
+  step(function () {
+    eq("the tiles count the pages", txt("sPages") + "|" + txt("sNumbered") + "|" + txt("sIn"), "4|4|" + formatBytes(F.doc.size));
+    eq("the example shows the first and last numbers", txt("example"), "Page 1 will read " + LQ + "1" + RQ + ", the last page " + LQ + "4" + RQ + ".");
+    eq("the message says nothing else changes", txt("msg"), "thesis.pdf: 4 pages. Everything else in the file stays as it is.");
+    return download();
+  });
+  step(function (d) {
+    eq("named for what was done to it", d.saved.name, "thesis (numbered).pdf");
+    ok("the original is still there, byte for byte, at the start", startsWith(d.bytes, DOC));
+    var r;
+    try { r = readChain(d.bytes); } catch (e) { ok("the numbered file reads back cleanly", false, e.message); return; }
+    var p1 = added(r, 3);
+    ok("page 1's drawing is wrapped: q first, the old drawing, then Q and the number", p1.m && p1.first === "q\n" && p1.refs.length === 3 && p1.refs[1] === 7, p1.last);
+    eq("page 1 reads 1", p1.text, "1");
+    eq("in the size asked for", p1.size, 11);
+    ok("centred along the bottom, 10 mm up", near(p1.u, (200 - width("1", 11)) / 2) && near(p1.v, MARGIN), p1.u + " " + p1.v);
+    ok("on an upright page the drawing is not turned", p1.matrix.join(" ") === "1 0 0 1 0 0", p1.matrix.join(" "));
+    has("the page names Helvetica as its number font", p1.body, "/F108tb ");
+    has("next to its own font", p1.body, "/F1 13 0 R");
+    var font = /\/F108tb (\d+) 0 R/.exec(p1.body);
+    has("and that font is Helvetica, which every reader has built in", r.obj(Number(font[1])).body, "/BaseFont /Helvetica");
+    var p2 = added(r, 4);
+    eq("a page shown turned a quarter is numbered across what is shown", p2.text, "2");
+    ok("with the drawing turned to match: [0 1 -1 0 200 0]", p2.matrix.join(" ") === "0 1 -1 0 200 0", p2.matrix.join(" "));
+    ok("and centred along the bottom of the turned page, which is 100 wide", near(p2.u, (100 - width("2", 11)) / 2) && near(p2.v, MARGIN), p2.u + " " + p2.v);
+    var p3 = added(r, 5);
+    ok("a page with a crop box is numbered inside it", p3.matrix.join(" ") === "1 0 0 1 20 10" && near(p3.u, (160 - width("3", 11)) / 2), p3.matrix.join(" ") + " " + p3.u);
+    ok("its drawing list keeps its old stream in the middle", p3.refs.length === 3 && p3.refs[1] === 9);
+    var p4 = added(r, 6);
+    eq("a page that already uses the name gets another one", p4.font, "F108tb1");
+    has("and keeps its own font under the old name", p4.body, "/F108tb 13 0 R");
+    eq("the bookmark is untouched", r.obj(1).body.indexOf("/Outlines 12 0 R") > -1, true);
+    eq("one section was added", r.sections, 2);
+    has("the done message counts the pages", txt("msg"), "Done: 4 pages numbered");
+  });
+
+  /* ================= other styles and places ================= */
+  step(function () {
+    set("format", "pageof");
+    set("position", "top-right");
+    set("start", "5");
+    set("size", "9");
+    eq("the example follows", txt("example"), "Page 1 will read " + LQ + "Page 5 of 8" + RQ + ", the last page " + LQ + "Page 8 of 8" + RQ + ".");
+    return download();
+  });
+  step(function (d) {
+    var r = readChain(d.bytes);
+    var p1 = added(r, 3);
+    eq("Page 5 of 8 on the first page", p1.text, "Page 5 of 8");
+    ok("against the right edge, 10 mm in, and 10 mm below the top less the letters' height",
+       near(p1.u, 200 - MARGIN - width("Page 5 of 8", 9)) && near(p1.v, 100 - MARGIN - 0.72 * 9), p1.u + " " + p1.v);
+    eq("and so on to the last", added(r, 6).text, "Page 8 of 8");
+    set("format", "slash");
+    set("position", "bottom-left");
+    set("start", "1");
+    document.getElementById("skipFirst").checked = true;
+    document.getElementById("skipFirst").dispatchEvent(new Event("change", { bubbles: true }));
+    eq("with the cover left out, three pages get numbers", txt("sNumbered"), "3");
+    eq("starting on page 2", txt("example"), "Page 2 will read " + LQ + "1 / 3" + RQ + ", the last page " + LQ + "3 / 3" + RQ + ".");
+    return download();
+  });
+  step(function (d) {
+    var r = readChain(d.bytes);
+    var tail = latin1(d.bytes.subarray(DOC.length));
+    eq("the cover is not written again", /^3 0 obj$/m.test(tail), false);
+    var p2 = added(r, 4);
+    eq("page 2 reads 1 / 3", p2.text, "1 / 3");
+    ok("at the bottom left of what is shown", near(p2.u, MARGIN) && near(p2.v, MARGIN));
+    eq("page 4 reads 3 / 3", added(r, 6).text, "3 / 3");
+    set("format", "page");
+    eq("Page n", txt("example"), "Page 2 will read " + LQ + "Page 1" + RQ + ", the last page " + LQ + "Page 3" + RQ + ".");
+    set("start", "-1");
+    eq("a negative start is refused", txt("msg"), "Type the first number to print: a whole number, 0 or more.");
+    ok("with nothing to download", document.getElementById("dlBtn").disabled);
+    set("start", "2.5");
+    eq("so is a fraction", txt("msg"), "Type the first number to print: a whole number, 0 or more.");
+    set("start", "0");
+    eq("zero is allowed", txt("example"), "Page 2 will read " + LQ + "Page 0" + RQ + ", the last page " + LQ + "Page 2" + RQ + ".");
+    set("size", "5");
+    eq("a size below 6 is refused", txt("msg"), "Choose a text size from 6 to 36.");
+    set("size", "37");
+    eq("and above 36", txt("msg"), "Choose a text size from 6 to 36.");
+    set("size", "11");
+    set("start", "1");
+  });
+
+  /* ================= other kinds of file ================= */
+  step(function () {
+    feed(F.one);
+    return wait("a one-page PDF is read", read, 10000);
+  });
+  step(function () {
+    eq("a single page that is the cover leaves nothing to number", txt("msg"), "This PDF has only one page, and it is the one being left without a number.");
+    document.getElementById("skipFirst").checked = false;
+    document.getElementById("skipFirst").dispatchEvent(new Event("change", { bubbles: true }));
+    set("format", "plain");
+    set("position", "bottom-center");
+    feed(F.packed);
+    return wait("a PDF with a packed index is read", read, 10000);
+  });
+  step(function () { return download(); });
+  step(function (d) {
+    var original = fromB64(TINY.objstm);
+    ok("a file whose index is a stream keeps its bytes", startsWith(d.bytes, original));
+    var tail = latin1(d.bytes.subarray(original.length));
+    has("and gets its addition as a stream", tail, "/Type /XRef");
+    has("with the number drawn", tail, "(1) Tj");
+    feed(F.damaged);
+    return wait("a damaged PDF is read", read, 10000);
+  });
+  step(function () {
+    has("a damaged file is rebuilt, and the visitor told", txt("msg"), "This file's index is damaged, so it will be rebuilt: its pages are kept, but bookmarks and forms are not.");
+    return download();
+  });
+  step(function (d) {
+    var t = latin1(d.bytes);
+    eq("the rebuilt file has one index", (t.match(/startxref/g) || []).length, 1);
+    has("its page carries the number", t, "(1) Tj");
+    has("and the old drawing", t, "(T1) Tj");
+    has("and Helvetica", t, "/BaseFont /Helvetica");
+    feed(F.notPdf);
+    return wait("a file that is not a PDF is looked at", read, 10000);
+  });
+  step(function () {
+    eq("it is turned away by name", txt("msg"), "Could not use notes.pdf: not a PDF.");
+    feed(F.enc);
+    return wait("a protected file is looked at", read, 10000);
+  });
+  step(function () {
+    eq("a protected one too", txt("msg"), "Could not use locked.pdf: protected with a password.");
+    click("resetBtn");
+    eq("clear empties everything", txt("msg") + "|" + txt("sPages") + "|" + txt("example"), "Choose a PDF.|" + DASH + "|");
+  });
+
+  chain.then(function () { finish(); }, function (e) {
+    ok("the test ran to the end", false, String(e && e.stack || e));
+    finish();
+  });
+"""
+
 # ===== END: the test bodies ================================================
 
 
@@ -8470,6 +9001,8 @@ T["remove-pdf-pages"] = r"""
 # ahead of the real one. A tool that builds four zips can need twenty virtual
 # seconds and two real ones. Ask for more here, per tool; nothing else changes.
 BUDGET_MS = {
+    "add-pdf-page-numbers": 300000,
+    "rotate-pdf": 300000,
     "remove-pdf-pages": 300000,
     "split-pdf": 500000,
     "favicon-generator": 40000,
