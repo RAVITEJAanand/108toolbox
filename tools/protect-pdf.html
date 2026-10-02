@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- ===== SEO ===== -->
-  <title>Add Page Numbers to a PDF — Free, Nothing Uploaded</title>
-  <meta name="description" content="Number the pages of a PDF in your browser: bottom or top, left, centre or right, “Page 1 of 9” or just 1. Nothing is uploaded and nothing else changes.">
-  <link rel="canonical" href="https://108toolbox.in/tools/add-pdf-page-numbers.html">
+  <title>Protect PDF with a Password — AES-256, in Your Browser</title>
+  <meta name="description" content="Lock a PDF with a password using AES-256 encryption, right in your browser. The file and the password never leave your device.">
+  <link rel="canonical" href="https://108toolbox.in/tools/protect-pdf.html">
 
-  <meta property="og:title" content="Add Page Numbers to a PDF — Free, Nothing Uploaded">
-  <meta property="og:description" content="Number the pages of a PDF in your browser: bottom or top, left, centre or right, “Page 1 of 9” or just 1. Nothing is uploaded and nothing else changes.">
+  <meta property="og:title" content="Protect PDF with a Password — AES-256, in Your Browser">
+  <meta property="og:description" content="Lock a PDF with a password using AES-256 encryption, right in your browser. The file and the password never leave your device.">
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
@@ -49,50 +49,50 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Will the numbers cover my text?",
+        "name": "What if I forget the password?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "They sit 10 mm in from the edge of the page, where most documents leave a margin. If a page has text right at the edge, choose another position or a smaller size."
+          "text": "Then the file cannot be opened, by anyone, including this page. There is no back door and no reset, which is the point of the lock. Keep the original, unprotected PDF somewhere safe if you might need it again."
         }
       },
       {
         "@type": "Question",
-        "name": "Can I start from a number other than 1?",
+        "name": "How strong is the protection?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. Type the first number to print; each following page counts up from it. With the cover left unnumbered, the first number goes on page 2."
+          "text": "The PDF is encrypted with AES-256, and the password goes through a deliberately slow calculation before it can be tried, which makes guessing slow. A short or common password can still be found by a patient computer; a long one cannot in any useful time."
         }
       },
       {
         "@type": "Question",
-        "name": "What does Page 1 of 9 count?",
+        "name": "Why can I not use other letters, such as Telugu, in the password?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "The last number printed: the first number plus the pages that get a number, less one. A 10-page document with an unnumbered cover, starting at 1, reads Page 1 of 9 to Page 9 of 9."
+          "text": "PDF readers do not all turn such characters into the same bytes, so a file locked with them might open in one reader and not in another. Letters, digits and symbols from an English keyboard work in every reader."
         }
       },
       {
         "@type": "Question",
-        "name": "Are bookmarks and forms kept?",
+        "name": "Can I stop people from printing or copying it?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, the numbers are added to the end of the file without rewriting it. Only a file whose index is damaged has to be rebuilt, which keeps the pages but not bookmarks or forms, and the page tells you before you download."
+          "text": "Not here. Those settings are only requests a PDF reader may ignore. The password itself is the real protection: without it, the file cannot be read at all."
         }
       },
       {
         "@type": "Question",
-        "name": "Can I number a password-protected PDF?",
+        "name": "Can I remove a password with this page?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No, its contents are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and number that copy."
+          "text": "No, this page only adds one. To take a password off, open the PDF in your reader with the password and save or print a copy without protection."
         }
       },
       {
         "@type": "Question",
-        "name": "Is my PDF uploaded?",
+        "name": "Is my PDF or my password uploaded?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. The PDF is read and changed by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone."
+          "text": "No. The PDF is read and encrypted by JavaScript inside your own browser, with the browser's built-in cryptography, and the protected file is saved straight to your device. Neither the file nor the password is sent anywhere or stored - close the tab and both are gone."
         }
       }
     ]
@@ -142,14 +142,14 @@
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=pdf">PDF</a><span>&rsaquo;</span>
-        <span>Add PDF Page Numbers</span>
+        <span>Protect PDF</span>
       </nav>
 
       <header class="tool-head">
-        <h1>Add Page Numbers to a PDF</h1>
-        <p>Print page numbers on a PDF: at the bottom or the top, on the left,
-           in the middle or on the right, in the style you choose. It happens
-           inside your browser, so the document never leaves your device.</p>
+        <h1>Protect PDF with a Password</h1>
+        <p>Lock a PDF so that it opens only with your password. It is encrypted
+           with AES-256 inside your browser: the file and the password never
+           leave your device.</p>
       </header>
 
       <!--TOOL:START-->
@@ -160,61 +160,30 @@
           <span class="panel__label">1. Choose a PDF</span>
 
           <label class="drop" id="drop" for="file">
-            <span class="drop__big" aria-hidden="true">&#128290;</span>
+            <span class="drop__big" aria-hidden="true">&#128272;</span>
             <p><strong>Click to choose</strong> or drag a PDF here</p>
-            <p style="margin-top:var(--s1)">One PDF, up to 500 MB</p>
+            <p style="margin-top:var(--s1)">One PDF, up to 300 MB</p>
             <input type="file" id="file" accept="application/pdf,.pdf">
           </label>
-
-          <div class="field" style="margin-top:var(--s4)">
-            <label for="position">2. Where</label>
-            <select id="position">
-              <option value="bottom-center" selected>Bottom, in the middle</option>
-              <option value="bottom-right">Bottom right</option>
-              <option value="bottom-left">Bottom left</option>
-              <option value="top-center">Top, in the middle</option>
-              <option value="top-right">Top right</option>
-              <option value="top-left">Top left</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="format">3. How it reads</label>
-            <select id="format">
-              <option value="plain" selected>1</option>
-              <option value="page">Page 1</option>
-              <option value="pageof">Page 1 of 9</option>
-              <option value="slash">1 / 9</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="start">First number</label>
-            <input type="number" id="start" min="0" value="1">
-          </div>
-
-          <div class="field">
-            <label for="size">Text size, in points</label>
-            <input type="number" id="size" min="6" max="36" value="11">
-          </div>
-
-          <label class="check"><input type="checkbox" id="skipFirst"> Leave the first page without a number (a cover)</label>
         </div>
 
         <!-- ---------- OUTPUT ---------- -->
         <div class="panel">
-          <span class="panel__label">4. The numbered PDF</span>
+          <span class="panel__label">2. Choose a password</span>
 
-          <div class="stats stats--3">
-            <div class="stat"><span class="stat__num" id="sPages">&mdash;</span><span class="stat__label">Pages</span></div>
-            <div class="stat"><span class="stat__num" id="sNumbered">&mdash;</span><span class="stat__label">To number</span></div>
-            <div class="stat"><span class="stat__num" id="sIn">&mdash;</span><span class="stat__label">The PDF</span></div>
+          <div class="field">
+            <label for="pw">Password</label>
+            <input type="password" id="pw" autocomplete="new-password" spellcheck="false">
+            <p class="hint">Letters, digits and symbols from an English keyboard, up to 127 of them.</p>
           </div>
-
-          <p class="hint" id="example" style="margin-top:var(--s3)"></p>
+          <div class="field">
+            <label for="pw2">The same password again</label>
+            <input type="password" id="pw2" autocomplete="new-password" spellcheck="false">
+          </div>
+          <label class="check"><input type="checkbox" id="showPw"> Show the password</label>
 
           <div class="btn-row" style="margin-top:var(--s4)">
-            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Number and download</button>
+            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Protect and download</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Clear</button>
           </div>
 
@@ -240,53 +209,64 @@
 
       <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
       <section class="tool-info prose">
-        <h2>The numbers are added; nothing else is touched</h2>
-        <p>Each page keeps everything it had: the text you can select, the
-           pictures, the fonts. The number is drawn on top in Helvetica, a font
-           every PDF reader has built in, 10 mm in from the edge of the page.
-           The change is added to the end of the file the way the PDF standard
-           provides for edits, so bookmarks, links and filled-in forms all stay
-           as they were.</p>
+        <h2>How the lock works</h2>
+        <p>The page makes a random 256-bit key and encrypts every page,
+           picture and line of text in the PDF with it, using AES-256, the
+           encryption PDF 2.0 sets out. The key is kept in the file, locked
+           with your password. To unlock it, a reader has to put the password
+           through a deliberately slow calculation first, so trying password
+           after password takes a very long time. The document's details, such
+           as its title and author, are encrypted too.</p>
 
-        <h2>Sideways pages and covers</h2>
-        <p>A page stored on its side and shown turned still gets its number at
-           the bottom of what you see, the right way up. Tick <strong>Leave the
-           first page without a number</strong> for a document with a cover:
-           the numbering then starts on page 2, from the first number you
-           choose, so a report can start at 1 on its first page of text. The
-           example line under the button shows exactly what the first and last
-           numbers will read before you download.</p>
+        <h2>Choosing a password</h2>
+        <p>Length matters more than anything else. Twelve characters or more,
+           or four or five unrelated words, is far harder to guess than a short
+           word with a digit added. Use letters, digits and symbols from an
+           English keyboard: PDF readers turn other characters into bytes in
+           different ways, and a file locked with one of them might not open
+           everywhere. There is no way back without the password, so keep the
+           original, unprotected copy somewhere safe if you might need it.</p>
 
-        <h2>Why it matters that nothing is uploaded</h2>
-        <p>Documents get page numbers when they are about to be handed in or
-           sent: a thesis, a legal bundle, a tender, a set of statements. This
-           page adds them inside your browser and saves the result straight to
-           your device; the file is never sent anywhere.</p>
+        <h2>Opening the protected file</h2>
+        <p>Current web browsers and PDF readers, on computers and phones, ask
+           for the password and open it. A few older programs cannot open
+           AES-256 files at all; that includes the PDF component built into
+           some older Windows apps. Whoever has the password can read, print,
+           copy and change the document, just as with the original: the
+           password is the whole of the protection.</p>
+
+        <h2>What it does not do</h2>
+        <p>It does not offer "no printing" or "no copying" settings. Those are
+           only requests written into the file, which a PDF reader is free to
+           ignore, so they would promise more than they give. A digitally
+           signed PDF loses its signature when it is protected, because the
+           signature covers the file's exact bytes; the page tells you when a
+           PDF is signed, before you protect it.</p>
 
         <h2>Frequently asked questions</h2>
         <div class="faq">
-          <h3>Will the numbers cover my text?</h3>
-          <p>They sit 10 mm in from the edge of the page, where most documents leave a margin. If a page has text right at the edge, choose another position or a smaller size.</p>
+          <h3>What if I forget the password?</h3>
+          <p>Then the file cannot be opened, by anyone, including this page. There is no back door and no reset, which is the point of the lock. Keep the original, unprotected PDF somewhere safe if you might need it again.</p>
         </div>
         <div class="faq">
-          <h3>Can I start from a number other than 1?</h3>
-          <p>Yes. Type the first number to print; each following page counts up from it. With the cover left unnumbered, the first number goes on page 2.</p>
+          <h3>How strong is the protection?</h3>
+          <p>The PDF is encrypted with AES-256, and the password goes through a deliberately slow calculation before it can be tried, which makes guessing slow. A short or common password can still be found by a patient computer; a long one cannot in any useful time.</p>
         </div>
         <div class="faq">
-          <h3>What does Page 1 of 9 count?</h3>
-          <p>The last number printed: the first number plus the pages that get a number, less one. A 10-page document with an unnumbered cover, starting at 1, reads Page 1 of 9 to Page 9 of 9.</p>
+          <h3>Why can I not use other letters, such as Telugu, in the password?</h3>
+          <p>PDF readers do not all turn such characters into the same bytes, so a file locked with them might open in one reader and not in another. Letters, digits and symbols from an English keyboard work in every reader.</p>
         </div>
         <div class="faq">
-          <h3>Are bookmarks and forms kept?</h3>
-          <p>Yes, the numbers are added to the end of the file without rewriting it. Only a file whose index is damaged has to be rebuilt, which keeps the pages but not bookmarks or forms, and the page tells you before you download.</p>
+          <h3>Can I stop people from printing or copying it?</h3>
+          <p>Not here. Those settings are only requests a PDF reader may ignore. The password itself is the real protection: without it, the file cannot be read at all.</p>
         </div>
         <div class="faq">
-          <h3>Can I number a password-protected PDF?</h3>
-          <p>No, its contents are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and number that copy.</p>
+          <h3>Can I remove a password with this page?</h3>
+          <p>No, this page only adds one. To take a password off, open the PDF in your reader with the password and save or print a copy without protection.</p>
         </div>
         <div class="faq">
-          <h3>Is my PDF uploaded?</h3>
-          <p>No. The PDF is read and changed by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
+          <h3>Is my PDF or my password uploaded?</h3>
+          <p>No. The PDF is read and encrypted by JavaScript inside your own browser, with the browser&#x27;s built-in cryptography, and the protected file is saved straight to your device. Neither the file nor the password is sent anywhere or stored - close the tab and both are gone.</p>
         </div>
 
         <h2>Related tools</h2>
@@ -350,7 +330,7 @@
   <!-- Shared scripts, in order -->
   <script src="../js/tools-data.js?v=36"></script>
   <script src="../js/tool-helpers.js?v=36"></script>
-  <script>window.CURRENT_TOOL = "add-pdf-page-numbers";</script>
+  <script>window.CURRENT_TOOL = "protect-pdf";</script>
   <script src="../js/main.js?v=36"></script>
 
   <!-- ===== This tool's own logic ===== -->
@@ -360,22 +340,20 @@
 
     var fileInput = document.getElementById("file");
     var drop      = document.getElementById("drop");
-    var posSel    = document.getElementById("position");
-    var fmtSel    = document.getElementById("format");
-    var startIn   = document.getElementById("start");
-    var sizeIn    = document.getElementById("size");
-    var skipBox   = document.getElementById("skipFirst");
+    var pw        = document.getElementById("pw");
+    var pw2       = document.getElementById("pw2");
+    var showPw    = document.getElementById("showPw");
     var dlBtn     = document.getElementById("dlBtn");
     var msg       = document.getElementById("msg");
-    var DASH      = String.fromCharCode(0x2014);
+    var ELLIPSIS  = String.fromCharCode(0x2026);
 
-    var MAX_INPUT = 500 * 1024 * 1024;   /* what a phone's browser can hold twice over */
-    var MARGIN    = 10 * 72 / 25.4;      /* 10 mm from the edge, in points */
+    /* the document and one encrypted copy of it are held at once */
+    var MAX_INPUT = 300 * 1024 * 1024;
 
-    var current = null;        /* { name, size, doc, pages } */
-    var settings = null;
+    var current = null;        /* { name, size, doc, pages, signed } */
     var generation = 0;
-    var busy = false;
+    var busy = false;          /* reading a file */
+    var working = false;       /* protecting it */
     var problem = "";
 
     /* ---- START: writing a PDF file ----
@@ -432,8 +410,9 @@
       this.text("\nendobj\n");
     };
 
-    /* the cross-reference table and the trailer; returns the finished pieces */
-    PdfWriter.prototype.finish = function (rootNum, infoNum) {
+    /* the cross-reference table and the trailer; returns the finished pieces.
+       extra is more of the trailer, already written as PDF (an /Encrypt). */
+    PdfWriter.prototype.finish = function (rootNum, infoNum, extra) {
       var start = this.length;
       var lines = ["xref\n0 " + (this.count + 1) + "\n0000000000 65535 f \n"];
       for (var n = 1; n <= this.count; n++) {
@@ -442,7 +421,7 @@
       }
       this.text(lines.join(""));
       this.text("trailer\n<< /Size " + (this.count + 1) + " /Root " + rootNum + " 0 R" +
-                (infoNum ? " /Info " + infoNum + " 0 R" : "") + " >>\nstartxref\n" + start + "\n%%EOF\n");
+                (infoNum ? " /Info " + infoNum + " 0 R" : "") + (extra ? " " + extra : "") + " >>\nstartxref\n" + start + "\n%%EOF\n");
       return this.parts;
     };
 
@@ -1625,143 +1604,400 @@
     }
     /* ---- END: copying pages from one or more PDFs into a new one ---- */
 
-    /* ---- START: changing a PDF by adding to its end ----
-       The PDF standard's own way to edit a file without rewriting it: the
-       original bytes stay exactly as they were, the changed objects are
-       written again after them under the same numbers, and a new, small
-       cross-reference section says where those new versions are and points
-       back (/Prev) to the old section for everything else. Bookmarks,
-       forms, attachments, metadata: whatever the edit does not touch is
-       still there, untouched.
-       changes: Map of object number -> { gen, value } (the new version).
-       If the file's last section is a cross-reference stream, the new one is
-       a stream too, since some readers do not accept a mix. */
-    function incrementalUpdate(doc, changes, extraTrailer) {
-      if (doc.repaired || doc.startxref < 0) { throw pdfError("this PDF's index is damaged, so it cannot be added to"); }
-      var w = new PdfWriter();
-      w.bytes(doc.bytes);
-      if (doc.bytes[doc.bytes.length - 1] !== 10 && doc.bytes[doc.bytes.length - 1] !== 13) { w.text("\n"); }
-      var oldSize = doc.trailer.get("Size");
-      var size = typeof oldSize === "number" ? oldSize : 0;
-      var nums = Array.from(changes.keys()).sort(function (a, b) { return a - b; });
-      nums.forEach(function (n) { size = Math.max(size, n + 1); });
-      var offsets = new Map();
-      nums.forEach(function (n) {
-        var c = changes.get(n);
-        offsets.set(n, { offset: w.length, gen: c.gen });
-        if (c.value instanceof PdfStream) {
-          var d = new PdfDict();
-          c.value.dict.keys().forEach(function (k) { if (k !== "Length") { d.set(k, c.value.dict.get(k)); } });
-          d.set("Length", c.value.data.length);
-          w.text(n + " " + c.gen + " obj\n" + pdfValue(d) + "\nstream\n");
-          w.bytes(c.value.data);
-          w.text("\nendstream\nendobj\n");
-        } else {
-          w.text(n + " " + c.gen + " obj\n" + pdfValue(c.value) + "\nendobj\n");
-        }
-      });
-
-      var trailer = new PdfDict();
-      ["Root", "Info", "ID"].forEach(function (k) { if (doc.trailer.has(k)) { trailer.set(k, doc.trailer.get(k)); } });
-      if (extraTrailer) { extraTrailer.keys().forEach(function (k) { trailer.set(k, extraTrailer.get(k)); }); }
-      trailer.set("Prev", doc.startxref);
-
-      if (doc.lastXrefIsStream) {
-        var xrefNum = size;
-        size += 1;
-        var start = w.length;
-        offsets.set(xrefNum, { offset: start, gen: 0 });
-        var all = nums.concat([xrefNum]);
-        var index = [];
-        var rows = [];
-        all.forEach(function (n) {
-          if (index.length && index[index.length - 2] + index[index.length - 1] === n) { index[index.length - 1] += 1; }
-          else { index.push(n, 1); }
-          var e = offsets.get(n);
-          rows.push(1, (e.offset >>> 24) & 255, (e.offset >>> 16) & 255, (e.offset >>> 8) & 255, e.offset & 255, (e.gen >> 8) & 255, e.gen & 255);
-        });
-        if (start > 0xFFFFFFFF) { throw pdfError("this PDF is too large to be added to"); }
-        trailer.set("Type", new PdfName("XRef"));
-        trailer.set("Size", size);
-        trailer.set("W", [1, 4, 2]);
-        trailer.set("Index", index);
-        trailer.set("Length", rows.length);
-        w.text(xrefNum + " 0 obj\n" + pdfValue(trailer) + "\nstream\n");
-        w.bytes(new Uint8Array(rows));
-        w.text("\nendstream\nendobj\nstartxref\n" + start + "\n%%EOF\n");
-      } else {
-        var at = w.length;
-        var lines = ["xref\n"];
-        for (var i = 0; i < nums.length; ) {
-          var j = i;
-          while (j + 1 < nums.length && nums[j + 1] === nums[j] + 1) { j++; }
-          lines.push(nums[i] + " " + (j - i + 1) + "\n");
-          for (var k = i; k <= j; k++) {
-            var e2 = offsets.get(nums[k]);
-            lines.push(("0000000000" + e2.offset).slice(-10) + " " + ("00000" + e2.gen).slice(-5) + " n \n");
-          }
-          i = j + 1;
-        }
-        trailer.set("Size", size);
-        w.text(lines.join("") + "trailer\n" + pdfValue(trailer) + "\nstartxref\n" + at + "\n%%EOF\n");
-      }
-      return w.parts;
-    }
-    /* ---- END: changing a PDF by adding to its end ---- */
-
-    /* ---- START: how wide a line of Helvetica is ----
-       The page numbers are written in Helvetica, one of the fonts every PDF
-       reader has built in, so nothing has to be embedded. To centre a number
-       or put it against the right edge, its width is needed: these are
-       Helvetica's published widths, in thousandths of the font size, for the
-       only characters the numbers use. */
-    var HELVETICA_WIDTHS = {
-      "0": 556, "1": 556, "2": 556, "3": 556, "4": 556, "5": 556, "6": 556, "7": 556, "8": 556, "9": 556,
-      " ": 278, "/": 278, "P": 667, "a": 556, "g": 556, "e": 556, "o": 556, "f": 278, "-": 333
+    /* ---- START: reading and writing the text of a PDF string ----
+       A document's title or author is a "text string": either UTF-16 with a
+       byte-order mark (FE FF) in front, UTF-8 with its mark (PDF 2.0), or
+       PDFDocEncoding, which is Latin-1 with typographic characters in the
+       0x80-0xA0 range. Writing back, plain ASCII stays ASCII and anything
+       else becomes UTF-16, which every reader understands. */
+    var PDFDOC_HIGH = {
+      0x80: 0x2022, 0x81: 0x2020, 0x82: 0x2021, 0x83: 0x2026, 0x84: 0x2014, 0x85: 0x2013, 0x86: 0x0192, 0x87: 0x2044,
+      0x88: 0x2039, 0x89: 0x203A, 0x8A: 0x2212, 0x8B: 0x2030, 0x8C: 0x201E, 0x8D: 0x201C, 0x8E: 0x201D, 0x8F: 0x2018,
+      0x90: 0x2019, 0x91: 0x201A, 0x92: 0x2122, 0x93: 0xFB01, 0x94: 0xFB02, 0x95: 0x0141, 0x96: 0x0152, 0x97: 0x0160,
+      0x98: 0x0178, 0x99: 0x017D, 0x9A: 0x0131, 0x9B: 0x0142, 0x9C: 0x0153, 0x9D: 0x0161, 0x9E: 0x017E, 0xA0: 0x20AC
     };
 
-    function helveticaWidth(text, size) {
-      var units = 0;
-      for (var i = 0; i < text.length; i++) { units += HELVETICA_WIDTHS[text.charAt(i)] || 556; }
-      return units / 1000 * size;
-    }
-    /* ---- END: how wide a line of Helvetica is ---- */
-
-    /* ---- START: drawing a number where a reader will see it ----
-       A page's visible area is its crop box (or, without one, its paper
-       size), shown turned by /Rotate. The number is placed in that visible,
-       upright page and then mapped back onto the page as it is stored, so it
-       sits at the bottom of what the reader shows and reads the right way up,
-       however the page is turned. Returns the drawing instructions. */
-    function numberDrawing(box, rotate, text, options) {
-      var x0 = Math.min(box[0], box[2]), y0 = Math.min(box[1], box[3]);
-      var x1 = Math.max(box[0], box[2]), y1 = Math.max(box[1], box[3]);
-      var w = x1 - x0, h = y1 - y0;
-      var turned = rotate === 90 || rotate === 270;
-      var vw = turned ? h : w, vh = turned ? w : h;
-      var size = options.size, margin = options.margin;
-      var tw = helveticaWidth(text, size);
-      var u = options.position.indexOf("left") > -1 ? margin
-            : options.position.indexOf("right") > -1 ? vw - margin - tw
-            : (vw - tw) / 2;
-      /* a baseline the margin above the bottom edge, or the margin plus the
-         letters' height below the top edge (capitals are about 0.72 of the size) */
-      var v = options.position.indexOf("top") === 0 ? vh - margin - 0.72 * size : margin;
-      var m = rotate === 90 ? [0, 1, -1, 0, x1, y0]
-            : rotate === 180 ? [-1, 0, 0, -1, x1, y1]
-            : rotate === 270 ? [0, -1, 1, 0, x0, y1]
-            : [1, 0, 0, 1, x0, y0];
-      return "q " + m.map(pdfNum).join(" ") + " cm BT " + pdfName(options.font) + " " + pdfNum(size) + " Tf 0 g " + pdfNum(u) + " " + pdfNum(v) +
-             " Td (" + text + ") Tj ET Q\n";
+    function decodeTextString(bytes) {
+      var i, out = "";
+      if (bytes.length >= 2 && bytes[0] === 0xFE && bytes[1] === 0xFF) {
+        for (i = 2; i + 1 < bytes.length; i += 2) { out += String.fromCharCode((bytes[i] << 8) | bytes[i + 1]); }
+        return out;
+      }
+      if (bytes.length >= 3 && bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF) {
+        try { return new TextDecoder("utf-8", { fatal: false }).decode(bytes.subarray(3)); } catch (e) { return ""; }
+      }
+      for (i = 0; i < bytes.length; i++) {
+        var c = bytes[i];
+        out += String.fromCharCode(PDFDOC_HIGH[c] !== undefined ? PDFDOC_HIGH[c] : c);
+      }
+      return out;
     }
 
-    function numberText(format, n, total) {
-      if (format === "page") { return "Page " + n; }
-      if (format === "pageof") { return "Page " + n + " of " + total; }
-      if (format === "slash") { return n + " / " + total; }
-      return String(n);
+    function encodeTextString(text) {
+      var i, plain = true;
+      for (i = 0; i < text.length; i++) {
+        var c = text.charCodeAt(i);
+        if (c < 0x20 || c > 0x7E) { plain = false; break; }
+      }
+      if (plain) { return new PdfString(pdfBytes(text), false); }
+      var out = new Uint8Array(2 + text.length * 2);
+      out[0] = 0xFE;
+      out[1] = 0xFF;
+      for (i = 0; i < text.length; i++) {
+        out[2 + i * 2] = text.charCodeAt(i) >> 8;
+        out[3 + i * 2] = text.charCodeAt(i) & 0xFF;
+      }
+      return new PdfString(out, true);
     }
-    /* ---- END: drawing a number where a reader will see it ---- */
+    /* ---- END: reading and writing the text of a PDF string ---- */
+
+    /* ---- START: is the document digitally signed? ----
+       A signature covers the file's exact bytes, so writing the file again
+       leaves it no longer valid. Looked for where PDF readers look: the
+       form's SigFlags (bit 1, "signatures exist"), and any signature field
+       that holds a signature. */
+    function isSigned(doc) {
+      try {
+        var catalog = doc.resolve(doc.trailer.get("Root"));
+        var form = catalog instanceof PdfDict ? doc.resolve(catalog.get("AcroForm")) : null;
+        if (!(form instanceof PdfDict)) { return false; }
+        var flags = doc.resolve(form.get("SigFlags"));
+        if (typeof flags === "number" && (flags & 1)) { return true; }
+        var fields = doc.resolve(form.get("Fields"));
+        var stack = Array.isArray(fields) ? fields.slice() : [];
+        var seen = new Set();
+        while (stack.length && seen.size < 100000) {
+          var ref = stack.pop();
+          if (ref instanceof PdfRef) {
+            if (seen.has(ref.num)) { continue; }
+            seen.add(ref.num);
+          }
+          var field = doc.resolve(ref);
+          if (!(field instanceof PdfDict)) { continue; }
+          var type = doc.resolve(field.get("FT"));
+          if (type instanceof PdfName && type.name === "Sig" && field.has("V") && doc.resolve(field.get("V")) !== PDF_NULL) { return true; }
+          var kids = doc.resolve(field.get("Kids"));
+          if (Array.isArray(kids)) { kids.forEach(function (kid) { stack.push(kid); }); }
+        }
+      } catch (e) {
+        return false;
+      }
+      return false;
+    }
+    /* ---- END: is the document digitally signed? ---- */
+
+    /* ---- START: writing a whole document again, without its old leftovers ----
+       Everything the document still uses is gathered, from its catalog
+       down: pages, bookmarks, forms, links, attachments, each object once,
+       numbered again from 1. What nothing points at any more is left
+       behind: earlier versions of edited objects that an incremental save
+       kept, the old details, and (when asked) every XMP copy of them.
+       Returns the objects in the order they were reached, each as
+       { num, value, data }: data is a stream's bytes, and a stream's value
+       is its dictionary without /Length, which is set when it is written.
+       With keepInfo the old /Info comes along; otherwise it is left. */
+    function gatherDocument(doc, dropXmp, keepInfo) {
+      var numbers = new Map();
+      var queue = [];
+      function refTo(num) {
+        if (!numbers.has(num)) {
+          numbers.set(num, queue.length + 1);
+          queue.push(num);
+        }
+        return new PdfRef(numbers.get(num), 0);
+      }
+      function copy(v, depth) {
+        if (depth > 200) { return PDF_NULL; }
+        if (v instanceof PdfRef) {
+          var target;
+          try { target = doc.getObject(v.num); } catch (e) { target = PDF_NULL; }
+          return target === PDF_NULL ? PDF_NULL : refTo(v.num);
+        }
+        if (Array.isArray(v)) { return v.map(function (x) { return copy(x, depth + 1); }); }
+        if (v instanceof PdfDict) {
+          var d = new PdfDict();
+          v.keys().forEach(function (k) {
+            if (dropXmp && k === "Metadata") { return; }
+            d.set(k, copy(v.get(k), depth + 1));
+          });
+          return d;
+        }
+        return v;
+      }
+      var rootRef = doc.trailer.get("Root");
+      if (!(rootRef instanceof PdfRef)) { throw pdfError("this PDF has no catalog to copy"); }
+      var root = refTo(rootRef.num).num;
+      var infoRef = doc.trailer.get("Info");
+      var info = keepInfo && infoRef instanceof PdfRef && doc.resolve(infoRef) instanceof PdfDict ? refTo(infoRef.num).num : 0;
+      var objects = [];
+      /* walked by position, not shift(): a document can have a hundred
+         thousand objects, and shift() moves every one of them each time */
+      for (var q = 0; q < queue.length; q++) {
+        var obj = doc.getObject(queue[q]);
+        if (obj instanceof PdfStream) {
+          var d = new PdfDict();
+          obj.dict.keys().forEach(function (k) {
+            if (k === "Length" || (dropXmp && k === "Metadata")) { return; }
+            d.set(k, copy(obj.dict.get(k), 0));
+          });
+          objects.push({ num: q + 1, value: d, data: obj.data });
+        } else {
+          objects.push({ num: q + 1, value: copy(obj, 0), data: null });
+        }
+      }
+      return { objects: objects, root: root, info: info };
+    }
+
+    /* one gathered object, written; a stream's /Length is its bytes as written */
+    function writeGathered(w, o) {
+      if (o.data) {
+        o.value.set("Length", o.data.length);
+        w.object(o.num, pdfValue(o.value), o.data);
+      } else {
+        w.object(o.num, pdfValue(o.value));
+      }
+    }
+
+    /* the whole document again, with new details in a fresh /Info */
+    function rewriteDocument(doc, info, dropXmp) {
+      var g = gatherDocument(doc, dropXmp, false);
+      var w = new PdfWriter();
+      w.header("1.7");
+      g.objects.forEach(function () { w.reserve(); });
+      var infoNum = w.reserve();
+      g.objects.forEach(function (o) { writeGathered(w, o); });
+      w.object(infoNum, pdfValue(info));
+      return w.finish(g.root, infoNum);
+    }
+    /* ---- END: writing a whole document again, without its old leftovers ---- */
+
+    /* ---- START: the small pieces of cryptography ----
+       All of it is the browser's own Web Crypto: SHA-256/384/512 and AES.
+       Nothing here is home-made except the order the pieces are used in,
+       which is the one PDF 2.0 sets out. */
+    function randomBytes(n) {
+      var out = new Uint8Array(n);
+      crypto.getRandomValues(out);
+      return out;
+    }
+
+    function joinBytes(list) {
+      var size = list.reduce(function (sum, b) { return sum + b.length; }, 0);
+      var out = new Uint8Array(size), at = 0;
+      list.forEach(function (b) { out.set(b, at); at += b.length; });
+      return out;
+    }
+
+    function sha2(bits, data) {
+      return crypto.subtle.digest("SHA-" + bits, data).then(function (b) { return new Uint8Array(b); });
+    }
+
+    function aesKey(raw) {
+      return crypto.subtle.importKey("raw", raw, { name: "AES-CBC" }, false, ["encrypt"]);
+    }
+
+    /* AES-CBC over data that is a whole number of 16-byte blocks, with no
+       padding. Web Crypto always pads, adding one block at the end; in CBC
+       that block cannot change the ones before it, so it is cut off. */
+    function aesNoPadding(raw, iv, data) {
+      return aesKey(raw).then(function (key) {
+        return crypto.subtle.encrypt({ name: "AES-CBC", iv: iv }, key, data);
+      }).then(function (b) { return new Uint8Array(b).subarray(0, data.length); });
+    }
+    /* ---- END: the small pieces of cryptography ---- */
+
+    /* ---- START: turning a password into a key (PDF 2.0, algorithm 2.B) ----
+       A deliberately slow hash: SHA-256 of password and salt, then at least
+       64 rounds, each encrypting 64 copies of (password, last hash, extra)
+       with AES-128 and hashing the result with SHA-256, -384 or -512, picked
+       by the result itself. It ends once 64 rounds are done and the last
+       byte of the last encryption is at most the round count minus 32.
+       extra is the 48-byte /U for the owner's keys, empty for the user's. */
+    function hardenPassword(password, salt, extra) {
+      return sha2(256, joinBytes([password, salt, extra])).then(function (first) {
+        var round = 0;
+        function next(k) {
+          var one = joinBytes([password, k, extra]);
+          var many = new Uint8Array(one.length * 64);
+          for (var i = 0; i < 64; i++) { many.set(one, i * one.length); }
+          return aesNoPadding(k.subarray(0, 16), k.subarray(16, 32), many).then(function (e) {
+            /* the first 16 bytes as one big number, modulo 3; 256 leaves 1
+               when divided by 3, so that is the sum of the bytes modulo 3 */
+            var sum = 0;
+            for (var j = 0; j < 16; j++) { sum += e[j]; }
+            return sha2([256, 384, 512][sum % 3], e).then(function (k2) {
+              round += 1;
+              if (round >= 64 && e[e.length - 1] <= round - 32) { return k2.subarray(0, 32); }
+              return next(k2);
+            });
+          });
+        }
+        return next(first);
+      });
+    }
+    /* ---- END: turning a password into a key (PDF 2.0, algorithm 2.B) ---- */
+
+    /* ---- START: the password's bytes ----
+       Printable ASCII only (space to tilde), at most 127 characters. PDF 2.0
+       turns other characters into bytes by a set of rules (SASLprep) that
+       not every PDF reader follows the same way, and a password the reader
+       turns into different bytes is a file nobody can open. Returns null
+       when the password cannot be used. */
+    function passwordBytes(text) {
+      if (text.length === 0 || text.length > 127) { return null; }
+      for (var i = 0; i < text.length; i++) {
+        var c = text.charCodeAt(i);
+        if (c < 0x20 || c > 0x7E) { return null; }
+      }
+      return pdfBytes(text);
+    }
+    /* ---- END: the password's bytes ---- */
+
+    /* ---- START: the keys and checks a protected PDF carries ----
+       A random 32-byte key encrypts the document. The file keeps that key
+       twice, each copy locked with the password (/UE for the person
+       opening it, /OE for its owner; here both are the same password), and
+       two checks (/U, /O) that let a reader tell a right password from a
+       wrong one without trying to decrypt anything. /Perms holds the
+       permissions, encrypted with the key so they cannot be altered
+       unseen. Every permission is given: whoever has the password may
+       print, copy and change it, as with the original. */
+    var ALL_PERMISSIONS = -4;   /* every bit set except the two that must be 0 */
+
+    function protectionKeys(password) {
+      var fileKey = randomBytes(32);
+      var userCheck = randomBytes(8), userKeySalt = randomBytes(8);
+      var ownerCheck = randomBytes(8), ownerKeySalt = randomBytes(8);
+      var zeroIv = new Uint8Array(16);
+      var none = new Uint8Array(0);
+      var out = { fileKey: fileKey, P: ALL_PERMISSIONS };
+      return hardenPassword(password, userCheck, none).then(function (h) {
+        out.U = joinBytes([h, userCheck, userKeySalt]);
+        return hardenPassword(password, userKeySalt, none);
+      }).then(function (h) {
+        return aesNoPadding(h, zeroIv, fileKey);
+      }).then(function (ue) {
+        out.UE = ue;
+        return hardenPassword(password, ownerCheck, out.U);
+      }).then(function (h) {
+        out.O = joinBytes([h, ownerCheck, ownerKeySalt]);
+        return hardenPassword(password, ownerKeySalt, out.U);
+      }).then(function (h) {
+        return aesNoPadding(h, zeroIv, fileKey);
+      }).then(function (oe) {
+        out.OE = oe;
+        /* permissions, low byte first, four bytes of 0xFF, "T" (the XMP is
+           encrypted too), "adb", four random bytes; one AES block with a
+           zero IV is the same as the ECB the standard asks for */
+        var perms = joinBytes([new Uint8Array([out.P & 0xFF, (out.P >> 8) & 0xFF, (out.P >> 16) & 0xFF, (out.P >>> 24) & 0xFF,
+                                               0xFF, 0xFF, 0xFF, 0xFF, 0x54, 0x61, 0x64, 0x62]), randomBytes(4)]);
+        return aesNoPadding(fileKey, zeroIv, perms);
+      }).then(function (p) {
+        out.Perms = p;
+        return out;
+      });
+    }
+
+    function encryptDictionary(keys) {
+      var filter = new PdfDict();
+      filter.set("Type", new PdfName("CryptFilter"));
+      filter.set("CFM", new PdfName("AESV3"));
+      filter.set("AuthEvent", new PdfName("DocOpen"));
+      filter.set("Length", 32);
+      var filters = new PdfDict();
+      filters.set("StdCF", filter);
+      var d = new PdfDict();
+      d.set("Filter", new PdfName("Standard"));
+      d.set("V", 5);
+      d.set("R", 6);
+      d.set("Length", 256);
+      d.set("CF", filters);
+      d.set("StmF", new PdfName("StdCF"));
+      d.set("StrF", new PdfName("StdCF"));
+      d.set("O", new PdfString(keys.O, true));
+      d.set("U", new PdfString(keys.U, true));
+      d.set("OE", new PdfString(keys.OE, true));
+      d.set("UE", new PdfString(keys.UE, true));
+      d.set("P", keys.P);
+      d.set("Perms", new PdfString(keys.Perms, true));
+      d.set("EncryptMetadata", true);
+      return d;
+    }
+    /* ---- END: the keys and checks a protected PDF carries ---- */
+
+    /* ---- START: protecting a whole document ----
+       The document is gathered from its catalog down, then every string and
+       every stream is encrypted with AES-256, each with its own random
+       16-byte IV in front, and written as soon as it is done, so only one
+       encrypted copy of the document is ever held. The file ends with an
+       /Encrypt dictionary and an /ID. progress(fraction) is told how far it
+       got; when it returns false, the work stops and the promise is
+       rejected with { cancelled: true }. */
+    function protectDocument(doc, password, progress) {
+      var g = gatherDocument(doc, false, true);
+      /* AES-256 came in with PDF 2.0; a 1.7 file says it uses Adobe's
+         extension level 8, which is how readers of both kinds recognise it */
+      var catalog = g.objects[g.root - 1].value;
+      if (catalog instanceof PdfDict) {
+        var ext = catalog.get("Extensions") instanceof PdfDict ? catalog.get("Extensions") : new PdfDict();
+        var adbe = new PdfDict();
+        adbe.set("BaseVersion", new PdfName("1.7"));
+        adbe.set("ExtensionLevel", 8);
+        ext.set("ADBE", adbe);
+        catalog.set("Extensions", ext);
+      }
+      return protectionKeys(password).then(function (keys) {
+        return aesKey(keys.fileKey).then(function (key) {
+          function encrypt(bytes) {
+            var iv = randomBytes(16);
+            return crypto.subtle.encrypt({ name: "AES-CBC", iv: iv }, key, bytes).then(function (b) {
+              return joinBytes([iv, new Uint8Array(b)]);
+            });
+          }
+          function encryptValue(v) {
+            if (v instanceof PdfString) {
+              return encrypt(v.bytes).then(function (b) { return new PdfString(b, true); });
+            }
+            if (Array.isArray(v)) { return Promise.all(v.map(encryptValue)); }
+            if (v instanceof PdfDict) {
+              var names = v.keys();
+              return Promise.all(names.map(function (k) { return encryptValue(v.get(k)); })).then(function (values) {
+                var d = new PdfDict();
+                names.forEach(function (k, i) { d.set(k, values[i]); });
+                return d;
+              });
+            }
+            return Promise.resolve(v);
+          }
+          var w = new PdfWriter();
+          w.header("1.7");
+          g.objects.forEach(function () { w.reserve(); });
+          var encryptNum = w.reserve();
+          var total = g.objects.length, i = 0;
+          function next() {
+            if (i >= total) { return Promise.resolve(); }
+            if (progress && i % 50 === 0 && progress(i / total) === false) { return Promise.reject({ cancelled: true }); }
+            var o = g.objects[i];
+            g.objects[i] = null;   /* what is written is let go */
+            i += 1;
+            return encryptValue(o.value).then(function (value) {
+              o.value = value;
+              return o.data ? encrypt(o.data) : null;
+            }).then(function (data) {
+              if (data) { o.data = data; }
+              writeGathered(w, o);
+              return next();
+            });
+          }
+          return next().then(function () {
+            w.object(encryptNum, pdfValue(encryptDictionary(keys)));
+            var id = pdfValue(new PdfString(randomBytes(16), true));
+            return w.finish(g.root, g.info, "/Encrypt " + encryptNum + " 0 R /ID [" + id + " " + id + "]");
+          });
+        });
+      });
+    }
+    /* ---- END: protecting a whole document ---- */
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
       msg.textContent = text || "";
@@ -1771,7 +2007,7 @@
 
     /* ---- START: reading the chosen PDF, without uploading it ---- */
     function readFile(file) {
-      if (file.size > MAX_INPUT) { return Promise.reject(new Error("over the 500 MB a browser can safely hold")); }
+      if (file.size > MAX_INPUT) { return Promise.reject(new Error("over the 300 MB this page can protect")); }
       return file.arrayBuffer().then(function (buffer) {
         var doc;
         try {
@@ -1782,167 +2018,82 @@
           }
           throw error;
         }
-        if (doc.encrypted) { throw new Error("protected with a password"); }
-        var pages = doc.pages();
-        if (pages.length === 0) { throw new Error("has no pages"); }
-        return { name: file.name || "document.pdf", size: file.size, doc: doc, pages: pages };
+        if (doc.encrypted) { throw new Error("it already has a password"); }
+        var pages = doc.pages().length;
+        if (pages === 0) { throw new Error("has no pages"); }
+        return { name: file.name || "document.pdf", size: file.size, doc: doc, pages: pages, signed: isSigned(doc) };
       });
     }
     /* ---- END: reading the chosen PDF, without uploading it ---- */
 
-    /* ---- START: reading the settings ---- */
-    function readSettings() {
-      var start = String(startIn.value).trim();
-      var size = String(sizeIn.value).trim();
-      if (!/^\d{1,6}$/.test(start)) { return { error: "Type the first number to print: a whole number, 0 or more." }; }
-      if (!/^\d{1,2}$/.test(size) || Number(size) < 6 || Number(size) > 36) { return { error: "Choose a text size from 6 to 36." }; }
-      var count = current.pages.length;
-      var first = skipBox.checked ? 2 : 1;
-      if (first > count) { return { error: "This PDF has only one page, and it is the one being left without a number." }; }
-      return { position: posSel.value, format: fmtSel.value, start: Number(start), size: Number(size), first: first,
-               last: Number(start) + count - first };
+    /* ---- START: checking the password as it is typed ----
+       Returns what to tell the visitor about it, and whether it is ready.
+       The password itself is never shown in a message. */
+    function passwordState() {
+      var a = pw.value, b = pw2.value;
+      if (a === "") { return { text: "Type a password for it.", ready: false }; }
+      if (a.length > 127) { return { text: "Keep the password to 127 characters or fewer.", bad: true }; }
+      if (!passwordBytes(a)) {
+        return { text: "Use only letters, digits and symbols from an English keyboard: some PDF readers cannot open a file whose password has other characters.", bad: true };
+      }
+      if (b === "") { return { text: "Type the password again in the second box, to be sure of it.", ready: false }; }
+      if (a !== b) { return { text: "The two passwords are not the same yet.", bad: true }; }
+      return { text: "Ready to protect." + (a.length < 8 ? " A password this short can be guessed by a computer; 12 characters or more is much safer." : ""),
+               ready: true };
     }
-    /* ---- END: reading the settings ---- */
 
-    /* ---- START: showing what will be printed ---- */
     function refresh() {
-      settings = null;
-      dlBtn.disabled = true;
+      if (working) { dlBtn.disabled = true; return; }
       if (!current) {
-        ["sPages", "sNumbered", "sIn"].forEach(function (id) { document.getElementById(id).textContent = DASH; });
-        document.getElementById("example").textContent = "";
-        if (!busy) { setMessage(problem || "Choose a PDF.", problem ? "bad" : ""); }
+        dlBtn.disabled = true;
+        if (!busy) { setMessage(problem || "Choose a PDF, then a password for it.", problem ? "bad" : ""); }
         return;
       }
-      var count = current.pages.length;
-      document.getElementById("sPages").textContent = formatNumber(count, 0);
-      document.getElementById("sIn").textContent = formatBytes(current.size);
-      document.getElementById("sNumbered").textContent = DASH;
-      document.getElementById("example").textContent = "";
-      var s = readSettings();
-      if (s.error) { setMessage(s.error, "bad"); return; }
-      settings = s;
-      document.getElementById("sNumbered").textContent = formatNumber(count - s.first + 1, 0);
-      document.getElementById("example").textContent = "Page " + s.first + " will read " + String.fromCharCode(0x201C) +
-        numberText(s.format, s.start, s.last) + String.fromCharCode(0x201D) + ", the last page " + String.fromCharCode(0x201C) +
-        numberText(s.format, s.last, s.last) + String.fromCharCode(0x201D) + ".";
-      dlBtn.disabled = busy;
-      var note = current.doc.repaired ? " This file's index is damaged, so it will be rebuilt: its pages are kept, but bookmarks and forms are not."
-        : " Everything else in the file stays as it is.";
-      setMessage(current.name + ": " + formatNumber(count, 0) + (count === 1 ? " page." : " pages.") + note, current.doc.repaired ? "bad" : "ok");
+      var state = passwordState();
+      dlBtn.disabled = !state.ready;
+      setMessage(current.name + ": " + current.pages + (current.pages === 1 ? " page. " : " pages. ") + state.text +
+                 (current.doc.repaired ? " Its index is damaged; the protected copy is rebuilt from what could be read." : "") +
+                 (current.signed ? " It is digitally signed: protecting writes the file again, so the signature will no longer be valid." : ""),
+                 state.bad || current.doc.repaired || current.signed ? "bad" : (state.ready ? "ok" : ""));
     }
-    /* ---- END: showing what will be printed ---- */
+    /* ---- END: checking the password as it is typed ---- */
 
-    /* ---- START: adding the numbers ----
-       Each page's drawing is wrapped in q ... Q, so whatever state it leaves
-       (a scale, a colour, a clip) is undone before the number is drawn, and
-       the number is drawn in a new stream after it. The page gets its own
-       copy of its resources with Helvetica added under a name it does not
-       already use. Then the changed pages are added to the end of the file,
-       or, for a file whose index is damaged, the whole file is rebuilt. */
+    /* ---- START: protecting and saving ----
+       Turning the password into a key is slow on purpose (that is what
+       makes guessing slow), so the visitor is told. A clear, or a new file,
+       while it works stops it; what it had made is dropped. */
     function outputName() {
-      return (current.name.replace(/\.pdf$/i, "") || "document") + " (numbered).pdf";
-    }
-
-    function fontNameFor(fonts) {
-      var name = "F108tb", k = 1;
-      while (fonts instanceof PdfDict && fonts.has(name)) { name = "F108tb" + (k++); }
-      return name;
+      return (current.name.replace(/\.pdf$/i, "") || "document") + " (protected).pdf";
     }
 
     function makeFile() {
-      var s = settings;
-      var doc = current.doc;
-      var rebuild = doc.repaired || !current.pages.every(function (p) { return p.ref; });
-      var nextNum = Math.max(typeof doc.trailer.get("Size") === "number" ? doc.trailer.get("Size") : 0,
-                             Math.max.apply(null, Array.from(doc.entries.keys()).concat([0])) + 1);
-      var changes = new Map();
-      var newPages = [];
-      var font = new PdfDict();
-      font.set("Type", new PdfName("Font"));
-      font.set("Subtype", new PdfName("Type1"));
-      font.set("BaseFont", new PdfName("Helvetica"));
-      font.set("Encoding", new PdfName("WinAnsiEncoding"));
-      var fontNum = nextNum++;
-      changes.set(fontNum, { gen: 0, value: font });
-      var openNum = nextNum++;
-      changes.set(openNum, { gen: 0, value: new PdfStream(new PdfDict(), pdfBytes("q\n")) });
-
-      current.pages.forEach(function (page, i) {
-        var pageNo = i + 1;
-        var d = new PdfDict();
-        page.dict.keys().forEach(function (k) { d.set(k, page.dict.get(k)); });
-        if (pageNo < s.first) { newPages.push({ page: page, dict: null }); return; }
-        var n = s.start + pageNo - s.first;
-        var box = doc.resolve(page.inherited.CropBox);
-        if (!Array.isArray(box) || box.length !== 4) { box = doc.resolve(page.inherited.MediaBox); }
-        if (!Array.isArray(box) || box.length !== 4) { box = [0, 0, 612, 792]; }
-        box = box.map(function (v) { v = doc.resolve(v); return typeof v === "number" ? v : 0; });
-        var rot = doc.resolve(page.inherited.Rotate);
-        rot = typeof rot === "number" ? ((Math.round(rot / 90) * 90) % 360 + 360) % 360 : 0;
-
-        var res = doc.resolve(page.inherited.Resources);
-        var newRes = new PdfDict();
-        if (res instanceof PdfDict) { res.keys().forEach(function (k) { newRes.set(k, res.get(k)); }); }
-        var fonts = doc.resolve(newRes.get("Font"));
-        var newFonts = new PdfDict();
-        if (fonts instanceof PdfDict) { fonts.keys().forEach(function (k) { newFonts.set(k, fonts.get(k)); }); }
-        var fontName = fontNameFor(newFonts);
-        newFonts.set(fontName, new PdfRef(fontNum, 0));
-        newRes.set("Font", newFonts);
-        d.set("Resources", newRes);
-
-        var drawingNum = nextNum++;
-        var drawing = "Q\n" + numberDrawing(box, rot, numberText(s.format, n, s.last),
-                                            { position: s.position, size: s.size, margin: MARGIN, font: fontName });
-        changes.set(drawingNum, { gen: 0, value: new PdfStream(new PdfDict(), pdfBytes(drawing)) });
-        /* the page's drawing: one stream, a list of streams, or none at all */
-        var old = page.dict.get("Contents");
-        var resolved = doc.resolve(old);
-        var list = Array.isArray(resolved) ? resolved.slice() : (resolved === undefined || resolved === PDF_NULL ? [] : [old]);
-        d.set("Contents", [new PdfRef(openNum, 0)].concat(list, [new PdfRef(drawingNum, 0)]));
-        newPages.push({ page: page, dict: d });
-        if (!rebuild) { changes.set(page.ref.num, { gen: page.ref.gen, value: d }); }
+      var gen = generation;
+      var entry = current;
+      var password = passwordBytes(pw.value);
+      working = true;
+      refresh();
+      setMessage("Locking " + entry.name + ELLIPSIS + " The password is being turned into a key, which takes a moment on purpose.");
+      Promise.resolve().then(function () {
+        return protectDocument(entry.doc, password, function (fraction) {
+          if (gen !== generation) { return false; }
+          setMessage("Encrypting " + entry.name + ELLIPSIS + " " + Math.floor(fraction * 100) + "%");
+          return true;
+        });
+      }).then(function (parts) {
+        if (gen !== generation) { return; }
+        working = false;
+        refresh();
+        var size = parts.reduce(function (sum, part) { return sum + part.length; }, 0);
+        downloadBlob(new Blob(parts, { type: "application/pdf" }), outputName());
+        setMessage("Done: " + outputName() + ", " + formatBytes(size) + ", locked with AES-256. Keep the password safe: without it nobody can open the file, not even this page. Nothing has left your device.", "ok");
+      }, function () {
+        if (gen !== generation) { return; }
+        working = false;
+        refresh();
+        setMessage("The PDF could not be protected. It may be damaged in a way this page cannot work around.", "bad");
       });
-
-      var parts;
-      try {
-        if (!rebuild) {
-          parts = incrementalUpdate(doc, changes);
-        } else {
-          /* a damaged file: the changed pages are copied as new pages of a fresh file,
-             with the new objects living in a small document of their own */
-          parts = rebuildWithNumbers(doc, newPages, changes);
-        }
-      } catch (error) {
-        setMessage("The numbered PDF could not be made. The file may be damaged in a way this page cannot work around.", "bad");
-        return;
-      }
-      var total = parts.reduce(function (sum, part) { return sum + part.length; }, 0);
-      downloadBlob(new Blob(parts, { type: "application/pdf" }), outputName());
-      setMessage("Done: " + formatNumber(current.pages.length - s.first + 1, 0) + " pages numbered, " + formatBytes(total) +
-                 ". Nothing has left your device.", "ok");
     }
-
-    /* For a damaged file the new objects (the font, the drawings) exist only
-       in memory: they are put in front of the reader as extra objects so the
-       copier can follow references to them like any others. */
-    function rebuildWithNumbers(doc, newPages, changes) {
-      var originalGet = doc.getObject;
-      doc.getObject = function (num) {
-        if (changes.has(num)) { return changes.get(num).value; }
-        return originalGet.call(doc, num);
-      };
-      try {
-        return buildFromPages(newPages.map(function (p) {
-          return { doc: doc, page: p.dict ? { ref: p.page.ref, dict: p.dict, inherited: { Resources: p.dict.get("Resources"),
-            MediaBox: p.page.inherited.MediaBox, CropBox: p.page.inherited.CropBox, Rotate: p.page.inherited.Rotate } } : p.page };
-        }), "108toolbox.in Add PDF Page Numbers");
-      } finally {
-        doc.getObject = originalGet;
-      }
-    }
-    /* ---- END: adding the numbers ---- */
+    /* ---- END: protecting and saving ---- */
 
     /* ---- START: taking the chosen file ---- */
     function takeFile(file) {
@@ -1950,9 +2101,10 @@
       var gen = ++generation;
       current = null;
       busy = true;
+      working = false;
       problem = "";
       refresh();
-      setMessage("Reading " + (file.name || "the PDF") + String.fromCharCode(0x2026));
+      setMessage("Reading " + (file.name || "the PDF") + ELLIPSIS);
       readFile(file).then(function (entry) {
         if (gen !== generation) { return; }
         busy = false;
@@ -1961,7 +2113,7 @@
       }, function (error) {
         if (gen !== generation) { return; }
         busy = false;
-        var why = error && /^(not a PDF|too damaged to read|protected with a password|has no pages|over the 500 MB)/.test(error.message)
+        var why = error && /^(not a PDF|too damaged to read|it already has a password|has no pages|over the 300 MB)/.test(error.message)
           ? error.message : "could not be read";
         problem = "Could not use " + String(file.name || "that file") + ": " + why + ".";
         refresh();
@@ -1981,19 +2133,28 @@
       drop.addEventListener(type, function (e) { e.preventDefault(); drop.classList.remove("is-over"); });
     });
     drop.addEventListener("drop", function (e) { takeFile(e.dataTransfer && e.dataTransfer.files[0]); });
-    [posSel, fmtSel, skipBox].forEach(function (el) { el.addEventListener("change", refresh); });
-    [startIn, sizeIn].forEach(function (el) { el.addEventListener("input", refresh); });
+    pw.addEventListener("input", refresh);
+    pw2.addEventListener("input", refresh);
+
+    showPw.addEventListener("change", function () {
+      pw.type = pw2.type = showPw.checked ? "text" : "password";
+    });
 
     dlBtn.addEventListener("click", function () {
-      if (current && settings && !busy) { makeFile(); }
+      if (current && !busy && !working && passwordState().ready) { makeFile(); }
     });
 
     document.getElementById("resetBtn").addEventListener("click", function () {
       generation += 1;
       current = null;
       busy = false;
+      working = false;
       problem = "";
       fileInput.value = "";
+      pw.value = "";
+      pw2.value = "";
+      showPw.checked = false;
+      pw.type = pw2.type = "password";
       refresh();
     });
     /* ---- END: wiring ---- */

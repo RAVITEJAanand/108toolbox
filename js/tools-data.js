@@ -576,6 +576,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "protect-pdf",
+    name: "Protect PDF",
+    desc: "Lock a PDF with a password, encrypted with AES-256 in your browser. Nothing is uploaded.",
+    category: "PDF",
+    icon: "\u{1F510}",
+    keywords: ["protect pdf", "password protect pdf", "encrypt pdf", "lock pdf", "add password to pdf", "pdf password", "secure pdf", "aes 256 pdf", "pdf encryption", "lock pdf file"],
+    popular: false
+  },
+  {
     slug: "qr-code-generator",
     name: "QR Code Generator",
     desc: "Links, text and Wi-Fi passwords as QR codes, with error correction, colours and size. Save PNG or SVG.",

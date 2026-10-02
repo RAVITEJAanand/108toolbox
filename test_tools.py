@@ -9377,6 +9377,475 @@ T["pdf-metadata-editor"] = r"""
   });
 """
 
+T["protect-pdf"] = r"""
+  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+
+  /* every Web Crypto call is counted while it runs: when none is running
+     at a timer tick, the page has finished (or stopped) its work */
+  var inflight = 0;
+  ["encrypt", "decrypt", "digest", "importKey"].forEach(function (name) {
+    var real = crypto.subtle[name].bind(crypto.subtle);
+    crypto.subtle[name] = function () {
+      inflight += 1;
+      return real.apply(null, arguments).finally(function () { inflight -= 1; });
+    };
+  });
+
+  /* ================= helpers ================= */
+  function feed(file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById("file");
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  function wait(label, test, budget) { return new Promise(function (resolve) { waitFor(label, test, resolve, budget); }); }
+  function pause(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+  function read() { return !/^Reading/.test(txt("msg")); }
+  function bytesOfText(s) { var u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { u[i] = s.charCodeAt(i) & 255; } return u; }
+  function fromB64(s) { return bytesOfText(atob(s)); }
+  function latin1(bytes) {
+    var parts = [];
+    for (var i = 0; i < bytes.length; i += 32768) { parts.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 32768))); }
+    return parts.join("");
+  }
+  function hexOf(bytes) { var o = ""; for (var i = 0; i < bytes.length; i++) { o += (bytes[i] < 16 ? "0" : "") + bytes[i].toString(16).toUpperCase(); } return o; }
+  function fromHex(h) { var u = new Uint8Array(h.length / 2); for (var i = 0; i < u.length; i++) { u[i] = parseInt(h.substr(i * 2, 2), 16); } return u; }
+  function utf16hex(s) { var o = "FEFF"; for (var i = 0; i < s.length; i++) { o += ("0000" + s.charCodeAt(i).toString(16).toUpperCase()).slice(-4); } return o; }
+  function join(list) {
+    var n = 0, at = 0;
+    list.forEach(function (b) { n += b.length; });
+    var out = new Uint8Array(n);
+    list.forEach(function (b) { out.set(b, at); at += b.length; });
+    return out;
+  }
+  function same(a, b) { if (a.length !== b.length) { return false; } for (var i = 0; i < a.length; i++) { if (a[i] !== b[i]) { return false; } } return true; }
+  function makePdf(bodies, trailerExtra) {
+    var out = "%PDF-1.4\n", offsets = [];
+    bodies.forEach(function (b, i) {
+      offsets.push(out.length);
+      out += (i + 1) + " 0 obj\n" + (typeof b === "string" ? b : b.dict.replace("LEN", b.data.length) + "\nstream\n" + b.data + "\nendstream") + "\nendobj\n";
+    });
+    var x = out.length;
+    out += "xref\n0 " + (bodies.length + 1) + "\n0000000000 65535 f \n";
+    offsets.forEach(function (o) { out += ("0000000000" + o).slice(-10) + " 00000 n \n"; });
+    out += "trailer\n<<\/Size " + (bodies.length + 1) + " /Root 1 0 R" + (trailerExtra || "") + ">>\nstartxref\n" + x + "\n%%EOF\n";
+    return out;
+  }
+
+  /* ================= the files ================= */
+  var TELUGU = String.fromCharCode(0x0C24, 0x0C46, 0x0C32, 0x0C41, 0x0C17, 0x0C41);
+  var XMP = "<x:xmpmeta xmlns:x='adobe:ns:meta/'><dc:creator>Asha Rao<\/dc:creator><\/x:xmpmeta>";
+  var DRAWING = "BT /F1 12 Tf 10 10 Td (Secret words) Tj ET";
+  var DOC = bytesOfText(makePdf([
+    "<<\/Type /Catalog /Pages 2 0 R /Outlines 6 0 R /Metadata 5 0 R>>",
+    "<<\/Type /Pages /Kids [3 0 R] /Count 1 /MediaBox [0 0 200 100]>>",
+    "<<\/Type /Page /Parent 2 0 R /Contents 7 0 R /Annots [<<\/Type /Annot /Subtype /Link /Rect [0 0 50 20] /A <<\/S /URI /URI (https://example.org/secret-link)>>>>]>>",
+    "<<\/Title <" + utf16hex("Report " + TELUGU) + "> /Author (Asha Rao) /Producer (Maker PDF 1.0)>>",
+    { dict: "<<\/Type /Metadata /Subtype /XML /Length LEN>>", data: XMP },
+    "<<\/Type /Outlines /Count 0>>",
+    { dict: "<<\/Length LEN>>", data: DRAWING }
+  ], " /Info 4 0 R"));
+  var DOC_ENC = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/Filter /Standard /V 2 /R 3>>"], " /Encrypt 4 0 R"));
+  var DOC_EMPTY = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [] /Count 0>>"]));
+  var DOC_SIGNED = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R /AcroForm <<\/Fields [] /SigFlags 3>>>>",
+                         "<<\/Type /Pages /Kids [3 0 R 4 0 R] /Count 2>>", "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>"]));
+  var F = {
+    doc: new File([DOC], "report.pdf", { type: "application/pdf" }),
+    damaged: new File([fromB64(TINY.bad_offsets)], "scan.pdf", { type: "application/pdf" }),
+    enc: new File([DOC_ENC], "locked.pdf", { type: "application/pdf" }),
+    empty: new File([DOC_EMPTY], "empty.pdf", { type: "application/pdf" }),
+    signed: new File([DOC_SIGNED], "signed.pdf", { type: "application/pdf" }),
+    notPdf: new File([bytesOfText("not a pdf")], "notes.pdf", { type: "application/pdf" }),
+    hostile: new File([DOC], "<iframe onload=zq>.pdf", { type: "application/pdf" })
+  };
+  var PASSWORD = "correct horse battery staple";
+
+  /* ================= reading the saved file ================= */
+  function readOut(bytes) {
+    var t = latin1(bytes);
+    var sx = /startxref\n(\d+)\n%%EOF\n$/.exec(t);
+    if (!sx) { throw new Error("no startxref at the end"); }
+    var at = Number(sx[1]);
+    var head = /^xref\n0 (\d+)\n/.exec(t.slice(at));
+    if (!head) { throw new Error("startxref does not point at the table"); }
+    var count = Number(head[1]), first = at + head[0].length, objs = {};
+    for (var n = 1; n < count; n++) {
+      var m = /^(\d{10}) 00000 n \n$/.exec(t.substr(first + n * 20, 20));
+      if (!m) { throw new Error("entry " + n + " is malformed"); }
+      var off = Number(m[1]), tag = n + " 0 obj\n";
+      if (t.substr(off, tag.length) !== tag) { throw new Error("object " + n + " is not where the table says"); }
+      var end = t.indexOf("\nendobj\n", off), body = t.slice(off + tag.length, end);
+      var s = body.indexOf("\nstream\n");
+      objs[n] = s < 0 ? { dict: body, data: null } : { dict: body.slice(0, s), data: body.slice(s + 8, body.length - 10) };
+      if (s >= 0 && body.slice(body.length - 10) !== "\nendstream") { throw new Error("object " + n + ": no endstream"); }
+    }
+    var trailer = t.slice(first + count * 20);
+    var enc = Number((/\/Encrypt (\d+) 0 R/.exec(trailer) || [])[1]);
+    return { text: t, objs: objs, trailer: trailer, enc: enc, encDict: enc ? objs[enc].dict : "" };
+  }
+  function hexStrings(text) {
+    var out = [], i = 0;
+    while (i < text.length) {
+      if (text.substr(i, 2) === "<<") { i += 2; continue; }
+      if (text[i] === "<") { var e = text.indexOf(">", i); out.push(text.slice(i + 1, e)); i = e + 1; continue; }
+      i += 1;
+    }
+    return out;
+  }
+  function encValue(r, key) { var m = new RegExp("/" + key + " <([0-9A-F]*)>").exec(r.encDict); return m ? fromHex(m[1]) : null; }
+
+  /* ================= a decryptor of the test's own =================
+     Written apart from the page (the modulo here is done as a real big
+     number, the page adds bytes up), with Web Crypto underneath. */
+  var subtle = crypto.subtle;
+  function sha(name, data) { return subtle.digest(name, data).then(function (b) { return new Uint8Array(b); }); }
+  function aesEncryptRaw(key, iv, data) {
+    return subtle.importKey("raw", key, "AES-CBC", false, ["encrypt"]).then(function (k) {
+      return subtle.encrypt({ name: "AES-CBC", iv: iv }, k, data);
+    }).then(function (b) { return new Uint8Array(b).slice(0, data.length); });
+  }
+  function aesDecrypt(key, iv, data) {
+    return subtle.importKey("raw", key, "AES-CBC", false, ["decrypt"]).then(function (k) {
+      return subtle.decrypt({ name: "AES-CBC", iv: iv }, k, data);
+    }).then(function (b) { return new Uint8Array(b); });
+  }
+  /* AES without padding, one way or the other, for the 32-byte key copies: decrypt
+     a block of 16 bytes of padding added at the end, encrypted after the data */
+  function aesDecryptRaw(key, iv, data) {
+    return aesEncryptRaw(key, data.slice(data.length - 16), new Uint8Array(16).fill(16)).then(function (padBlock) {
+      return aesDecrypt(key, iv, join([data, padBlock]));
+    });
+  }
+  function hash2B(pw, salt, u) {
+    return sha("SHA-256", join([pw, salt, u])).then(function (k0) {
+      var rounds = 0;
+      function round(k) {
+        var one = join([pw, k, u]), many = new Uint8Array(one.length * 64);
+        for (var j = 0; j < 64; j++) { many.set(one, j * one.length); }
+        return aesEncryptRaw(k.slice(0, 16), k.slice(16, 32), many).then(function (e) {
+          var mod = 0;
+          for (var b = 0; b < 16; b++) { mod = (mod * 256 + e[b]) % 3; }
+          return sha(["SHA-256", "SHA-384", "SHA-512"][mod], e).then(function (h) {
+            rounds += 1;
+            if (rounds < 64 || e[e.length - 1] > rounds - 32) { return round(h); }
+            return h.slice(0, 32);
+          });
+        });
+      }
+      return round(k0);
+    });
+  }
+  /* the file key from the password, or null when the password is wrong */
+  function unlock(r, password) {
+    var pw = bytesOfText(password), U = encValue(r, "U"), UE = encValue(r, "UE");
+    return hash2B(pw, U.slice(32, 40), new Uint8Array(0)).then(function (h) {
+      if (!same(h, U.slice(0, 32))) { return null; }
+      return hash2B(pw, U.slice(40, 48), new Uint8Array(0)).then(function (k) { return aesDecryptRaw(k, new Uint8Array(16), UE); });
+    });
+  }
+  function unlockOwner(r, password) {
+    var pw = bytesOfText(password), O = encValue(r, "O"), OE = encValue(r, "OE"), U = encValue(r, "U");
+    return hash2B(pw, O.slice(32, 40), U).then(function (h) {
+      if (!same(h, O.slice(0, 32))) { return null; }
+      return hash2B(pw, O.slice(40, 48), U).then(function (k) { return aesDecryptRaw(k, new Uint8Array(16), OE); });
+    });
+  }
+  function decryptItem(key, bytes) {
+    if (bytes.length < 32 || bytes.length % 16) { return Promise.reject(new Error("not IV + blocks: " + bytes.length)); }
+    return aesDecrypt(key, bytes.slice(0, 16), bytes.slice(16));
+  }
+  /* every string and stream of the file decrypted: { strings: [...], streams: {num: text}, ivs: [...] } */
+  function decryptAll(r, key) {
+    var out = { strings: [], streams: {}, ivs: [] }, jobs = [];
+    Object.keys(r.objs).forEach(function (n) {
+      if (Number(n) === r.enc) { return; }
+      var o = r.objs[n];
+      hexStrings(o.dict).forEach(function (h) {
+        var b = fromHex(h);
+        out.ivs.push(h.slice(0, 32));
+        jobs.push(decryptItem(key, b).then(function (p) { out.strings.push(latin1(p)); }));
+      });
+      if (o.data !== null) {
+        var b = bytesOfText(o.data);
+        out.ivs.push(hexOf(b.slice(0, 16)));
+        jobs.push(decryptItem(key, b).then(function (p) { out.streams[n] = latin1(p); }));
+      }
+    });
+    return Promise.all(jobs).then(function () { return out; });
+  }
+
+  function download(afterClick) {
+    var before = window.__saved.length;
+    click("dlBtn");
+    if (afterClick) { afterClick(); }
+    return wait("the protected file is made", function () { return window.__saved.length === before + 1 || /could not be protected/.test(txt("msg")); }, 60000)
+      .then(function () {
+        var saved = window.__saved[before];
+        if (!saved) { return null; }
+        return saved.blob.arrayBuffer().then(function (b) {
+          var out = null, error = "";
+          try { out = readOut(new Uint8Array(b)); } catch (e) { error = e.message; }
+          return { saved: saved, out: out, error: error };
+        });
+      });
+  }
+  function settled() {
+    var quiet = 0;
+    return wait("the page's cryptography has stopped", function () { quiet = inflight === 0 ? quiet + 1 : 0; return quiet >= 3; }, 60000);
+  }
+
+  var chain = Promise.resolve();
+  function step(fn) { chain = chain.then(fn); }
+  var history = [];
+  new MutationObserver(function () { history.push(txt("msg")); }).observe(document.getElementById("msg"), { childList: true, characterData: true, subtree: true });
+
+  /* ================= the page as it opens ================= */
+  eq("it asks for a PDF and a password", txt("msg"), "Choose a PDF, then a password for it.");
+  ok("with nothing to protect yet", document.getElementById("dlBtn").disabled);
+  eq("the password boxes hide what is typed", document.getElementById("pw").type + "," + document.getElementById("pw2").type, "password,password");
+
+  /* ================= choosing a password ================= */
+  step(function () {
+    feed(F.doc);
+    return wait("the PDF is read", read, 10000);
+  });
+  step(function () {
+    eq("the file is read and a password asked for", txt("msg"), "report.pdf: 1 page. Type a password for it.");
+    set("pw", "abc");
+    eq("then the second box", txt("msg"), "report.pdf: 1 page. Type the password again in the second box, to be sure of it.");
+    ok("not ready yet", document.getElementById("dlBtn").disabled);
+    set("pw2", "abd");
+    eq("two different passwords are caught", txt("msg"), "report.pdf: 1 page. The two passwords are not the same yet.");
+    eq("as a problem", document.getElementById("msg").className, "msg msg--bad");
+    ok("and nothing can be protected", document.getElementById("dlBtn").disabled);
+    set("pw2", "abc");
+    eq("the same password twice is ready, with a word about its length", txt("msg"),
+       "report.pdf: 1 page. Ready to protect. A password this short can be guessed by a computer; 12 characters or more is much safer.");
+    eq("as good news", document.getElementById("msg").className, "msg msg--ok");
+    ok("and can be used", !document.getElementById("dlBtn").disabled);
+    set("pw", "abcdefg");
+    set("pw2", "abcdefg");
+    has("seven characters is still short", txt("msg"), "this short");
+    set("pw", "abcdefgh");
+    set("pw2", "abcdefgh");
+    eq("eight is not called short", txt("msg"), "report.pdf: 1 page. Ready to protect.");
+    set("pw", TELUGU);
+    set("pw2", TELUGU);
+    eq("letters beyond an English keyboard are refused, with the reason", txt("msg"),
+       "report.pdf: 1 page. Use only letters, digits and symbols from an English keyboard: some PDF readers cannot open a file whose password has other characters.");
+    ok("and cannot be used", document.getElementById("dlBtn").disabled);
+    set("pw", "tab\there");
+    set("pw2", "tab\there");
+    has("a control character is refused too", txt("msg"), "Use only letters, digits and symbols");
+    set("pw", "~ !\"#$%&'()*+,-./09:;<=>?@AZ[\\]^_`az{|}");
+    set("pw2", "~ !\"#$%&'()*+,-./09:;<=>?@AZ[\\]^_`az{|}");
+    eq("every symbol of an English keyboard, and the space, is fine", txt("msg"), "report.pdf: 1 page. Ready to protect.");
+    var long = new Array(128).join("x");
+    set("pw", long);
+    set("pw2", long);
+    eq("127 characters is fine", txt("msg"), "report.pdf: 1 page. Ready to protect.");
+    set("pw", long + "x");
+    set("pw2", long + "x");
+    eq("128 is too many", txt("msg"), "report.pdf: 1 page. Keep the password to 127 characters or fewer.");
+    ok("and cannot be used", document.getElementById("dlBtn").disabled);
+    click("showPw");
+    eq("the password can be shown", document.getElementById("pw").type + "," + document.getElementById("pw2").type, "text,text");
+    click("showPw");
+    eq("and hidden again", document.getElementById("pw").type + "," + document.getElementById("pw2").type, "password,password");
+    set("pw", PASSWORD);
+    set("pw2", PASSWORD);
+    history.length = 0;
+    return download();
+  });
+
+  /* ================= the protected file ================= */
+  var first = null;
+  step(function (d) {
+    ok("the protected file reads back cleanly", d && d.out, d ? d.error : "no download");
+    if (!d || !d.out) { return; }
+    first = d;
+    var r = d.out;
+    eq("while it worked, it said so", history.slice(0, 2).join("|"),
+       "Locking report.pdf" + String.fromCharCode(0x2026) + " The password is being turned into a key, which takes a moment on purpose.|Encrypting report.pdf" + String.fromCharCode(0x2026) + " 0%");
+    has("then that it is done", txt("msg"), "Done: report (protected).pdf, ");
+    has("with what to keep in mind", txt("msg"), "locked with AES-256. Keep the password safe: without it nobody can open the file, not even this page. Nothing has left your device.");
+    eq("named for what was done to it", d.saved.name, "report (protected).pdf");
+    eq("as a PDF", d.saved.blob.type, "application/pdf");
+    eq("a PDF 1.7 file", r.text.slice(0, 9), "%PDF-1.7\n");
+    ok("with an /Encrypt dictionary in the trailer", r.enc > 0, r.trailer);
+    ok("and an /ID of two 16-byte strings", /\/ID \[<[0-9A-F]{32}> <[0-9A-F]{32}>\]/.test(r.trailer), r.trailer);
+    has("the old /Info is kept, encrypted", r.trailer, "/Info ");
+    var e = r.encDict;
+    ok("the standard handler, revision 6, AES-256", /\/Filter \/Standard/.test(e) && /\/V 5\b/.test(e) && /\/R 6\b/.test(e) && /\/Length 256\b/.test(e), e);
+    ok("one crypt filter, AESV3, for streams and strings", /\/StdCF <<\/Type \/CryptFilter \/CFM \/AESV3 \/AuthEvent \/DocOpen \/Length 32>>/.test(e) &&
+       /\/StmF \/StdCF/.test(e) && /\/StrF \/StdCF/.test(e), e);
+    ok("every permission given, the XMP encrypted too", /\/P -4\b/.test(e) && /\/EncryptMetadata true/.test(e), e);
+    eq("the sizes of the checks and the locked keys", [encValue(r, "U").length, encValue(r, "O").length, encValue(r, "UE").length,
+       encValue(r, "OE").length, encValue(r, "Perms").length].join(), "48,48,32,32,16");
+    has("marked as using AES-256 for readers of PDF 1.7", r.text, "/Extensions <<\/ADBE <<\/BaseVersion /1.7 /ExtensionLevel 8>>>>");
+    eq("nothing is readable: not the drawing, not the details, not the XMP, not the link",
+       ["Secret words", "Asha Rao", "Maker PDF", "xmpmeta", "secret-link", hexOf(bytesOfText("Asha Rao")), utf16hex("Report").slice(4)]
+         .filter(function (s) { return r.text.indexOf(s) >= 0; }).join(), "");
+    return unlock(r, PASSWORD + "!").then(function (key) {
+      eq("a wrong password does not unlock it", key, null);
+      return unlock(r, PASSWORD);
+    }).then(function (key) {
+      ok("the password unlocks the key", key && key.length === 32);
+      d.key = key;
+      return unlockOwner(r, PASSWORD);
+    }).then(function (ownerKey) {
+      ok("so does the owner's lock, to the same key", ownerKey && same(ownerKey, d.key));
+      return aesDecryptRaw(d.key, new Uint8Array(16), encValue(r, "Perms"));
+    }).then(function (perms) {
+      eq("the encrypted permissions match /P, and say the XMP is encrypted", hexOf(perms.slice(0, 12)), "FCFFFFFFFFFFFFFF54616462");
+      return decryptAll(r, d.key);
+    }).then(function (all) {
+      ok("the title comes back, Telugu and all", all.strings.indexOf(latin1(fromHex(utf16hex("Report " + TELUGU)))) >= 0, all.strings.join(" | "));
+      ok("the author and the link too", all.strings.indexOf("Asha Rao") >= 0 && all.strings.indexOf("https://example.org/secret-link") >= 0);
+      var streams = Object.keys(all.streams).map(function (n) { return all.streams[n]; });
+      ok("the drawing comes back exactly", streams.indexOf(DRAWING) >= 0, streams.join(" | "));
+      ok("and the XMP", streams.indexOf(XMP) >= 0);
+      eq("every string and stream has its own IV", all.ivs.filter(function (iv, i) { return all.ivs.indexOf(iv) !== i; }).length, 0);
+      eq("all of them were found: four strings (title, author, producer, link) and two streams", all.ivs.length, 6);
+      has("the bookmarks are still there", r.text, "/Outlines");
+      /* typing while it works changes neither the message nor the file */
+      return download(function () {
+        set("pw2", "changed while working");
+        has("typing while it works leaves the message alone", txt("msg"), "Locking report.pdf");
+        ok("and the button off", document.getElementById("dlBtn").disabled);
+      });
+    });
+  });
+  step(function (d) {
+    ok("protecting again works", d && d.out, d ? d.error : "no download");
+    ok("and gives a different file: new salts, a new key", d && first && d.out.text !== first.out.text);
+    has("it says it is done", txt("msg"), "Done: report (protected).pdf");
+    ok("and, the two boxes now differing, offers no more", document.getElementById("dlBtn").disabled);
+    set("pw2", PASSWORD);
+    return unlock(d.out, PASSWORD).then(function (key) {
+      ok("the password chosen when it started opens it", key && !same(key, first.key));
+    });
+  });
+
+  /* ================= known answers =================
+     The page's randomness replaced by a fixed sequence of bytes, so the
+     checks and locked keys are fixed too; the answers were worked out
+     apart from the page, in Python with Windows' own AES. This sequence
+     makes the four slow hashes end after 83, 64, 65 and 66 rounds, one of
+     them just past the edge, so a hash that stops a round early or late
+     gives a different answer. */
+  step(function () {
+    var k = 0;
+    crypto.getRandomValues = function (a) {
+      for (var i = 0; i < a.length; i++, k++) { a[i] = (k * 7 + (k >> 8)) & 255; }
+      return a;
+    };
+    set("pw", "known answer");
+    set("pw2", "known answer");
+    return download();
+  });
+  step(function (d) {
+    delete crypto.getRandomValues;
+    var r = d && d.out;
+    ok("the known-answer file is made", r, d ? d.error : "no download");
+    if (!r) { return; }
+    eq("/U, the check of the password", hexOf(encValue(r, "U")),
+       "0E096569C37B3D49E20B7170E113A4D5616CE77E167A5AD3F24B6A90F4BDA407E0E7EEF5FC030A11181F262D343B4249");
+    eq("/UE, the key locked with it", hexOf(encValue(r, "UE")), "91DE1E4E5578338511C66BCD873584C6D1570CE1D0B0F3217AAE7935C674AEFC");
+    eq("/O, the owner's check", hexOf(encValue(r, "O")),
+       "5B6AC26906E5208093F06B2328A1FA998870B787F0B5889F9519A18D4704F8DB50575E656C737A81888F969DA4ABB2B9");
+    eq("/OE, the key locked for the owner", hexOf(encValue(r, "OE")), "5EB11BDF6F06DB6CA18B2147584C184FB04052C7512D0E4A5CB831F06679D1E9");
+    eq("/Perms", hexOf(encValue(r, "Perms")), "8F580D7E5188BCFADCDA146B821231F6");
+    ok("and the page's own randomness is back", crypto.getRandomValues(new Uint8Array(8)).join() !== "0,7,14,21,28,35,42,49");
+    set("pw", PASSWORD);
+    set("pw2", PASSWORD);
+  });
+
+  /* ================= stopping half-way ================= */
+  step(function () {
+    var before = window.__saved.length;
+    click("dlBtn");
+    click("resetBtn");
+    return settled().then(function () {
+      eq("a clear while it works stops it: nothing is saved", window.__saved.length, before);
+      eq("and the page is empty again", txt("msg") + "|" + val("pw") + "|" + val("pw2"), "Choose a PDF, then a password for it.||");
+    });
+  });
+  step(function () {
+    feed(F.doc);
+    return wait("the PDF is read again", read, 10000);
+  });
+  step(function () {
+    set("pw", PASSWORD);
+    set("pw2", PASSWORD);
+    var before = window.__saved.length;
+    click("dlBtn");
+    feed(F.notPdf);
+    return settled().then(function () { return wait("the other file is looked at", read, 10000); }).then(function () {
+      eq("a new file while it works stops it too", window.__saved.length, before);
+      eq("and the new file is the one spoken of", txt("msg"), "Could not use notes.pdf: not a PDF.");
+    });
+  });
+
+  /* ================= other kinds of file ================= */
+  step(function () {
+    feed(F.damaged);
+    return wait("a damaged PDF is read", read, 10000);
+  });
+  step(function () {
+    eq("a damaged file is read, and the visitor told", txt("msg"),
+       "scan.pdf: 1 page. Ready to protect. Its index is damaged; the protected copy is rebuilt from what could be read.");
+    ok("the password stays when another file is chosen", !document.getElementById("dlBtn").disabled);
+    return download();
+  });
+  step(function (d) {
+    ok("and it can be protected", d && d.out, d ? d.error : "no download");
+    return unlock(d.out, PASSWORD).then(function (key) { return decryptAll(d.out, key); }).then(function (all) {
+      ok("with its page", Object.keys(all.streams).some(function (n) { return all.streams[n].indexOf("(T1) Tj") >= 0; }));
+      feed(F.signed);
+      return wait("a signed PDF is read", read, 10000);
+    });
+  });
+  step(function () {
+    eq("a signed PDF is pointed out before protecting", txt("msg"),
+       "signed.pdf: 2 pages. Ready to protect. It is digitally signed: protecting writes the file again, so the signature will no longer be valid.");
+    eq("as a warning", document.getElementById("msg").className, "msg msg--bad");
+    feed(F.enc);
+    return wait("a protected file is looked at", read, 10000);
+  });
+  step(function () {
+    eq("a file with a password already is turned away", txt("msg"), "Could not use locked.pdf: it already has a password.");
+    ok("with nothing to protect", document.getElementById("dlBtn").disabled);
+    feed(F.empty);
+    return wait("a PDF without pages is looked at", read, 10000);
+  });
+  step(function () {
+    eq("one without pages too", txt("msg"), "Could not use empty.pdf: has no pages.");
+    feed(F.hostile);
+    return wait("a file named as markup is read", read, 10000);
+  });
+  step(function () {
+    has("its name is shown as text", txt("msg"), "<iframe onload=zq>.pdf: 1 page.");
+    eq("and made no element", document.querySelectorAll("iframe").length, 0);
+    click("showPw");
+    click("resetBtn");
+    eq("clear empties everything", txt("msg") + "|" + val("pw") + "|" + val("pw2"), "Choose a PDF, then a password for it.||");
+    eq("and hides the password boxes again", document.getElementById("pw").type + "," + document.getElementById("pw2").type + "," +
+       document.getElementById("showPw").checked, "password,password,false");
+    ok("with nothing to protect", document.getElementById("dlBtn").disabled);
+  });
+
+  chain.then(function () { finish(); }, function (e) {
+    ok("the test ran to the end", false, String(e && e.stack || e));
+    finish();
+  });
+"""
+
 # ===== END: the test bodies ================================================
 
 
@@ -9387,6 +9856,7 @@ T["pdf-metadata-editor"] = r"""
 # ahead of the real one. A tool that builds four zips can need twenty virtual
 # seconds and two real ones. Ask for more here, per tool; nothing else changes.
 BUDGET_MS = {
+    "protect-pdf": 300000,
     "pdf-metadata-editor": 300000,
     "add-pdf-page-numbers": 300000,
     "rotate-pdf": 300000,
