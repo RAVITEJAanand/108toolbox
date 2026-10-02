@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- ===== SEO ===== -->
-  <title>Split PDF — Pull Out Pages or Cut a PDF into Parts</title>
-  <meta name="description" content="Split a PDF into single pages, the page ranges you type, or equal parts, in your browser. Nothing is uploaded and every page is kept as it is.">
-  <link rel="canonical" href="https://108toolbox.in/tools/split-pdf.html">
+  <title>Remove PDF Pages — Delete Pages from a PDF, Free</title>
+  <meta name="description" content="Take pages out of a PDF in your browser: type the page numbers and download the rest. Nothing is uploaded, and the pages that stay are unchanged.">
+  <link rel="canonical" href="https://108toolbox.in/tools/remove-pdf-pages.html">
 
-  <meta property="og:title" content="Split PDF — Pull Out Pages or Cut a PDF into Parts">
-  <meta property="og:description" content="Split a PDF into single pages, the page ranges you type, or equal parts, in your browser. Nothing is uploaded and every page is kept as it is.">
+  <meta property="og:title" content="Remove PDF Pages — Delete Pages from a PDF, Free">
+  <meta property="og:description" content="Take pages out of a PDF in your browser: type the page numbers and download the rest. Nothing is uploaded, and the pages that stay are unchanged.">
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
@@ -49,26 +49,18 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "How do I take out just one or two pages?",
+        "name": "Is the removed page really gone from the file?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Choose Into the page ranges I type and type the pages: 5 gives a file with page 5, and 3-4 a file with pages 3 and 4. Each range you type becomes its own file."
+          "text": "Yes. The new PDF is built from the pages that stay and only the things they use, so the text and pictures of a removed page are not in it, even in a file where every page shares one list of pictures. The one exception: if a page that stays is itself too damaged to read, nothing it might need is dropped, and a picture it shares with a removed page can remain inside the file."
         }
       },
       {
         "@type": "Question",
-        "name": "Can the same page go into more than one file?",
+        "name": "Which page numbers do I type?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. Ranges may overlap: 1-5, 3-8 makes two files that both contain pages 3, 4 and 5."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Why is the ZIP bigger than my PDF?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Each new file has to carry everything its pages use, fonts included, so a font shared by all the pages is copied into every file. The pages themselves are not changed or compressed."
+          "text": "The position of the page in the file, counting from 1 at the front, as your PDF reader shows it in its toolbar. A document whose printed numbers start after a cover page will be off by one or two."
         }
       },
       {
@@ -76,23 +68,23 @@
         "name": "What happens to bookmarks and fillable forms?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Bookmarks belong to the whole document and are not carried into the parts. Forms keep what was typed in them, but their boxes can no longer be filled in."
+          "text": "Bookmarks belong to the whole document and are not carried over. Forms keep what was typed in them, but their boxes can no longer be filled in."
         }
       },
       {
         "@type": "Question",
-        "name": "Can I split a password-protected PDF?",
+        "name": "Can I remove pages from a password-protected PDF?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No, its pages are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and split that copy."
+          "text": "No, its pages are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and use that copy here."
         }
       },
       {
         "@type": "Question",
-        "name": "Is there a size limit?",
+        "name": "Can I take out every page?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "The PDF can be up to 500 MB, and the files made from it can add up to 1 GB, which is about what a browser can safely hold. For more, split into fewer, larger parts."
+          "text": "No: a PDF needs at least one page, so at least one has to stay."
         }
       },
       {
@@ -100,7 +92,7 @@
         "name": "Is my PDF uploaded?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. The PDF is read and split by JavaScript inside your own browser, and the files are saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone."
+          "text": "No. The PDF is read and rebuilt by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone."
         }
       }
     ]
@@ -150,14 +142,14 @@
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=pdf">PDF</a><span>&rsaquo;</span>
-        <span>Split PDF</span>
+        <span>Remove PDF Pages</span>
       </nav>
 
       <header class="tool-head">
-        <h1>Split PDF</h1>
-        <p>Cut one PDF into several: every page on its own, the ranges you type,
-           or parts of the same length. It all happens inside your browser, so
-           the document never leaves your device.</p>
+        <h1>Remove PDF Pages</h1>
+        <p>Take unwanted pages out of a PDF: type their numbers and download
+           what is left. It all happens inside your browser, so the document
+           never leaves your device.</p>
       </header>
 
       <!--TOOL:START-->
@@ -168,47 +160,33 @@
           <span class="panel__label">1. Choose a PDF</span>
 
           <label class="drop" id="drop" for="file">
-            <span class="drop__big" aria-hidden="true">&#9986;&#65039;</span>
+            <span class="drop__big" aria-hidden="true">&#128465;&#65039;</span>
             <p><strong>Click to choose</strong> or drag a PDF here</p>
             <p style="margin-top:var(--s1)">One PDF, up to 500 MB</p>
             <input type="file" id="file" accept="application/pdf,.pdf">
           </label>
 
           <div class="field" style="margin-top:var(--s4)">
-            <label for="mode">2. How to split it</label>
-            <select id="mode">
-              <option value="ranges" selected>Into the page ranges I type</option>
-              <option value="each">Every page on its own</option>
-              <option value="every">Into parts of the same length</option>
-            </select>
-          </div>
-
-          <div class="field" id="rangesField">
-            <label for="ranges">Page ranges, one file each</label>
-            <input type="text" id="ranges" placeholder="1-3, 4-8, 9-" autocomplete="off" spellcheck="false">
-            <p class="hint">A comma between files. 9- means page 9 to the end; a single number is a single page.</p>
-          </div>
-
-          <div class="field" id="everyField">
-            <label for="every">Pages in each part</label>
-            <input type="number" id="every" min="1" value="2">
+            <label for="pages">2. Pages to take out</label>
+            <input type="text" id="pages" placeholder="2, 5-7" autocomplete="off" spellcheck="false">
+            <p class="hint">Single pages and ranges, with commas between. 10- means page 10 to the end.</p>
           </div>
         </div>
 
         <!-- ---------- OUTPUT ---------- -->
         <div class="panel">
-          <span class="panel__label">3. The new files</span>
+          <span class="panel__label">3. What is left</span>
 
           <div class="stats stats--3">
-            <div class="stat"><span class="stat__num" id="sFiles">&mdash;</span><span class="stat__label">Files</span></div>
-            <div class="stat"><span class="stat__num" id="sPages">&mdash;</span><span class="stat__label">Pages in them</span></div>
-            <div class="stat"><span class="stat__num" id="sIn">&mdash;</span><span class="stat__label">The PDF</span></div>
+            <div class="stat"><span class="stat__num" id="sNow">&mdash;</span><span class="stat__label">Pages now</span></div>
+            <div class="stat"><span class="stat__num" id="sGone">&mdash;</span><span class="stat__label">Taken out</span></div>
+            <div class="stat"><span class="stat__num" id="sLeft">&mdash;</span><span class="stat__label">Left</span></div>
           </div>
 
-          <ol class="plan-list" id="planned" aria-label="The files that will be made"></ol>
+          <p class="hint" id="kept" style="margin-top:var(--s3);overflow-wrap:anywhere"></p>
 
           <div class="btn-row" style="margin-top:var(--s4)">
-            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Split and download</button>
+            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Remove and download</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Clear</button>
           </div>
 
@@ -234,61 +212,54 @@
 
       <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
       <section class="tool-info prose">
-        <h2>Three ways to split</h2>
-        <p><strong>Into the page ranges I type</strong> makes one file for
-           each range: 1-3, 4-8, 9- gives three files, the last running from
-           page 9 to the end. A single number is a single page, so typing just
-           7 pulls page 7 out on its own. <strong>Every page on its
-           own</strong> makes one file per page. <strong>Into parts of the
-           same length</strong> cuts the document every so many pages; the
-           last part takes whatever is left. More than one file comes as a
-           single ZIP, because browsers will not save dozens of downloads at
-           once.</p>
+        <h2>How to choose the pages</h2>
+        <p>Type the numbers of the pages to take out, with commas between
+           them: 2, 5-7 takes out page 2 and pages 5, 6 and 7. A range can be
+           open at either end, so 10- takes out everything from page 10 on,
+           and -3 the first three pages. The page counts the pages the way
+           your PDF reader numbers them in its toolbar, starting from 1, which
+           is not always the number printed on the page itself. Before you
+           download, the list of pages that will stay is shown in the same
+           short form, so you can check it.</p>
 
-        <h2>Every file is complete, and nothing is redrawn</h2>
-        <p>The pages are copied exactly as they were: text stays text you
-           can select, pictures are not compressed again. Each new file carries
-           everything its pages need, fonts included, so it opens on its own.
-           That is also why ten files cut from one PDF can add up to more than
-           the original: each of them has its own copy of the fonts. A link
-           from one page to another still works when both pages land in the
-           same file, and does nothing when they do not.</p>
+        <h2>The pages that stay are not touched</h2>
+        <p>Every page that stays is copied exactly as it was: the same text,
+           which you can still select and search, the same pictures, nothing
+           compressed again. A link to a page you removed simply stops doing
+           anything. The new file is usually smaller than the old one, by
+           roughly the size of what you took out.</p>
 
         <h2>Why it matters that nothing is uploaded</h2>
-        <p>Splitting is often how people send one page of something private:
-           a single month from a bank statement, one page of a contract, the
-           page of a report that matters. This page does the cutting inside
-           your browser and saves the files straight to your device; the
-           document is never sent anywhere.</p>
+        <p>Pages are usually taken out because they should not be seen: a
+           page with an account number before a statement goes to a landlord,
+           an annexure that is nobody else's business, a page of notes. This
+           page does it inside your browser and saves the result straight to
+           your device. Your PDF is never sent anywhere.</p>
 
         <h2>Frequently asked questions</h2>
         <div class="faq">
-          <h3>How do I take out just one or two pages?</h3>
-          <p>Choose Into the page ranges I type and type the pages: 5 gives a file with page 5, and 3-4 a file with pages 3 and 4. Each range you type becomes its own file.</p>
+          <h3>Is the removed page really gone from the file?</h3>
+          <p>Yes. The new PDF is built from the pages that stay and only the things they use, so the text and pictures of a removed page are not in it, even in a file where every page shares one list of pictures. The one exception: if a page that stays is itself too damaged to read, nothing it might need is dropped, and a picture it shares with a removed page can remain inside the file.</p>
         </div>
         <div class="faq">
-          <h3>Can the same page go into more than one file?</h3>
-          <p>Yes. Ranges may overlap: 1-5, 3-8 makes two files that both contain pages 3, 4 and 5.</p>
-        </div>
-        <div class="faq">
-          <h3>Why is the ZIP bigger than my PDF?</h3>
-          <p>Each new file has to carry everything its pages use, fonts included, so a font shared by all the pages is copied into every file. The pages themselves are not changed or compressed.</p>
+          <h3>Which page numbers do I type?</h3>
+          <p>The position of the page in the file, counting from 1 at the front, as your PDF reader shows it in its toolbar. A document whose printed numbers start after a cover page will be off by one or two.</p>
         </div>
         <div class="faq">
           <h3>What happens to bookmarks and fillable forms?</h3>
-          <p>Bookmarks belong to the whole document and are not carried into the parts. Forms keep what was typed in them, but their boxes can no longer be filled in.</p>
+          <p>Bookmarks belong to the whole document and are not carried over. Forms keep what was typed in them, but their boxes can no longer be filled in.</p>
         </div>
         <div class="faq">
-          <h3>Can I split a password-protected PDF?</h3>
-          <p>No, its pages are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and split that copy.</p>
+          <h3>Can I remove pages from a password-protected PDF?</h3>
+          <p>No, its pages are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and use that copy here.</p>
         </div>
         <div class="faq">
-          <h3>Is there a size limit?</h3>
-          <p>The PDF can be up to 500 MB, and the files made from it can add up to 1 GB, which is about what a browser can safely hold. For more, split into fewer, larger parts.</p>
+          <h3>Can I take out every page?</h3>
+          <p>No: a PDF needs at least one page, so at least one has to stay.</p>
         </div>
         <div class="faq">
           <h3>Is my PDF uploaded?</h3>
-          <p>No. The PDF is read and split by JavaScript inside your own browser, and the files are saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
+          <p>No. The PDF is read and rebuilt by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
         </div>
 
         <h2>Related tools</h2>
@@ -352,7 +323,7 @@
   <!-- Shared scripts, in order -->
   <script src="../js/tools-data.js?v=33"></script>
   <script src="../js/tool-helpers.js?v=33"></script>
-  <script>window.CURRENT_TOOL = "split-pdf";</script>
+  <script>window.CURRENT_TOOL = "remove-pdf-pages";</script>
   <script src="../js/main.js?v=33"></script>
 
   <!-- ===== This tool's own logic ===== -->
@@ -362,23 +333,19 @@
 
     var fileInput = document.getElementById("file");
     var drop      = document.getElementById("drop");
-    var modeSel   = document.getElementById("mode");
-    var rangesIn  = document.getElementById("ranges");
-    var everyIn   = document.getElementById("every");
-    var plannedEl = document.getElementById("planned");
+    var pagesIn   = document.getElementById("pages");
+    var keptEl    = document.getElementById("kept");
     var dlBtn     = document.getElementById("dlBtn");
     var msg       = document.getElementById("msg");
     var DASH      = String.fromCharCode(0x2014);
 
-    var MAX_INPUT  = 500 * 1024 * 1024;   /* what a phone's browser can hold twice over */
-    var MAX_OUTPUT = 1024 * 1024 * 1024;  /* every file has its own fonts, so the parts can add up to more */
-    var SHOWN      = 30;                  /* names listed before "and N more" */
+    var MAX_INPUT = 500 * 1024 * 1024;   /* what a phone's browser can hold twice over */
 
     var current = null;        /* { name, size, doc, pages } */
-    var groups = null;         /* [[first, last], ...] for the current settings */
+    var keep = null;           /* the page numbers that stay, in order */
     var generation = 0;
     var busy = false;
-    var problem = "";          /* why the last chosen file could not be used */
+    var problem = "";
 
     /* ---- START: writing a PDF file ----
        A PDF is a header, a list of numbered objects, and at the end a table
@@ -1694,146 +1661,83 @@
     }
     /* ---- END: reading the chosen PDF, without uploading it ---- */
 
-    /* ---- START: working out the files to make ----
-       Each group is the first and last page of one new file. */
-    function planGroups() {
-      var count = current.pages.length;
+    /* ---- START: writing a list of pages short ----
+       [1, 3, 4, 5, 9] becomes "1, 3-5, 9" */
+    function compact(numbers) {
       var out = [];
-      var i;
-      if (modeSel.value === "each") {
-        for (i = 1; i <= count; i++) { out.push([i, i]); }
-        return { groups: out };
+      for (var i = 0; i < numbers.length; i++) {
+        var start = numbers[i];
+        while (i + 1 < numbers.length && numbers[i + 1] === numbers[i] + 1) { i++; }
+        out.push(start === numbers[i] ? String(start) : start + "-" + numbers[i]);
       }
-      if (modeSel.value === "every") {
-        var n = Number(everyIn.value);
-        if (!/^\d+$/.test(String(everyIn.value).trim()) || n < 1) { return { error: "Type how many pages each file should have, from 1 up." }; }
-        for (i = 1; i <= count; i += n) { out.push([i, Math.min(count, i + n - 1)]); }
-        return { groups: out };
-      }
-      var parsed = parsePageRanges(rangesIn.value, count);
-      if (parsed.error) { return { error: parsed.error }; }
-      return { groups: parsed.ranges };
+      return out.join(", ");
     }
+    /* ---- END: writing a list of pages short ---- */
 
-    function baseName() {
-      return current.name.replace(/\.pdf$/i, "") || "document";
-    }
-
-    /* "report-pages-1-3.pdf", "report-page-5.pdf"; a name used twice gets (2) */
-    function fileNames(list) {
-      var used = {};
-      return list.map(function (g) {
-        var name = baseName() + (g[0] === g[1] ? "-page-" + g[0] : "-pages-" + g[0] + "-" + g[1]);
-        var unique = name, k = 2;
-        while (used[unique]) { unique = name + " (" + (k++) + ")"; }
-        used[unique] = true;
-        return unique + ".pdf";
-      });
-    }
-    /* ---- END: working out the files to make ---- */
-
-    /* ---- START: showing the plan ---- */
+    /* ---- START: showing what will be kept ---- */
     function refresh() {
-      document.getElementById("rangesField").style.display = modeSel.value === "ranges" ? "" : "none";
-      document.getElementById("everyField").style.display = modeSel.value === "every" ? "" : "none";
-      plannedEl.textContent = "";
-      groups = null;
+      keep = null;
+      keptEl.textContent = "";
       dlBtn.disabled = true;
       if (!current) {
-        ["sFiles", "sPages", "sIn"].forEach(function (id) { document.getElementById(id).textContent = DASH; });
-        if (!busy) { setMessage(problem || "Choose a PDF to split.", problem ? "bad" : ""); }
+        ["sNow", "sGone", "sLeft"].forEach(function (id) { document.getElementById(id).textContent = DASH; });
+        if (!busy) { setMessage(problem || "Choose a PDF.", problem ? "bad" : ""); }
         return;
       }
-      document.getElementById("sIn").textContent = formatBytes(current.size);
-      var plan = planGroups();
-      if (plan.error) {
-        document.getElementById("sFiles").textContent = DASH;
-        document.getElementById("sPages").textContent = DASH;
-        setMessage(plan.error, "bad");
+      var count = current.pages.length;
+      document.getElementById("sNow").textContent = formatNumber(count, 0);
+      document.getElementById("sGone").textContent = DASH;
+      document.getElementById("sLeft").textContent = DASH;
+      var intro = current.name + ": " + formatNumber(count, 0) + (count === 1 ? " page" : " pages") +
+                  (current.doc.repaired ? " (damaged, but its pages could be found)" : "") + ". ";
+      if (pagesIn.value.trim() === "") {
+        setMessage(intro + "Type the pages to take out.", current.doc.repaired ? "bad" : "");
         return;
       }
-      groups = plan.groups;
-      var names = fileNames(groups);
-      var pagesOut = groups.reduce(function (sum, g) { return sum + g[1] - g[0] + 1; }, 0);
-      document.getElementById("sFiles").textContent = formatNumber(groups.length, 0);
-      document.getElementById("sPages").textContent = formatNumber(pagesOut, 0);
-      names.slice(0, SHOWN).forEach(function (name, i) {
-        var li = document.createElement("li");
-        var g = groups[i];
-        li.textContent = name + " " + DASH + " " + (g[0] === g[1] ? "page " + g[0] : "pages " + g[0] + " to " + g[1]);
-        plannedEl.appendChild(li);
-      });
-      if (names.length > SHOWN) {
-        var more = document.createElement("li");
-        more.textContent = "and " + formatNumber(names.length - SHOWN, 0) + " more";
-        plannedEl.appendChild(more);
+      var parsed = parsePageRanges(pagesIn.value, count);
+      if (parsed.error) {
+        setMessage(parsed.error, "bad");
+        return;
       }
+      var gone = {};
+      parsed.ranges.forEach(function (r) { for (var p = r[0]; p <= r[1]; p++) { gone[p] = true; } });
+      var list = [];
+      for (var n = 1; n <= count; n++) { if (!gone[n]) { list.push(n); } }
+      var removed = count - list.length;
+      document.getElementById("sGone").textContent = formatNumber(removed, 0);
+      document.getElementById("sLeft").textContent = formatNumber(list.length, 0);
+      if (list.length === 0) {
+        setMessage("That takes out every page. A PDF needs at least one, so leave one or more in.", "bad");
+        return;
+      }
+      keep = list;
+      keptEl.textContent = "Pages kept: " + compact(list);
       dlBtn.disabled = busy;
-      if (!busy) {
-        setMessage(current.name + ": " + formatNumber(current.pages.length, 0) + (current.pages.length === 1 ? " page" : " pages") +
-                   (current.doc.repaired ? " (damaged, but its pages could be found)" : "") + ". " +
-                   (groups.length === 1 ? "One PDF will be made." : formatNumber(groups.length, 0) + " PDFs will be made, in one ZIP file."),
-                   current.doc.repaired ? "bad" : "ok");
-      }
+      setMessage(intro + formatNumber(removed, 0) + (removed === 1 ? " page comes out, " : " pages come out, ") +
+                 formatNumber(list.length, 0) + " stay.", current.doc.repaired ? "bad" : "ok");
     }
-    /* ---- END: showing the plan ---- */
+    /* ---- END: showing what will be kept ---- */
 
-    /* ---- START: making the files ----
-       Built a few at a time, so a 500-page split never freezes the page,
-       and stopped if the files would add up to more than the browser can
-       hold. Every file is complete on its own, fonts and all. */
-    function pause() { return new Promise(function (resolve) { setTimeout(resolve, 0); }); }
-
-    function makeFiles() {
-      var gen = generation;
-      var list = groups.slice();
-      var names = fileNames(list);
-      var made = [];
-      var total = 0;
-      busy = true;
-      dlBtn.disabled = true;
-      function next(i) {
-        if (gen !== generation) { return Promise.resolve(null); }
-        if (i >= list.length) { return Promise.resolve(made); }
-        var g = list[i];
-        var order = [];
-        for (var p = g[0]; p <= g[1]; p++) { order.push({ doc: current.doc, page: current.pages[p - 1] }); }
-        var parts = buildFromPages(order, "108toolbox.in Split PDF");
-        var size = parts.reduce(function (sum, part) { return sum + part.length; }, 0);
-        total += size;
-        if (total > MAX_OUTPUT) {
-          return Promise.reject(new Error("too big"));
-        }
-        var bytes = new Uint8Array(size);
-        var at = 0;
-        parts.forEach(function (part) { bytes.set(part, at); at += part.length; });
-        made.push({ name: names[i], bytes: bytes });
-        if (i % 10 === 9) {
-          setMessage("Making the files" + String.fromCharCode(0x2026) + " " + (i + 1) + " of " + list.length + ".");
-          return pause().then(function () { return next(i + 1); });
-        }
-        return next(i + 1);
-      }
-      return next(0).then(function (files) {
-        busy = false;
-        if (!files || gen !== generation) { return; }
-        if (files.length === 1) {
-          downloadBlob(new Blob([files[0].bytes], { type: "application/pdf" }), files[0].name);
-        } else {
-          downloadBlob(buildZip(files), baseName() + "-split.zip");
-        }
-        refresh();
-        setMessage("Done: " + (files.length === 1 ? "one PDF" : formatNumber(files.length, 0) + " PDFs in one ZIP file") +
-                   ", " + formatBytes(total) + ". Nothing has left your device.", "ok");
-      }, function (error) {
-        busy = false;
-        refresh();
-        setMessage(error && error.message === "too big"
-          ? "Those files would come to more than 1 GB, because each one carries its own copy of the fonts. Make fewer, larger files."
-          : "The files could not be made. The PDF may be damaged in a way this page cannot work around.", "bad");
-      });
+    /* ---- START: making the new PDF ---- */
+    function outputName() {
+      return (current.name.replace(/\.pdf$/i, "") || "document") + " (pages removed).pdf";
     }
-    /* ---- END: making the files ---- */
+
+    function makeFile() {
+      var order = keep.map(function (n) { return { doc: current.doc, page: current.pages[n - 1] }; });
+      var parts;
+      try {
+        parts = buildFromPages(order, "108toolbox.in Remove PDF Pages");
+      } catch (error) {
+        setMessage("The new PDF could not be made. The file may be damaged in a way this page cannot work around.", "bad");
+        return;
+      }
+      var size = parts.reduce(function (sum, part) { return sum + part.length; }, 0);
+      downloadBlob(new Blob(parts, { type: "application/pdf" }), outputName());
+      setMessage("Done: " + formatNumber(keep.length, 0) + (keep.length === 1 ? " page, " : " pages, ") + formatBytes(size) +
+                 ". Nothing has left your device.", "ok");
+    }
+    /* ---- END: making the new PDF ---- */
 
     /* ---- START: taking the chosen file ---- */
     function takeFile(file) {
@@ -1848,9 +1752,6 @@
         if (gen !== generation) { return; }
         busy = false;
         current = entry;
-        if (modeSel.value === "ranges" && rangesIn.value.trim() === "") {
-          rangesIn.value = entry.pages.length > 1 ? "1-" + Math.ceil(entry.pages.length / 2) + ", " + (Math.ceil(entry.pages.length / 2) + 1) + "-" : "1";
-        }
         refresh();
       }, function (error) {
         if (gen !== generation) { return; }
@@ -1875,12 +1776,10 @@
       drop.addEventListener(type, function (e) { e.preventDefault(); drop.classList.remove("is-over"); });
     });
     drop.addEventListener("drop", function (e) { takeFile(e.dataTransfer && e.dataTransfer.files[0]); });
-    modeSel.addEventListener("change", refresh);
-    rangesIn.addEventListener("input", refresh);
-    everyIn.addEventListener("input", refresh);
+    pagesIn.addEventListener("input", refresh);
 
     dlBtn.addEventListener("click", function () {
-      if (current && groups && !busy) { makeFiles(); }
+      if (current && keep && !busy) { makeFile(); }
     });
 
     document.getElementById("resetBtn").addEventListener("click", function () {
@@ -1889,7 +1788,7 @@
       busy = false;
       problem = "";
       fileInput.value = "";
-      rangesIn.value = "";
+      pagesIn.value = "";
       refresh();
     });
     /* ---- END: wiring ---- */

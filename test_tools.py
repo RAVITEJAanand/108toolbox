@@ -8207,6 +8207,259 @@ T["split-pdf"] = r"""
   });
 """
 
+T["remove-pdf-pages"] = r"""
+  var DASH = String.fromCharCode(0x2014);
+  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+
+  /* ================= helpers ================= */
+  function feed(file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById("file");
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  function wait(label, test, budget) { return new Promise(function (resolve) { waitFor(label, test, resolve, budget); }); }
+  function read() { return !/^Reading/.test(txt("msg")); }
+  function bytesOfText(s) { var u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { u[i] = s.charCodeAt(i) & 255; } return u; }
+  function fromB64(s) { return bytesOfText(atob(s)); }
+  function latin1(bytes) {
+    var parts = [];
+    for (var i = 0; i < bytes.length; i += 32768) { parts.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 32768))); }
+    return parts.join("");
+  }
+  function makePdf(bodies, trailerExtra) {
+    var out = "%PDF-1.4\n", offsets = [];
+    bodies.forEach(function (b, i) {
+      offsets.push(out.length);
+      out += (i + 1) + " 0 obj\n" + (typeof b === "string" ? b : b.dict.replace("LEN", b.data.length) + "\nstream\n" + b.data + "\nendstream") + "\nendobj\n";
+    });
+    var x = out.length;
+    out += "xref\n0 " + (bodies.length + 1) + "\n0000000000 65535 f \n";
+    offsets.forEach(function (o) { out += ("0000000000" + o).slice(-10) + " 00000 n \n"; });
+    out += "trailer\n<<\/Size " + (bodies.length + 1) + " /Root 1 0 R" + (trailerExtra || "") + ">>\nstartxref\n" + x + "\n%%EOF\n";
+    return bytesOfText(out);
+  }
+  /* a picture whose bytes spell a word, so its presence in a file can be searched for */
+  function picture(word) {
+    var data = "";
+    while (data.length < 192) { data += word; }
+    data = data.slice(0, 192);
+    return { dict: "<<\/Type /XObject /Subtype /Image /Width 8 /Height 8 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Length LEN>>", data: data };
+  }
+  function drawing(text, picName) {
+    return { dict: "<<\/Length LEN>>", data: (picName ? "q 50 0 0 50 0 0 cm /" + picName + " Do Q " : "") + "BT /F1 12 Tf 10 10 Td (" + text + ") Tj ET" };
+  }
+
+  /* Five pages that all share ONE list of resources holding five pictures,
+     one drawn on each page: the layout where a careless copy keeps every
+     picture in every extract. Page 3's picture spells SECRETID. */
+  var DOC_SHARED = makePdf([
+    "<<\/Type /Catalog /Pages 2 0 R>>",
+    "<<\/Type /Pages /Kids [3 0 R 4 0 R 5 0 R 6 0 R 7 0 R] /Count 5 /MediaBox [0 0 100 100] /Resources 8 0 R>>",
+    "<<\/Type /Page /Parent 2 0 R /Contents 9 0 R>>",
+    "<<\/Type /Page /Parent 2 0 R /Contents 10 0 R>>",
+    "<<\/Type /Page /Parent 2 0 R /Contents 11 0 R>>",
+    "<<\/Type /Page /Parent 2 0 R /Contents 12 0 R>>",
+    "<<\/Type /Page /Parent 2 0 R /Contents 13 0 R>>",
+    "<<\/Font <<\/F1 19 0 R>> /XObject <<\/Im1 14 0 R /Im2 15 0 R /Im3 16 0 R /Im4 17 0 R /Im5 18 0 R>>>>",
+    /* page 1 also has a tiny picture written inline, whose eight bytes happen
+       to read "/Im3 Do ": they are picture data, not an instruction, and must
+       not make page 3's picture look used */
+    { dict: "<<\/Length LEN>>", data: "q 50 0 0 50 0 0 cm /Im1 Do Q BI /W 8 /H 1 /CS /G /BPC 8 ID /Im3 Do EI BT /F1 12 Tf 10 10 Td (P1) Tj ET" },
+    drawing("P2", "Im2"), drawing("P3", "Im3"), drawing("P4", "Im4"), drawing("P5", "Im5"),
+    picture("PICONE.."), picture("PICTWO.."), picture("SECRETID"), picture("PICFOUR."), picture("PICFIVE."),
+    "<<\/Type /Font /Subtype /Type1 /BaseFont /Helvetica>>"
+  ]);
+  var DOC_ENC = makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/Filter /Standard /V 2 /R 3>>"], " /Encrypt 4 0 R");
+  var F = {
+    shared: new File([DOC_SHARED], "statement.pdf", { type: "application/pdf" }),
+    damaged: new File([fromB64(TINY.bad_offsets)], "scan.pdf", { type: "application/pdf" }),
+    enc: new File([DOC_ENC], "locked.pdf", { type: "application/pdf" }),
+    notPdf: new File([bytesOfText("not a pdf at all")], "notes.pdf", { type: "application/pdf" }),
+    hostile: new File([DOC_SHARED], "<iframe onload=zq>.pdf", { type: "application/pdf" })
+  };
+
+  /* a reader for the PDF that comes out, sharing nothing with the page */
+  function readOut(bytes) {
+    var t = latin1(bytes);
+    var sx = /startxref\n(\d+)\n%%EOF\n$/.exec(t);
+    if (!sx) { throw new Error("no startxref at the end"); }
+    var at = Number(sx[1]);
+    var head = /^xref\n0 (\d+)\n/.exec(t.slice(at));
+    if (!head) { throw new Error("startxref does not point at the table"); }
+    var count = Number(head[1]), first = at + head[0].length, objs = {};
+    for (var n = 1; n < count; n++) {
+      var m = /^(\d{10}) 00000 n \n$/.exec(t.substr(first + n * 20, 20));
+      if (!m) { throw new Error("entry " + n + " is malformed"); }
+      var off = Number(m[1]), tag = n + " 0 obj\n";
+      if (t.substr(off, tag.length) !== tag) { throw new Error("object " + n + " is not where the table says"); }
+      var start = off + tag.length, si = t.indexOf("\nstream\n", start), ei = t.indexOf("\nendobj\n", start);
+      var o = { body: t.slice(start, ei), data: null };
+      if (si > -1 && si < ei) {
+        o.body = t.slice(start, si);
+        var len = Number(/\/Length (\d+)/.exec(o.body)[1]);
+        o.data = t.substr(si + 8, len);
+        if (t.substr(si + 8 + len, 18) !== "\nendstream\nendobj\n") { throw new Error("object " + n + " has the wrong /Length"); }
+      }
+      objs[n] = o;
+    }
+    var root = objs[Number(/\/Root (\d+) 0 R/.exec(t.slice(first + count * 20))[1])];
+    var pagesNum = Number(/\/Pages (\d+) 0 R/.exec(root.body)[1]);
+    var kids = /\/Kids \[([^\]]*)\]/.exec(objs[pagesNum].body)[1].match(/\d+ 0 R/g).map(function (k) { return parseInt(k, 10); });
+    var drawn = kids.map(function (k) {
+      var c = /\/Contents (\d+) 0 R/.exec(objs[k].body);
+      return c ? (/\(([^)]*)\) Tj/.exec(objs[Number(c[1])].data || "") || [0, "?"])[1] : "?";
+    });
+    return { text: t, drawn: drawn.join(","), pages: kids.length };
+  }
+  function download() {
+    var before = window.__saved.length;
+    click("dlBtn");
+    if (window.__saved.length !== before + 1) { return Promise.resolve(null); }
+    var saved = window.__saved[window.__saved.length - 1];
+    return saved.blob.arrayBuffer().then(function (b) {
+      var bytes = new Uint8Array(b), out = null, error = "";
+      try { out = readOut(bytes); } catch (e) { error = e.message; }
+      return { saved: saved, bytes: bytes, out: out, error: error };
+    });
+  }
+
+  var chain = Promise.resolve();
+  function step(fn) { chain = chain.then(fn); }
+
+  /* ================= the page as it opens ================= */
+  eq("it asks for a PDF", txt("msg"), "Choose a PDF.");
+  ok("the button starts disabled", document.getElementById("dlBtn").disabled);
+  eq("the tiles start blank", txt("sNow") + txt("sGone") + txt("sLeft"), DASH + DASH + DASH);
+
+  /* ================= taking pages out ================= */
+  step(function () {
+    feed(F.shared);
+    return wait("the PDF is read", read, 10000);
+  });
+  step(function () {
+    eq("it says how many pages there are, and asks which to take out", txt("msg"), "statement.pdf: 5 pages. Type the pages to take out.");
+    eq("the tiles show the count", txt("sNow") + "|" + txt("sGone") + "|" + txt("sLeft"), "5|" + DASH + "|" + DASH);
+    ok("nothing can be made before pages are typed", document.getElementById("dlBtn").disabled);
+    set("pages", "3");
+    eq("one page out", txt("sGone") + "|" + txt("sLeft"), "1|4");
+    eq("the pages that stay are listed short", txt("kept"), "Pages kept: 1-2, 4-5");
+    eq("and the message says so", txt("msg"), "statement.pdf: 5 pages. 1 page comes out, 4 stay.");
+    return download();
+  });
+  step(function (d) {
+    ok("the new PDF reads back cleanly", d && d.out, d ? d.error : "no download");
+    if (!d || !d.out) { return; }
+    eq("named for what was done to it", d.saved.name, "statement (pages removed).pdf");
+    eq("as a PDF", d.saved.blob.type, "application/pdf");
+    eq("the four pages that stay, in order", d.out.drawn, "P1,P2,P4,P5");
+    eq("the removed page's picture is not in the file at all, though every page shared one list of pictures",
+       d.out.text.indexOf("SECRETID"), -1);
+    ok("the pictures of the pages that stay are", ["PICONE..", "PICTWO..", "PICFOUR.", "PICFIVE."].every(function (w) { return d.out.text.indexOf(w) > -1; }));
+    eq("four pictures in the file, one for each page that stays", (d.out.text.match(/\/Subtype \/Image/g) || []).length, 4);
+    has("and the font the pages write with is still there", d.out.text, "/BaseFont /Helvetica");
+    has("the done message counts the pages", txt("msg"), "Done: 4 pages");
+    set("pages", "2, 4-");
+    eq("ranges and an open end", txt("kept") + "|" + txt("sGone"), "Pages kept: 1, 3|3");
+    return download();
+  });
+  step(function (d) {
+    eq("the right pages stay", d.out.drawn, "P1,P3");
+    ok("and only their pictures come along", d.out.text.indexOf("SECRETID") > -1 && d.out.text.indexOf("PICTWO..") === -1 && d.out.text.indexOf("PICFIVE.") === -1);
+    set("pages", "1, 1, 1-2");
+    eq("a page named twice comes out once", txt("sGone") + "|" + txt("kept"), "2|Pages kept: 3-5");
+    set("pages", "-4");
+    eq("an open start", txt("kept"), "Pages kept: 5");
+    set("pages", "1-5");
+    eq("taking out every page is refused", txt("msg"), "That takes out every page. A PDF needs at least one, so leave one or more in.");
+    ok("with nothing to download", document.getElementById("dlBtn").disabled && txt("kept") === "");
+    set("pages", "6");
+    eq("a page that is not there is named", txt("msg"), String.fromCharCode(0x201C) + "6" + String.fromCharCode(0x201D) + ": this PDF has only 5 pages.");
+    set("pages", "4-2");
+    has("a range written backwards", txt("msg"), "write the smaller number first, as in 2-4.");
+    set("pages", "");
+    eq("an empty box asks again", txt("msg"), "statement.pdf: 5 pages. Type the pages to take out.");
+    ok("with nothing to download", document.getElementById("dlBtn").disabled);
+  });
+
+  /* ================= a page whose drawing is damaged ================= */
+  /* When a page that stays cannot be read to the end, the page cannot know
+     which pictures it uses, so it must keep them all rather than guess. */
+  step(function () {
+    var drawingText = "q 50 0 0 50 0 0 cm /ImA Do Q ";
+    for (var i = 0; i < 300; i++) { drawingText += "% filler line " + i + "\n"; }
+    drawingText += "q 50 0 0 50 50 50 cm /ImB Do Q";
+    var packed = new Blob([bytesOfText(drawingText)]).stream().pipeThrough(new CompressionStream("deflate"));
+    return new Response(packed).arrayBuffer().then(function (buffer) {
+      var whole = new Uint8Array(buffer);
+      var cut = latin1(whole.subarray(0, whole.length - 40));
+      var doc = makePdf([
+        "<<\/Type /Catalog /Pages 2 0 R>>",
+        "<<\/Type /Pages /Kids [3 0 R 4 0 R] /Count 2 /MediaBox [0 0 100 100] /Resources <<\/XObject <<\/ImA 6 0 R /ImB 7 0 R /ImC 8 0 R>>>>>>",
+        "<<\/Type /Page /Parent 2 0 R /Contents 5 0 R>>",
+        "<<\/Type /Page /Parent 2 0 R /Contents 9 0 R>>",
+        { dict: "<<\/Filter /FlateDecode /Length LEN>>", data: cut },
+        picture("PICTUREA"), picture("PICTUREB"), picture("PICTUREC"),
+        drawing("Q2", "ImC")
+      ]);
+      feed(new File([doc], "torn.pdf", { type: "application/pdf" }));
+      return wait("a PDF with a torn drawing is read", read, 10000);
+    });
+  });
+  step(function () {
+    set("pages", "2");
+    return download();
+  });
+  step(function (d) {
+    ok("the page with the torn drawing keeps every picture it might use",
+       d && d.out && ["PICTUREA", "PICTUREB", "PICTUREC"].every(function (w) { return d.out.text.indexOf(w) > -1; }), d ? d.error : "no download");
+    set("pages", "");
+  });
+
+  /* ================= other files ================= */
+  step(function () {
+    feed(F.damaged);
+    return wait("a damaged PDF is read", read, 10000);
+  });
+  step(function () {
+    eq("a damaged file is read anyway, and the visitor told", txt("msg"), "scan.pdf: 1 page (damaged, but its pages could be found). Type the pages to take out.");
+    set("pages", "1");
+    has("its only page can not be taken out", txt("msg"), "takes out every page");
+    feed(F.notPdf);
+    return wait("a file that is not a PDF is looked at", read, 10000);
+  });
+  step(function () {
+    eq("it is turned away by name", txt("msg"), "Could not use notes.pdf: not a PDF.");
+    eq("with blank tiles", txt("sNow") + txt("sGone") + txt("sLeft"), DASH + DASH + DASH);
+    feed(F.enc);
+    return wait("a protected file is looked at", read, 10000);
+  });
+  step(function () {
+    eq("a protected one too", txt("msg"), "Could not use locked.pdf: protected with a password.");
+    feed(F.hostile);
+    return wait("a file named as markup is read", read, 10000);
+  });
+  step(function () {
+    has("its name is shown as text", txt("msg"), "<iframe onload=zq>.pdf: 5 pages.");
+    eq("and made no element", document.querySelectorAll("iframe").length, 0);
+    return download();
+  });
+  step(function (d) {
+    eq("its new name keeps the characters as they were", d.saved.name, "<iframe onload=zq> (pages removed).pdf");
+    click("resetBtn");
+    eq("clear empties everything", txt("msg") + "|" + val("pages") + "|" + txt("sNow"), "Choose a PDF.||" + DASH);
+  });
+
+  chain.then(function () { finish(); }, function (e) {
+    ok("the test ran to the end", false, String(e && e.stack || e));
+    finish();
+  });
+"""
+
 # ===== END: the test bodies ================================================
 
 
@@ -8217,6 +8470,7 @@ T["split-pdf"] = r"""
 # ahead of the real one. A tool that builds four zips can need twenty virtual
 # seconds and two real ones. Ask for more here, per tool; nothing else changes.
 BUDGET_MS = {
+    "remove-pdf-pages": 300000,
     "split-pdf": 500000,
     "favicon-generator": 40000,
     "image-splitter": 40000,

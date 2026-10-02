@@ -639,6 +639,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "remove-pdf-pages",
+    name: "Remove PDF Pages",
+    desc: "Take pages out of a PDF: type their numbers and download the rest. Nothing is uploaded.",
+    category: "PDF",
+    icon: "\u{1F5D1}\u{FE0F}",
+    keywords: ["remove pages from pdf", "delete pdf pages", "delete pages from pdf", "remove pdf pages", "pdf page remover", "take pages out of pdf", "extract pages", "pdf delete page", "remove a page from pdf", "cut pages from pdf"],
+    popular: false
+  },
+  {
     slug: "reverse-text",
     name: "Reverse Text",
     desc: "Flip text backwards, or reverse the order of the words and lines.",

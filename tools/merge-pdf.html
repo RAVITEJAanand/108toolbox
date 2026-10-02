@@ -22,8 +22,8 @@
   <meta name="referrer" content="no-referrer">
 
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=32">
-  <link rel="stylesheet" href="../css/tool.css?v=32">
+  <link rel="stylesheet" href="../css/style.css?v=33">
+  <link rel="stylesheet" href="../css/tool.css?v=33">
 
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
@@ -339,10 +339,10 @@
   </footer>
 
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=32"></script>
-  <script src="../js/tool-helpers.js?v=32"></script>
+  <script src="../js/tools-data.js?v=33"></script>
+  <script src="../js/tool-helpers.js?v=33"></script>
   <script>window.CURRENT_TOOL = "merge-pdf";</script>
-  <script src="../js/main.js?v=32"></script>
+  <script src="../js/main.js?v=33"></script>
 
   <!-- ===== This tool's own logic ===== -->
   <script data-tool>
@@ -1482,6 +1482,75 @@
       return v;
     };
 
+    /* ---- START: finding which pictures a page really draws ----
+       Some producers give every page one shared list of pictures, so each
+       page "has" every picture in the file. Copied as it is, a page taken
+       out of such a file would still carry the pictures of pages that were
+       left behind, hidden but there: a removed page would not really be
+       gone. So the page's drawing instructions are read, and only the
+       pictures it draws with "/Name Do" are kept. If the drawing cannot be
+       read for any reason, nothing is dropped. */
+    function usedXObjects(doc, page) {
+      try {
+        var contents = doc.resolve(page.dict.get("Contents"));
+        var streams = Array.isArray(contents) ? contents.map(function (c) { return doc.resolve(c); }) : [contents];
+        var chunks = [];
+        var total = 0;
+        for (var i = 0; i < streams.length; i++) {
+          if (streams[i] === PDF_NULL || streams[i] === undefined) { continue; }
+          if (!(streams[i] instanceof PdfStream)) { return null; }
+          var data = decodeStream(doc, streams[i]);
+          if (data.complete === false) { return null; }
+          chunks.push(data);
+          total += data.length + 1;
+        }
+        var all = new Uint8Array(total);
+        var at = 0;
+        chunks.forEach(function (c) { all.set(c, at); at += c.length; all[at++] = 10; });
+        var used = new Set();
+        var lx = new PdfLexer(all, 0);
+        var last = null;
+        for (;;) {
+          var tok = lx.token();
+          if (!tok) { break; }
+          if (tok.t === "word" && tok.v === "Do") {
+            if (!last || last.t !== "name") { return null; }
+            used.add(last.v.name);
+          } else if (tok.t === "word" && tok.v === "ID") {
+            /* an inline picture: its bytes run to the next "EI" standing on its own */
+            var b = lx.b, p = lx.pos + 1;
+            while (p < b.length - 1 && !(b[p] === 69 && b[p + 1] === 73 && WHITE[b[p - 1]] && (p + 2 >= b.length || WHITE[b[p + 2]] || DELIM[b[p + 2]]))) { p++; }
+            lx.pos = p + 2;
+          }
+          last = tok;
+        }
+        return used;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    /* the resources a copied page should have: its own or inherited ones,
+       with the pictures it never draws left out */
+    function resourcesFor(doc, page) {
+      var res = page.inherited.Resources;
+      var dict = doc.resolve(res);
+      if (!(dict instanceof PdfDict)) { return res; }
+      var xobjects = doc.resolve(dict.get("XObject"));
+      if (!(xobjects instanceof PdfDict)) { return res; }
+      var used = usedXObjects(doc, page);
+      if (!used) { return res; }
+      var keep = xobjects.keys().filter(function (k) { return used.has(k); });
+      if (keep.length === xobjects.keys().length) { return res; }
+      var copy = new PdfDict();
+      dict.keys().forEach(function (k) { copy.set(k, dict.get(k)); });
+      var trimmed = new PdfDict();
+      keep.forEach(function (k) { trimmed.set(k, xobjects.get(k)); });
+      copy.set("XObject", trimmed);
+      return copy;
+    }
+    /* ---- END: finding which pictures a page really draws ---- */
+
     /* step 2: write a claimed page, with what it took from the tree above it
        written into it, and an extra quarter turn if asked */
     PdfCopier.prototype.writePage = function (doc, page, num, extraTurns) {
@@ -1493,7 +1562,8 @@
       });
       d.set("Type", new PdfName("Page"));
       d.set("Parent", new PdfRef(this.pagesNum, 0));
-      ["Resources", "MediaBox", "CropBox"].forEach(function (k) {
+      if (page.inherited.Resources !== undefined) { d.set("Resources", self.copyValue(doc, resourcesFor(doc, page))); }
+      ["MediaBox", "CropBox"].forEach(function (k) {
         if (page.inherited[k] !== undefined) { d.set(k, self.copyValue(doc, page.inherited[k])); }
       });
       if (!d.has("MediaBox")) { d.set("MediaBox", [0, 0, 612, 792]); }
