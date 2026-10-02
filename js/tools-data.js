@@ -432,6 +432,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "income-tax-calculator",
+    name: "Income Tax Calculator",
+    desc: "Compare your income tax under the new and the old regime for FY 2026-27, with rebate, surcharge and cess.",
+    category: "Calculator",
+    icon: "\u{1F9FE}",
+    keywords: ["income tax calculator", "tax calculator 2026-27", "new vs old regime", "income tax slab", "87a rebate", "tax on 12 lakh salary", "salary tax", "income tax india", "fy 2026-27", "itr"],
+    popular: false
+  },
+  {
     slug: "js-minifier",
     name: "JavaScript Minifier",
     desc: "Remove comments and whitespace from JavaScript without renaming anything or changing what it does.",

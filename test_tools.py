@@ -11177,6 +11177,119 @@ T["currency-converter"] = r"""  /* ================= independent arithmetic and 
   finish();
 """
 
+T["income-tax-calculator"] = r"""  /* Every expected figure below was worked out by hand from the official
+     slab tables, and agrees with a separate Python implementation. */
+  var R = String.fromCharCode(0x20B9), M = String.fromCharCode(0x2212) + " ", DASH = String.fromCharCode(0x2014);
+  var KEYS = ["gross", "standard", "deductions", "taxable", "tax", "rebate", "surcharge", "cess", "total", "month", "rate"];
+  function column(regime) { return KEYS.map(function (k) { return txt(regime + "-" + k); }).join(" | "); }
+  function fill(values) {
+    ["salary", "other", "employerNps", "invest", "health", "homeLoan", "nps", "hra", "otherDeductions"].forEach(function (id) {
+      set(id, values[id] === undefined ? "" : values[id]);
+    });
+    set("age", values.age || "below60");
+  }
+
+  /* ================= the page as it opens ================= */
+  eq("it opens on a salary of 15 lakh", val("salary") + "|" + val("age"), "15,00,000|below60");
+  eq("new regime: 14,25,000 taxable, 93,750 tax, 3,750 cess", column("new"),
+     [R + "15,00,000", M + R + "75,000", R + "0", R + "14,25,000", R + "93,750", R + "0", R + "0", R + "3,750", R + "97,500", R + "8,125", "6.5%"].join(" | "));
+  eq("old regime: 14,50,000 taxable, 2,47,500 tax, 9,900 cess", column("old"),
+     [R + "15,00,000", M + R + "50,000", R + "0", R + "14,50,000", R + "2,47,500", R + "0", R + "0", R + "9,900", R + "2,57,400", R + "21,450", "17.2%"].join(" | "));
+  eq("the lower tax in large", txt("best"), R + "97,500");
+  eq("and which regime gives it", txt("verdict"), "The new regime saves you " + R + "1,59,900 a year.");
+  eq("no message", txt("msg"), "");
+
+  /* ================= the 12-lakh rebate ================= */
+  fill({ salary: "1275000" });
+  eq("12,75,000 of salary: no tax under the new regime", txt("new-taxable") + " " + txt("new-tax") + " " + txt("new-rebate") + " " + txt("new-total"),
+     R + "12,00,000 " + R + "60,000 " + M + R + "60,000 " + R + "0");
+  eq("1,87,200 under the old", txt("old-total"), R + "1,87,200");
+  fill({ salary: "1285000" });
+  eq("12,10,000 taxable: the tax is cut to the 10,000 above 12 lakh", txt("new-tax") + " " + txt("new-rebate") + " " + txt("new-cess") + " " + txt("new-total"),
+     R + "61,500 " + M + R + "51,500 " + R + "400 " + R + "10,400");
+  fill({ other: "1400000" });
+  eq("income that is not salary gets no standard deduction", txt("new-standard") + " " + txt("old-standard") + " " + txt("new-taxable"), R + "0 " + R + "0 " + R + "14,00,000");
+  fill({ salary: "60000" });
+  eq("a salary below the standard deduction only uses up itself", txt("new-standard") + " " + txt("new-taxable"), M + R + "60,000 " + R + "0");
+
+  /* ================= old-regime deductions ================= */
+  fill({ salary: "15,00,000", invest: "2,00,000", health: "25000", homeLoan: "300000", nps: "50000", hra: "100000" });
+  eq("deductions are capped and counted in the old regime only: 1,50,000 + 25,000 + 2,00,000 + 50,000 + 1,00,000",
+     txt("old-deductions") + " " + txt("new-deductions"), M + R + "5,25,000 " + R + "0");
+  eq("old: 9,25,000 taxable, 97,500 tax, 1,01,400 to pay", txt("old-taxable") + " " + txt("old-tax") + " " + txt("old-total"),
+     R + "9,25,000 " + R + "97,500 " + R + "1,01,400");
+  eq("the new regime still wins, by 3,900", txt("verdict"), "The new regime saves you " + R + "3,900 a year.");
+  set("employerNps", "100000");
+  eq("the employer's NPS counts in both", txt("new-deductions") + " " + txt("old-deductions"), M + R + "1,00,000 " + M + R + "6,25,000");
+  eq("now the old regime wins: 80,600 against 81,900", txt("new-total") + " " + txt("old-total") + " " + txt("best"), R + "81,900 " + R + "80,600 " + R + "80,600");
+  eq("and says so", txt("verdict"), "The old regime saves you " + R + "1,300 a year.");
+  fill({ salary: "1500000", nps: "90000" });
+  eq("your own NPS is counted up to 50,000", txt("old-deductions") + " " + txt("old-taxable"), M + R + "50,000 " + R + "14,00,000");
+  fill({ salary: "100000", invest: "150000" });
+  eq("deductions larger than the income leave nothing taxable, not less than nothing", txt("old-taxable") + " " + txt("old-total"), R + "0 " + R + "0");
+  fill({ salary: "15,00,000", invest: "2,00,000", health: "25000", homeLoan: "300000", nps: "50000", hra: "100000", employerNps: "100000" });
+  set("otherDeductions", "4,00,000");
+  eq("deductions never take taxable income below nothing", txt("old-taxable") + " " + txt("old-total"), R + "4,25,000 " + R + "0");
+
+  /* ================= age, in the old regime ================= */
+  fill({ other: "1000000", age: "from80" });
+  eq("at 80, five lakh is exempt: 1,00,000 + cess", txt("old-tax") + " " + txt("old-total"), R + "1,00,000 " + R + "1,04,000");
+  eq("the new regime ignores age: 40,000, all rebated", txt("new-tax") + " " + txt("new-total"), R + "40,000 " + R + "0");
+  set("age", "from60");
+  eq("at 60, three lakh is exempt: 10,000 + 1,00,000", txt("old-tax"), R + "1,10,000");
+  set("age", "below60");
+  eq("below 60, two and a half lakh: 12,500 + 1,00,000", txt("old-tax"), R + "1,12,500");
+  fill({ other: "500000", age: "from60" });
+  eq("the old regime's rebate: five lakh pays nothing", txt("old-tax") + " " + txt("old-rebate") + " " + txt("old-total"), R + "10,000 " + M + R + "10,000 " + R + "0");
+  set("other", "500010");
+  eq("ten rupees more and the rebate is gone, with no relief: 10,002 + cess", txt("old-tax") + " " + txt("old-rebate") + " " + txt("old-total"), R + "10,002 " + R + "0 " + R + "10,400");
+
+  /* ================= surcharge ================= */
+  fill({ other: "5010000" });
+  eq("50,10,000 under the old regime: surcharge cut from 1,31,550 to 7,000", txt("old-tax") + " " + txt("old-surcharge") + " " + txt("old-total"),
+     R + "13,15,500 " + R + "7,000 " + R + "13,75,400");
+  eq("and under the new: 10,83,000 tax, surcharge 7,000", txt("new-tax") + " " + txt("new-surcharge") + " " + txt("new-total"),
+     R + "10,83,000 " + R + "7,000 " + R + "11,33,600");
+  fill({ other: "10010000" });
+  eq("just over 1 crore: relief from the 10% the step already carries", txt("old-surcharge") + " " + txt("new-surcharge"), R + "2,88,250 " + R + "2,65,000");
+  fill({ other: "20010000" });
+  eq("just over 2 crore: relief from 15%", txt("old-surcharge") + " " + txt("new-surcharge"), R + "8,78,875 " + R + "8,44,000");
+  fill({ other: "50010000" });
+  eq("just over 5 crore, old regime: relief from 25%", txt("old-surcharge"), R + "37,10,125");
+  fill({ other: "60000000" });
+  eq("6 crore: 37% under the old regime, 25% under the new", txt("old-surcharge") + " " + txt("new-surcharge"),
+     R + "65,90,625 " + R + "43,95,000");
+  fill({ other: "1" });
+  eq("one rupee: rounded to nothing", txt("new-taxable") + " " + txt("new-total"), R + "0 " + R + "0");
+  fill({ other: "1234565" });
+  eq("taxable income is rounded to the nearest ten: 12,34,565 becomes 12,34,570", txt("new-taxable"), R + "12,34,570");
+  fill({});
+  eq("no income at all: no tax either way", txt("best") + " | " + txt("verdict") + " | " + txt("new-rate"), R + "0 | Both regimes come to the same tax. | 0.0%");
+
+  /* ================= amounts it refuses ================= */
+  [["salary", "abc", "Type the salary or pension as a number of rupees, such as 150000."],
+   ["salary", "-500000", "Type the salary or pension as a number of rupees, such as 150000."],
+   ["invest", "1e5", "Type the investments as a number of rupees, such as 150000."],
+   ["hra", "12.5.0", "Type the HRA exemption as a number of rupees, such as 150000."],
+   ["other", "2000000000000", "The other income is too large for this calculator."]].forEach(function (c) {
+    fill({ salary: "1500000" });
+    set(c[0], c[1]);
+    eq("refused: " + c[0] + " \"" + c[1] + "\"", txt("msg") + "|" + document.getElementById("msg").className, c[2] + "|msg msg--bad");
+    eq("  with nothing worked out", txt("best") + "|" + txt("verdict") + "|" + txt("new-total") + "|" + txt("old-rate"), DASH + "||" + DASH + "|" + DASH);
+  });
+  fill({ salary: "<img src=x onerror=zq>" });
+  eq("markup typed as an amount is refused as text", document.querySelectorAll("#msg *, table.data img").length, 0);
+  fill({ salary: " 15 00 000 " });
+  eq("spaces in an amount are fine", txt("new-total") + " " + txt("msg"), R + "97,500 ");
+
+  /* ================= reset ================= */
+  fill({ salary: "2500000", invest: "150000", age: "from80" });
+  click("resetBtn");
+  eq("reset brings back 15 lakh and nothing else", val("salary") + "|" + val("invest") + "|" + val("age") + "|" + txt("best"),
+     "15,00,000||below60|" + R + "97,500");
+  finish();
+"""
+
 # ===== END: the test bodies ================================================
 
 
@@ -11187,6 +11300,7 @@ T["currency-converter"] = r"""  /* ================= independent arithmetic and 
 # ahead of the real one. A tool that builds four zips can need twenty virtual
 # seconds and two real ones. Ask for more here, per tool; nothing else changes.
 BUDGET_MS = {
+    "income-tax-calculator": 15000,
     "currency-converter": 15000,
     "pdf-to-image": 400000,
     "compress-pdf": 600000,

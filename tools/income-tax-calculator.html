@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Income Tax Calculator FY 2026-27 — New vs Old Regime</title>
+  <meta name="description" content="Work out your income tax for FY 2026-27 under the new and the old regime side by side, with rebate, surcharge and cess. Updated for Budget 2026.">
+  <link rel="canonical" href="https://108toolbox.in/tools/income-tax-calculator.html">
+
+  <meta property="og:title" content="Income Tax Calculator FY 2026-27 — New vs Old Regime">
+  <meta property="og:description" content="Work out your income tax for FY 2026-27 under the new and the old regime side by side, with rebate, surcharge and cess. Updated for Budget 2026.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=41">
+  <link rel="stylesheet" href="../css/tool.css?v=41">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How much salary is tax-free in FY 2026-27?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Under the new regime, up to ₹12,75,000 of salary: the ₹75,000 standard deduction brings it to ₹12,00,000 of taxable income, and the rebate covers the tax on that."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which regime should I choose?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The one with the lower tax, which the calculator shows. The new regime usually wins unless your deductions are large: a home loan, full investments under 80C, health insurance and NPS together."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Did Budget 2026 change the tax slabs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Budget 2026 left the slabs, the rebate, the standard deduction, the surcharge and the cess as they were in FY 2025-26, so this calculator works for both years."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my tax slightly different from my salary slip?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your employer may spread the tax differently over the months, count allowances or deductions differently, or include capital gains or other income this calculator leaves out. The yearly total should be close if the figures you type are the same."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my income sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The calculation happens in JavaScript inside your own browser. Nothing you type is uploaded or saved - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
+        <span>Income Tax Calculator</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Income Tax Calculator FY 2026-27</h1>
+        <p>Compare your tax under the new and the old regime for FY 2026-27, with
+           the rebate, surcharge and cess worked out. Updated for Budget 2026,
+           which left every rate unchanged, so FY 2025-26 is taxed the same way.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">1. Your income for the year</span>
+
+          <div class="field">
+            <label for="age">Your age</label>
+            <select id="age">
+              <option value="below60" selected>Below 60</option>
+              <option value="from60">60 to 79</option>
+              <option value="from80">80 or older</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="salary">Salary or pension</label>
+            <input type="text" id="salary" value="15,00,000" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0">
+            <p class="hint">For the year, before tax, including HRA (its exempt part goes further down).</p>
+          </div>
+          <div class="field">
+            <label for="other">Other income</label>
+            <input type="text" id="other" value="" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0">
+            <p class="hint">Interest, rent after its 30% deduction, and anything else taxed at the normal rates.</p>
+          </div>
+          <div class="field">
+            <label for="employerNps">Your employer's NPS contribution</label>
+            <input type="text" id="employerNps" value="" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0">
+            <p class="hint">Allowed under both regimes: up to 14% of basic pay under the new, 10% under the old.</p>
+          </div>
+
+          <p class="panel__label" style="margin-top:var(--s5)">Deductions, old regime only</p>
+          <div class="field">
+            <label for="invest">Investments such as PPF, ELSS, EPF, life insurance (known as 80C)</label>
+            <input type="text" id="invest" value="" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0">
+            <p class="hint">Counted up to &#8377;1,50,000.</p>
+          </div>
+          <div class="field">
+            <label for="health">Health insurance premiums (80D)</label>
+            <input type="text" id="health" value="" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0">
+            <p class="hint">What you can claim: up to &#8377;25,000 for yourself and family (&#8377;50,000 if you are 60 or older), plus up to &#8377;25,000 for your parents (&#8377;50,000 if they are 60 or older).</p>
+          </div>
+          <div class="field">
+            <label for="homeLoan">Interest on a loan for the home you live in</label>
+            <input type="text" id="homeLoan" value="" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0">
+            <p class="hint">Counted up to &#8377;2,00,000.</p>
+          </div>
+          <div class="field">
+            <label for="nps">Your own extra NPS contribution (80CCD(1B))</label>
+            <input type="text" id="nps" value="" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0">
+            <p class="hint">Counted up to &#8377;50,000.</p>
+          </div>
+          <div class="field">
+            <label for="hra">HRA exemption</label>
+            <input type="text" id="hra" value="" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0">
+            <p class="hint">The part of your house rent allowance that is exempt.</p>
+          </div>
+          <div class="field">
+            <label for="otherDeductions">Other deductions</label>
+            <input type="text" id="otherDeductions" value="" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0">
+            <p class="hint">Education-loan interest, donations, savings-account interest and the like.</p>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--danger" type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <!-- min-width:0 lets the panel be narrower than the table, which
+             then scrolls inside its box instead of widening the page -->
+        <div class="panel" style="min-width:0">
+          <span class="panel__label">2. Your tax, both ways</span>
+
+          <div class="result">
+            <span class="result__num" id="best">&mdash;</span>
+            <span class="result__label" id="verdict"></span>
+          </div>
+          <p class="msg" id="msg" aria-live="polite"></p>
+
+          <div class="table-wrap" style="margin-top:var(--s4)">
+            <table class="data">
+              <thead><tr><th scope="col"></th><th scope="col">New regime</th><th scope="col">Old regime</th></tr></thead>
+              <tbody>
+                <tr><td style="white-space:normal">Income</td><td id="new-gross">&mdash;</td><td id="old-gross">&mdash;</td></tr>
+                <tr><td style="white-space:normal">Standard deduction</td><td id="new-standard">&mdash;</td><td id="old-standard">&mdash;</td></tr>
+                <tr><td style="white-space:normal">Other deductions</td><td id="new-deductions">&mdash;</td><td id="old-deductions">&mdash;</td></tr>
+                <tr><td style="white-space:normal">Taxable income</td><td id="new-taxable">&mdash;</td><td id="old-taxable">&mdash;</td></tr>
+                <tr><td style="white-space:normal">Tax on the slabs</td><td id="new-tax">&mdash;</td><td id="old-tax">&mdash;</td></tr>
+                <tr><td style="white-space:normal">Rebate</td><td id="new-rebate">&mdash;</td><td id="old-rebate">&mdash;</td></tr>
+                <tr><td style="white-space:normal">Surcharge</td><td id="new-surcharge">&mdash;</td><td id="old-surcharge">&mdash;</td></tr>
+                <tr><td style="white-space:normal">Health and education cess, 4%</td><td id="new-cess">&mdash;</td><td id="old-cess">&mdash;</td></tr>
+                <tr><td style="font-weight:700;white-space:normal">Tax to pay</td><td id="new-total" style="font-weight:700">&mdash;</td><td id="old-total" style="font-weight:700">&mdash;</td></tr>
+                <tr><td style="white-space:normal">Each month</td><td id="new-month">&mdash;</td><td id="old-month">&mdash;</td></tr>
+                <tr><td style="white-space:normal">Share of income</td><td id="new-rate">&mdash;</td><td id="old-rate">&mdash;</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="hint">For resident individuals. Taxable income and the tax are rounded to the nearest &#8377;10, as the law requires.</p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>New regime slabs, FY 2026-27</h2>
+        <p>The same for every age. Salaried people and pensioners deduct
+           &#8377;75,000 first.</p>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th scope="col">Taxable income</th><th scope="col">Rate</th></tr></thead>
+            <tbody>
+              <tr><td>Up to &#8377;4,00,000</td><td>Nil</td></tr>
+              <tr><td>&#8377;4,00,001 to &#8377;8,00,000</td><td>5%</td></tr>
+              <tr><td>&#8377;8,00,001 to &#8377;12,00,000</td><td>10%</td></tr>
+              <tr><td>&#8377;12,00,001 to &#8377;16,00,000</td><td>15%</td></tr>
+              <tr><td>&#8377;16,00,001 to &#8377;20,00,000</td><td>20%</td></tr>
+              <tr><td>&#8377;20,00,001 to &#8377;24,00,000</td><td>25%</td></tr>
+              <tr><td>Above &#8377;24,00,000</td><td>30%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A rebate of up to &#8377;60,000 means no tax at all on a taxable
+           income up to &#8377;12,00,000, which is &#8377;12,75,000 of salary.
+           Just above &#8377;12 lakh the tax is never more than the income
+           above &#8377;12 lakh, so earning a little more never leaves you with
+           less.</p>
+
+        <h2>Old regime slabs, FY 2026-27</h2>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th scope="col">Taxable income</th><th scope="col">Below 60</th><th scope="col">60 to 79</th><th scope="col">80 or older</th></tr></thead>
+            <tbody>
+              <tr><td>Up to &#8377;2,50,000</td><td>Nil</td><td>Nil</td><td>Nil</td></tr>
+              <tr><td>&#8377;2,50,001 to &#8377;3,00,000</td><td>5%</td><td>Nil</td><td>Nil</td></tr>
+              <tr><td>&#8377;3,00,001 to &#8377;5,00,000</td><td>5%</td><td>5%</td><td>Nil</td></tr>
+              <tr><td>&#8377;5,00,001 to &#8377;10,00,000</td><td>20%</td><td>20%</td><td>20%</td></tr>
+              <tr><td>Above &#8377;10,00,000</td><td>30%</td><td>30%</td><td>30%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The standard deduction is &#8377;50,000, and a rebate of up to
+           &#8377;12,500 means no tax on a taxable income up to &#8377;5,00,000.
+           The old regime allows the deductions in the form, which is why it
+           can still come out lower for someone with a large home loan and
+           full investments.</p>
+
+        <h2>Surcharge and cess</h2>
+        <p>Above &#8377;50 lakh a surcharge is added to the tax: 10% above
+           &#8377;50 lakh, 15% above &#8377;1 crore, 25% above &#8377;2 crore,
+           and under the old regime 37% above &#8377;5 crore (the new regime
+           stops at 25%). Crossing a step never costs more than the income
+           above it; the calculator applies that relief. A health and
+           education cess of 4% is then added to the tax and surcharge.</p>
+
+        <h2>What this calculator leaves out</h2>
+        <p>Capital gains taxed at their own rates (shares, mutual funds,
+           property), lottery winnings, agricultural income and the rules for
+           non-residents are not included, and the rebate does not reduce
+           tax on those. The rates are those of Budget 2026, unchanged from
+           FY 2025-26, under the Income-tax Act 2025 that took effect on
+           1 April 2026. Use it to compare and to plan; your return or a
+           tax professional has the final word.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>How much salary is tax-free in FY 2026-27?</h3>
+          <p>Under the new regime, up to ₹12,75,000 of salary: the ₹75,000 standard deduction brings it to ₹12,00,000 of taxable income, and the rebate covers the tax on that.</p>
+        </div>
+        <div class="faq">
+          <h3>Which regime should I choose?</h3>
+          <p>The one with the lower tax, which the calculator shows. The new regime usually wins unless your deductions are large: a home loan, full investments under 80C, health insurance and NPS together.</p>
+        </div>
+        <div class="faq">
+          <h3>Did Budget 2026 change the tax slabs?</h3>
+          <p>No. Budget 2026 left the slabs, the rebate, the standard deduction, the surcharge and the cess as they were in FY 2025-26, so this calculator works for both years.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is my tax slightly different from my salary slip?</h3>
+          <p>Your employer may spread the tax differently over the months, count allowances or deductions differently, or include capital gains or other income this calculator leaves out. The yearly total should be close if the figures you type are the same.</p>
+        </div>
+        <div class="faq">
+          <h3>Is my income sent anywhere?</h3>
+          <p>No. The calculation happens in JavaScript inside your own browser. Nothing you type is uploaded or saved - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=pdf">PDF tools</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+            <li><a href="../tools.html?q=random">Random tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=41"></script>
+  <script src="../js/tool-helpers.js?v=41"></script>
+  <script>window.CURRENT_TOOL = "income-tax-calculator";</script>
+  <script src="../js/main.js?v=41"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var FIELDS = [
+      ["salary", "salary or pension"], ["other", "other income"], ["employerNps", "employer's NPS contribution"],
+      ["invest", "investments"], ["health", "health insurance"], ["homeLoan", "home-loan interest"],
+      ["nps", "your own NPS contribution"], ["hra", "HRA exemption"], ["otherDeductions", "other deductions"]
+    ];
+    var ageSel = document.getElementById("age");
+    var msg = document.getElementById("msg");
+    var verdict = document.getElementById("verdict");
+    var best = document.getElementById("best");
+    var RUPEE = String.fromCharCode(0x20B9);
+
+    /* ---- START: the tax rules for FY 2025-26 and tax year 2026-27 ----
+       Resident individuals. Budget 2026 left every personal rate unchanged,
+       so the two years are taxed alike. Amounts in whole rupees.
+
+       New regime: the same slabs at every age; a rebate of up to 60,000
+       makes income up to 12 lakh tax-free, and just above 12 lakh the tax
+       is never more than the income above 12 lakh. Old regime: the slabs
+       start higher for those 60 and over; a rebate of up to 12,500 up to
+       5 lakh. Surcharge from 50 lakh, never more than the income above
+       each step; the new regime's stops at 25 percent. Cess 4 percent on
+       tax and surcharge. Taxable income, and the tax, rounded to the
+       nearest ten rupees, as the Act requires. */
+    var RULES = {
+      "new": {
+        slabs: [[400000, 0], [800000, 0.05], [1200000, 0.10], [1600000, 0.15], [2000000, 0.20], [2400000, 0.25], [Infinity, 0.30]],
+        standardDeduction: 75000,
+        rebateLimit: 1200000, rebateMax: 60000, rebateRelief: true,
+        surcharge: [[5000000, 0.10], [10000000, 0.15], [20000000, 0.25]]
+      },
+      "old": {
+        slabs: { below60: [[250000, 0], [500000, 0.05], [1000000, 0.20], [Infinity, 0.30]],
+                 from60:  [[300000, 0], [500000, 0.05], [1000000, 0.20], [Infinity, 0.30]],
+                 from80:  [[500000, 0], [1000000, 0.20], [Infinity, 0.30]] },
+        standardDeduction: 50000,
+        rebateLimit: 500000, rebateMax: 12500, rebateRelief: false,
+        surcharge: [[5000000, 0.10], [10000000, 0.15], [20000000, 0.25], [50000000, 0.37]]
+      }
+    };
+    var CESS = 0.04;
+    /* old-regime deductions the page asks for, and the most each may be */
+    var CAPS = { invest: 150000, homeLoan: 200000, nps: 50000 };
+
+    function roundTen(x) { return Math.floor((x + 5) / 10) * 10; }
+
+    function slabTax(income, slabs) {
+      var tax = 0, from = 0;
+      for (var i = 0; i < slabs.length && income > from; i++) {
+        var to = slabs[i][0];
+        tax += (Math.min(income, to) - from) * slabs[i][1];
+        from = to;
+      }
+      return tax;
+    }
+
+    function surchargeRate(income, steps) {
+      var rate = 0;
+      steps.forEach(function (s) { if (income > s[0]) { rate = s[1]; } });
+      return rate;
+    }
+
+    /* Tax and surcharge together never exceed the tax and surcharge at
+       the step just passed plus the income above that step. */
+    function withSurcharge(income, tax, slabs, steps) {
+      var rate = surchargeRate(income, steps);
+      if (rate === 0) { return { surcharge: 0, relief: 0 }; }
+      var step = 0, below = 0;
+      steps.forEach(function (s, i) { if (income > s[0]) { step = s[0]; below = i > 0 ? steps[i - 1][1] : 0; } });
+      var full = tax * rate;
+      var cap = slabTax(step, slabs) * (1 + below) + (income - step) - tax;
+      var surcharge = Math.max(0, Math.min(full, cap));
+      return { surcharge: surcharge, relief: full - surcharge };
+    }
+
+    /* input: { age: "below60" | "from60" | "from80", salary, other,
+                invest, health, homeLoan, nps, hra, otherDeductions, employerNps }
+       Returns each regime's working, every figure in rupees. */
+    function regimeTax(regime, input) {
+      var r = RULES[regime];
+      var slabs = regime === "old" ? r.slabs[input.age] : r.slabs;
+      var standard = Math.min(input.salary, r.standardDeduction);
+      var deductions = input.employerNps;
+      if (regime === "old") {
+        deductions += Math.min(input.invest, CAPS.invest) + input.health + Math.min(input.homeLoan, CAPS.homeLoan) +
+                      Math.min(input.nps, CAPS.nps) + input.hra + input.otherDeductions;
+      }
+      var gross = input.salary + input.other;
+      var taxable = roundTen(Math.max(0, gross - standard - deductions));
+      var tax = slabTax(taxable, slabs);
+      var rebate = 0;
+      if (taxable <= r.rebateLimit) {
+        rebate = Math.min(tax, r.rebateMax);
+      } else if (r.rebateRelief && tax > taxable - r.rebateLimit) {
+        rebate = tax - (taxable - r.rebateLimit);   /* marginal relief: no more tax than income above the limit */
+      }
+      var afterRebate = tax - rebate;
+      var sc = withSurcharge(taxable, afterRebate, slabs, r.surcharge);
+      var cess = (afterRebate + sc.surcharge) * CESS;
+      var total = roundTen(afterRebate + sc.surcharge + cess);
+      return {
+        gross: gross, standard: standard, deductions: deductions, taxable: taxable,
+        tax: tax, rebate: rebate, surcharge: sc.surcharge, surchargeRelief: sc.relief,
+        cess: cess, total: total
+      };
+    }
+    /* ---- END: the tax rules for FY 2025-26 and tax year 2026-27 ---- */
+    /* ---- START: writing rupees ---- */
+    function rupees(x) {
+      return RUPEE + new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(Math.round(x));
+    }
+    /* ---- END: writing rupees ---- */
+
+    /* ---- START: reading the amounts ---- */
+    function readInput() {
+      var input = { age: ageSel.value }, problem = "";
+      FIELDS.forEach(function (f) {
+        var text = document.getElementById(f[0]).value.replace(/[\s,]/g, "");
+        if (text === "") { input[f[0]] = 0; return; }
+        if (!/^\d+(\.\d+)?$/.test(text)) {
+          if (!problem) { problem = "Type the " + f[1] + " as a number of rupees, such as 150000."; }
+          return;
+        }
+        var value = Number(text);
+        if (value > 1e12 && !problem) { problem = "The " + f[1] + " is too large for this calculator."; }
+        input[f[0]] = value;
+      });
+      return problem ? { error: problem } : input;
+    }
+    /* ---- END: reading the amounts ---- */
+
+    /* ---- START: showing both regimes ---- */
+    var ROWS = [
+      ["gross", "Income"], ["standard", "Standard deduction"], ["deductions", "Other deductions"],
+      ["taxable", "Taxable income"], ["tax", "Tax on the slabs"], ["rebate", "Rebate"],
+      ["surcharge", "Surcharge"], ["cess", "Health and education cess, 4%"], ["total", "Tax to pay"]
+    ];
+
+    function show(results) {
+      ROWS.forEach(function (row) {
+        ["new", "old"].forEach(function (regime) {
+          var value = results ? results[regime][row[0]] : null;
+          var negative = row[0] === "standard" || row[0] === "deductions" || row[0] === "rebate";
+          document.getElementById(regime + "-" + row[0]).textContent =
+            value === null ? String.fromCharCode(0x2014) : (negative && value > 0 ? String.fromCharCode(0x2212) + " " : "") + rupees(value);
+        });
+      });
+      ["new", "old"].forEach(function (regime) {
+        var r = results && results[regime];
+        document.getElementById(regime + "-month").textContent = r ? rupees(r.total / 12) : String.fromCharCode(0x2014);
+        document.getElementById(regime + "-rate").textContent =
+          r ? (r.gross > 0 ? (r.total / r.gross * 100).toFixed(1) + "%" : "0.0%") : String.fromCharCode(0x2014);
+      });
+    }
+
+    function refresh() {
+      var input = readInput();
+      if (input.error) {
+        show(null);
+        best.textContent = String.fromCharCode(0x2014);
+        verdict.textContent = "";
+        msg.textContent = input.error;
+        msg.className = "msg msg--bad";
+        return;
+      }
+      msg.textContent = "";
+      msg.className = "msg";
+      var results = { "new": regimeTax("new", input), "old": regimeTax("old", input) };
+      show(results);
+      var gap = results.old.total - results["new"].total;
+      best.textContent = rupees(Math.min(results.old.total, results["new"].total));
+      verdict.textContent = gap > 0 ? "The new regime saves you " + rupees(gap) + " a year." :
+                            gap < 0 ? "The old regime saves you " + rupees(-gap) + " a year." :
+                            "Both regimes come to the same tax.";
+    }
+    /* ---- END: showing both regimes ---- */
+
+    /* ---- START: wiring ---- */
+    FIELDS.forEach(function (f) { document.getElementById(f[0]).addEventListener("input", refresh); });
+    ageSel.addEventListener("change", refresh);
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      FIELDS.forEach(function (f) { document.getElementById(f[0]).value = f[0] === "salary" ? "15,00,000" : ""; });
+      ageSel.value = "below60";
+      refresh();
+    });
+    /* ---- END: wiring ---- */
+
+    refresh();
+  })();
+  </script>
+</body>
+</html>

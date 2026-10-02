@@ -7,8 +7,9 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 107 of a planned 108 tools are built, tested and live.
-Phase 2 is finished; Phase 3 has started.
+**Where it stands:** 108 of a planned 108 tools are built, tested and live
+(2 Oct 2026). What comes next is the owner's plan for advertising: rewrite
+the "no ads" promises in their own commit first (rule 7), then AdSense.
 
 ---
 
@@ -34,11 +35,11 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`107 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`108 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">107</span> tools live
+<span data-tool-count="live">108</span> tools live
 <span data-tool-count="remaining">47</span> on the way
 ```
 
@@ -72,8 +73,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=40` → `?v=41` across all 117 pages (currently `?v=40`,
-567 occurrences), the template included.
+Find-and-replace `?v=41` → `?v=42` across all 118 pages (currently `?v=41`,
+572 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
 the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
@@ -108,7 +109,7 @@ python security.py     ATTACKS the files — hostile text in every box, hostile
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 107, not just the one you changed.** That is the
+**`test_tools.py` runs all 108, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -331,7 +332,7 @@ Umami or Cloudflare Web Analytics — or drop the claim. Not both.
 
 **Advertising is the same rule, and it is already decided.** The owner wants
 ads on once all 108 tools are live, and not before. The site currently
-promises "no ads" in the hero, in the footer of all 117 pages, in
+promises "no ads" in the hero, in the footer of all 118 pages, in
 `privacy.html` section 7 and in `disclaimer.html` section 9. Those promises
 get rewritten **first, in their own commit**, before a single line of ad code
 is added — otherwise the site starts lying to visitors on the day it starts
@@ -588,7 +589,7 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (107):** add-line-numbers, add-subtract-days, add-pdf-page-numbers,
+**Live (108):** add-line-numbers, add-subtract-days, add-pdf-page-numbers,
 age-calculator, area-converter, average-calculator, barcode-generator,
 base64-encoder-decoder, binary-decimal-hex-converter, bmi-calculator,
 calorie-calculator, case-converter, character-frequency-counter, coin-flip,
@@ -600,31 +601,33 @@ discount-calculator, emi-calculator, favicon-generator, find-and-replace,
 fraction-calculator, fuel-cost-calculator, gst-calculator,
 html-encoder-decoder, html-minifier, image-color-picker, image-compressor,
 image-cropper, image-converter, image-metadata-viewer, image-resizer,
-image-rotator, image-splitter, image-to-base64, image-to-pdf, js-minifier,
-json-formatter, json-to-csv, jwt-decoder, leap-year-checker,
-lorem-ipsum-generator, margin-markup-calculator, markdown-previewer,
-meme-generator, merge-pdf, text-to-morse, nato-phonetic-converter,
-number-to-words, password-generator, pdf-metadata-editor, pdf-to-image,
-percentage-calculator, photo-watermark, image-placeholder-generator,
-protect-pdf, qr-code-generator, random-list-shuffler,
-random-number-generator, random-picker, ratio-calculator, readability-score,
-regex-tester, remove-duplicate-lines, remove-line-breaks, remove-pdf-pages,
-reverse-text, roman-numeral-converter, rotate-pdf, salary-calculator,
-scientific-calculator, hash-generator, shoe-size-converter,
-simple-interest-calculator, sip-calculator, sort-text-lines,
-speed-converter, split-pdf, sql-formatter, stopwatch-timer, svg-to-png,
-temperature-converter, text-diff-checker, text-repeater, text-to-speech,
-time-zone-converter, tip-calculator, unit-converter, unit-price-comparison,
-timestamp-converter, url-encoder-decoder, slug-generator,
-username-generator, uuid-generator, week-number-calculator,
+image-rotator, image-splitter, image-to-base64, image-to-pdf,
+income-tax-calculator, js-minifier, json-formatter, json-to-csv,
+jwt-decoder, leap-year-checker, lorem-ipsum-generator,
+margin-markup-calculator, markdown-previewer, meme-generator, merge-pdf,
+text-to-morse, nato-phonetic-converter, number-to-words, password-generator,
+pdf-metadata-editor, pdf-to-image, percentage-calculator, photo-watermark,
+image-placeholder-generator, protect-pdf, qr-code-generator,
+random-list-shuffler, random-number-generator, random-picker,
+ratio-calculator, readability-score, regex-tester, remove-duplicate-lines,
+remove-line-breaks, remove-pdf-pages, reverse-text, roman-numeral-converter,
+rotate-pdf, salary-calculator, scientific-calculator, hash-generator,
+shoe-size-converter, simple-interest-calculator, sip-calculator,
+sort-text-lines, speed-converter, split-pdf, sql-formatter, stopwatch-timer,
+svg-to-png, temperature-converter, text-diff-checker, text-repeater,
+text-to-speech, time-zone-converter, tip-calculator, unit-converter,
+unit-price-comparison, timestamp-converter, url-encoder-decoder,
+slug-generator, username-generator, uuid-generator, week-number-calculator,
 whitespace-remover, word-counter, working-days-calculator.
 
 That count is checked: `check.py` fails if it drifts from the registry.
 It read 30 while listing 40 for a whole batch, which is the same hand-typed
 count problem rule 2 exists to stop, one file further out.
 
-**Next batch (Phase 3, tools 46–50):** more converters and date/time, per
-`ROADMAP.md`. Phase 3 runs 31–60 and still needs no libraries.
+**All 108 are built.** Two need care every year, not just once:
+`income-tax-calculator` after each Union Budget (see Maintenance in
+`ROADMAP.md`), and `currency-converter`, whose rates bot must keep running
+(see Deployment).
 
 `salary-calculator` is still deliberately skipped. CTC to in-hand
 needs current income tax slabs, and a figure that goes stale without anyone

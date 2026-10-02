@@ -226,7 +226,7 @@ make; it is written here so it is made with the number in front of us.
 
 | Category | Tools | Built |
 |---|---|---|
-| Calculator | 20 | 19 |
+| Calculator | 20 | 20 |
 | Developer | 18 | 18 |
 | Text | 16 | 16 |
 | Image | 14 | 14 |
@@ -234,7 +234,7 @@ make; it is written here so it is made with the number in front of us.
 | PDF | 10 | 10 |
 | Date & Time | 8 | 8 |
 | Random | 8 | 8 |
-| **Total** | **108** | **107** |
+| **Total** | **108** | **108** |
 
 ---
 
@@ -306,7 +306,7 @@ matches, so do not rename them later. ✅ = already live.
 | 17 | `salary-calculator` ✅ | medium — CTC to in-hand, India |
 | 18 | `calorie-calculator` ✅ | medium — BMR / TDEE |
 | 19 | `scientific-calculator` ✅ | medium |
-| 20 | `income-tax-calculator` | hard — **rates change yearly, see Maintenance** |
+| 20 | `income-tax-calculator` ✅ | hard — **rates change yearly, see Maintenance**; FY 2026-27, both regimes, judged against a separate Python implementation on 3,000 cases |
 
 ### Developer (18)
 
@@ -528,8 +528,11 @@ Most of these tools are finished forever once they work — a percentage
 calculator has no news cycle. Three are not:
 
 - `income-tax-calculator` — Indian slabs change with each Union Budget in
-  February. Put it in your calendar, and stamp the page with "Updated for
-  FY 2026-27" so visitors can trust it.
+  February. Every February: read the Budget's rates (the Finance Bill and
+  incometax.gov.in), change `RULES` in the page if anything moved, change
+  "FY 2026-27" in its title, heading, lede and slab tables, and run the
+  Python referee again. Budget 2026 changed nothing, so FY 2025-26 and
+  FY 2026-27 are taxed alike and the page says so.
 - `gst-calculator` — rate changes are occasional but real.
 - `currency-converter` — the only tool with a live dependency, and it is not
   the visitor's: `.github/workflows/rates.yml` fetches the reference rates on

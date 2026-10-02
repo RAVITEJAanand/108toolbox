@@ -1,4 +1,4 @@
-# 108 ToolBox — Phase 1 (10 tools)
+# 108 ToolBox — all 108 tools
 
 Live domain: **108toolbox.in** (already configured in every file)
 
