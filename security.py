@@ -43,6 +43,16 @@ import subprocess
 import sys
 
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+
+# Every Chrome these scripts start is kept away from Google's ad servers.
+# The test runs load each page hundreds of times a day; ad requests from
+# them would be invalid traffic, which AdSense punishes, and would make
+# the runs slow and depend on the network. Names that do not resolve fail
+# at once, and the page carries on without its advertisement.
+NO_ADS_FLAG = ("--host-resolver-rules="
+               "MAP *.googlesyndication.com ~NOTFOUND, MAP *.doubleclick.net ~NOTFOUND, "
+               "MAP *.adtrafficquality.google ~NOTFOUND, MAP adservice.google.com ~NOTFOUND, "
+               "MAP adservice.google.co.in ~NOTFOUND, MAP fundingchoicesmessages.google.com ~NOTFOUND")
 ROOT = pathlib.Path(__file__).resolve().parent
 WORK = ROOT / "_securitywork"
 
@@ -75,7 +85,7 @@ def probe_page(path, probe, tag, size="1280,900"):
                     encoding="utf-8", newline="\n")
     try:
         dom = subprocess.run(
-            [CHROME, "--headless", "--disable-gpu", "--no-sandbox",
+            [CHROME, "--headless", "--disable-gpu", "--no-sandbox", NO_ADS_FLAG,
              "--user-data-dir=" + str(profile),
              "--window-size=" + size, "--virtual-time-budget=20000",
              "--dump-dom", copy.as_uri()],
@@ -320,12 +330,12 @@ def check_tools_survive_hostile_files(tools):
 PHONE_JS = r"""
 const { spawn } = require("child_process");
 const fs = require("fs"), path = require("path"), os = require("os");
-const [chrome, ...urls] = process.argv.slice(2);
+const [chrome, noAds, ...urls] = process.argv.slice(2);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 (async () => {
   const port = 9400 + Math.floor(Math.random() * 400);
   const prof = fs.mkdtempSync(path.join(os.tmpdir(), "phone-"));
-  const proc = spawn(chrome, ["--headless=new", "--remote-debugging-port=" + port, "--user-data-dir=" + prof,
+  const proc = spawn(chrome, ["--headless=new", noAds, "--remote-debugging-port=" + port, "--user-data-dir=" + prof,
                               "--no-first-run", "--no-default-browser-check", "about:blank"], { stdio: "ignore" });
   let ver = null;
   for (let i = 0; i < 150 && !ver; i++) {
@@ -390,7 +400,7 @@ def check_pages_fit_phone(pages):
         return
     script = WORK / "phone.js"
     script.write_text(PHONE_JS, encoding="utf-8")
-    out = subprocess.run([node, str(script), CHROME] + [p.as_uri() for p in pages],
+    out = subprocess.run([node, str(script), CHROME, NO_ADS_FLAG] + [p.as_uri() for p in pages],
                          capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=1200).stdout
     import json
     seen, bad = 0, 0
@@ -434,20 +444,33 @@ def check_policy_present(pages):
     if talkers:
         fail("connect-src is 'none' but %s makes a network call" % talkers[0])
     else:
-        ok("no file makes a network call, so connect-src 'none' holds")
+        ok("no file of ours makes a network call: connect-src is 'none', "
+           "or Google's ad servers alone on a page with an advertisement")
 
-    outside = set()
+    # A link out is only a link. A file LOADED from elsewhere runs in the page,
+    # so exactly one is allowed: Google's ad script, on the pages check.py
+    # lists as carrying an advertisement.
+    AD_SCRIPT = ("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+                 "?client=ca-pub-2468238593433239")
+    links, loaded, ad_pages = set(), [], 0
     for p in pages:
-        for m in re.finditer(r'(?:src|href)="(?:https?:)?//([^/"]+)',
-                             p.read_text(encoding="utf-8")):
+        text = p.read_text(encoding="utf-8")
+        for m in re.finditer(r'href="(?:https?:)?//([^/"]+)', text):
             if "108toolbox.in" not in m.group(1):
-                outside.add(m.group(1))
-    if outside:
-        notes.append("pages link out to: %s" % ", ".join(sorted(outside)))
-        ok("no third-party file is loaded (links out only: %s)"
-           % ", ".join(sorted(outside)))
+                links.add(m.group(1))
+        for m in re.finditer(r'src="((?:https?:)?//[^"]+)"', text):
+            if "108toolbox.in" in m.group(1):
+                continue
+            if m.group(1) == AD_SCRIPT:
+                ad_pages += 1
+            else:
+                loaded.append("%s loads %s" % (p.name, m.group(1)[:80]))
+    if loaded:
+        fail("a third-party file is loaded: %s" % loaded[0])
     else:
-        ok("no third-party file is loaded and nothing links outside")
+        notes.append("pages link out to: %s" % ", ".join(sorted(links)))
+        ok("no third-party file is loaded but Google's ad script, on %d tool pages "
+           "(links out only: %s)" % (ad_pages, ", ".join(sorted(links)) or "none"))
 # ---- END: part 3, the static promises that keep the exits shut -------------
 
 

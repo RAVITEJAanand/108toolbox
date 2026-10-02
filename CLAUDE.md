@@ -73,7 +73,7 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=41` → `?v=42` across all 118 pages (currently `?v=41`,
+Find-and-replace `?v=42` → `?v=43` across all 118 pages (currently `?v=42`,
 572 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
@@ -351,6 +351,39 @@ consent in the EEA/UK/Switzerland, the opt-out) and `disclaimer.html`
 section 9. What stays true and must never be dropped: the tools never send
 anyone's text or files anywhere. The checklist for the ad code itself is in
 `ROADMAP.md` under "Advertising, once 108 is reached".
+
+**The ad code (AdSense, publisher `ca-pub-2468238593433239`, one responsive
+unit, slot `3961059137`).** Where it is, and why:
+
+- **One unit per tool page, below the tool and its check-the-result notice**,
+  never among the controls: an accidental click on a site of buttons is an
+  AdSense violation. The loader script is in the `<head>`. The `.ad-slot`
+  shows no label and takes no space until Google fills it (`tool.css`).
+- **No ads on `protect-pdf`, `password-generator`, `jwt-decoder`,
+  `hash-generator`**: people type passwords and keys there, and the ad
+  script runs inside the page. None on the homepage, the tools list or the
+  policy pages either.
+- **Two policies.** A page without ads keeps the strict one
+  (`connect-src 'none'`, nothing can leave). An ad page opens Google's ad
+  servers and nothing else (`*.googlesyndication.com`, `*.doubleclick.net`,
+  `*.google.com`, `*.gstatic.com`, `*.adtrafficquality.google`,
+  `adservice.google.co.in`; images from any https), and its referrer
+  policy is `strict-origin-when-cross-origin`. One real load of the ad
+  script under that policy, on 2 Oct 2026, raised no violation.
+- `check.py` 4k enforces all of it — the list of ad-free pages, the exact
+  policies, one loader and one unit with the right ids, the unit between
+  the notice and the text, and that `ads.txt` names the same publisher —
+  and was negative-tested with twelve planted mistakes. The template
+  carries the ad code, so a new tool gets it; `build_tool.py` takes it out
+  again for a page on the ad-free list.
+
+**Never let a test load a real advertisement.** The test runs open pages
+hundreds of times a day; ad requests from them are invalid traffic, which
+AdSense punishes up to closing the account. Every Chrome that
+`test_tools.py` and `security.py` start is given `NO_ADS_FLAG`, which makes
+Google's ad hosts fail to resolve: the request dies at once and the page
+carries on with an empty slot. Any new script that opens pages in a browser
+must do the same, and nobody connected with the site ever clicks its ads.
 
 ### 8. Never name another website on the site
 

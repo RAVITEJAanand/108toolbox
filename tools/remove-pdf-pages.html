@@ -17,13 +17,21 @@
 
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
-       takes away the exits instead: nothing can be sent anywhere. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
-  <meta name="referrer" content="no-referrer">
+       takes away the exits instead. This page carries one advertisement, so
+       Google's ad servers are the only place it may reach; the tool's own
+       code sends nothing anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Advertising: Google AdSense, the only third-party script on the site.
+       It never runs on the pages where people type passwords or keys;
+       check.py keeps that list. -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
+          crossorigin="anonymous"></script>
 
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=41">
-  <link rel="stylesheet" href="../css/tool.css?v=41">
+  <link rel="stylesheet" href="../css/style.css?v=42">
+  <link rel="stylesheet" href="../css/tool.css?v=42">
 
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
@@ -210,6 +218,18 @@
       </aside>
       <!-- ---- END: the check-the-result notice ---- -->
 
+      <!-- ---- START: advertisement ----
+           Below the tool and its notice, never among its controls, so an
+           advertisement cannot be clicked by mistake. Hidden until Google
+           fills it. -->
+      <aside class="ad-slot" aria-label="Advertisement">
+        <p class="ad-slot__label">Advertisement</p>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2468238593433239" data-ad-slot="3961059137"
+             data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(window.adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </aside>
+      <!-- ---- END: advertisement ---- -->
+
       <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
       <section class="tool-info prose">
         <h2>How to choose the pages</h2>
@@ -321,10 +341,10 @@
   </footer>
 
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=41"></script>
-  <script src="../js/tool-helpers.js?v=41"></script>
+  <script src="../js/tools-data.js?v=42"></script>
+  <script src="../js/tool-helpers.js?v=42"></script>
   <script>window.CURRENT_TOOL = "remove-pdf-pages";</script>
-  <script src="../js/main.js?v=41"></script>
+  <script src="../js/main.js?v=42"></script>
 
   <!-- ===== This tool's own logic ===== -->
   <script data-tool>

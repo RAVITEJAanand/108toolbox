@@ -182,8 +182,9 @@ tracking" for something that is still true, such as "nothing uploaded".
 | Ownership verified | done, 26 Sep 2026, by `ads.txt` |
 | Review requested | 26 Sep 2026, 08:49, at 61 tools — "Getting ready" |
 | Promises rewritten | done, 2 Oct 2026, at 108 |
-| Ad code on the site | next, once the consent message is set up |
-| Ads serving | after the ad code |
+| Ad unit | created 2 Oct 2026: one responsive display unit, slot 3961059137 |
+| Ad code on the site | 2 Oct 2026: below the tool on 104 tool pages; none on the four password/key pages |
+| Ads serving | once Google approves the site, with the consent message published |
 
 Ownership was verified with `ads.txt` rather than the AdSense code snippet on
 purpose: the snippet *is* the ad library, and with Auto ads on it can place

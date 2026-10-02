@@ -490,3 +490,20 @@ table.data tbody tr:hover td { background: var(--surface); }
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
 }
+
+/* ---- The advertisement below the tool ----------------------------------
+   Nothing shows - no label, no gap - until Google has filled the slot, and
+   a slot Google leaves unfilled disappears. */
+.ad-slot { margin: 0; }
+.ad-slot:has(ins[data-ad-status="filled"]) { margin: var(--s6) 0; }
+.ad-slot__label {
+  display: none;
+  margin: 0 0 var(--s2);
+  font-size: .6875rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--text-soft);
+}
+.ad-slot:has(ins[data-ad-status="filled"]) .ad-slot__label { display: block; }
+.ad-slot ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }

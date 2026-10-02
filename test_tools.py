@@ -33,6 +33,16 @@ import html as htmllib
 SITE = pathlib.Path(__file__).parent
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 
+# Every Chrome these scripts start is kept away from Google's ad servers.
+# The test runs load each page hundreds of times a day; ad requests from
+# them would be invalid traffic, which AdSense punishes, and would make
+# the runs slow and depend on the network. Names that do not resolve fail
+# at once, and the page carries on without its advertisement.
+NO_ADS_FLAG = ("--host-resolver-rules="
+               "MAP *.googlesyndication.com ~NOTFOUND, MAP *.doubleclick.net ~NOTFOUND, "
+               "MAP *.adtrafficquality.google ~NOTFOUND, MAP adservice.google.com ~NOTFOUND, "
+               "MAP adservice.google.co.in ~NOTFOUND, MAP fundingchoicesmessages.google.com ~NOTFOUND")
+
 # Four at a time. Chrome is heavy and the machine still has to be usable.
 WORKERS = 4
 
@@ -11424,7 +11434,7 @@ def run_one(slug):
             str(SITE).replace("\\", "/") + "/tools/" + target.name)
     try:
         dom = subprocess.run(
-            [CHROME, "--headless", "--disable-gpu", "--no-sandbox",
+            [CHROME, "--headless", "--disable-gpu", "--no-sandbox", NO_ADS_FLAG,
              "--window-size=1280,900",
              "--virtual-time-budget=%d" % (budget_for(slug) + 3000),
              "--dump-dom", url],

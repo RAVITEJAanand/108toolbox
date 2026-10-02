@@ -531,6 +531,65 @@ if rates_path.exists():
     else:
         ok("data/rates.js: %d rates of %s, data only" % (len(rates), rates_data["date"]))
 
+# ---- 4k. Advertising: where it is, and where it must never be -------------
+# One AdSense unit below each tool, and nowhere else. Never on the pages where
+# people type passwords or keys - the ad script runs inside the page, so it
+# could read them - and not on the homepage, the tools list or the policy
+# pages. A page without ads keeps the strict policy, where nothing can be
+# sent anywhere; a page with one opens Google's ad servers and nothing more.
+AD_CLIENT = "ca-pub-2468238593433239"
+AD_SLOT = "3961059137"
+NO_ADS = {"protect-pdf", "password-generator", "jwt-decoder", "hash-generator"}
+STRICT_CSP = ('<meta http-equiv="Content-Security-Policy" content="default-src \'self\'; script-src \'self\' \'unsafe-inline\'; '
+              'style-src \'self\' \'unsafe-inline\'; img-src \'self\' data: blob:; font-src \'self\'; connect-src \'none\'; '
+              'object-src \'none\'; base-uri \'self\'; form-action \'none\'; frame-src \'none\'">')
+AD_HOSTS = ("https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com "
+            "https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in")
+AD_CSP = ('<meta http-equiv="Content-Security-Policy" content="default-src \'self\'; '
+          'script-src \'self\' \'unsafe-inline\' ' + AD_HOSTS + '; '
+          'style-src \'self\' \'unsafe-inline\'; img-src \'self\' data: blob: https:; '
+          'font-src \'self\' https://fonts.gstatic.com; connect-src ' + AD_HOSTS + '; '
+          'object-src \'none\'; base-uri \'self\'; form-action \'none\'; frame-src ' + AD_HOSTS + '">')
+AD_LOADER = ('<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='
+             + AD_CLIENT + '"')
+AD_UNIT = 'data-ad-client="%s" data-ad-slot="%s"' % (AD_CLIENT, AD_SLOT)
+
+ads_bad = 0
+if "google.com, %s, DIRECT" % AD_CLIENT[3:] not in (ROOT / "ads.txt").read_text(encoding="utf-8"):
+    fail("ads.txt does not name the publisher id the ad code uses (%s)" % AD_CLIENT)
+    ads_bad += 1
+with_ads = 0
+for path in sorted(ROOT.glob("*.html")) + sorted((ROOT / "tools").glob("*.html")):
+    text = path.read_text(encoding="utf-8")
+    name = path.relative_to(ROOT).as_posix()
+    if path.parent.name == "tools" and path.stem not in NO_ADS:      # the template too
+        why = []
+        if text.count(AD_CSP) != 1 or STRICT_CSP in text:
+            why.append("its policy is not the one for ad pages")
+        if text.count(AD_LOADER) != 1 or text.count("googlesyndication.com/pagead/js") != 1:
+            why.append("it does not load the ad script exactly once")
+        if text.count(AD_UNIT) != 1 or text.count('class="adsbygoogle"') != 1:
+            why.append("it does not have exactly one ad unit with the right ids")
+        notice = text.find("END: the check-the-result notice")
+        slot = text.find('class="ad-slot"')
+        info = text.find('<section class="tool-info')
+        if not 0 <= notice < slot < info:
+            why.append("the ad is not between the notice and the text below the tool")
+        if why:
+            fail("%s: %s" % (name, "; ".join(why)))
+            ads_bad += 1
+        with_ads += 1
+    else:
+        if "googlesyndication" in text or "adsbygoogle" in text:
+            fail("%s must carry no advertising, and it does" % name)
+            ads_bad += 1
+        elif text.count(STRICT_CSP) != 1:
+            fail("%s: a page without ads must keep the strict policy" % name)
+            ads_bad += 1
+if not ads_bad:
+    ok("advertising: one unit below the tool on %d pages (template included), none on %s "
+       "or the site pages, every policy exact" % (with_ads, ", ".join(sorted(NO_ADS))))
+
 # ---- 5. No dead internal links --------------------------------------------
 for path in list(ROOT.glob("*.html")) + tool_pages():
     text = path.read_text(encoding="utf-8")
