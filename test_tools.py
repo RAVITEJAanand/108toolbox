@@ -53,7 +53,19 @@ HARNESS = r"""
      stuck while the read was a millisecond from finishing. A timer that ticks
      every millisecond makes the clock move in small steps instead, which gives
      that work the real time it needs. It stops when the test finishes. */
-  var heartbeat = setInterval(function () {}, 1);
+  /* The heartbeat also spends a little real time on each tick. Without it
+     the clock still ran about a hundred times faster than work on other
+     threads (decoding and encoding pictures, pdf.js's worker): on a busy
+     machine a 120-second wait in compress-pdf ran out while a photo was
+     still being encoded, about one run in three under load, and the heavy
+     image and PDF tests could do the same. Pacing every tick keeps the
+     clock closer to real time for every test at once; a quick test barely
+     notices, since it finishes in a few hundred virtual milliseconds. */
+  var heartbeat = setInterval(function () {
+    var x = 0;
+    for (var i = 0; i < 100000; i++) { x = (x + i) % 9973; }
+    window.__heartbeat = x;
+  }, 1);
 
   /* ---- START: recording a result ---- */
   function record(pass, line) {
@@ -9849,570 +9861,6 @@ T["protect-pdf"] = r"""
   });
 """
 
-T["compress-pdf"] = r"""
-  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
-  window.__saved = [];
-  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
-
-  /* the page's slow work (deflate, decoding and encoding pictures) is
-     counted while it runs: when none is running at a timer tick, the page
-     has finished, or stopped */
-  var inflight = 0;
-  function counted(promise) { inflight += 1; return promise.finally(function () { inflight -= 1; }); }
-  var realArrayBuffer = Response.prototype.arrayBuffer;
-  Response.prototype.arrayBuffer = function () { return counted(realArrayBuffer.call(this)); };
-  var realBitmap = window.createImageBitmap;
-  window.createImageBitmap = function () { return counted(realBitmap.apply(window, arguments)); };
-  var realToBlob = HTMLCanvasElement.prototype.toBlob;
-  HTMLCanvasElement.prototype.toBlob = function (cb, type, q) {
-    inflight += 1;
-    return realToBlob.call(this, function (b) { inflight -= 1; cb(b); }, type, q);
-  };
-
-  /* ================= helpers ================= */
-  function feed(file) {
-    var dt = new DataTransfer();
-    dt.items.add(file);
-    var input = document.getElementById("file");
-    input.files = dt.files;
-    input.dispatchEvent(new Event("change", { bubbles: true }));
-  }
-  function wait(label, test, budget) { return new Promise(function (resolve) { waitFor(label, test, resolve, budget); }); }
-  function read() { return !/^Reading/.test(txt("msg")); }
-  function bytesOfText(s) { var u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { u[i] = s.charCodeAt(i) & 255; } return u; }
-  function fromB64(s) { return bytesOfText(atob(s)); }
-  function latin1(bytes) {
-    var parts = [];
-    for (var i = 0; i < bytes.length; i += 32768) { parts.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 32768))); }
-    return parts.join("");
-  }
-  function same(a, b) { if (!a || !b || a.length !== b.length) { return false; } for (var i = 0; i < a.length; i++) { if (a[i] !== b[i]) { return false; } } return true; }
-  function num(dict, key) { var m = new RegExp("/" + key + " (\\d+)").exec(dict); return m ? Number(m[1]) : null; }
-  function makePdf(bodies, trailerExtra) {
-    var out = "%PDF-1.4\n", offsets = [];
-    bodies.forEach(function (b, i) {
-      offsets.push(out.length);
-      out += (i + 1) + " 0 obj\n" + (typeof b === "string" ? b : b.dict.replace("LEN", b.data.length) + "\nstream\n" + b.data + "\nendstream") + "\nendobj\n";
-    });
-    var x = out.length;
-    out += "xref\n0 " + (bodies.length + 1) + "\n0000000000 65535 f \n";
-    offsets.forEach(function (o) { out += ("0000000000" + o).slice(-10) + " 00000 n \n"; });
-    out += "trailer\n<<\/Size " + (bodies.length + 1) + " /Root 1 0 R" + (trailerExtra || "") + ">>\nstartxref\n" + x + "\n%%EOF\n";
-    return out;
-  }
-  function inflate(u8) {
-    return new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream("deflate"))).arrayBuffer()
-      .then(function (b) { return new Uint8Array(b); });
-  }
-
-  /* ================= a reader for the saved file =================
-     The packed layout the page writes: a cross-reference stream at the end,
-     small objects in object streams, streams on their own. Unpacked with
-     the browser's DecompressionStream, not the page's own inflater. */
-  function readPacked(bytes) {
-    var t = latin1(bytes);
-    var sx = /startxref\n(\d+)\n%%EOF\n$/.exec(t);
-    if (!sx) { return Promise.reject(new Error("no startxref at the end")); }
-    var at = Number(sx[1]);
-    var head = /^(\d+) 0 obj\n(<< \/Type \/XRef [^\n]*>>)\nstream\n/.exec(t.slice(at));
-    if (!head) { return Promise.reject(new Error("startxref does not point at a cross-reference stream")); }
-    var xdict = head[2], size = num(xdict, "Size"), len = num(xdict, "Length");
-    var out = { text: t, xdict: xdict, objs: {}, root: num(xdict, "Root"), info: num(xdict, "Info"), packedCount: 0 };
-    if (!/\/W \[1 4 2\]/.test(xdict)) { return Promise.reject(new Error("unexpected /W: " + xdict)); }
-    return inflate(bytes.subarray(at + head[0].length, at + head[0].length + len)).then(function (rows) {
-      if (rows.length !== size * 7) { throw new Error("the table has " + rows.length + " bytes for " + size + " objects"); }
-      var inStreams = {};
-      for (var n = 1; n < size; n++) {
-        var type = rows[n * 7], a = ((rows[n * 7 + 1] << 24) | (rows[n * 7 + 2] << 16) | (rows[n * 7 + 3] << 8) | rows[n * 7 + 4]) >>> 0;
-        var b = (rows[n * 7 + 5] << 8) | rows[n * 7 + 6];
-        if (type === 1) {
-          var tag = n + " 0 obj\n";
-          if (t.substr(a, tag.length) !== tag) { throw new Error("object " + n + " is not where the table says"); }
-          var end = t.indexOf("\nendobj\n", a), body = t.slice(a + tag.length, end), s = body.indexOf("\nstream\n");
-          if (s < 0) { out.objs[n] = { dict: body, data: null }; }
-          else {
-            var l = num(body.slice(0, s), "Length"), start = a + tag.length + s + 8;
-            if (t.substr(start + l, 10) !== "\nendstream") { throw new Error("object " + n + ": /Length does not end at endstream"); }
-            out.objs[n] = { dict: body.slice(0, s), data: bytes.subarray(start, start + l) };
-          }
-        } else if (type === 2) {
-          (inStreams[a] = inStreams[a] || []).push([n, b]);
-          out.packedCount += 1;
-        } else { throw new Error("object " + n + " has type " + type); }
-      }
-      var jobs = Object.keys(inStreams).map(function (stm) {
-        var o = out.objs[stm];
-        if (!o || !/\/Type \/ObjStm/.test(o.dict)) { throw new Error("object " + stm + " is not an object stream"); }
-        var first = num(o.dict, "First"), count = num(o.dict, "N");
-        return inflate(o.data).then(function (plain) {
-          var text = latin1(plain), pairs = text.slice(0, first).trim().split(/\s+/).map(Number);
-          if (pairs.length !== count * 2) { throw new Error("object stream " + stm + " lists " + pairs.length / 2 + " objects, says " + count); }
-          inStreams[stm].forEach(function (want) {
-            var idx = want[1];
-            if (pairs[idx * 2] !== want[0]) { throw new Error("object " + want[0] + " is not at index " + idx + " of " + stm); }
-            var from = first + pairs[idx * 2 + 1], to = idx + 1 < count ? first + pairs[idx * 2 + 3] : text.length;
-            /* strict: an object starts exactly where its stream says, not on the space before it */
-            if (/\s/.test(text.charAt(from))) { throw new Error("object " + want[0] + " does not start where object stream " + stm + " says"); }
-            out.objs[want[0]] = { dict: text.slice(from, to).trim(), data: null, packed: true };
-          });
-        });
-      });
-      return Promise.all(jobs).then(function () { return out; });
-    });
-  }
-  function streamText(o) { return /\/FlateDecode/.test(o.dict) ? inflate(o.data).then(latin1) : Promise.resolve(latin1(o.data)); }
-  function imagesOf(r) {
-    return Object.keys(r.objs).map(function (n) { return r.objs[n]; }).filter(function (o) { return /\/Subtype \/Image/.test(o.dict); });
-  }
-
-  /* ================= the files ================= */
-  function canvasJpeg(w, h, quality, paint) {
-    var c = new OffscreenCanvas(w, h), ctx = c.getContext("2d");
-    paint(ctx, w, h);
-    return c.convertToBlob({ type: "image/jpeg", quality: quality }).then(function (b) { return b.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); });
-  }
-  /* a photograph's smooth colour with fine noise; the top-left corner red, the bottom-right blue */
-  function photoPaint(ctx, w, h) {
-    var g = ctx.createLinearGradient(0, 0, w, h);
-    g.addColorStop(0, "#d02020"); g.addColorStop(1, "#2030d0");
-    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
-    var img = ctx.getImageData(0, 0, w, h), seed = 7;
-    for (var i = 0; i < img.data.length; i += 4) {
-      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-      var n = (seed >> 16) % 25 - 12;
-      img.data[i] += n; img.data[i + 1] += n; img.data[i + 2] += n;
-    }
-    ctx.putImageData(img, 0, 0);
-  }
-  /* an EXIF block saying "turn 90" (orientation 6), put right after the start marker */
-  function withExif(jpeg) {
-    var seg = [0x45, 0x78, 0x69, 0x66, 0, 0, 0x4D, 0x4D, 0, 0x2A, 0, 0, 0, 8, 0, 1, 0x01, 0x12, 0, 3, 0, 0, 0, 1, 0, 6, 0, 0, 0, 0, 0, 0];
-    var out = new Uint8Array(jpeg.length + 4 + seg.length);
-    out.set([0xFF, 0xD8, 0xFF, 0xE1, 0, seg.length + 2], 0);
-    out.set(seg, 6);
-    out.set(jpeg.subarray(2), 6 + seg.length);
-    return out;
-  }
-  /* a zlib stream of "stored" blocks: valid deflate, not packed at all */
-  function storedZlib(bytes) {
-    var out = new Uint8Array(2 + 5 + bytes.length + 4), a = 1, b = 0;
-    out[0] = 0x78; out[1] = 0x01;
-    out[2] = 0x01;
-    out[3] = bytes.length & 255; out[4] = bytes.length >> 8; out[5] = ~bytes.length & 255; out[6] = (~bytes.length >> 8) & 255;
-    out.set(bytes, 7);
-    for (var i = 0; i < bytes.length; i++) { a = (a + bytes[i]) % 65521; b = (b + a) % 65521; }
-    var at = 7 + bytes.length;
-    out[at] = b >> 8; out[at + 1] = b & 255; out[at + 2] = a >> 8; out[at + 3] = a & 255;
-    return out;
-  }
-  function imagePdf(images, extraPages, pre) {
-    /* images: [{ data (bytes), w, h, cs, extra }]; one page each, plus text pages. pre: bodies that
-       come first, as objects 4, 5, ...; image k is then object 4 + pre.length + 3k */
-    var bodies = ["CATALOG", "PAGES", "<<\/Type /Font /Subtype /Type1 /BaseFont /Helvetica>>"].concat(pre || []), kids = [];
-    images.forEach(function (im) {
-      bodies.push({ dict: "<<\/Type /XObject /Subtype /Image /Width " + im.w + " /Height " + im.h + " /ColorSpace " + im.cs +
-                          " /BitsPerComponent 8 " + (im.filter || "/Filter /DCTDecode") + (im.extra || "") + " /Length LEN>>", data: latin1(im.data) });
-      var imNum = bodies.length;
-      var draw = "q 300 0 0 200 50 50 cm /Im Do Q";
-      bodies.push({ dict: "<<\/Length LEN>>", data: draw });
-      bodies.push("<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents " + (bodies.length) + " 0 R /Resources <<\/XObject <<\/Im " + imNum + " 0 R>>>>>>");
-      kids.push(bodies.length);
-    });
-    (extraPages || []).forEach(function (text) {
-      bodies.push({ dict: "<<\/Length LEN>>", data: text });
-      bodies.push("<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents " + (bodies.length) + " 0 R /Resources <<\/Font <<\/F1 3 0 R>>>>>>");
-      kids.push(bodies.length);
-    });
-    bodies[0] = "<<\/Type /Catalog /Pages 2 0 R>>";
-    bodies[1] = "<<\/Type /Pages /Kids [" + kids.map(function (k) { return k + " 0 R"; }).join(" ") + "] /Count " + kids.length + ">>";
-    bodies.push("<<\/Title (Pictures) /Producer (compress test)>>");
-    return bytesOfText(makePdf(bodies, " /Info " + bodies.length + " 0 R"));
-  }
-
-  /* text only, with an old revision inside and drawings not packed */
-  var LINES = [];
-  for (var li = 0; li < 60; li++) { LINES.push("BT /F1 10 Tf 20 " + (780 - li * 12) + " Td (Line " + li + " of a long report, written out plainly) Tj ET"); }
-  var DRAWING = LINES.join("\n");
-  /* also: an XMP block (must stay readable), 1000 bytes that do not pack
-     (must stay as they are) and a stream packed with deflate's "stored"
-     blocks, which is no packing at all (must be packed properly) */
-  var XMP = "<x:xmpmeta xmlns:x='adobe:ns:meta/'><dc:title>Report, readable by programs that do not unpack PDF streams<\/dc:title><\/x:xmpmeta>";
-  var NOISE = "", seed = 99;
-  for (var ni = 0; ni < 1000; ni++) { seed = (seed * 1103515245 + 12345) & 0x7fffffff; NOISE += String.fromCharCode((seed >> 16) & 255); }
-  var STORED_TEXT = DRAWING + "\n" + DRAWING + "\n" + DRAWING;
-  var TEXT_FIRST = makePdf([
-    "<<\/Type /Catalog /Pages 2 0 R /Outlines 6 0 R /Metadata 9 0 R /Noise 10 0 R /Stored 11 0 R>>",
-    "<<\/Type /Pages /Kids [3 0 R] /Count 1 /MediaBox [0 0 400 800]>>",
-    "<<\/Type /Page /Parent 2 0 R /Contents 4 0 R /Resources <<\/Font <<\/F1 5 0 R>>>>>>",
-    { dict: "<<\/Length LEN>>", data: "BT /F1 10 Tf 20 20 Td (An old draft of the page that was replaced) Tj ET" },
-    "<<\/Type /Font /Subtype /Type1 /BaseFont /Helvetica>>",
-    "<<\/Type /Outlines /Count 0>>",
-    "<<\/Title (Report) /Author (Asha Rao)>>",
-    "<<\/Unused (nothing points at this object)>>",
-    { dict: "<<\/Type /Metadata /Subtype /XML /Length LEN>>", data: XMP },
-    { dict: "<<\/Length LEN>>", data: NOISE },
-    { dict: "<<\/Filter /FlateDecode /Length LEN>>", data: latin1(storedZlib(bytesOfText(STORED_TEXT))) }
-  ], " /Info 7 0 R");
-  var x1 = /startxref\n(\d+)\n%%EOF\n$/.exec(TEXT_FIRST)[1];
-  var upd = "4 0 obj\n<<\/Length " + DRAWING.length + ">>\nstream\n" + DRAWING + "\nendstream\nendobj\n";
-  var TEXT = bytesOfText(TEXT_FIRST + upd + "xref\n4 1\n" + ("0000000000" + TEXT_FIRST.length).slice(-10) + " 00000 n \ntrailer\n<<\/Size 12 /Root 1 0 R /Info 7 0 R" +
-                         " /Prev " + x1 + ">>\nstartxref\n" + (TEXT_FIRST.length + upd.length) + "\n%%EOF\n");
-
-  var DOC_ENC = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
-                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/Filter /Standard /V 2 /R 3>>"], " /Encrypt 4 0 R"));
-  var DOC_EMPTY = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [] /Count 0>>"]));
-  var DOC_SIGNED = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R /AcroForm <<\/Fields [] /SigFlags 3>>>>",
-                         "<<\/Type /Pages /Kids [3 0 R] /Count 1>>", "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>"]));
-  var F = {
-    text: new File([TEXT], "report.pdf", { type: "application/pdf" }),
-    damaged: new File([fromB64(TINY.bad_offsets)], "scan.pdf", { type: "application/pdf" }),
-    enc: new File([DOC_ENC], "locked.pdf", { type: "application/pdf" }),
-    empty: new File([DOC_EMPTY], "empty.pdf", { type: "application/pdf" }),
-    signed: new File([DOC_SIGNED], "signed.pdf", { type: "application/pdf" }),
-    notPdf: new File([bytesOfText("not a pdf")], "notes.pdf", { type: "application/pdf" }),
-    hostile: new File([TEXT], "<iframe onload=zq>.pdf", { type: "application/pdf" })
-  };
-
-  function download(level) {
-    var before = window.__saved.length;
-    if (level) { document.getElementById("level").value = level; document.getElementById("level").dispatchEvent(new Event("change", { bubbles: true })); }
-    click("dlBtn");
-    return wait("the compressed file is made", function () {
-      return window.__saved.length === before + 1 || /^(This PDF is already|The PDF could not)/.test(txt("msg"));
-    }, 120000).then(function () {
-      var saved = window.__saved[before];
-      if (!saved) { return null; }
-      return saved.blob.arrayBuffer().then(function (b) {
-        var bytes = new Uint8Array(b);
-        return readPacked(bytes).then(function (out) { return { saved: saved, bytes: bytes, out: out, error: "" }; },
-                                      function (e) { return { saved: saved, bytes: bytes, out: null, error: e.message }; });
-      });
-    });
-  }
-  function settled() {
-    var quiet = 0;
-    return wait("the page's work has stopped", function () { quiet = inflight === 0 ? quiet + 1 : 0; return quiet >= 3; }, 120000);
-  }
-
-  var chain = Promise.resolve();
-  function step(fn) { chain = chain.then(fn); }
-
-  /* ================= the page as it opens ================= */
-  eq("it asks for a PDF", txt("msg"), "Choose a PDF to make smaller.");
-  ok("with nothing to compress", document.getElementById("dlBtn").disabled);
-  eq("balanced is chosen to start with", val("level"), "balanced");
-  has("and explained", txt("levelHint"), "Photos are saved again as JPEG at good quality, and any longer than 2400 pixels made smaller.");
-  set("level", "lossless");
-  has("each level says what it does: lossless", txt("levelHint"), "Nothing you can see changes.");
-  set("level", "strong");
-  has("strong", txt("levelHint"), "at most 1600 pixels; screenshots and other colour pictures become JPEG too");
-  set("level", "balanced");
-
-  /* ================= lossless, on text ================= */
-  var firstOut = null;
-  step(function () {
-    feed(F.text);
-    return wait("the PDF is read", read, 10000);
-  });
-  step(function () {
-    ok("the file is read and described", /^report\.pdf: 1 page, [\d.]+ KB\.$/.test(txt("msg")), txt("msg"));
-    ok("and can be compressed", !document.getElementById("dlBtn").disabled);
-    return download("lossless");
-  });
-  step(function (d) {
-    ok("the compressed file reads back", d && d.out, d ? d.error : "no download");
-    if (!d || !d.out) { return; }
-    firstOut = d;
-    var r = d.out;
-    eq("named for what was done to it", d.saved.name, "report (compressed).pdf");
-    eq("as a PDF", d.saved.blob.type, "application/pdf");
-    eq("a PDF 1.7 file", r.text.slice(0, 9), "%PDF-1.7\n");
-    ok("smaller than the original", d.bytes.length < TEXT.length, d.bytes.length + " vs " + TEXT.length);
-    ok("the small objects are packed in object streams", r.packedCount >= 5, r.packedCount);
-    eq("the catalog among them", !!(r.objs[r.root] && r.objs[r.root].packed), true);
-    has("its bookmarks kept", r.objs[r.root] ? r.objs[r.root].dict : "", "/Outlines");
-    ok("the details kept", r.info && /\/Title <5265706F7274>/.test(r.objs[r.info].dict), r.info && r.objs[r.info].dict);
-    var everything = Object.keys(r.objs).map(function (n) { return r.objs[n].dict; }).join("\n");
-    eq("the unused object is left behind", /Unused|6E6F7468696E6720706F696E7473/.test(everything), false);
-    var streams = Object.keys(r.objs).map(function (n) { return r.objs[n]; }).filter(function (o) { return o.data && !/ObjStm|XRef/.test(o.dict); });
-    eq("four streams: the drawing, the XMP, the noise, the stored one", streams.length, 4);
-    var xmp = streams.filter(function (o) { return /\/Type \/Metadata/.test(o.dict); })[0];
-    ok("the XMP is left readable, not packed", xmp && !/Filter/.test(xmp.dict) && latin1(xmp.data) === XMP, xmp && xmp.dict);
-    var noise = streams.filter(function (o) { return o.data.length === 1000; })[0];
-    ok("bytes that would not get smaller are left as they are", noise && !/Filter/.test(noise.dict) && latin1(noise.data) === NOISE, noise && noise.dict);
-    var packed = streams.filter(function (o) { return /\/Filter \/FlateDecode/.test(o.dict); });
-    eq("the drawing and the stored one are packed with deflate", packed.length, 2);
-    has("the message gives both sizes and the saving", txt("msg"), "% smaller. Pictures were left untouched. Nothing has left your device.");
-    ok("in that form", new RegExp("^Done: [\\d.]+ (?:B|KB|MB) " + String.fromCharCode(0x2192) + " [\\d.]+ (?:B|KB|MB), \\d+% smaller\\.").test(txt("msg")), txt("msg"));
-    return Promise.all(packed.map(streamText)).then(function (texts) {
-      ok("the stored one is really packed now", packed.some(function (o, i) { return texts[i] === STORED_TEXT && o.data.length < STORED_TEXT.length / 5; }),
-         packed.map(function (o) { return o.data.length; }).join());
-      ok("the drawing comes back exactly, the newest one: the old draft is left behind", texts.indexOf(DRAWING) >= 0);
-      /* the result, compressed again, is no smaller: nothing is saved */
-      feed(new File([d.bytes], "again.pdf", { type: "application/pdf" }));
-      return wait("the compressed file is read", read, 10000);
-    });
-  });
-  step(function () {
-    return download("lossless");
-  });
-  step(function (d) {
-    eq("a file that cannot get smaller is not saved", d, null);
-    eq("and the visitor is told, with what else to try", txt("msg"),
-       "This PDF is already as small as this page can make it at this level: the result was not smaller, so nothing was saved. Strong may do better.");
-    return download("strong");
-  });
-  step(function (d) {
-    eq("at strong, nothing more to suggest", txt("msg"),
-       "This PDF is already as small as this page can make it: the result was not smaller, so nothing was saved.");
-  });
-
-  /* ================= balanced, on photos ================= */
-  var PH = {};
-  /* objects 4 and 5 are colour profiles (RGB, grey); picture k is object 6 + 3k */
-  var PROFILES = [{ dict: "<<\/N 3 /Length LEN>>", data: "an RGB colour profile would be here" },
-                  { dict: "<<\/N 1 /Length LEN>>", data: "a grey colour profile would be here" }];
-  step(function () {
-    return Promise.all([
-      canvasJpeg(3000, 2000, 0.98, photoPaint),
-      canvasJpeg(1200, 800, 0.98, photoPaint),
-      canvasJpeg(64, 64, 0.3, photoPaint),
-      canvasJpeg(800, 600, 0.98, photoPaint),
-      canvasJpeg(800, 600, 0.97, photoPaint),
-      canvasJpeg(800, 600, 0.96, photoPaint)
-    ]).then(function (j) {
-      PH.big = j[0]; PH.turned = withExif(j[1]); PH.tiny = j[2]; PH.other = j[3]; PH.withMask = j[4]; PH.profiled = j[5];
-      PH.list = [
-        { data: PH.big, w: 3000, h: 2000, cs: "/DeviceRGB" },                                     /* 0: made smaller */
-        { data: PH.turned, w: 1200, h: 800, cs: "/DeviceRGB" },                                   /* 1: saved again, not turned */
-        { data: PH.tiny, w: 64, h: 64, cs: "/DeviceRGB" },                                        /* 2: would grow: kept */
-        { data: PH.other, w: 800, h: 600, cs: "/DeviceGray" },                                    /* 3-6: left alone */
-        { data: PH.other, w: 800, h: 600, cs: "/DeviceCMYK", extra: " /Decode [1 0 1 0 1 0 1 0]" },
-        { data: PH.other, w: 800, h: 600, cs: "/DeviceRGB", extra: " /Decode [0 1 0 1 0 1]" },
-        { data: PH.other, w: 800, h: 600, cs: "[/Indexed /DeviceRGB 1 <000000FFFFFF>]" },
-        { data: PH.other, w: 800, h: 600, cs: "/DeviceRGB" },                                     /* 7: used as 8's mask: left alone */
-        { data: PH.withMask, w: 800, h: 600, cs: "/DeviceRGB", extra: " /SMask " + (6 + 3 * 7) + " 0 R" },  /* 8: saved again, same size */
-        { data: PH.other, w: 800, h: 600, cs: "/DeviceRGB", extra: " /Mask [0 10 0 10 0 10]" },   /* 9: exact colours matter: left alone */
-        { data: PH.profiled, w: 800, h: 600, cs: "[/ICCBased 4 0 R]" },                          /* 10: RGB profile: saved again */
-        { data: PH.other, w: 800, h: 600, cs: "[/ICCBased 5 0 R]" }                               /* 11: grey profile: left alone */
-      ];
-      PH.pdf = imagePdf(PH.list, ["BT /F1 12 Tf 20 20 Td (Text only) Tj ET"], PROFILES);
-      feed(new File([PH.pdf], "photos.pdf", { type: "application/pdf" }));
-      return wait("the photos PDF is read", read, 10000);
-    });
-  });
-  step(function () {
-    has("thirteen pages", txt("msg"), "photos.pdf: 13 pages, ");
-    return download("lossless");
-  });
-  step(function (d) {
-    ok("lossless compresses it too", d && d.out, d ? d.error : "no download");
-    if (!d || !d.out) { return; }
-    var imgs = imagesOf(d.out);
-    eq("and leaves every picture byte for byte", PH.list.filter(function (im) { return imgs.some(function (o) { return same(o.data, im.data); }); }).length, 12);
-    has("saying so", txt("msg"), "% smaller. Pictures were left untouched.");
-    return download("balanced");
-  });
-  step(function (d) {
-    ok("the photos PDF is compressed", d && d.out, d ? d.error : "no download");
-    if (!d || !d.out) { return; }
-    var imgs = imagesOf(d.out);
-    eq("every picture is still there", imgs.length, 12);
-    var masked = imgs.filter(function (o) { return /\/SMask/.test(o.dict); });
-    ok("the one with a mask is saved again, at its own size, its mask kept",
-       masked.length === 1 && !same(masked[0].data, PH.withMask) && num(masked[0].dict, "Width") === 800 && /\/SMask \d+ 0 R/.test(masked[0].dict),
-       masked.map(function (o) { return o.dict; }).join(" | "));
-    var profiled = imgs.filter(function (o) { return /ICCBased/.test(o.dict) && !same(o.data, PH.other); });
-    ok("the one with an RGB colour profile is saved again, its profile kept", profiled.length === 1 && !same(profiled[0].data, PH.profiled),
-       profiled.map(function (o) { return o.dict; }).join(" | "));
-    var big = imgs.filter(function (o) { return num(o.dict, "Width") === 2400; });
-    eq("the big photo is made 2400 pixels long, its shape kept", big.length === 1 ? num(big[0].dict, "Height") : "none", 1600);
-    has("as JPEG", big[0] ? big[0].dict : "", "/Filter /DCTDecode");
-    ok("and much smaller", big[0] && big[0].data.length < PH.big.length / 2, big[0] && big[0].data.length);
-    var turned = imgs.filter(function (o) { return num(o.dict, "Width") === 1200; });
-    eq("the photo with an EXIF turn keeps its stored shape, not turned", turned.length === 1 ? num(turned[0].dict, "Height") : "none", 800);
-    ok("and was saved again", turned[0] && !same(turned[0].data, PH.turned));
-    eq("a picture that would not get smaller is kept byte for byte", imgs.filter(function (o) { return same(o.data, PH.tiny); }).length, 1);
-    eq("grey, CMYK, a /Decode array, an indexed one, a mask, exact colours and a grey profile are left alone",
-       imgs.filter(function (o) { return same(o.data, PH.other); }).length, 7);
-    eq("the message counts them", txt("msg").replace(/^Done: .*? smaller\./, ""),
-       " 4 of 5 pictures saved again; the rest were already smaller as they were. Nothing has left your device.");
-    return Promise.all([realBitmap(new Blob([big[0].data], { type: "image/jpeg" })), realBitmap(new Blob([turned[0].data], { type: "image/jpeg" }))]);
-  });
-  step(function (bitmaps) {
-    if (!bitmaps) { return; }
-    var c = new OffscreenCanvas(10, 10), ctx = c.getContext("2d", { willReadFrequently: true });
-    function corner(bmp, x, y) { ctx.clearRect(0, 0, 10, 10); ctx.drawImage(bmp, x, y, 10, 10, 0, 0, 10, 10); var p = ctx.getImageData(5, 5, 1, 1).data; return [p[0], p[1], p[2]]; }
-    var tl = corner(bitmaps[0], 0, 0), br = corner(bitmaps[0], 2390, 1590);
-    ok("its colours are kept: red at the top left", tl[0] > 150 && tl[2] < 110, tl.join());
-    ok("blue at the bottom right", br[2] > 150 && br[0] < 110, br.join());
-    eq("the decoded photo is the size the PDF says", bitmaps[0].width + "x" + bitmaps[0].height, "2400x1600");
-    var t = corner(bitmaps[1], 0, 0);
-    ok("the turned one still has red at its stored top left: no turn was applied", t[0] > 150 && t[2] < 110, t.join());
-    eq("and its stored size", bitmaps[1].width + "x" + bitmaps[1].height, "1200x800");
-    /* one picture, which would only grow */
-    feed(new File([imagePdf([{ data: PH.tiny, w: 64, h: 64, cs: "/DeviceRGB" }], ["BT /F1 12 Tf 20 20 Td (" + new Array(40).join("Some words on a page. ") + ") Tj ET"])],
-                  "small.pdf", { type: "application/pdf" }));
-    return wait("the small PDF is read", read, 10000);
-  });
-  step(function () {
-    return download("balanced");
-  });
-  step(function (d) {
-    ok("a PDF whose one picture would only grow is still compressed", d && d.out, d ? d.error : "no download");
-    eq("and says the picture was kept", txt("msg").replace(/^Done: .*? smaller\./, ""),
-       " Its one colour picture was already smaller as it was, so it was kept. Nothing has left your device.");
-  });
-
-  /* ================= strong, on pictures kept without loss ================= */
-  step(function () {
-    var w = 2000, h = 1000, rgb = new Uint8Array(w * h * 3), grey = new Uint8Array(400 * 300);
-    for (var i = 0, p = 0; i < w * h; i++, p += 3) { rgb[p] = (i % w) * 255 / w; rgb[p + 1] = 90; rgb[p + 2] = Math.floor(i / w) * 255 / h; }
-    for (var j = 0; j < grey.length; j++) { grey[j] = j % 251; }
-    /* 16 bits a channel, which this page does not touch; noise, so that a
-       JPEG of it would be much smaller and a page that took it would show */
-    var deep = new Uint8Array(100 * 50 * 6), ds = 5;
-    for (var k = 0; k < deep.length; k++) { ds = (ds * 1103515245 + 12345) & 0x7fffffff; deep[k] = (ds >> 16) & 255; }
-    /* rows with the PNG "none" predictor in front of each: a 0, then the row */
-    var pw = 300, ph = 200, pred = new Uint8Array(ph * (1 + pw * 3));
-    for (var y = 0, q = 0; y < ph; y++) {
-      pred[q++] = 0;
-      for (var x = 0; x < pw; x++) { pred[q++] = x * 255 / pw; pred[q++] = 200; pred[q++] = y * 255 / ph; }
-    }
-    var pack = function (u8) { return new Response(new Blob([u8]).stream().pipeThrough(new CompressionStream("deflate"))).arrayBuffer().then(function (b) { return new Uint8Array(b); }); };
-    return Promise.all([pack(rgb), pack(grey), pack(deep), pack(pred)]).then(function (z) {
-      PH.rawRgb = z[0]; PH.rawGrey = z[1]; PH.rawDeep = z[2];
-      var masked = makeMasked(z[0], z[1], z[2], z[3]);
-      PH.strongPdf = masked;
-      feed(new File([masked], "screens.pdf", { type: "application/pdf" }));
-      return wait("the screenshots PDF is read", read, 10000);
-    });
-    function makeMasked(rgbZ, greyZ, deepZ, predZ) {
-      var bodies = [
-        "<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R 4 0 R 9 0 R 10 0 R] /Count 4>>",
-        "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents 5 0 R /Resources <<\/XObject <<\/Im 6 0 R>>>>>>",
-        "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents 5 0 R /Resources <<\/XObject <<\/Im 7 0 R>>>>>>",
-        { dict: "<<\/Length LEN>>", data: "q 300 0 0 200 50 50 cm /Im Do Q" },
-        { dict: "<<\/Type /XObject /Subtype /Image /Width 2000 /Height 1000 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /Length LEN>>", data: latin1(rgbZ) },
-        { dict: "<<\/Type /XObject /Subtype /Image /Width 2000 /Height 1000 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /SMask 8 0 R /Length LEN>>", data: latin1(rgbZ) },
-        { dict: "<<\/Type /XObject /Subtype /Image /Width 400 /Height 300 /ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /FlateDecode /Length LEN>>", data: latin1(greyZ) },
-        "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents 5 0 R /Resources <<\/XObject <<\/Im 11 0 R>>>>>>",
-        "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents 5 0 R /Resources <<\/XObject <<\/Im 12 0 R>>>>>>",
-        { dict: "<<\/Type /XObject /Subtype /Image /Width 100 /Height 50 /ColorSpace /DeviceRGB /BitsPerComponent 16 /Filter /FlateDecode /Length LEN>>", data: latin1(deepZ) },
-        { dict: "<<\/Type /XObject /Subtype /Image /Width 300 /Height 200 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode " +
-                "/DecodeParms <<\/Predictor 15 /Colors 3 /Columns 300 /BitsPerComponent 8>> /Length LEN>>", data: latin1(predZ) }
-      ];
-      return bytesOfText(makePdf(bodies));
-    }
-  });
-  step(function () {
-    return download("balanced");
-  });
-  step(function (d) {
-    ok("at balanced, pictures kept without loss stay so", d === null || imagesOf(d.out).every(function (o) { return /FlateDecode/.test(o.dict); }),
-       d && imagesOf(d.out).map(function (o) { return o.dict; }).join(" | "));
-    return download("strong");
-  });
-  step(function (d) {
-    ok("at strong, they are compressed", d && d.out, d ? d.error : "no download");
-    if (!d || !d.out) { return; }
-    var imgs = imagesOf(d.out);
-    var plain = imgs.filter(function (o) { return /DCTDecode/.test(o.dict) && !/SMask/.test(o.dict) && num(o.dict, "Width") !== 300; });
-    var masked = imgs.filter(function (o) { return /DCTDecode/.test(o.dict) && /SMask/.test(o.dict); });
-    eq("the plain one becomes JPEG, at most 1600 pixels", plain.length === 1 ? num(plain[0].dict, "Width") + "x" + num(plain[0].dict, "Height") : "none", "1600x800");
-    eq("the one with a soft mask becomes JPEG at its own size, to match its mask", masked.length === 1 ? num(masked[0].dict, "Width") + "x" + num(masked[0].dict, "Height") : "none", "2000x1000");
-    var mask = imgs.filter(function (o) { return /DeviceGray/.test(o.dict); });
-    eq("the mask itself stays grey and lossless", mask.length === 1 ? /FlateDecode/.test(mask[0].dict) + "," + num(mask[0].dict, "Width") : "none", "true,400");
-    var deep = imgs.filter(function (o) { return /BitsPerComponent 16/.test(o.dict); });
-    ok("16 bits a channel is left alone", deep.length === 1 && /FlateDecode/.test(deep[0].dict) && same(deep[0].data, PH.rawDeep),
-       deep.map(function (o) { return o.dict; }).join(" | "));
-    var predicted = imgs.filter(function (o) { return num(o.dict, "Width") === 300; });
-    ok("one with a row predictor becomes JPEG, the predictor gone with the old packing",
-       predicted.length === 1 && /DCTDecode/.test(predicted[0].dict) && !/DecodeParms|Predictor/.test(predicted[0].dict),
-       predicted.map(function (o) { return o.dict; }).join(" | "));
-    PH.strongPlain = plain[0];
-    return mask.length === 1 ? inflate(mask[0].data) : null;
-  });
-  step(function (maskBytes) {
-    var grey = new Uint8Array(400 * 300);
-    for (var j = 0; j < grey.length; j++) { grey[j] = j % 251; }
-    ok("byte for byte, once unpacked", same(maskBytes, grey));
-    return PH.strongPlain ? realBitmap(new Blob([PH.strongPlain.data], { type: "image/jpeg" })) : null;
-  });
-  step(function (bmp) {
-    if (!bmp) { return; }
-    /* red grows to the right, blue downwards, green is 90 everywhere */
-    var c = new OffscreenCanvas(bmp.width, bmp.height), ctx = c.getContext("2d", { willReadFrequently: true });
-    ctx.drawImage(bmp, 0, 0);
-    function at(x, y) { var p = ctx.getImageData(x, y, 1, 1).data; return [p[0], p[1], p[2]]; }
-    var tl = at(5, 5), tr = at(bmp.width - 6, 5), bl = at(5, bmp.height - 6);
-    ok("the colours keep their channels: dark at the top left", tl[0] < 30 && tl[2] < 30 && Math.abs(tl[1] - 90) < 20, tl.join());
-    ok("red at the top right", tr[0] > 225 && tr[2] < 30, tr.join());
-    ok("blue at the bottom left", bl[2] > 225 && bl[0] < 30, bl.join());
-  });
-
-  /* ================= stopping half-way ================= */
-  step(function () {
-    feed(new File([PH.pdf], "photos.pdf", { type: "application/pdf" }));
-    return wait("the photos PDF is read again", read, 10000);
-  });
-  step(function () {
-    var before = window.__saved.length;
-    click("dlBtn");
-    click("resetBtn");
-    return settled().then(function () {
-      eq("a clear while it works stops it: nothing is saved", window.__saved.length, before);
-      eq("and the page is empty again, balanced chosen", txt("msg") + "|" + val("level"), "Choose a PDF to make smaller.|balanced");
-    });
-  });
-
-  /* ================= other kinds of file ================= */
-  step(function () {
-    feed(F.damaged);
-    return wait("a damaged PDF is read", read, 10000);
-  });
-  step(function () {
-    has("a damaged file is read, and the visitor told", txt("msg"), "Its index is damaged; the smaller copy is rebuilt from what could be read.");
-    eq("as a warning", document.getElementById("msg").className, "msg msg--bad");
-    feed(F.signed);
-    return wait("a signed PDF is read", read, 10000);
-  });
-  step(function () {
-    has("a signed PDF is pointed out", txt("msg"), "It is digitally signed: compressing writes the file again, so the signature will no longer be valid.");
-    feed(F.enc);
-    return wait("a protected file is looked at", read, 10000);
-  });
-  step(function () {
-    eq("a protected one is turned away", txt("msg"), "Could not use locked.pdf: protected with a password.");
-    ok("with nothing to compress", document.getElementById("dlBtn").disabled);
-    feed(F.empty);
-    return wait("a PDF without pages is looked at", read, 10000);
-  });
-  step(function () {
-    eq("one without pages too", txt("msg"), "Could not use empty.pdf: has no pages.");
-    feed(F.notPdf);
-    return wait("a file that is not a PDF is looked at", read, 10000);
-  });
-  step(function () {
-    eq("and one that is not a PDF", txt("msg"), "Could not use notes.pdf: not a PDF.");
-    feed(F.hostile);
-    return wait("a file named as markup is read", read, 10000);
-  });
-  step(function () {
-    has("its name is shown as text", txt("msg"), "<iframe onload=zq>.pdf: 1 page, ");
-    eq("and made no element", document.querySelectorAll("iframe").length, 0);
-    set("level", "strong");
-    click("resetBtn");
-    eq("clear empties everything and goes back to balanced", txt("msg") + "|" + val("level"), "Choose a PDF to make smaller.|balanced");
-    ok("with nothing to compress", document.getElementById("dlBtn").disabled);
-  });
-
-  chain.then(function () { finish(); }, function (e) {
-    ok("the test ran to the end", false, String(e && e.stack || e));
-    finish();
-  });
-"""
-
 T["pdf-to-image"] = r"""  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
   var RC4_PDF = "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMjAwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzOT4+CnN0cmVhbQqreggKebynsir3Iev6CDjCV/GAiArFJrs6yU+rUTJO595LoG2huMoKZW5kc3RyZWFtCmVuZG9iago1IDAgb2JqCjw8L1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhPj4KZW5kb2JqCjYgMCBvYmoKPDwvVGl0bGUgPDI4Yjc4MzU3M2M3NmEwNjgyNDNhOTE4ZT4+PgplbmRvYmoKNyAwIG9iago8PC9GaWx0ZXIgL1N0YW5kYXJkIC9WIDIgL1IgMyAvTGVuZ3RoIDEyOCAvUCAtNCAvTyA8OWY1NGRhNzRhYjZkOWI3YzkxZTVhY2ZiZmZmMmRiY2QxZDMzYTk3OTMxZTQyMThkZTY3NTIyZTRkMWZlNTcxMD4gL1UgPDgyNTJjMTBlMWVmZmE1ZGYwMjk3YjdmMmFjOGU3Nzc2MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA+Pj4KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDYyIDAwMDAwIG4gCjAwMDAwMDAxNDAgMDAwMDAgbiAKMDAwMDAwMDIzNiAwMDAwMCBuIAowMDAwMDAwMzIzIDAwMDAwIG4gCjAwMDAwMDAzOTEgMDAwMDAgbiAKMDAwMDAwMDQ0NCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvSW5mbyA2IDAgUiAvRW5jcnlwdCA3IDAgUiAvSUQgWzxmNTIxODRlNTc4YjZjM2M3NzE0YjEwMGEzZWRmMTk3ZD4gPGY1MjE4NGU1NzhiNmMzYzc3MTRiMTAwYTNlZGYxOTdkPl0+PgpzdGFydHhyZWYKNjQ5CiUlRU9GCg==";
   var AES_PDF = "JVBERi0xLjcKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUiAvRXh0ZW5zaW9ucyA8PC9BREJFIDw8L0Jhc2VWZXJzaW9uIC8xLjcgL0V4dGVuc2lvbkxldmVsIDg+Pj4+Pj4KZW5kb2JqCjIgMCBvYmoKPDwvVHlwZSAvUGFnZXMgL0tpZHMgWzMgMCBSXSAvQ291bnQgMT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCAyMDAgMTAwXSAvQ29udGVudHMgNCAwIFI+PgplbmRvYmoKNCAwIG9iago8PC9MZW5ndGggODA+PgpzdHJlYW0KZZ+sjVm9EBZygh0eIQhrv7fU2DAY+Idnvt3ADK36uGc8qpWWPropMgqllvn4u8gO4xtaDIkcKROdjYzJJGG6k4enyJa/ogBiAYU3WBVZDNAKZW5kc3RyZWFtCmVuZG9iago1IDAgb2JqCjw8L0ZpbHRlciAvU3RhbmRhcmQgL1YgNSAvUiA2IC9MZW5ndGggMjU2IC9DRiA8PC9TdGRDRiA8PC9UeXBlIC9DcnlwdEZpbHRlciAvQ0ZNIC9BRVNWMyAvQXV0aEV2ZW50IC9Eb2NPcGVuIC9MZW5ndGggMzI+Pj4+IC9TdG1GIC9TdGRDRiAvU3RyRiAvU3RkQ0YgL08gPEQ2Nzg3MkQ5QTZEMzc1OTEzQzY3RjE2MTlCQjE4Q0JCN0YwRTgxMEU1REVFNzg1QjNBQ0Y1OEE5NTg2REZEMzU4MTNBRDA1MjExRjRGQTQ2Q0ZFRDJDNUUzQUE1QTY2MD4gL1UgPDg0Qzg2OTVBNTU2RDhGREFFODdDMjExREIxRERBOTYyQkVGRENGRDBDOTA1REYyQTkwNjlEOTQ5QTMwOTUxN0RDMUJGMjdGN0M4MkE4RDU4N0RDNDU1RTYwOEYxRTg4Nz4gL09FIDw0RENBNzVDQjNFRDVEQUE4OEI5NDIyRUNFQTFDMEE3REI4NTUyQTI5OTVFMEQ0MzExMDM4OEMzRkFEREZCQ0U4PiAvVUUgPDExMDEzMjE1N0Y3OTgzOTFCMjE5MENBNUJCNDg5RkQxNENFNDJBNDgyMTY1M0E2QUUxRURCQTE1RUFBMTU5RTU+IC9QIC00IC9QZXJtcyA8N0Q3M0I4QTc5RTU5RkMzMTJDQzkzMTAxNzYxODE0NUI+IC9FbmNyeXB0TWV0YWRhdGEgdHJ1ZT4+CmVuZG9iagp4cmVmCjAgNgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMTUgMDAwMDAgbiAKMDAwMDAwMDEyNCAwMDAwMCBuIAowMDAwMDAwMTc5IDAwMDAwIG4gCjAwMDAwMDAyNjQgMDAwMDAgbiAKMDAwMDAwMDM5MiAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDYgL1Jvb3QgMSAwIFIgL0VuY3J5cHQgNSAwIFIgL0lEIFs8QzU1QjNBRjdGM0FGNzRDNzg4QzNENDgwMTlEMURGNTY+IDxDNTVCM0FGN0YzQUY3NEM3ODhDM0Q0ODAxOUQxREY1Nj5dID4+CnN0YXJ0eHJlZgo5NzQKJSVFT0YK";
@@ -11290,6 +10738,584 @@ T["income-tax-calculator"] = r"""  /* Every expected figure below was worked out
   finish();
 """
 
+T["compress-pdf"] = r"""
+  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
+  window.__saved = [];
+
+  /* Decoding and encoding the photos happens off the page's own thread,
+     which the test's virtual clock does not wait for: with nothing to do but
+     wait, the page let the clock run about a hundred times faster than that
+     work, and on a busy machine a 120-second wait ran out while a picture
+     was still being encoded. Each tick of this timer spends a little real
+     time, so the clock keeps closer pace with the work. It stops when the
+     test does. (The same fix as pdf-to-image's.) */
+  var pacer = setInterval(function () {
+    var x = 0;
+    for (var i = 0; i < 300000; i++) { x = (x + i) % 9973; }
+    window.__pace = x;
+  }, 1);
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+
+  /* the page's slow work (deflate, decoding and encoding pictures) is
+     counted while it runs: when none is running at a timer tick, the page
+     has finished, or stopped */
+  var inflight = 0;
+  function counted(promise) { inflight += 1; return promise.finally(function () { inflight -= 1; }); }
+  var realArrayBuffer = Response.prototype.arrayBuffer;
+  Response.prototype.arrayBuffer = function () { return counted(realArrayBuffer.call(this)); };
+  var realBitmap = window.createImageBitmap;
+  window.createImageBitmap = function () { return counted(realBitmap.apply(window, arguments)); };
+  var realToBlob = HTMLCanvasElement.prototype.toBlob;
+  HTMLCanvasElement.prototype.toBlob = function (cb, type, q) {
+    inflight += 1;
+    return realToBlob.call(this, function (b) { inflight -= 1; cb(b); }, type, q);
+  };
+
+  /* ================= helpers ================= */
+  function feed(file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById("file");
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  function wait(label, test, budget) { return new Promise(function (resolve) { waitFor(label, test, resolve, budget); }); }
+  function read() { return !/^Reading/.test(txt("msg")); }
+  function bytesOfText(s) { var u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { u[i] = s.charCodeAt(i) & 255; } return u; }
+  function fromB64(s) { return bytesOfText(atob(s)); }
+  function latin1(bytes) {
+    var parts = [];
+    for (var i = 0; i < bytes.length; i += 32768) { parts.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 32768))); }
+    return parts.join("");
+  }
+  function same(a, b) { if (!a || !b || a.length !== b.length) { return false; } for (var i = 0; i < a.length; i++) { if (a[i] !== b[i]) { return false; } } return true; }
+  function num(dict, key) { var m = new RegExp("/" + key + " (\\d+)").exec(dict); return m ? Number(m[1]) : null; }
+  function makePdf(bodies, trailerExtra) {
+    var out = "%PDF-1.4\n", offsets = [];
+    bodies.forEach(function (b, i) {
+      offsets.push(out.length);
+      out += (i + 1) + " 0 obj\n" + (typeof b === "string" ? b : b.dict.replace("LEN", b.data.length) + "\nstream\n" + b.data + "\nendstream") + "\nendobj\n";
+    });
+    var x = out.length;
+    out += "xref\n0 " + (bodies.length + 1) + "\n0000000000 65535 f \n";
+    offsets.forEach(function (o) { out += ("0000000000" + o).slice(-10) + " 00000 n \n"; });
+    out += "trailer\n<<\/Size " + (bodies.length + 1) + " /Root 1 0 R" + (trailerExtra || "") + ">>\nstartxref\n" + x + "\n%%EOF\n";
+    return out;
+  }
+  function inflate(u8) {
+    return new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream("deflate"))).arrayBuffer()
+      .then(function (b) { return new Uint8Array(b); });
+  }
+
+  /* ================= a reader for the saved file =================
+     The packed layout the page writes: a cross-reference stream at the end,
+     small objects in object streams, streams on their own. Unpacked with
+     the browser's DecompressionStream, not the page's own inflater. */
+  function readPacked(bytes) {
+    var t = latin1(bytes);
+    var sx = /startxref\n(\d+)\n%%EOF\n$/.exec(t);
+    if (!sx) { return Promise.reject(new Error("no startxref at the end")); }
+    var at = Number(sx[1]);
+    var head = /^(\d+) 0 obj\n(<< \/Type \/XRef [^\n]*>>)\nstream\n/.exec(t.slice(at));
+    if (!head) { return Promise.reject(new Error("startxref does not point at a cross-reference stream")); }
+    var xdict = head[2], size = num(xdict, "Size"), len = num(xdict, "Length");
+    var out = { text: t, xdict: xdict, objs: {}, root: num(xdict, "Root"), info: num(xdict, "Info"), packedCount: 0 };
+    if (!/\/W \[1 4 2\]/.test(xdict)) { return Promise.reject(new Error("unexpected /W: " + xdict)); }
+    return inflate(bytes.subarray(at + head[0].length, at + head[0].length + len)).then(function (rows) {
+      if (rows.length !== size * 7) { throw new Error("the table has " + rows.length + " bytes for " + size + " objects"); }
+      var inStreams = {};
+      for (var n = 1; n < size; n++) {
+        var type = rows[n * 7], a = ((rows[n * 7 + 1] << 24) | (rows[n * 7 + 2] << 16) | (rows[n * 7 + 3] << 8) | rows[n * 7 + 4]) >>> 0;
+        var b = (rows[n * 7 + 5] << 8) | rows[n * 7 + 6];
+        if (type === 1) {
+          var tag = n + " 0 obj\n";
+          if (t.substr(a, tag.length) !== tag) { throw new Error("object " + n + " is not where the table says"); }
+          var end = t.indexOf("\nendobj\n", a), body = t.slice(a + tag.length, end), s = body.indexOf("\nstream\n");
+          if (s < 0) { out.objs[n] = { dict: body, data: null }; }
+          else {
+            var l = num(body.slice(0, s), "Length"), start = a + tag.length + s + 8;
+            if (t.substr(start + l, 10) !== "\nendstream") { throw new Error("object " + n + ": /Length does not end at endstream"); }
+            out.objs[n] = { dict: body.slice(0, s), data: bytes.subarray(start, start + l) };
+          }
+        } else if (type === 2) {
+          (inStreams[a] = inStreams[a] || []).push([n, b]);
+          out.packedCount += 1;
+        } else { throw new Error("object " + n + " has type " + type); }
+      }
+      var jobs = Object.keys(inStreams).map(function (stm) {
+        var o = out.objs[stm];
+        if (!o || !/\/Type \/ObjStm/.test(o.dict)) { throw new Error("object " + stm + " is not an object stream"); }
+        var first = num(o.dict, "First"), count = num(o.dict, "N");
+        return inflate(o.data).then(function (plain) {
+          var text = latin1(plain), pairs = text.slice(0, first).trim().split(/\s+/).map(Number);
+          if (pairs.length !== count * 2) { throw new Error("object stream " + stm + " lists " + pairs.length / 2 + " objects, says " + count); }
+          inStreams[stm].forEach(function (want) {
+            var idx = want[1];
+            if (pairs[idx * 2] !== want[0]) { throw new Error("object " + want[0] + " is not at index " + idx + " of " + stm); }
+            var from = first + pairs[idx * 2 + 1], to = idx + 1 < count ? first + pairs[idx * 2 + 3] : text.length;
+            /* strict: an object starts exactly where its stream says, not on the space before it */
+            if (/\s/.test(text.charAt(from))) { throw new Error("object " + want[0] + " does not start where object stream " + stm + " says"); }
+            out.objs[want[0]] = { dict: text.slice(from, to).trim(), data: null, packed: true };
+          });
+        });
+      });
+      return Promise.all(jobs).then(function () { return out; });
+    });
+  }
+  function streamText(o) { return /\/FlateDecode/.test(o.dict) ? inflate(o.data).then(latin1) : Promise.resolve(latin1(o.data)); }
+  function imagesOf(r) {
+    return Object.keys(r.objs).map(function (n) { return r.objs[n]; }).filter(function (o) { return /\/Subtype \/Image/.test(o.dict); });
+  }
+
+  /* ================= the files ================= */
+  function canvasJpeg(w, h, quality, paint) {
+    var c = new OffscreenCanvas(w, h), ctx = c.getContext("2d");
+    paint(ctx, w, h);
+    return c.convertToBlob({ type: "image/jpeg", quality: quality }).then(function (b) { return b.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); });
+  }
+  /* a photograph's smooth colour with fine noise; the top-left corner red, the bottom-right blue */
+  function photoPaint(ctx, w, h) {
+    var g = ctx.createLinearGradient(0, 0, w, h);
+    g.addColorStop(0, "#d02020"); g.addColorStop(1, "#2030d0");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    var img = ctx.getImageData(0, 0, w, h), seed = 7;
+    for (var i = 0; i < img.data.length; i += 4) {
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      var n = (seed >> 16) % 25 - 12;
+      img.data[i] += n; img.data[i + 1] += n; img.data[i + 2] += n;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  /* an EXIF block saying "turn 90" (orientation 6), put right after the start marker */
+  function withExif(jpeg) {
+    var seg = [0x45, 0x78, 0x69, 0x66, 0, 0, 0x4D, 0x4D, 0, 0x2A, 0, 0, 0, 8, 0, 1, 0x01, 0x12, 0, 3, 0, 0, 0, 1, 0, 6, 0, 0, 0, 0, 0, 0];
+    var out = new Uint8Array(jpeg.length + 4 + seg.length);
+    out.set([0xFF, 0xD8, 0xFF, 0xE1, 0, seg.length + 2], 0);
+    out.set(seg, 6);
+    out.set(jpeg.subarray(2), 6 + seg.length);
+    return out;
+  }
+  /* a zlib stream of "stored" blocks: valid deflate, not packed at all */
+  function storedZlib(bytes) {
+    var out = new Uint8Array(2 + 5 + bytes.length + 4), a = 1, b = 0;
+    out[0] = 0x78; out[1] = 0x01;
+    out[2] = 0x01;
+    out[3] = bytes.length & 255; out[4] = bytes.length >> 8; out[5] = ~bytes.length & 255; out[6] = (~bytes.length >> 8) & 255;
+    out.set(bytes, 7);
+    for (var i = 0; i < bytes.length; i++) { a = (a + bytes[i]) % 65521; b = (b + a) % 65521; }
+    var at = 7 + bytes.length;
+    out[at] = b >> 8; out[at + 1] = b & 255; out[at + 2] = a >> 8; out[at + 3] = a & 255;
+    return out;
+  }
+  function imagePdf(images, extraPages, pre) {
+    /* images: [{ data (bytes), w, h, cs, extra }]; one page each, plus text pages. pre: bodies that
+       come first, as objects 4, 5, ...; image k is then object 4 + pre.length + 3k */
+    var bodies = ["CATALOG", "PAGES", "<<\/Type /Font /Subtype /Type1 /BaseFont /Helvetica>>"].concat(pre || []), kids = [];
+    images.forEach(function (im) {
+      bodies.push({ dict: "<<\/Type /XObject /Subtype /Image /Width " + im.w + " /Height " + im.h + " /ColorSpace " + im.cs +
+                          " /BitsPerComponent 8 " + (im.filter || "/Filter /DCTDecode") + (im.extra || "") + " /Length LEN>>", data: latin1(im.data) });
+      var imNum = bodies.length;
+      var draw = "q 300 0 0 200 50 50 cm /Im Do Q";
+      bodies.push({ dict: "<<\/Length LEN>>", data: draw });
+      bodies.push("<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents " + (bodies.length) + " 0 R /Resources <<\/XObject <<\/Im " + imNum + " 0 R>>>>>>");
+      kids.push(bodies.length);
+    });
+    (extraPages || []).forEach(function (text) {
+      bodies.push({ dict: "<<\/Length LEN>>", data: text });
+      bodies.push("<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents " + (bodies.length) + " 0 R /Resources <<\/Font <<\/F1 3 0 R>>>>>>");
+      kids.push(bodies.length);
+    });
+    bodies[0] = "<<\/Type /Catalog /Pages 2 0 R>>";
+    bodies[1] = "<<\/Type /Pages /Kids [" + kids.map(function (k) { return k + " 0 R"; }).join(" ") + "] /Count " + kids.length + ">>";
+    bodies.push("<<\/Title (Pictures) /Producer (compress test)>>");
+    return bytesOfText(makePdf(bodies, " /Info " + bodies.length + " 0 R"));
+  }
+
+  /* text only, with an old revision inside and drawings not packed */
+  var LINES = [];
+  for (var li = 0; li < 60; li++) { LINES.push("BT /F1 10 Tf 20 " + (780 - li * 12) + " Td (Line " + li + " of a long report, written out plainly) Tj ET"); }
+  var DRAWING = LINES.join("\n");
+  /* also: an XMP block (must stay readable), 1000 bytes that do not pack
+     (must stay as they are) and a stream packed with deflate's "stored"
+     blocks, which is no packing at all (must be packed properly) */
+  var XMP = "<x:xmpmeta xmlns:x='adobe:ns:meta/'><dc:title>Report, readable by programs that do not unpack PDF streams<\/dc:title><\/x:xmpmeta>";
+  var NOISE = "", seed = 99;
+  for (var ni = 0; ni < 1000; ni++) { seed = (seed * 1103515245 + 12345) & 0x7fffffff; NOISE += String.fromCharCode((seed >> 16) & 255); }
+  var STORED_TEXT = DRAWING + "\n" + DRAWING + "\n" + DRAWING;
+  var TEXT_FIRST = makePdf([
+    "<<\/Type /Catalog /Pages 2 0 R /Outlines 6 0 R /Metadata 9 0 R /Noise 10 0 R /Stored 11 0 R>>",
+    "<<\/Type /Pages /Kids [3 0 R] /Count 1 /MediaBox [0 0 400 800]>>",
+    "<<\/Type /Page /Parent 2 0 R /Contents 4 0 R /Resources <<\/Font <<\/F1 5 0 R>>>>>>",
+    { dict: "<<\/Length LEN>>", data: "BT /F1 10 Tf 20 20 Td (An old draft of the page that was replaced) Tj ET" },
+    "<<\/Type /Font /Subtype /Type1 /BaseFont /Helvetica>>",
+    "<<\/Type /Outlines /Count 0>>",
+    "<<\/Title (Report) /Author (Asha Rao)>>",
+    "<<\/Unused (nothing points at this object)>>",
+    { dict: "<<\/Type /Metadata /Subtype /XML /Length LEN>>", data: XMP },
+    { dict: "<<\/Length LEN>>", data: NOISE },
+    { dict: "<<\/Filter /FlateDecode /Length LEN>>", data: latin1(storedZlib(bytesOfText(STORED_TEXT))) }
+  ], " /Info 7 0 R");
+  var x1 = /startxref\n(\d+)\n%%EOF\n$/.exec(TEXT_FIRST)[1];
+  var upd = "4 0 obj\n<<\/Length " + DRAWING.length + ">>\nstream\n" + DRAWING + "\nendstream\nendobj\n";
+  var TEXT = bytesOfText(TEXT_FIRST + upd + "xref\n4 1\n" + ("0000000000" + TEXT_FIRST.length).slice(-10) + " 00000 n \ntrailer\n<<\/Size 12 /Root 1 0 R /Info 7 0 R" +
+                         " /Prev " + x1 + ">>\nstartxref\n" + (TEXT_FIRST.length + upd.length) + "\n%%EOF\n");
+
+  var DOC_ENC = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/Filter /Standard /V 2 /R 3>>"], " /Encrypt 4 0 R"));
+  var DOC_EMPTY = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [] /Count 0>>"]));
+  var DOC_SIGNED = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R /AcroForm <<\/Fields [] /SigFlags 3>>>>",
+                         "<<\/Type /Pages /Kids [3 0 R] /Count 1>>", "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>"]));
+  var F = {
+    text: new File([TEXT], "report.pdf", { type: "application/pdf" }),
+    damaged: new File([fromB64(TINY.bad_offsets)], "scan.pdf", { type: "application/pdf" }),
+    enc: new File([DOC_ENC], "locked.pdf", { type: "application/pdf" }),
+    empty: new File([DOC_EMPTY], "empty.pdf", { type: "application/pdf" }),
+    signed: new File([DOC_SIGNED], "signed.pdf", { type: "application/pdf" }),
+    notPdf: new File([bytesOfText("not a pdf")], "notes.pdf", { type: "application/pdf" }),
+    hostile: new File([TEXT], "<iframe onload=zq>.pdf", { type: "application/pdf" })
+  };
+
+  function download(level) {
+    var before = window.__saved.length;
+    if (level) { document.getElementById("level").value = level; document.getElementById("level").dispatchEvent(new Event("change", { bubbles: true })); }
+    click("dlBtn");
+    return wait("the compressed file is made", function () {
+      return window.__saved.length === before + 1 || /^(This PDF is already|The PDF could not)/.test(txt("msg"));
+    }, 120000).then(function () {
+      var saved = window.__saved[before];
+      if (!saved) { return null; }
+      return saved.blob.arrayBuffer().then(function (b) {
+        var bytes = new Uint8Array(b);
+        return readPacked(bytes).then(function (out) { return { saved: saved, bytes: bytes, out: out, error: "" }; },
+                                      function (e) { return { saved: saved, bytes: bytes, out: null, error: e.message }; });
+      });
+    });
+  }
+  function settled() {
+    var quiet = 0;
+    return wait("the page's work has stopped", function () { quiet = inflight === 0 ? quiet + 1 : 0; return quiet >= 3; }, 120000);
+  }
+
+  var chain = Promise.resolve();
+  function step(fn) { chain = chain.then(fn); }
+
+  /* ================= the page as it opens ================= */
+  eq("it asks for a PDF", txt("msg"), "Choose a PDF to make smaller.");
+  ok("with nothing to compress", document.getElementById("dlBtn").disabled);
+  eq("balanced is chosen to start with", val("level"), "balanced");
+  has("and explained", txt("levelHint"), "Photos are saved again as JPEG at good quality, and any longer than 2400 pixels made smaller.");
+  set("level", "lossless");
+  has("each level says what it does: lossless", txt("levelHint"), "Nothing you can see changes.");
+  set("level", "strong");
+  has("strong", txt("levelHint"), "at most 1600 pixels; screenshots and other colour pictures become JPEG too");
+  set("level", "balanced");
+
+  /* ================= lossless, on text ================= */
+  var firstOut = null;
+  step(function () {
+    feed(F.text);
+    return wait("the PDF is read", read, 10000);
+  });
+  step(function () {
+    ok("the file is read and described", /^report\.pdf: 1 page, [\d.]+ KB\.$/.test(txt("msg")), txt("msg"));
+    ok("and can be compressed", !document.getElementById("dlBtn").disabled);
+    return download("lossless");
+  });
+  step(function (d) {
+    ok("the compressed file reads back", d && d.out, d ? d.error : "no download");
+    if (!d || !d.out) { return; }
+    firstOut = d;
+    var r = d.out;
+    eq("named for what was done to it", d.saved.name, "report (compressed).pdf");
+    eq("as a PDF", d.saved.blob.type, "application/pdf");
+    eq("a PDF 1.7 file", r.text.slice(0, 9), "%PDF-1.7\n");
+    ok("smaller than the original", d.bytes.length < TEXT.length, d.bytes.length + " vs " + TEXT.length);
+    ok("the small objects are packed in object streams", r.packedCount >= 5, r.packedCount);
+    eq("the catalog among them", !!(r.objs[r.root] && r.objs[r.root].packed), true);
+    has("its bookmarks kept", r.objs[r.root] ? r.objs[r.root].dict : "", "/Outlines");
+    ok("the details kept", r.info && /\/Title <5265706F7274>/.test(r.objs[r.info].dict), r.info && r.objs[r.info].dict);
+    var everything = Object.keys(r.objs).map(function (n) { return r.objs[n].dict; }).join("\n");
+    eq("the unused object is left behind", /Unused|6E6F7468696E6720706F696E7473/.test(everything), false);
+    var streams = Object.keys(r.objs).map(function (n) { return r.objs[n]; }).filter(function (o) { return o.data && !/ObjStm|XRef/.test(o.dict); });
+    eq("four streams: the drawing, the XMP, the noise, the stored one", streams.length, 4);
+    var xmp = streams.filter(function (o) { return /\/Type \/Metadata/.test(o.dict); })[0];
+    ok("the XMP is left readable, not packed", xmp && !/Filter/.test(xmp.dict) && latin1(xmp.data) === XMP, xmp && xmp.dict);
+    var noise = streams.filter(function (o) { return o.data.length === 1000; })[0];
+    ok("bytes that would not get smaller are left as they are", noise && !/Filter/.test(noise.dict) && latin1(noise.data) === NOISE, noise && noise.dict);
+    var packed = streams.filter(function (o) { return /\/Filter \/FlateDecode/.test(o.dict); });
+    eq("the drawing and the stored one are packed with deflate", packed.length, 2);
+    has("the message gives both sizes and the saving", txt("msg"), "% smaller. Pictures were left untouched. Nothing has left your device.");
+    ok("in that form", new RegExp("^Done: [\\d.]+ (?:B|KB|MB) " + String.fromCharCode(0x2192) + " [\\d.]+ (?:B|KB|MB), \\d+% smaller\\.").test(txt("msg")), txt("msg"));
+    return Promise.all(packed.map(streamText)).then(function (texts) {
+      ok("the stored one is really packed now", packed.some(function (o, i) { return texts[i] === STORED_TEXT && o.data.length < STORED_TEXT.length / 5; }),
+         packed.map(function (o) { return o.data.length; }).join());
+      ok("the drawing comes back exactly, the newest one: the old draft is left behind", texts.indexOf(DRAWING) >= 0);
+      /* the result, compressed again, is no smaller: nothing is saved */
+      feed(new File([d.bytes], "again.pdf", { type: "application/pdf" }));
+      return wait("the compressed file is read", read, 10000);
+    });
+  });
+  step(function () {
+    return download("lossless");
+  });
+  step(function (d) {
+    eq("a file that cannot get smaller is not saved", d, null);
+    eq("and the visitor is told, with what else to try", txt("msg"),
+       "This PDF is already as small as this page can make it at this level: the result was not smaller, so nothing was saved. Strong may do better.");
+    return download("strong");
+  });
+  step(function (d) {
+    eq("at strong, nothing more to suggest", txt("msg"),
+       "This PDF is already as small as this page can make it: the result was not smaller, so nothing was saved.");
+  });
+
+  /* ================= balanced, on photos ================= */
+  var PH = {};
+  /* objects 4 and 5 are colour profiles (RGB, grey); picture k is object 6 + 3k */
+  var PROFILES = [{ dict: "<<\/N 3 /Length LEN>>", data: "an RGB colour profile would be here" },
+                  { dict: "<<\/N 1 /Length LEN>>", data: "a grey colour profile would be here" }];
+  step(function () {
+    return Promise.all([
+      canvasJpeg(3000, 2000, 0.98, photoPaint),
+      canvasJpeg(1200, 800, 0.98, photoPaint),
+      canvasJpeg(64, 64, 0.3, photoPaint),
+      canvasJpeg(800, 600, 0.98, photoPaint),
+      canvasJpeg(800, 600, 0.97, photoPaint),
+      canvasJpeg(800, 600, 0.96, photoPaint)
+    ]).then(function (j) {
+      PH.big = j[0]; PH.turned = withExif(j[1]); PH.tiny = j[2]; PH.other = j[3]; PH.withMask = j[4]; PH.profiled = j[5];
+      PH.list = [
+        { data: PH.big, w: 3000, h: 2000, cs: "/DeviceRGB" },                                     /* 0: made smaller */
+        { data: PH.turned, w: 1200, h: 800, cs: "/DeviceRGB" },                                   /* 1: saved again, not turned */
+        { data: PH.tiny, w: 64, h: 64, cs: "/DeviceRGB" },                                        /* 2: would grow: kept */
+        { data: PH.other, w: 800, h: 600, cs: "/DeviceGray" },                                    /* 3-6: left alone */
+        { data: PH.other, w: 800, h: 600, cs: "/DeviceCMYK", extra: " /Decode [1 0 1 0 1 0 1 0]" },
+        { data: PH.other, w: 800, h: 600, cs: "/DeviceRGB", extra: " /Decode [0 1 0 1 0 1]" },
+        { data: PH.other, w: 800, h: 600, cs: "[/Indexed /DeviceRGB 1 <000000FFFFFF>]" },
+        { data: PH.other, w: 800, h: 600, cs: "/DeviceRGB" },                                     /* 7: used as 8's mask: left alone */
+        { data: PH.withMask, w: 800, h: 600, cs: "/DeviceRGB", extra: " /SMask " + (6 + 3 * 7) + " 0 R" },  /* 8: saved again, same size */
+        { data: PH.other, w: 800, h: 600, cs: "/DeviceRGB", extra: " /Mask [0 10 0 10 0 10]" },   /* 9: exact colours matter: left alone */
+        { data: PH.profiled, w: 800, h: 600, cs: "[/ICCBased 4 0 R]" },                          /* 10: RGB profile: saved again */
+        { data: PH.other, w: 800, h: 600, cs: "[/ICCBased 5 0 R]" }                               /* 11: grey profile: left alone */
+      ];
+      PH.pdf = imagePdf(PH.list, ["BT /F1 12 Tf 20 20 Td (Text only) Tj ET"], PROFILES);
+      feed(new File([PH.pdf], "photos.pdf", { type: "application/pdf" }));
+      return wait("the photos PDF is read", read, 10000);
+    });
+  });
+  step(function () {
+    has("thirteen pages", txt("msg"), "photos.pdf: 13 pages, ");
+    return download("lossless");
+  });
+  step(function (d) {
+    ok("lossless compresses it too", d && d.out, d ? d.error : "no download");
+    if (!d || !d.out) { return; }
+    var imgs = imagesOf(d.out);
+    eq("and leaves every picture byte for byte", PH.list.filter(function (im) { return imgs.some(function (o) { return same(o.data, im.data); }); }).length, 12);
+    has("saying so", txt("msg"), "% smaller. Pictures were left untouched.");
+    return download("balanced");
+  });
+  step(function (d) {
+    ok("the photos PDF is compressed", d && d.out, d ? d.error : "no download");
+    if (!d || !d.out) { return; }
+    var imgs = imagesOf(d.out);
+    eq("every picture is still there", imgs.length, 12);
+    var masked = imgs.filter(function (o) { return /\/SMask/.test(o.dict); });
+    ok("the one with a mask is saved again, at its own size, its mask kept",
+       masked.length === 1 && !same(masked[0].data, PH.withMask) && num(masked[0].dict, "Width") === 800 && /\/SMask \d+ 0 R/.test(masked[0].dict),
+       masked.map(function (o) { return o.dict; }).join(" | "));
+    var profiled = imgs.filter(function (o) { return /ICCBased/.test(o.dict) && !same(o.data, PH.other); });
+    ok("the one with an RGB colour profile is saved again, its profile kept", profiled.length === 1 && !same(profiled[0].data, PH.profiled),
+       profiled.map(function (o) { return o.dict; }).join(" | "));
+    var big = imgs.filter(function (o) { return num(o.dict, "Width") === 2400; });
+    eq("the big photo is made 2400 pixels long, its shape kept", big.length === 1 ? num(big[0].dict, "Height") : "none", 1600);
+    has("as JPEG", big[0] ? big[0].dict : "", "/Filter /DCTDecode");
+    ok("and much smaller", big[0] && big[0].data.length < PH.big.length / 2, big[0] && big[0].data.length);
+    var turned = imgs.filter(function (o) { return num(o.dict, "Width") === 1200; });
+    eq("the photo with an EXIF turn keeps its stored shape, not turned", turned.length === 1 ? num(turned[0].dict, "Height") : "none", 800);
+    ok("and was saved again", turned[0] && !same(turned[0].data, PH.turned));
+    eq("a picture that would not get smaller is kept byte for byte", imgs.filter(function (o) { return same(o.data, PH.tiny); }).length, 1);
+    eq("grey, CMYK, a /Decode array, an indexed one, a mask, exact colours and a grey profile are left alone",
+       imgs.filter(function (o) { return same(o.data, PH.other); }).length, 7);
+    eq("the message counts them", txt("msg").replace(/^Done: .*? smaller\./, ""),
+       " 4 of 5 pictures saved again; the rest were already smaller as they were. Nothing has left your device.");
+    return Promise.all([realBitmap(new Blob([big[0].data], { type: "image/jpeg" })), realBitmap(new Blob([turned[0].data], { type: "image/jpeg" }))]);
+  });
+  step(function (bitmaps) {
+    if (!bitmaps) { return; }
+    var c = new OffscreenCanvas(10, 10), ctx = c.getContext("2d", { willReadFrequently: true });
+    function corner(bmp, x, y) { ctx.clearRect(0, 0, 10, 10); ctx.drawImage(bmp, x, y, 10, 10, 0, 0, 10, 10); var p = ctx.getImageData(5, 5, 1, 1).data; return [p[0], p[1], p[2]]; }
+    var tl = corner(bitmaps[0], 0, 0), br = corner(bitmaps[0], 2390, 1590);
+    ok("its colours are kept: red at the top left", tl[0] > 150 && tl[2] < 110, tl.join());
+    ok("blue at the bottom right", br[2] > 150 && br[0] < 110, br.join());
+    eq("the decoded photo is the size the PDF says", bitmaps[0].width + "x" + bitmaps[0].height, "2400x1600");
+    var t = corner(bitmaps[1], 0, 0);
+    ok("the turned one still has red at its stored top left: no turn was applied", t[0] > 150 && t[2] < 110, t.join());
+    eq("and its stored size", bitmaps[1].width + "x" + bitmaps[1].height, "1200x800");
+    /* one picture, which would only grow */
+    feed(new File([imagePdf([{ data: PH.tiny, w: 64, h: 64, cs: "/DeviceRGB" }], ["BT /F1 12 Tf 20 20 Td (" + new Array(40).join("Some words on a page. ") + ") Tj ET"])],
+                  "small.pdf", { type: "application/pdf" }));
+    return wait("the small PDF is read", read, 10000);
+  });
+  step(function () {
+    return download("balanced");
+  });
+  step(function (d) {
+    ok("a PDF whose one picture would only grow is still compressed", d && d.out, d ? d.error : "no download");
+    eq("and says the picture was kept", txt("msg").replace(/^Done: .*? smaller\./, ""),
+       " Its one colour picture was already smaller as it was, so it was kept. Nothing has left your device.");
+  });
+
+  /* ================= strong, on pictures kept without loss ================= */
+  step(function () {
+    var w = 2000, h = 1000, rgb = new Uint8Array(w * h * 3), grey = new Uint8Array(400 * 300);
+    for (var i = 0, p = 0; i < w * h; i++, p += 3) { rgb[p] = (i % w) * 255 / w; rgb[p + 1] = 90; rgb[p + 2] = Math.floor(i / w) * 255 / h; }
+    for (var j = 0; j < grey.length; j++) { grey[j] = j % 251; }
+    /* 16 bits a channel, which this page does not touch; noise, so that a
+       JPEG of it would be much smaller and a page that took it would show */
+    var deep = new Uint8Array(100 * 50 * 6), ds = 5;
+    for (var k = 0; k < deep.length; k++) { ds = (ds * 1103515245 + 12345) & 0x7fffffff; deep[k] = (ds >> 16) & 255; }
+    /* rows with the PNG "none" predictor in front of each: a 0, then the row */
+    var pw = 300, ph = 200, pred = new Uint8Array(ph * (1 + pw * 3));
+    for (var y = 0, q = 0; y < ph; y++) {
+      pred[q++] = 0;
+      for (var x = 0; x < pw; x++) { pred[q++] = x * 255 / pw; pred[q++] = 200; pred[q++] = y * 255 / ph; }
+    }
+    var pack = function (u8) { return new Response(new Blob([u8]).stream().pipeThrough(new CompressionStream("deflate"))).arrayBuffer().then(function (b) { return new Uint8Array(b); }); };
+    return Promise.all([pack(rgb), pack(grey), pack(deep), pack(pred)]).then(function (z) {
+      PH.rawRgb = z[0]; PH.rawGrey = z[1]; PH.rawDeep = z[2];
+      var masked = makeMasked(z[0], z[1], z[2], z[3]);
+      PH.strongPdf = masked;
+      feed(new File([masked], "screens.pdf", { type: "application/pdf" }));
+      return wait("the screenshots PDF is read", read, 10000);
+    });
+    function makeMasked(rgbZ, greyZ, deepZ, predZ) {
+      var bodies = [
+        "<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R 4 0 R 9 0 R 10 0 R] /Count 4>>",
+        "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents 5 0 R /Resources <<\/XObject <<\/Im 6 0 R>>>>>>",
+        "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents 5 0 R /Resources <<\/XObject <<\/Im 7 0 R>>>>>>",
+        { dict: "<<\/Length LEN>>", data: "q 300 0 0 200 50 50 cm /Im Do Q" },
+        { dict: "<<\/Type /XObject /Subtype /Image /Width 2000 /Height 1000 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /Length LEN>>", data: latin1(rgbZ) },
+        { dict: "<<\/Type /XObject /Subtype /Image /Width 2000 /Height 1000 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /SMask 8 0 R /Length LEN>>", data: latin1(rgbZ) },
+        { dict: "<<\/Type /XObject /Subtype /Image /Width 400 /Height 300 /ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /FlateDecode /Length LEN>>", data: latin1(greyZ) },
+        "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents 5 0 R /Resources <<\/XObject <<\/Im 11 0 R>>>>>>",
+        "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Contents 5 0 R /Resources <<\/XObject <<\/Im 12 0 R>>>>>>",
+        { dict: "<<\/Type /XObject /Subtype /Image /Width 100 /Height 50 /ColorSpace /DeviceRGB /BitsPerComponent 16 /Filter /FlateDecode /Length LEN>>", data: latin1(deepZ) },
+        { dict: "<<\/Type /XObject /Subtype /Image /Width 300 /Height 200 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode " +
+                "/DecodeParms <<\/Predictor 15 /Colors 3 /Columns 300 /BitsPerComponent 8>> /Length LEN>>", data: latin1(predZ) }
+      ];
+      return bytesOfText(makePdf(bodies));
+    }
+  });
+  step(function () {
+    return download("balanced");
+  });
+  step(function (d) {
+    ok("at balanced, pictures kept without loss stay so", d === null || imagesOf(d.out).every(function (o) { return /FlateDecode/.test(o.dict); }),
+       d && imagesOf(d.out).map(function (o) { return o.dict; }).join(" | "));
+    return download("strong");
+  });
+  step(function (d) {
+    ok("at strong, they are compressed", d && d.out, d ? d.error : "no download");
+    if (!d || !d.out) { return; }
+    var imgs = imagesOf(d.out);
+    var plain = imgs.filter(function (o) { return /DCTDecode/.test(o.dict) && !/SMask/.test(o.dict) && num(o.dict, "Width") !== 300; });
+    var masked = imgs.filter(function (o) { return /DCTDecode/.test(o.dict) && /SMask/.test(o.dict); });
+    eq("the plain one becomes JPEG, at most 1600 pixels", plain.length === 1 ? num(plain[0].dict, "Width") + "x" + num(plain[0].dict, "Height") : "none", "1600x800");
+    eq("the one with a soft mask becomes JPEG at its own size, to match its mask", masked.length === 1 ? num(masked[0].dict, "Width") + "x" + num(masked[0].dict, "Height") : "none", "2000x1000");
+    var mask = imgs.filter(function (o) { return /DeviceGray/.test(o.dict); });
+    eq("the mask itself stays grey and lossless", mask.length === 1 ? /FlateDecode/.test(mask[0].dict) + "," + num(mask[0].dict, "Width") : "none", "true,400");
+    var deep = imgs.filter(function (o) { return /BitsPerComponent 16/.test(o.dict); });
+    ok("16 bits a channel is left alone", deep.length === 1 && /FlateDecode/.test(deep[0].dict) && same(deep[0].data, PH.rawDeep),
+       deep.map(function (o) { return o.dict; }).join(" | "));
+    var predicted = imgs.filter(function (o) { return num(o.dict, "Width") === 300; });
+    ok("one with a row predictor becomes JPEG, the predictor gone with the old packing",
+       predicted.length === 1 && /DCTDecode/.test(predicted[0].dict) && !/DecodeParms|Predictor/.test(predicted[0].dict),
+       predicted.map(function (o) { return o.dict; }).join(" | "));
+    PH.strongPlain = plain[0];
+    return mask.length === 1 ? inflate(mask[0].data) : null;
+  });
+  step(function (maskBytes) {
+    var grey = new Uint8Array(400 * 300);
+    for (var j = 0; j < grey.length; j++) { grey[j] = j % 251; }
+    ok("byte for byte, once unpacked", same(maskBytes, grey));
+    return PH.strongPlain ? realBitmap(new Blob([PH.strongPlain.data], { type: "image/jpeg" })) : null;
+  });
+  step(function (bmp) {
+    if (!bmp) { return; }
+    /* red grows to the right, blue downwards, green is 90 everywhere */
+    var c = new OffscreenCanvas(bmp.width, bmp.height), ctx = c.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(bmp, 0, 0);
+    function at(x, y) { var p = ctx.getImageData(x, y, 1, 1).data; return [p[0], p[1], p[2]]; }
+    var tl = at(5, 5), tr = at(bmp.width - 6, 5), bl = at(5, bmp.height - 6);
+    ok("the colours keep their channels: dark at the top left", tl[0] < 30 && tl[2] < 30 && Math.abs(tl[1] - 90) < 20, tl.join());
+    ok("red at the top right", tr[0] > 225 && tr[2] < 30, tr.join());
+    ok("blue at the bottom left", bl[2] > 225 && bl[0] < 30, bl.join());
+  });
+
+  /* ================= stopping half-way ================= */
+  step(function () {
+    feed(new File([PH.pdf], "photos.pdf", { type: "application/pdf" }));
+    return wait("the photos PDF is read again", read, 10000);
+  });
+  step(function () {
+    var before = window.__saved.length;
+    click("dlBtn");
+    click("resetBtn");
+    return settled().then(function () {
+      eq("a clear while it works stops it: nothing is saved", window.__saved.length, before);
+      eq("and the page is empty again, balanced chosen", txt("msg") + "|" + val("level"), "Choose a PDF to make smaller.|balanced");
+    });
+  });
+
+  /* ================= other kinds of file ================= */
+  step(function () {
+    feed(F.damaged);
+    return wait("a damaged PDF is read", read, 10000);
+  });
+  step(function () {
+    has("a damaged file is read, and the visitor told", txt("msg"), "Its index is damaged; the smaller copy is rebuilt from what could be read.");
+    eq("as a warning", document.getElementById("msg").className, "msg msg--bad");
+    feed(F.signed);
+    return wait("a signed PDF is read", read, 10000);
+  });
+  step(function () {
+    has("a signed PDF is pointed out", txt("msg"), "It is digitally signed: compressing writes the file again, so the signature will no longer be valid.");
+    feed(F.enc);
+    return wait("a protected file is looked at", read, 10000);
+  });
+  step(function () {
+    eq("a protected one is turned away", txt("msg"), "Could not use locked.pdf: protected with a password.");
+    ok("with nothing to compress", document.getElementById("dlBtn").disabled);
+    feed(F.empty);
+    return wait("a PDF without pages is looked at", read, 10000);
+  });
+  step(function () {
+    eq("one without pages too", txt("msg"), "Could not use empty.pdf: has no pages.");
+    feed(F.notPdf);
+    return wait("a file that is not a PDF is looked at", read, 10000);
+  });
+  step(function () {
+    eq("and one that is not a PDF", txt("msg"), "Could not use notes.pdf: not a PDF.");
+    feed(F.hostile);
+    return wait("a file named as markup is read", read, 10000);
+  });
+  step(function () {
+    has("its name is shown as text", txt("msg"), "<iframe onload=zq>.pdf: 1 page, ");
+    eq("and made no element", document.querySelectorAll("iframe").length, 0);
+    set("level", "strong");
+    click("resetBtn");
+    eq("clear empties everything and goes back to balanced", txt("msg") + "|" + val("level"), "Choose a PDF to make smaller.|balanced");
+    ok("with nothing to compress", document.getElementById("dlBtn").disabled);
+  });
+
+  chain.then(function () { clearInterval(pacer); finish(); }, function (e) {
+    ok("the test ran to the end", false, String(e && e.stack || e));
+    clearInterval(pacer);
+    finish();
+  });
+"""
+
 # ===== END: the test bodies ================================================
 
 
@@ -11300,10 +11326,10 @@ T["income-tax-calculator"] = r"""  /* Every expected figure below was worked out
 # ahead of the real one. A tool that builds four zips can need twenty virtual
 # seconds and two real ones. Ask for more here, per tool; nothing else changes.
 BUDGET_MS = {
+    "compress-pdf": 600000,
     "income-tax-calculator": 15000,
     "currency-converter": 15000,
     "pdf-to-image": 400000,
-    "compress-pdf": 600000,
     "protect-pdf": 300000,
     "pdf-metadata-editor": 300000,
     "add-pdf-page-numbers": 300000,

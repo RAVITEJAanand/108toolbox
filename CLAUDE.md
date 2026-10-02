@@ -260,6 +260,16 @@ time a race with timers ("the first read ends 200 ms in, check at 250"): a
 real read finishes at an unknown virtual time. `pdf-metadata-editor`'s test
 holds each read until the test lets it through instead.
 
+**The heartbeat now spends real time on every tick (2 Oct 2026).** Even with
+it, the clock ran about a hundred times faster than work on other threads,
+and under load `compress-pdf` failed about one run in three: a 120-second
+wait ran out while a photo was still being encoded, and every step after it
+fell out of line. The harness's heartbeat now spins briefly on each 1 ms
+tick, which keeps the clock near real time for every test at once (the full
+run went from about 3 minutes to about 6). `pdf-to-image` and
+`compress-pdf` run a stronger pacer of their own. A timeout in a heavy test
+is a test problem to fix, never a re-run until it passes.
+
 **The harness and the security probe go in front of the LAST `</body>`.** A page
 that builds an HTML document in its script has `"</body>"` inside a string, and
 `str.replace` put the harness in the middle of that string: the page then
