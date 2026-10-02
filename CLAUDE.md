@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 102 of a planned 108 tools are built, tested and live.
+**Where it stands:** 103 of a planned 108 tools are built, tested and live.
 Phase 2 is finished; Phase 3 has started.
 
 ---
@@ -34,11 +34,11 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`102 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`103 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">102</span> tools live
+<span data-tool-count="live">103</span> tools live
 <span data-tool-count="remaining">47</span> on the way
 ```
 
@@ -72,8 +72,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=34` → `?v=35` across all 112 pages (currently `?v=34`,
-542 occurrences), the template included.
+Find-and-replace `?v=35` → `?v=36` across all 113 pages (currently `?v=35`,
+547 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
 the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
@@ -108,7 +108,7 @@ python security.py     ATTACKS the files — hostile text in every box, hostile
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 102, not just the one you changed.** That is the
+**`test_tools.py` runs all 103, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -172,11 +172,24 @@ identical to its source. The unpacker matches Node's zlib on 3,920 streams;
 layouts found a real bug: a hybrid file was read as damaged, because the
 table's "free" entries were allowed to hide the /XRefStm ones.
 
+`pdf-metadata-editor` writes the whole document again (`gatherDocument` in
+the core walks it from the catalog down), because an ordinary edit leaves the
+old details in the file. Its referee is a second PDF reader written in Python
+(`pyreader.py`, shares nothing with the JavaScript one): what the page shows
+in each box must equal what Python decodes from the source (UTF-16,
+PDFDocEncoding, UTF-8 with its mark), the saved details must equal the edits
+worked out in Python, every removed value must be absent from the saved
+bytes in every encoding, and Windows must render every page as before. It
+warns when a PDF is digitally signed: rewriting breaks the signature.
+
 **Headless Chrome's clock is virtual, so a long wait needs a big budget.**
 Reading 201 pictures took six real seconds and several hundred virtual ones;
 the 1 ms heartbeat makes the virtual clock run far ahead of the real one
 while the browser decodes. `image-to-pdf` has a `BUDGET_MS` of 500000 for
-that reason, not because it is slow.
+that reason, not because it is slow. The same clock means a test must never
+time a race with timers ("the first read ends 200 ms in, check at 250"): a
+real read finishes at an unknown virtual time. `pdf-metadata-editor`'s test
+holds each read until the test lets it through instead.
 
 **The harness and the security probe go in front of the LAST `</body>`.** A page
 that builds an HTML document in its script has `"</body>"` inside a string, and
@@ -233,7 +246,7 @@ Umami or Cloudflare Web Analytics — or drop the claim. Not both.
 
 **Advertising is the same rule, and it is already decided.** The owner wants
 ads on once all 108 tools are live, and not before. The site currently
-promises "no ads" in the hero, in the footer of all 112 pages, in
+promises "no ads" in the hero, in the footer of all 113 pages, in
 `privacy.html` section 7 and in `disclaimer.html` section 9. Those promises
 get rewritten **first, in their own commit**, before a single line of ad code
 is added — otherwise the site starts lying to visitors on the day it starts
@@ -469,7 +482,7 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (102):** add-line-numbers, add-subtract-days, add-pdf-page-numbers,
+**Live (103):** add-line-numbers, add-subtract-days, add-pdf-page-numbers,
 age-calculator, area-converter, average-calculator, barcode-generator,
 base64-encoder-decoder, binary-decimal-hex-converter, bmi-calculator,
 calorie-calculator, case-converter, character-frequency-counter, coin-flip,
@@ -485,11 +498,11 @@ image-to-base64, image-to-pdf, js-minifier, json-formatter, json-to-csv,
 jwt-decoder, leap-year-checker, lorem-ipsum-generator,
 margin-markup-calculator, markdown-previewer, meme-generator, merge-pdf,
 text-to-morse, nato-phonetic-converter, number-to-words, password-generator,
-percentage-calculator, photo-watermark, image-placeholder-generator,
-qr-code-generator, random-list-shuffler, random-number-generator,
-random-picker, ratio-calculator, readability-score, regex-tester,
-remove-duplicate-lines, remove-line-breaks, remove-pdf-pages, reverse-text,
-roman-numeral-converter, rotate-pdf, salary-calculator,
+pdf-metadata-editor, percentage-calculator, photo-watermark,
+image-placeholder-generator, qr-code-generator, random-list-shuffler,
+random-number-generator, random-picker, ratio-calculator, readability-score,
+regex-tester, remove-duplicate-lines, remove-line-breaks, remove-pdf-pages,
+reverse-text, roman-numeral-converter, rotate-pdf, salary-calculator,
 scientific-calculator, hash-generator, shoe-size-converter,
 simple-interest-calculator, sip-calculator, sort-text-lines,
 speed-converter, split-pdf, sql-formatter, stopwatch-timer, svg-to-png,

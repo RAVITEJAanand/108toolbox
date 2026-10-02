@@ -231,10 +231,10 @@ make; it is written here so it is made with the number in front of us.
 | Text | 16 | 16 |
 | Image | 14 | 14 |
 | Converter | 14 | 13 |
-| PDF | 10 | 6 |
+| PDF | 10 | 7 |
 | Date & Time | 8 | 8 |
 | Random | 8 | 8 |
-| **Total** | **108** | **102** |
+| **Total** | **108** | **103** |
 
 ---
 
@@ -366,7 +366,7 @@ which never leave the tab, so the overlap is narrower than the word suggests.
 | 5 | `image-to-pdf` ✅ | medium — written by hand, no library; judged by Windows' own PDF engine |
 | 6 | `add-pdf-page-numbers` ✅ | medium — written by hand; built-in Helvetica, incremental update |
 | 7 | `protect-pdf` | medium — add a password |
-| 8 | `pdf-metadata-editor` | medium |
+| 8 | `pdf-metadata-editor` ✅ | medium — written by hand; the whole document is written again, so old details and XMP copies are gone |
 | 9 | `pdf-to-image` | hard — needs `pdf.js` as well |
 | 10 | `compress-pdf` | hard — re-encodes images, test it a lot |
 

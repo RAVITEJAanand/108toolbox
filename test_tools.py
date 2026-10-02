@@ -8991,6 +8991,392 @@ T["add-pdf-page-numbers"] = r"""
   });
 """
 
+T["pdf-metadata-editor"] = r"""
+  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+
+  /* ================= helpers ================= */
+  function feed(file) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var input = document.getElementById("file");
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  function wait(label, test, budget) { return new Promise(function (resolve) { waitFor(label, test, resolve, budget); }); }
+  function read() { return !/^Reading/.test(txt("msg")); }
+  function bytesOfText(s) { var u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { u[i] = s.charCodeAt(i) & 255; } return u; }
+  function fromB64(s) { return bytesOfText(atob(s)); }
+  function latin1(bytes) {
+    var parts = [];
+    for (var i = 0; i < bytes.length; i += 32768) { parts.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 32768))); }
+    return parts.join("");
+  }
+  function hex(s) { var o = ""; for (var i = 0; i < s.length; i++) { o += (s.charCodeAt(i) < 16 ? "0" : "") + s.charCodeAt(i).toString(16).toUpperCase(); } return o; }
+  function utf16hex(s) { var o = "FEFF"; for (var i = 0; i < s.length; i++) { o += ("0000" + s.charCodeAt(i).toString(16).toUpperCase()).slice(-4); } return o; }
+  function makePdf(bodies, trailerExtra) {
+    var out = "%PDF-1.4\n", offsets = [];
+    bodies.forEach(function (b, i) {
+      offsets.push(out.length);
+      out += (i + 1) + " 0 obj\n" + (typeof b === "string" ? b : b.dict.replace("LEN", b.data.length) + "\nstream\n" + b.data + "\nendstream") + "\nendobj\n";
+    });
+    var x = out.length;
+    out += "xref\n0 " + (bodies.length + 1) + "\n0000000000 65535 f \n";
+    offsets.forEach(function (o) { out += ("0000000000" + o).slice(-10) + " 00000 n \n"; });
+    out += "trailer\n<<\/Size " + (bodies.length + 1) + " /Root 1 0 R" + (trailerExtra || "") + ">>\nstartxref\n" + x + "\n%%EOF\n";
+    return out;
+  }
+
+  /* The details: a title in Telugu (UTF-16), an author, a company, two
+     dates, a "made with" in PDFDocEncoding (0x92 is the trade mark sign), a
+     "converted by" in UTF-8 with its mark, an XMP copy naming the author
+     again on the catalog and another on the page's drawing, a bookmark.
+     The first save had another author, "Old Name"; an incremental edit
+     replaced it, which leaves the old version inside the file. */
+  var TELUGU = String.fromCharCode(0x0C24, 0x0C46, 0x0C32, 0x0C41, 0x0C17, 0x0C41);
+  var TM = String.fromCharCode(0x2122);
+  var XMP = "<x:xmpmeta xmlns:x='adobe:ns:meta/'><dc:creator>Asha Rao<\/dc:creator><\/x:xmpmeta>";
+  var XMP2 = "<x:xmpmeta xmlns:x='adobe:ns:meta/'>Second copy, Asha Rao<\/x:xmpmeta>";
+  var DRAWING = "BT /F1 12 Tf 10 10 Td (M1) Tj ET";
+  var FIRST = makePdf([
+    "<<\/Type /Catalog /Pages 2 0 R /Outlines 6 0 R /Metadata 5 0 R>>",
+    "<<\/Type /Pages /Kids [3 0 R] /Count 1 /MediaBox [0 0 200 100]>>",
+    "<<\/Type /Page /Parent 2 0 R /Contents 7 0 R>>",
+    "<<\/Title (Report) /Author (Old Name) /CreationDate (D:20260914103000+05'30')>>",
+    { dict: "<<\/Type /Metadata /Subtype /XML /Length LEN>>", data: XMP },
+    "<<\/Type /Outlines /Count 0>>",
+    { dict: "<<\/Length 9 0 R /Metadata 8 0 R>>", data: DRAWING },
+    { dict: "<<\/Type /Metadata /Subtype /XML /Length LEN>>", data: XMP2 },
+    String(DRAWING.length)
+  ], " /Info 4 0 R");
+  var x1 = /startxref\n(\d+)\n%%EOF\n$/.exec(FIRST)[1];
+  var update = "4 0 obj\n<<\/Title <" + utf16hex("Report " + TELUGU) + "> /Author (Asha Rao) /Subject (Quarterly figures) /Keywords (sales, Q3) " +
+               "/Creator (Writer" + String.fromCharCode(0x92) + " 7.2) /Producer <EFBBBF" + hex("Maker PDF 1.0") + "> /Company (Acme Traders) /Trapped /False /Extra [1 2] " +
+               "/CreationDate (D:20260914103000+05'30') /ModDate (D:20261001090500Z)>>\nendobj\n";
+  var at4 = FIRST.length;
+  var x2 = at4 + update.length;
+  var DOC = bytesOfText(FIRST + update + "xref\n4 1\n" + ("0000000000" + at4).slice(-10) + " 00000 n \ntrailer\n<<\/Size 10 /Root 1 0 R /Info 4 0 R" + " /Prev " + x1 + ">>\nstartxref\n" + x2 + "\n%%EOF\n");
+  var DOC_ENC = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/Filter /Standard /V 2 /R 3>>"], " /Encrypt 4 0 R"));
+  var DOC_EMPTY = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [] /Count 0>>"]));
+  /* signed, as the form says (SigFlags), and signed, as a signature field holding a value says */
+  var DOC_SIGNED = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R /AcroForm <<\/Fields [] /SigFlags 3>>>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>"]));
+  var DOC_SIGFIELD = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R /AcroForm <<\/Fields [4 0 R]>>>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/T (Group) /Kids [5 0 R]>>",
+                         "<<\/FT /Sig /T (Signature1) /Parent 4 0 R /V 6 0 R>>", "<<\/Type /Sig /Filter /Adobe.PPKLite>>"]));
+  var DOC_EMPTYSIG = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R /AcroForm <<\/Fields [4 0 R] /SigFlags 2>>>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/FT /Sig /T (Sign here)>>"]));
+  var DOC_ONE = bytesOfText(makePdf(["<<\/Type /Catalog /Pages 2 0 R>>", "<<\/Type /Pages /Kids [3 0 R] /Count 1>>",
+                         "<<\/Type /Page /Parent 2 0 R /MediaBox [0 0 10 10]>>", "<<\/Producer (Printer 2)>>"], " /Info 4 0 R"));
+  var F = {
+    doc: new File([DOC], "report.pdf", { type: "application/pdf" }),
+    damaged: new File([fromB64(TINY.bad_offsets)], "scan.pdf", { type: "application/pdf" }),
+    enc: new File([DOC_ENC], "locked.pdf", { type: "application/pdf" }),
+    empty: new File([DOC_EMPTY], "empty.pdf", { type: "application/pdf" }),
+    one: new File([DOC_ONE], "one.pdf", { type: "application/pdf" }),
+    signed: new File([DOC_SIGNED], "signed.pdf", { type: "application/pdf" }),
+    sigField: new File([DOC_SIGFIELD], "contract.pdf", { type: "application/pdf" }),
+    emptySig: new File([DOC_EMPTYSIG], "form.pdf", { type: "application/pdf" }),
+    notPdf: new File([bytesOfText("not a pdf")], "notes.pdf", { type: "application/pdf" }),
+    hostile: new File([DOC], "<iframe onload=zq>.pdf", { type: "application/pdf" })
+  };
+
+  /* a reader for the saved file: one classic table, as the page writes it */
+  function readOut(bytes) {
+    var t = latin1(bytes);
+    var sx = /startxref\n(\d+)\n%%EOF\n$/.exec(t);
+    if (!sx) { throw new Error("no startxref at the end"); }
+    var at = Number(sx[1]);
+    var head = /^xref\n0 (\d+)\n/.exec(t.slice(at));
+    if (!head) { throw new Error("startxref does not point at the table"); }
+    var count = Number(head[1]), first = at + head[0].length, objs = {};
+    for (var n = 1; n < count; n++) {
+      var m = /^(\d{10}) 00000 n \n$/.exec(t.substr(first + n * 20, 20));
+      if (!m) { throw new Error("entry " + n + " is malformed"); }
+      var off = Number(m[1]), tag = n + " 0 obj\n";
+      if (t.substr(off, tag.length) !== tag) { throw new Error("object " + n + " is not where the table says"); }
+      objs[n] = t.slice(off + tag.length, t.indexOf("\nendobj\n", off));
+    }
+    var trailer = t.slice(first + count * 20);
+    var info = objs[Number(/\/Info (\d+) 0 R/.exec(trailer)[1])];
+    var root = objs[Number(/\/Root (\d+) 0 R/.exec(trailer)[1])];
+    return { text: t, info: info, root: root, objs: objs, sections: (t.match(/startxref/g) || []).length };
+  }
+  function infoValue(r, key) {
+    var m = new RegExp("/" + key + " <([0-9A-F]*)>").exec(r.info);
+    if (!m) { return null; }
+    var b = m[1].match(/../g) || [];
+    if (b[0] === "FE" && b[1] === "FF") {
+      var s = "";
+      for (var i = 2; i + 1 < b.length; i += 2) { s += String.fromCharCode(parseInt(b[i] + b[i + 1], 16)); }
+      return s;
+    }
+    return b.map(function (h) { return String.fromCharCode(parseInt(h, 16)); }).join("");
+  }
+  function download() {
+    var before = window.__saved.length;
+    click("dlBtn");
+    if (window.__saved.length !== before + 1) { return Promise.resolve(null); }
+    var saved = window.__saved[window.__saved.length - 1];
+    return saved.blob.arrayBuffer().then(function (b) {
+      var bytes = new Uint8Array(b), out = null, error = "";
+      try { out = readOut(bytes); } catch (e) { error = e.message; }
+      return { saved: saved, out: out, error: error };
+    });
+  }
+  /* every stream's /Length is the number of bytes between "stream" and "endstream" */
+  function lengthsRight(r) {
+    var bad = [];
+    Object.keys(r.objs).forEach(function (n) {
+      var o = r.objs[n], at = o.indexOf("\nstream\n");
+      if (at < 0) { return; }
+      var len = Number((/\/Length (\d+)/.exec(o.slice(0, at)) || [])[1]);
+      if (o.substr(at + 8 + len) !== "\nendstream") { bad.push(n); }
+    });
+    return bad.join() || "all right";
+  }
+  function nowhere(r, text) {
+    return r.text.indexOf(text) < 0 && r.text.indexOf(hex(text)) < 0 && r.text.indexOf(utf16hex(text).slice(4)) < 0;
+  }
+
+  function pause(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+  function others() { return Array.prototype.map.call(document.getElementById("others").children, function (li) { return li.textContent; }).join(); }
+  function checked(id) { return document.getElementById(id).checked; }
+
+  var chain = Promise.resolve();
+  function step(fn) { chain = chain.then(fn); }
+
+  /* ================= the page as it opens ================= */
+  eq("it asks for a PDF", txt("msg"), "Choose a PDF to see the details it carries.");
+  ok("the boxes are disabled until there is a file", document.getElementById("fTitle").disabled && document.getElementById("fAuthor").disabled);
+  ok("and the button", document.getElementById("dlBtn").disabled);
+
+  /* ================= what the file carries ================= */
+  step(function () {
+    feed(F.doc);
+    eq("while it reads, it says so", txt("msg"), "Reading report.pdf" + String.fromCharCode(0x2026));
+    ok("with nothing to save yet", document.getElementById("dlBtn").disabled);
+    return wait("the PDF is read", read, 10000);
+  });
+  step(function () {
+    ok("then the boxes can be typed in", !document.getElementById("fTitle").disabled && !document.getElementById("fProducer").disabled);
+    ok("and the file saved", !document.getElementById("dlBtn").disabled);
+    eq("the title is read from UTF-16, Telugu and all", val("fTitle"), "Report " + TELUGU);
+    eq("the newest author, not the old one", val("fAuthor"), "Asha Rao");
+    eq("subject, keywords, made with, converted by",
+       [val("fSubject"), val("fKeywords"), val("fCreator"), val("fProducer")].join("|"), "Quarterly figures|sales, Q3|Writer" + TM + " 7.2|Maker PDF 1.0");
+    eq("the dates are shown as written, with their offsets", txt("dates"),
+       "Created: 14 Sep 2026, 10:30 (UTC+05:30). Last changed: 1 Oct 2026, 09:05 UTC.");
+    eq("unusual details are listed, and one that is not text says it is left out", others(),
+       "Company: Acme Traders,Trapped: False,Extra: (not text, always left out)");
+    ok("in their own box", document.getElementById("othersField").style.display !== "none");
+    eq("the message counts the details and mentions the XMP copy", txt("msg"),
+       "report.pdf: 6 details are filled in. It also carries a second copy of them (XMP), which is removed when you save, so every reader shows the same details.");
+
+    /* ================= changing two, removing one ================= */
+    set("fAuthor", "");
+    set("fTitle", "  Q3 report  ");
+    set("fKeywords", "R" + String.fromCharCode(0xE9) + "sum" + String.fromCharCode(0xE9) + " " + String.fromCharCode(0x03A9));
+    return download();
+  });
+  step(function (d) {
+    ok("the saved file reads back cleanly", d && d.out, d ? d.error : "no download");
+    if (!d || !d.out) { return; }
+    var r = d.out;
+    eq("named for what was done to it", d.saved.name, "report (details edited).pdf");
+    eq("as a PDF", d.saved.blob.type, "application/pdf");
+    eq("the new title, without the spaces around it", infoValue(r, "Title"), "Q3 report");
+    ok("plain ASCII stays plain", /\/Title <(?!FEFF)/.test(r.info), r.info);
+    eq("a PDFDocEncoding character comes back as itself", infoValue(r, "Creator"), "Writer" + TM + " 7.2");
+    eq("UTF-8 is not mistaken for bytes", infoValue(r, "Producer"), "Maker PDF 1.0");
+    eq("every stream is as long as it says", lengthsRight(r), "all right");
+    eq("only what the document uses is written: catalog, page tree, page, bookmarks, drawing, details",
+       Object.keys(r.objs).length, 6);
+    eq("text beyond ASCII is written in UTF-16", infoValue(r, "Keywords"), "R" + String.fromCharCode(0xE9) + "sum" + String.fromCharCode(0xE9) + " " + String.fromCharCode(0x03A9));
+    eq("an emptied box is left out", infoValue(r, "Author"), null);
+    eq("the author's name is nowhere in the file, not in the old version, not in the XMP copy", nowhere(r, "Asha Rao"), true);
+    eq("nor the first author's", nowhere(r, "Old Name"), true);
+    eq("the old title is gone too", nowhere(r, "Report"), true);
+    eq("both XMP copies are removed, the catalog's and the drawing's", /\/Metadata|xmpmeta/.test(r.text), false);
+    eq("one version only: the file was written again, not added to", r.sections, 1);
+    has("the bookmarks are still there", r.root, "/Outlines");
+    eq("the dates are kept", infoValue(r, "CreationDate") + "|" + infoValue(r, "ModDate"), "D:20260914103000+05'30'|D:20261001090500Z");
+    eq("and the unusual details", infoValue(r, "Company"), "Acme Traders");
+    has("a name stays a name", r.info, "/Trapped /False");
+    eq("one that is not text is left out", /Extra/.test(r.text), false);
+    eq("no date of this edit is added", (r.info.match(/Date/g) || []).length, 2);
+    has("the done message counts what was saved", txt("msg"), "Done: 9 details saved");
+
+    /* ================= the two ticks, one at a time ================= */
+    document.getElementById("keepDates").checked = false;
+    return download();
+  });
+  step(function (d) {
+    eq("without the dates, no date is in it", /Date/.test(d.out.info), false);
+    eq("but the other details are", infoValue(d.out, "Company"), "Acme Traders");
+    document.getElementById("keepDates").checked = true;
+    document.getElementById("keepOther").checked = false;
+    return download();
+  });
+  step(function (d) {
+    eq("without the other details, the dates stay", infoValue(d.out, "CreationDate"), "D:20260914103000+05'30'");
+    eq("and the others go", /Company|Trapped|Acme/.test(d.out.text), false);
+    eq("the boxes are still saved", infoValue(d.out, "Title"), "Q3 report");
+    document.getElementById("keepOther").checked = true;
+
+    /* ================= clearing everything ================= */
+    click("clearAllBtn");
+    eq("every box empties", ["fTitle", "fAuthor", "fSubject", "fKeywords", "fCreator", "fProducer"].map(val).join(""), "");
+    eq("and the dates and other details are let go", document.getElementById("keepDates").checked + "," + document.getElementById("keepOther").checked, "false,false");
+    return download();
+  });
+  step(function (d) {
+    eq("the saved file has no details at all", d.out.info.replace(/\s/g, ""), "<<>>");
+    has("and says so", txt("msg"), "every detail removed");
+    eq("its pages are still there", (d.out.text.match(/\(M1\) Tj/g) || []).length, 1);
+    set("fTitle", new Array(2002).join("x"));
+    eq("a detail over 2,000 characters is refused", txt("msg"), "Keep each detail under 2,000 characters.");
+    ok("with nothing to save", document.getElementById("dlBtn").disabled);
+    set("fTitle", "");
+  });
+
+  /* ================= other kinds of file ================= */
+  step(function () {
+    feed(F.damaged);
+    return wait("a damaged PDF is read", read, 10000);
+  });
+  step(function () {
+    eq("a damaged file is read, and the visitor told", txt("msg"),
+       "scan.pdf: no details are filled in. Its index is damaged; the saved copy is rebuilt from what could be read.");
+    eq("it has no details", [val("fTitle"), val("fProducer")].join("|"), "|");
+    eq("and no dates", txt("dates"), "Created: not recorded. Last changed: not recorded.");
+    eq("and nothing else to list", document.getElementById("othersField").style.display, "none");
+    eq("a new file starts with both ticks back on", checked("keepDates") + "," + checked("keepOther"), "true,true");
+    return download();
+  });
+  step(function (d) {
+    ok("and it can be saved", d && d.out, d ? d.error : "no download");
+    eq("with its page", d && d.out ? (d.out.text.match(/\(T1\) Tj/g) || []).length : 0, 1);
+    feed(F.notPdf);
+    return wait("a file that is not a PDF is looked at", read, 10000);
+  });
+  step(function () {
+    eq("it is turned away by name", txt("msg"), "Could not use notes.pdf: not a PDF.");
+    ok("and the boxes are disabled", document.getElementById("fTitle").disabled);
+    feed(F.enc);
+    return wait("a protected file is looked at", read, 10000);
+  });
+  step(function () {
+    eq("a protected one too", txt("msg"), "Could not use locked.pdf: protected with a password.");
+    feed(F.empty);
+    return wait("a PDF without pages is looked at", read, 10000);
+  });
+  step(function () {
+    eq("one without pages too", txt("msg"), "Could not use empty.pdf: has no pages.");
+    feed(F.one);
+    return wait("a PDF with one detail is read", read, 10000);
+  });
+  step(function () {
+    eq("one detail is counted as one, and no XMP is mentioned where there is none", txt("msg"), "one.pdf: 1 detail is filled in.");
+    return download();
+  });
+  step(function (d) {
+    has("one detail saved is one", txt("msg"), "Done: 1 detail saved");
+    eq("and it is the one that was there", infoValue(d.out, "Producer"), "Printer 2");
+    feed(F.signed);
+    return wait("a signed PDF is read", read, 10000);
+  });
+  step(function () {
+    eq("a signed PDF is pointed out before saving", txt("msg"),
+       "signed.pdf: no details are filled in. It is digitally signed: saving writes the file again, so the signature will no longer be valid.");
+    eq("as a warning", document.getElementById("msg").className, "msg msg--bad");
+    ok("but it can still be saved", !document.getElementById("dlBtn").disabled);
+    feed(F.sigField);
+    return wait("a PDF with a filled signature field is read", read, 10000);
+  });
+  step(function () {
+    has("a signature found in a field, below a parent field, is pointed out too", txt("msg"), "It is digitally signed");
+    feed(F.emptySig);
+    return wait("a PDF with an empty signature field is read", read, 10000);
+  });
+  step(function () {
+    eq("an empty signature field is not a signature", txt("msg"), "form.pdf: no details are filled in.");
+    eq("and nothing is wrong with it", document.getElementById("msg").className, "msg msg--ok");
+    feed(F.hostile);
+    return wait("a file named as markup is read", read, 10000);
+  });
+  step(function () {
+    has("its name is shown as text", txt("msg"), "<iframe onload=zq>.pdf: 6 details");
+    eq("and made no element", document.querySelectorAll("iframe").length, 0);
+    click("resetBtn");
+    eq("clear empties everything", txt("msg") + "|" + val("fTitle") + "|" + txt("dates") + "|" + others(), "Choose a PDF to see the details it carries.|||");
+    ok("and locks the boxes again", document.getElementById("fTitle").disabled && document.getElementById("dlBtn").disabled);
+  });
+
+  /* ================= a slow disk =================
+     Here a file's bytes arrive only when the test lets them through, so a
+     clear, or another file, can come while the first is still being read.
+     What finishes late must be dropped. (Not done with timers: the test's
+     clock is virtual and runs ahead of a real read.) */
+  var realArrayBuffer = Blob.prototype.arrayBuffer;
+  var held = [];
+  function holdReads() {
+    Blob.prototype.arrayBuffer = function () {
+      var self = this;
+      return new Promise(function (resolve) {
+        held.push(function () {
+          var bytes = realArrayBuffer.call(self);
+          resolve(bytes);
+          return bytes.then(function () { return pause(20); });
+        });
+      });
+    };
+  }
+  function release() { return held.shift()(); }
+  step(function () {
+    holdReads();
+    feed(F.doc);
+    click("resetBtn");
+    return release();
+  });
+  step(function () {
+    eq("a clear while the file is read leaves nothing behind", txt("msg") + "|" + val("fTitle"), "Choose a PDF to see the details it carries.|");
+    ok("and nothing to save", document.getElementById("dlBtn").disabled);
+    feed(F.doc);
+    feed(F.notPdf);
+    return release();
+  });
+  step(function () {
+    eq("a late read of an earlier file is not shown", txt("msg") + "|" + val("fAuthor"), "Reading notes.pdf" + String.fromCharCode(0x2026) + "|");
+    return release();
+  });
+  step(function () {
+    eq("the file chosen last is the one that counts", txt("msg"), "Could not use notes.pdf: not a PDF.");
+    eq("the first one's details do not turn up", val("fAuthor"), "");
+    /* the other way round: the refusal of the first file arrives while the
+       second is still being read, and must not be shown */
+    feed(F.notPdf);
+    feed(F.doc);
+    return release();
+  });
+  step(function () {
+    eq("a late refusal of an earlier file is not shown", txt("msg"), "Reading report.pdf" + String.fromCharCode(0x2026));
+    return release();
+  });
+  step(function () {
+    Blob.prototype.arrayBuffer = realArrayBuffer;
+    eq("and the file chosen last is read", val("fAuthor"), "Asha Rao");
+    eq("every read was let through", held.length, 0);
+  });
+
+  chain.then(function () { finish(); }, function (e) {
+    ok("the test ran to the end", false, String(e && e.stack || e));
+    finish();
+  });
+"""
+
 # ===== END: the test bodies ================================================
 
 
@@ -9001,6 +9387,7 @@ T["add-pdf-page-numbers"] = r"""
 # ahead of the real one. A tool that builds four zips can need twenty virtual
 # seconds and two real ones. Ask for more here, per tool; nothing else changes.
 BUDGET_MS = {
+    "pdf-metadata-editor": 300000,
     "add-pdf-page-numbers": 300000,
     "rotate-pdf": 300000,
     "remove-pdf-pages": 300000,

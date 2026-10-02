@@ -540,6 +540,15 @@ const TOOLS = [
     popular: true
   },
   {
+    slug: "pdf-metadata-editor",
+    name: "PDF Metadata Editor",
+    desc: "See the hidden details a PDF carries, such as its author and software, and change or remove them. Nothing is uploaded.",
+    category: "PDF",
+    icon: "\u{1F575}\u{FE0F}",
+    keywords: ["pdf metadata editor", "edit pdf metadata", "remove pdf metadata", "pdf properties editor", "change pdf author", "remove author from pdf", "pdf title editor", "view pdf metadata", "clean pdf metadata", "pdf document properties"],
+    popular: false
+  },
+  {
     slug: "percentage-calculator",
     name: "Percentage Calculator",
     desc: "Work out X% of Y, what percent one number is of another, and change.",

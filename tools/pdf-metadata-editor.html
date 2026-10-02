@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- ===== SEO ===== -->
-  <title>Split PDF — Pull Out Pages or Cut a PDF into Parts</title>
-  <meta name="description" content="Split a PDF into single pages, the page ranges you type, or equal parts, in your browser. Nothing is uploaded and every page is kept as it is.">
-  <link rel="canonical" href="https://108toolbox.in/tools/split-pdf.html">
+  <title>PDF Metadata Editor — See and Remove Hidden Details</title>
+  <meta name="description" content="See the hidden details a PDF carries, such as author, software and dates, then change or remove them, in your browser. Nothing is uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/pdf-metadata-editor.html">
 
-  <meta property="og:title" content="Split PDF — Pull Out Pages or Cut a PDF into Parts">
-  <meta property="og:description" content="Split a PDF into single pages, the page ranges you type, or equal parts, in your browser. Nothing is uploaded and every page is kept as it is.">
+  <meta property="og:title" content="PDF Metadata Editor — See and Remove Hidden Details">
+  <meta property="og:description" content="See the hidden details a PDF carries, such as author, software and dates, then change or remove them, in your browser. Nothing is uploaded.">
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
@@ -49,50 +49,42 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "How do I take out just one or two pages?",
+        "name": "How do I remove my name from a PDF?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Choose Into the page ranges I type and type the pages: 5 gives a file with page 5, and 3-4 a file with pages 3 and 4. Each range you type becomes its own file."
+          "text": "Choose the PDF, empty the Author box (or press Clear every detail), and save. The file you download has no author anywhere in it, including the second XMP copy many PDFs carry."
         }
       },
       {
         "@type": "Question",
-        "name": "Can the same page go into more than one file?",
+        "name": "Does saving change the pages?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. Ranges may overlap: 1-5, 3-8 makes two files that both contain pages 3, 4 and 5."
+          "text": "No. The pages, bookmarks, links and forms are copied as they were. Only the details change, and anything the document no longer used is left out, so the file can come out slightly smaller."
         }
       },
       {
         "@type": "Question",
-        "name": "Why is the ZIP bigger than my PDF?",
+        "name": "What are Made with and Converted by?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Each new file has to carry everything its pages use, fonts included, so a font shared by all the pages is copied into every file. The pages themselves are not changed or compressed."
+          "text": "The program the document was written in, such as a word processor, and the program that turned it into a PDF. Both are filled in automatically and can show which software and version you use."
         }
       },
       {
         "@type": "Question",
-        "name": "What happens to bookmarks and fillable forms?",
+        "name": "Why is no date of my edit added?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Bookmarks belong to the whole document and are not carried into the parts. Forms keep what was typed in them, but their boxes can no longer be filled in."
+          "text": "Because when you edited a file is your business. Untick Keep the dates to remove the creation and change dates as well."
         }
       },
       {
         "@type": "Question",
-        "name": "Can I split a password-protected PDF?",
+        "name": "Can I edit a password-protected PDF?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No, its pages are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and split that copy."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is there a size limit?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The PDF can be up to 500 MB, and the files made from it can add up to 1 GB, which is about what a browser can safely hold. For more, split into fewer, larger parts."
+          "text": "No, its contents are encrypted. If you know the password, open it in your PDF reader, save a copy without protection, and use that copy here."
         }
       },
       {
@@ -100,7 +92,7 @@
         "name": "Is my PDF uploaded?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. The PDF is read and split by JavaScript inside your own browser, and the files are saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone."
+          "text": "No. The PDF is read and written again by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone."
         }
       }
     ]
@@ -150,14 +142,14 @@
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=pdf">PDF</a><span>&rsaquo;</span>
-        <span>Split PDF</span>
+        <span>PDF Metadata Editor</span>
       </nav>
 
       <header class="tool-head">
-        <h1>Split PDF</h1>
-        <p>Cut one PDF into several: every page on its own, the ranges you type,
-           or parts of the same length. It all happens inside your browser, so
-           the document never leaves your device.</p>
+        <h1>PDF Metadata Editor</h1>
+        <p>Every PDF carries details you do not see on the page: who wrote it,
+           with what, and when. See them here, change them or remove them,
+           inside your browser, so the document never leaves your device.</p>
       </header>
 
       <!--TOOL:START-->
@@ -168,47 +160,56 @@
           <span class="panel__label">1. Choose a PDF</span>
 
           <label class="drop" id="drop" for="file">
-            <span class="drop__big" aria-hidden="true">&#9986;&#65039;</span>
+            <span class="drop__big" aria-hidden="true">&#128203;</span>
             <p><strong>Click to choose</strong> or drag a PDF here</p>
             <p style="margin-top:var(--s1)">One PDF, up to 500 MB</p>
             <input type="file" id="file" accept="application/pdf,.pdf">
           </label>
 
-          <div class="field" style="margin-top:var(--s4)">
-            <label for="mode">2. How to split it</label>
-            <select id="mode">
-              <option value="ranges" selected>Into the page ranges I type</option>
-              <option value="each">Every page on its own</option>
-              <option value="every">Into parts of the same length</option>
-            </select>
-          </div>
+          <p class="hint" id="dates" style="margin-top:var(--s4)"></p>
 
-          <div class="field" id="rangesField">
-            <label for="ranges">Page ranges, one file each</label>
-            <input type="text" id="ranges" placeholder="1-3, 4-8, 9-" autocomplete="off" spellcheck="false">
-            <p class="hint">A comma between files. 9- means page 9 to the end; a single number is a single page.</p>
-          </div>
-
-          <div class="field" id="everyField">
-            <label for="every">Pages in each part</label>
-            <input type="number" id="every" min="1" value="2">
+          <div id="othersField" style="display:none;margin-top:var(--s3)">
+            <p class="hint">Other details in the file:</p>
+            <ul class="plan-list" id="others" style="margin-top:var(--s2)"></ul>
           </div>
         </div>
 
         <!-- ---------- OUTPUT ---------- -->
         <div class="panel">
-          <span class="panel__label">3. The new files</span>
-
-          <div class="stats stats--3">
-            <div class="stat"><span class="stat__num" id="sFiles">&mdash;</span><span class="stat__label">Files</span></div>
-            <div class="stat"><span class="stat__num" id="sPages">&mdash;</span><span class="stat__label">Pages in them</span></div>
-            <div class="stat"><span class="stat__num" id="sIn">&mdash;</span><span class="stat__label">The PDF</span></div>
+          <span class="panel__label">2. The details</span>
+          <div class="field">
+            <label for="fTitle">Title</label>
+            <input type="text" id="fTitle" autocomplete="off" spellcheck="false" disabled>
+          </div>
+          <div class="field">
+            <label for="fAuthor">Author</label>
+            <input type="text" id="fAuthor" autocomplete="off" spellcheck="false" disabled>
+          </div>
+          <div class="field">
+            <label for="fSubject">Subject</label>
+            <input type="text" id="fSubject" autocomplete="off" spellcheck="false" disabled>
+          </div>
+          <div class="field">
+            <label for="fKeywords">Keywords</label>
+            <input type="text" id="fKeywords" autocomplete="off" spellcheck="false" disabled>
+          </div>
+          <div class="field">
+            <label for="fCreator">Made with</label>
+            <input type="text" id="fCreator" autocomplete="off" spellcheck="false" disabled>
+            <p class="hint">The program the document was written in.</p>
+          </div>
+          <div class="field">
+            <label for="fProducer">Converted by</label>
+            <input type="text" id="fProducer" autocomplete="off" spellcheck="false" disabled>
+            <p class="hint">The program that turned it into a PDF.</p>
           </div>
 
-          <ol class="plan-list" id="planned" aria-label="The files that will be made"></ol>
+          <label class="check"><input type="checkbox" id="keepDates" checked> Keep the dates it was created and last changed</label>
+          <label class="check"><input type="checkbox" id="keepOther" checked> Keep the other details listed on the left</label>
 
           <div class="btn-row" style="margin-top:var(--s4)">
-            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Split and download</button>
+            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Save and download</button>
+            <button class="btn btn--ghost"   type="button" id="clearAllBtn">Clear every detail</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Clear</button>
           </div>
 
@@ -234,61 +235,59 @@
 
       <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
       <section class="tool-info prose">
-        <h2>Three ways to split</h2>
-        <p><strong>Into the page ranges I type</strong> makes one file for
-           each range: 1-3, 4-8, 9- gives three files, the last running from
-           page 9 to the end. A single number is a single page, so typing just
-           7 pulls page 7 out on its own. <strong>Every page on its
-           own</strong> makes one file per page. <strong>Into parts of the
-           same length</strong> cuts the document every so many pages; the
-           last part takes whatever is left. More than one file comes as a
-           single ZIP, because browsers will not save dozens of downloads at
-           once.</p>
+        <h2>What a PDF says about you</h2>
+        <p>Besides its pages, a PDF keeps a small set of details: a title, an
+           author, a subject and keywords, the program it was written in and
+           the one that made the PDF, and when it was created and last
+           changed. The author is often filled in from the name on your
+           computer, without anyone asking, and the program names can show
+           which software and version you use. Anyone who opens the file can
+           read them in their PDF reader's document properties.</p>
 
-        <h2>Every file is complete, and nothing is redrawn</h2>
-        <p>The pages are copied exactly as they were: text stays text you
-           can select, pictures are not compressed again. Each new file carries
-           everything its pages need, fonts included, so it opens on its own.
-           That is also why ten files cut from one PDF can add up to more than
-           the original: each of them has its own copy of the fonts. A link
-           from one page to another still works when both pages land in the
-           same file, and does nothing when they do not.</p>
+        <h2>Removed means removed</h2>
+        <p>An ordinary edit to a PDF adds the change to the end of the file and
+           leaves the old version in place, where it can still be dug out. This
+           page writes the whole document again instead, from its contents
+           down, so the old details do not survive in it. PDFs often carry a
+           second copy of the details in a format called XMP; it is removed
+           too, so no reader is left showing the old ones. No date is added
+           when you save: when you edited the file is nobody else's business.</p>
 
-        <h2>Why it matters that nothing is uploaded</h2>
-        <p>Splitting is often how people send one page of something private:
-           a single month from a bank statement, one page of a contract, the
-           page of a report that matters. This page does the cutting inside
-           your browser and saves the files straight to your device; the
-           document is never sent anywhere.</p>
+        <h2>The rest of the document is not touched</h2>
+        <p>Pages, bookmarks, links and forms are copied exactly as they were;
+           only the details change. Details kept inside pictures, such as a
+           photo's camera information, are part of the picture and are not
+           changed here. To clear those, remove them from the photo before it
+           goes into the PDF.</p>
+        <p>A digital signature is the one thing that cannot survive. It
+           covers the file's exact bytes, so once anything in a signed PDF
+           changes, the signature no longer checks out. The page tells you
+           when a PDF is signed, before you save.</p>
 
         <h2>Frequently asked questions</h2>
         <div class="faq">
-          <h3>How do I take out just one or two pages?</h3>
-          <p>Choose Into the page ranges I type and type the pages: 5 gives a file with page 5, and 3-4 a file with pages 3 and 4. Each range you type becomes its own file.</p>
+          <h3>How do I remove my name from a PDF?</h3>
+          <p>Choose the PDF, empty the Author box (or press Clear every detail), and save. The file you download has no author anywhere in it, including the second XMP copy many PDFs carry.</p>
         </div>
         <div class="faq">
-          <h3>Can the same page go into more than one file?</h3>
-          <p>Yes. Ranges may overlap: 1-5, 3-8 makes two files that both contain pages 3, 4 and 5.</p>
+          <h3>Does saving change the pages?</h3>
+          <p>No. The pages, bookmarks, links and forms are copied as they were. Only the details change, and anything the document no longer used is left out, so the file can come out slightly smaller.</p>
         </div>
         <div class="faq">
-          <h3>Why is the ZIP bigger than my PDF?</h3>
-          <p>Each new file has to carry everything its pages use, fonts included, so a font shared by all the pages is copied into every file. The pages themselves are not changed or compressed.</p>
+          <h3>What are Made with and Converted by?</h3>
+          <p>The program the document was written in, such as a word processor, and the program that turned it into a PDF. Both are filled in automatically and can show which software and version you use.</p>
         </div>
         <div class="faq">
-          <h3>What happens to bookmarks and fillable forms?</h3>
-          <p>Bookmarks belong to the whole document and are not carried into the parts. Forms keep what was typed in them, but their boxes can no longer be filled in.</p>
+          <h3>Why is no date of my edit added?</h3>
+          <p>Because when you edited a file is your business. Untick Keep the dates to remove the creation and change dates as well.</p>
         </div>
         <div class="faq">
-          <h3>Can I split a password-protected PDF?</h3>
-          <p>No, its pages are encrypted. If you know the password, open the file in your PDF reader, save a copy without protection, and split that copy.</p>
-        </div>
-        <div class="faq">
-          <h3>Is there a size limit?</h3>
-          <p>The PDF can be up to 500 MB, and the files made from it can add up to 1 GB, which is about what a browser can safely hold. For more, split into fewer, larger parts.</p>
+          <h3>Can I edit a password-protected PDF?</h3>
+          <p>No, its contents are encrypted. If you know the password, open it in your PDF reader, save a copy without protection, and use that copy here.</p>
         </div>
         <div class="faq">
           <h3>Is my PDF uploaded?</h3>
-          <p>No. The PDF is read and split by JavaScript inside your own browser, and the files are saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
+          <p>No. The PDF is read and written again by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
         </div>
 
         <h2>Related tools</h2>
@@ -352,7 +351,7 @@
   <!-- Shared scripts, in order -->
   <script src="../js/tools-data.js?v=35"></script>
   <script src="../js/tool-helpers.js?v=35"></script>
-  <script>window.CURRENT_TOOL = "split-pdf";</script>
+  <script>window.CURRENT_TOOL = "pdf-metadata-editor";</script>
   <script src="../js/main.js?v=35"></script>
 
   <!-- ===== This tool's own logic ===== -->
@@ -362,23 +361,20 @@
 
     var fileInput = document.getElementById("file");
     var drop      = document.getElementById("drop");
-    var modeSel   = document.getElementById("mode");
-    var rangesIn  = document.getElementById("ranges");
-    var everyIn   = document.getElementById("every");
-    var plannedEl = document.getElementById("planned");
+    var keepDates = document.getElementById("keepDates");
+    var keepOther = document.getElementById("keepOther");
     var dlBtn     = document.getElementById("dlBtn");
     var msg       = document.getElementById("msg");
     var DASH      = String.fromCharCode(0x2014);
 
-    var MAX_INPUT  = 500 * 1024 * 1024;   /* what a phone's browser can hold twice over */
-    var MAX_OUTPUT = 1024 * 1024 * 1024;  /* every file has its own fonts, so the parts can add up to more */
-    var SHOWN      = 30;                  /* names listed before "and N more" */
+    var MAX_INPUT = 500 * 1024 * 1024;   /* what a phone's browser can hold twice over */
+    var FIELDS = ["Title", "Author", "Subject", "Keywords", "Creator", "Producer"];
+    var MAX_FIELD = 2000;
 
-    var current = null;        /* { name, size, doc, pages } */
-    var groups = null;         /* [[first, last], ...] for the current settings */
+    var current = null;        /* { name, size, doc, info: {key: text}, other: [[key, value, text, simple]], dates, xmp, signed } */
     var generation = 0;
     var busy = false;
-    var problem = "";          /* why the last chosen file could not be used */
+    var problem = "";
 
     /* ---- START: writing a PDF file ----
        A PDF is a header, a list of numbered objects, and at the end a table
@@ -434,8 +430,9 @@
       this.text("\nendobj\n");
     };
 
-    /* the cross-reference table and the trailer; returns the finished pieces */
-    PdfWriter.prototype.finish = function (rootNum, infoNum) {
+    /* the cross-reference table and the trailer; returns the finished pieces.
+       extra is more of the trailer, already written as PDF (an /Encrypt). */
+    PdfWriter.prototype.finish = function (rootNum, infoNum, extra) {
       var start = this.length;
       var lines = ["xref\n0 " + (this.count + 1) + "\n0000000000 65535 f \n"];
       for (var n = 1; n <= this.count; n++) {
@@ -444,7 +441,7 @@
       }
       this.text(lines.join(""));
       this.text("trailer\n<< /Size " + (this.count + 1) + " /Root " + rootNum + " 0 R" +
-                (infoNum ? " /Info " + infoNum + " 0 R" : "") + " >>\nstartxref\n" + start + "\n%%EOF\n");
+                (infoNum ? " /Info " + infoNum + " 0 R" : "") + (extra ? " " + extra : "") + " >>\nstartxref\n" + start + "\n%%EOF\n");
       return this.parts;
     };
 
@@ -1627,51 +1624,197 @@
     }
     /* ---- END: copying pages from one or more PDFs into a new one ---- */
 
-    /* ---- START: reading page numbers the way people type them ----
-       "1-3, 5, 8-" : single pages, ranges, a range open at either end ("8-"
-       is page 8 to the last, "-3" is the first three). Commas, semicolons
-       and spaces all separate; an en dash works as well as a hyphen, and
-       spaces around a dash are ignored, so "1 - 3" is one range.
-       Returns { ranges: [[first, last], ...] } with 1-based page numbers,
-       or { error: "what is wrong, quoting the part that is wrong" }. */
-    var OPEN_QUOTE = String.fromCharCode(0x201C);
-    var CLOSE_QUOTE = String.fromCharCode(0x201D);
+    /* ---- START: reading and writing the text of a PDF string ----
+       A document's title or author is a "text string": either UTF-16 with a
+       byte-order mark (FE FF) in front, UTF-8 with its mark (PDF 2.0), or
+       PDFDocEncoding, which is Latin-1 with typographic characters in the
+       0x80-0xA0 range. Writing back, plain ASCII stays ASCII and anything
+       else becomes UTF-16, which every reader understands. */
+    var PDFDOC_HIGH = {
+      0x80: 0x2022, 0x81: 0x2020, 0x82: 0x2021, 0x83: 0x2026, 0x84: 0x2014, 0x85: 0x2013, 0x86: 0x0192, 0x87: 0x2044,
+      0x88: 0x2039, 0x89: 0x203A, 0x8A: 0x2212, 0x8B: 0x2030, 0x8C: 0x201E, 0x8D: 0x201C, 0x8E: 0x201D, 0x8F: 0x2018,
+      0x90: 0x2019, 0x91: 0x201A, 0x92: 0x2122, 0x93: 0xFB01, 0x94: 0xFB02, 0x95: 0x0141, 0x96: 0x0152, 0x97: 0x0160,
+      0x98: 0x0178, 0x99: 0x017D, 0x9A: 0x0131, 0x9B: 0x0142, 0x9C: 0x0153, 0x9D: 0x0161, 0x9E: 0x017E, 0xA0: 0x20AC
+    };
 
-    function parsePageRanges(text, pageCount) {
-      var cleaned = String(text || "").split(String.fromCharCode(0x2013)).join("-").replace(/\s*-\s*/g, "-");
-      var parts = cleaned.split(/[,;\s]+/).filter(Boolean);
-      if (parts.length === 0) { return { error: "Type at least one page number." }; }
-      if (parts.length > 1000) { return { error: "That is more than 1,000 ranges." }; }
-      var ranges = [];
-      for (var k = 0; k < parts.length; k++) {
-        var part = parts[k];
-        var quoted = OPEN_QUOTE + part + CLOSE_QUOTE;
-        var m = /^(\d*)-(\d*)$/.exec(part);
-        var first, last;
-        if (/^\d+$/.test(part)) {
-          first = last = Number(part);
-        } else if (m && (m[1] !== "" || m[2] !== "")) {
-          first = m[1] === "" ? 1 : Number(m[1]);
-          last = m[2] === "" ? pageCount : Number(m[2]);
-        } else {
-          return { error: quoted + " is not a page number or a range like 4-7." };
-        }
-        if (first < 1 || last < 1) { return { error: quoted + ": pages are numbered from 1." }; }
-        if (first > pageCount || last > pageCount) {
-          return { error: quoted + ": this PDF has only " + pageCount + (pageCount === 1 ? " page." : " pages.") };
-        }
-        if (first > last) { return { error: quoted + ": write the smaller number first, as in " + last + "-" + first + "." }; }
-        ranges.push([first, last]);
+    function decodeTextString(bytes) {
+      var i, out = "";
+      if (bytes.length >= 2 && bytes[0] === 0xFE && bytes[1] === 0xFF) {
+        for (i = 2; i + 1 < bytes.length; i += 2) { out += String.fromCharCode((bytes[i] << 8) | bytes[i + 1]); }
+        return out;
       }
-      return { ranges: ranges };
+      if (bytes.length >= 3 && bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF) {
+        try { return new TextDecoder("utf-8", { fatal: false }).decode(bytes.subarray(3)); } catch (e) { return ""; }
+      }
+      for (i = 0; i < bytes.length; i++) {
+        var c = bytes[i];
+        out += String.fromCharCode(PDFDOC_HIGH[c] !== undefined ? PDFDOC_HIGH[c] : c);
+      }
+      return out;
     }
-    /* ---- END: reading page numbers the way people type them ---- */
+
+    function encodeTextString(text) {
+      var i, plain = true;
+      for (i = 0; i < text.length; i++) {
+        var c = text.charCodeAt(i);
+        if (c < 0x20 || c > 0x7E) { plain = false; break; }
+      }
+      if (plain) { return new PdfString(pdfBytes(text), false); }
+      var out = new Uint8Array(2 + text.length * 2);
+      out[0] = 0xFE;
+      out[1] = 0xFF;
+      for (i = 0; i < text.length; i++) {
+        out[2 + i * 2] = text.charCodeAt(i) >> 8;
+        out[3 + i * 2] = text.charCodeAt(i) & 0xFF;
+      }
+      return new PdfString(out, true);
+    }
+    /* ---- END: reading and writing the text of a PDF string ---- */
+
+    /* ---- START: is the document digitally signed? ----
+       A signature covers the file's exact bytes, so writing the file again
+       leaves it no longer valid. Looked for where PDF readers look: the
+       form's SigFlags (bit 1, "signatures exist"), and any signature field
+       that holds a signature. */
+    function isSigned(doc) {
+      try {
+        var catalog = doc.resolve(doc.trailer.get("Root"));
+        var form = catalog instanceof PdfDict ? doc.resolve(catalog.get("AcroForm")) : null;
+        if (!(form instanceof PdfDict)) { return false; }
+        var flags = doc.resolve(form.get("SigFlags"));
+        if (typeof flags === "number" && (flags & 1)) { return true; }
+        var fields = doc.resolve(form.get("Fields"));
+        var stack = Array.isArray(fields) ? fields.slice() : [];
+        var seen = new Set();
+        while (stack.length && seen.size < 100000) {
+          var ref = stack.pop();
+          if (ref instanceof PdfRef) {
+            if (seen.has(ref.num)) { continue; }
+            seen.add(ref.num);
+          }
+          var field = doc.resolve(ref);
+          if (!(field instanceof PdfDict)) { continue; }
+          var type = doc.resolve(field.get("FT"));
+          if (type instanceof PdfName && type.name === "Sig" && field.has("V") && doc.resolve(field.get("V")) !== PDF_NULL) { return true; }
+          var kids = doc.resolve(field.get("Kids"));
+          if (Array.isArray(kids)) { kids.forEach(function (kid) { stack.push(kid); }); }
+        }
+      } catch (e) {
+        return false;
+      }
+      return false;
+    }
+    /* ---- END: is the document digitally signed? ---- */
+
+    /* ---- START: writing a whole document again, without its old leftovers ----
+       Everything the document still uses is gathered, from its catalog
+       down: pages, bookmarks, forms, links, attachments, each object once,
+       numbered again from 1. What nothing points at any more is left
+       behind: earlier versions of edited objects that an incremental save
+       kept, the old details, and (when asked) every XMP copy of them.
+       Returns the objects in the order they were reached, each as
+       { num, value, data }: data is a stream's bytes, and a stream's value
+       is its dictionary without /Length, which is set when it is written.
+       With keepInfo the old /Info comes along; otherwise it is left. */
+    function gatherDocument(doc, dropXmp, keepInfo) {
+      var numbers = new Map();
+      var queue = [];
+      function refTo(num) {
+        if (!numbers.has(num)) {
+          numbers.set(num, queue.length + 1);
+          queue.push(num);
+        }
+        return new PdfRef(numbers.get(num), 0);
+      }
+      function copy(v, depth) {
+        if (depth > 200) { return PDF_NULL; }
+        if (v instanceof PdfRef) {
+          var target;
+          try { target = doc.getObject(v.num); } catch (e) { target = PDF_NULL; }
+          return target === PDF_NULL ? PDF_NULL : refTo(v.num);
+        }
+        if (Array.isArray(v)) { return v.map(function (x) { return copy(x, depth + 1); }); }
+        if (v instanceof PdfDict) {
+          var d = new PdfDict();
+          v.keys().forEach(function (k) {
+            if (dropXmp && k === "Metadata") { return; }
+            d.set(k, copy(v.get(k), depth + 1));
+          });
+          return d;
+        }
+        return v;
+      }
+      var rootRef = doc.trailer.get("Root");
+      if (!(rootRef instanceof PdfRef)) { throw pdfError("this PDF has no catalog to copy"); }
+      var root = refTo(rootRef.num).num;
+      var infoRef = doc.trailer.get("Info");
+      var info = keepInfo && infoRef instanceof PdfRef && doc.resolve(infoRef) instanceof PdfDict ? refTo(infoRef.num).num : 0;
+      var objects = [];
+      /* walked by position, not shift(): a document can have a hundred
+         thousand objects, and shift() moves every one of them each time */
+      for (var q = 0; q < queue.length; q++) {
+        var obj = doc.getObject(queue[q]);
+        if (obj instanceof PdfStream) {
+          var d = new PdfDict();
+          obj.dict.keys().forEach(function (k) {
+            if (k === "Length" || (dropXmp && k === "Metadata")) { return; }
+            d.set(k, copy(obj.dict.get(k), 0));
+          });
+          objects.push({ num: q + 1, value: d, data: obj.data });
+        } else {
+          objects.push({ num: q + 1, value: copy(obj, 0), data: null });
+        }
+      }
+      return { objects: objects, root: root, info: info };
+    }
+
+    /* one gathered object, written; a stream's /Length is its bytes as written */
+    function writeGathered(w, o) {
+      if (o.data) {
+        o.value.set("Length", o.data.length);
+        w.object(o.num, pdfValue(o.value), o.data);
+      } else {
+        w.object(o.num, pdfValue(o.value));
+      }
+    }
+
+    /* the whole document again, with new details in a fresh /Info */
+    function rewriteDocument(doc, info, dropXmp) {
+      var g = gatherDocument(doc, dropXmp, false);
+      var w = new PdfWriter();
+      w.header("1.7");
+      g.objects.forEach(function () { w.reserve(); });
+      var infoNum = w.reserve();
+      g.objects.forEach(function (o) { writeGathered(w, o); });
+      w.object(infoNum, pdfValue(info));
+      return w.finish(g.root, infoNum);
+    }
+    /* ---- END: writing a whole document again, without its old leftovers ---- */
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
       msg.textContent = text || "";
       msg.className = "msg" + (kind ? " msg--" + kind : "");
     }
     /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: reading a PDF date ----
+       "D:20260914103000+05'30'" : year, then month, day, hour, minute,
+       second as far as given, then the offset from UTC. Shown as the date and
+       time the file says, with its offset, never converted to this
+       computer's time zone, because that is what is written in the file. */
+    function readableDate(text) {
+      var m = /^(?:D:)?(\d{4})(\d{2})?(\d{2})?(\d{2})?(\d{2})?(\d{2})?([Zz+\-])?(\d{2})?'?(\d{2})?'?/.exec(String(text).trim());
+      if (!m) { return String(text); }
+      var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      var month = Number(m[2] || 1);
+      if (month < 1 || month > 12) { return String(text); }
+      var out = Number(m[3] || 1) + " " + months[month - 1] + " " + m[1];
+      if (m[4]) { out += ", " + m[4] + ":" + (m[5] || "00"); }
+      if (m[7] === "Z" || m[7] === "z") { out += " UTC"; }
+      else if (m[7] && m[8]) { out += " (UTC" + m[7] + m[8] + ":" + (m[9] || "00") + ")"; }
+      return out;
+    }
+    /* ---- END: reading a PDF date ---- */
 
     /* ---- START: reading the chosen PDF, without uploading it ---- */
     function readFile(file) {
@@ -1687,153 +1830,111 @@
           throw error;
         }
         if (doc.encrypted) { throw new Error("protected with a password"); }
-        var pages = doc.pages();
-        if (pages.length === 0) { throw new Error("has no pages"); }
-        return { name: file.name || "document.pdf", size: file.size, doc: doc, pages: pages };
+        if (doc.pages().length === 0) { throw new Error("has no pages"); }
+        var info = {}, other = [], dates = {};
+        var dict = doc.resolve(doc.trailer.get("Info"));
+        if (dict instanceof PdfDict) {
+          dict.keys().forEach(function (k) {
+            var v = doc.resolve(dict.get(k));
+            var simple = v instanceof PdfString || v instanceof PdfName || typeof v === "number" || typeof v === "boolean";
+            var text = v instanceof PdfString ? decodeTextString(v.bytes) : v instanceof PdfName ? v.name :
+                       simple ? String(v) : "";
+            if (FIELDS.indexOf(k) > -1) { info[k] = text; }
+            else if (k === "CreationDate" || k === "ModDate") { dates[k] = v; }
+            else { other.push([k, v, text, simple]); }
+          });
+        }
+        var catalog = doc.resolve(doc.trailer.get("Root"));
+        return { name: file.name || "document.pdf", size: file.size, doc: doc, info: info, other: other, dates: dates,
+                 xmp: catalog instanceof PdfDict && catalog.has("Metadata"), signed: isSigned(doc) };
       });
     }
     /* ---- END: reading the chosen PDF, without uploading it ---- */
 
-    /* ---- START: working out the files to make ----
-       Each group is the first and last page of one new file. */
-    function planGroups() {
-      var count = current.pages.length;
-      var out = [];
-      var i;
-      if (modeSel.value === "each") {
-        for (i = 1; i <= count; i++) { out.push([i, i]); }
-        return { groups: out };
-      }
-      if (modeSel.value === "every") {
-        var n = Number(everyIn.value);
-        if (!/^\d+$/.test(String(everyIn.value).trim()) || n < 1) { return { error: "Type how many pages each file should have, from 1 up." }; }
-        for (i = 1; i <= count; i += n) { out.push([i, Math.min(count, i + n - 1)]); }
-        return { groups: out };
-      }
-      var parsed = parsePageRanges(rangesIn.value, count);
-      if (parsed.error) { return { error: parsed.error }; }
-      return { groups: parsed.ranges };
-    }
-
-    function baseName() {
-      return current.name.replace(/\.pdf$/i, "") || "document";
-    }
-
-    /* "report-pages-1-3.pdf", "report-page-5.pdf"; a name used twice gets (2) */
-    function fileNames(list) {
-      var used = {};
-      return list.map(function (g) {
-        var name = baseName() + (g[0] === g[1] ? "-page-" + g[0] : "-pages-" + g[0] + "-" + g[1]);
-        var unique = name, k = 2;
-        while (used[unique]) { unique = name + " (" + (k++) + ")"; }
-        used[unique] = true;
-        return unique + ".pdf";
+    /* ---- START: showing what is in the file ----
+       Every value goes in as text: a title is whatever the author typed. */
+    function show() {
+      FIELDS.forEach(function (k) {
+        var el = document.getElementById("f" + k);
+        el.value = current ? (current.info[k] || "") : "";
+        el.disabled = !current;
       });
+      var dates = document.getElementById("dates");
+      var others = document.getElementById("others");
+      dates.textContent = "";
+      others.textContent = "";
+      if (!current) { return; }
+      dates.textContent = "Created: " + (current.dates.CreationDate instanceof PdfString ? readableDate(decodeTextString(current.dates.CreationDate.bytes)) : "not recorded") +
+                          ". Last changed: " + (current.dates.ModDate instanceof PdfString ? readableDate(decodeTextString(current.dates.ModDate.bytes)) : "not recorded") + ".";
+      current.other.forEach(function (o) {
+        var li = document.createElement("li");
+        li.textContent = o[0] + ": " + (o[3] ? o[2] : "(not text, always left out)");
+        others.appendChild(li);
+      });
+      document.getElementById("othersField").style.display = current.other.length ? "" : "none";
     }
-    /* ---- END: working out the files to make ---- */
 
-    /* ---- START: showing the plan ---- */
     function refresh() {
-      document.getElementById("rangesField").style.display = modeSel.value === "ranges" ? "" : "none";
-      document.getElementById("everyField").style.display = modeSel.value === "every" ? "" : "none";
-      plannedEl.textContent = "";
-      groups = null;
       dlBtn.disabled = true;
       if (!current) {
-        ["sFiles", "sPages", "sIn"].forEach(function (id) { document.getElementById(id).textContent = DASH; });
-        if (!busy) { setMessage(problem || "Choose a PDF to split.", problem ? "bad" : ""); }
+        if (!busy) { setMessage(problem || "Choose a PDF to see the details it carries.", problem ? "bad" : ""); }
+        document.getElementById("othersField").style.display = "none";
         return;
       }
-      document.getElementById("sIn").textContent = formatBytes(current.size);
-      var plan = planGroups();
-      if (plan.error) {
-        document.getElementById("sFiles").textContent = DASH;
-        document.getElementById("sPages").textContent = DASH;
-        setMessage(plan.error, "bad");
-        return;
-      }
-      groups = plan.groups;
-      var names = fileNames(groups);
-      var pagesOut = groups.reduce(function (sum, g) { return sum + g[1] - g[0] + 1; }, 0);
-      document.getElementById("sFiles").textContent = formatNumber(groups.length, 0);
-      document.getElementById("sPages").textContent = formatNumber(pagesOut, 0);
-      names.slice(0, SHOWN).forEach(function (name, i) {
-        var li = document.createElement("li");
-        var g = groups[i];
-        li.textContent = name + " " + DASH + " " + (g[0] === g[1] ? "page " + g[0] : "pages " + g[0] + " to " + g[1]);
-        plannedEl.appendChild(li);
-      });
-      if (names.length > SHOWN) {
-        var more = document.createElement("li");
-        more.textContent = "and " + formatNumber(names.length - SHOWN, 0) + " more";
-        plannedEl.appendChild(more);
+      for (var i = 0; i < FIELDS.length; i++) {
+        if (document.getElementById("f" + FIELDS[i]).value.length > MAX_FIELD) {
+          setMessage("Keep each detail under 2,000 characters.", "bad");
+          return;
+        }
       }
       dlBtn.disabled = busy;
-      if (!busy) {
-        setMessage(current.name + ": " + formatNumber(current.pages.length, 0) + (current.pages.length === 1 ? " page" : " pages") +
-                   (current.doc.repaired ? " (damaged, but its pages could be found)" : "") + ". " +
-                   (groups.length === 1 ? "One PDF will be made." : formatNumber(groups.length, 0) + " PDFs will be made, in one ZIP file."),
-                   current.doc.repaired ? "bad" : "ok");
-      }
+      var filled = FIELDS.filter(function (k) { return (current.info[k] || "") !== ""; }).length;
+      setMessage(current.name + ": " + (filled === 0 ? "no details are filled in." : filled + (filled === 1 ? " detail is filled in." : " details are filled in.")) +
+                 (current.xmp ? " It also carries a second copy of them (XMP), which is removed when you save, so every reader shows the same details." : "") +
+                 (current.doc.repaired ? " Its index is damaged; the saved copy is rebuilt from what could be read." : "") +
+                 (current.signed ? " It is digitally signed: saving writes the file again, so the signature will no longer be valid." : ""),
+                 current.doc.repaired || current.signed ? "bad" : "ok");
     }
-    /* ---- END: showing the plan ---- */
+    /* ---- END: showing what is in the file ---- */
 
-    /* ---- START: making the files ----
-       Built a few at a time, so a 500-page split never freezes the page,
-       and stopped if the files would add up to more than the browser can
-       hold. Every file is complete on its own, fonts and all. */
-    function pause() { return new Promise(function (resolve) { setTimeout(resolve, 0); }); }
+    /* ---- START: saving the new details ----
+       The document is written again from its catalog down, so earlier
+       versions of the details, which an ordinary edit would leave behind in
+       the file, are gone, and so is every XMP copy. Only filled-in boxes are
+       written. No date is added: when you edited a file is your business. */
+    function outputName() {
+      return (current.name.replace(/\.pdf$/i, "") || "document") + " (details edited).pdf";
+    }
 
-    function makeFiles() {
-      var gen = generation;
-      var list = groups.slice();
-      var names = fileNames(list);
-      var made = [];
-      var total = 0;
-      busy = true;
-      dlBtn.disabled = true;
-      function next(i) {
-        if (gen !== generation) { return Promise.resolve(null); }
-        if (i >= list.length) { return Promise.resolve(made); }
-        var g = list[i];
-        var order = [];
-        for (var p = g[0]; p <= g[1]; p++) { order.push({ doc: current.doc, page: current.pages[p - 1] }); }
-        var parts = buildFromPages(order, "108toolbox.in Split PDF");
-        var size = parts.reduce(function (sum, part) { return sum + part.length; }, 0);
-        total += size;
-        if (total > MAX_OUTPUT) {
-          return Promise.reject(new Error("too big"));
-        }
-        var bytes = new Uint8Array(size);
-        var at = 0;
-        parts.forEach(function (part) { bytes.set(part, at); at += part.length; });
-        made.push({ name: names[i], bytes: bytes });
-        if (i % 10 === 9) {
-          setMessage("Making the files" + String.fromCharCode(0x2026) + " " + (i + 1) + " of " + list.length + ".");
-          return pause().then(function () { return next(i + 1); });
-        }
-        return next(i + 1);
-      }
-      return next(0).then(function (files) {
-        busy = false;
-        if (!files || gen !== generation) { return; }
-        if (files.length === 1) {
-          downloadBlob(new Blob([files[0].bytes], { type: "application/pdf" }), files[0].name);
-        } else {
-          downloadBlob(buildZip(files), baseName() + "-split.zip");
-        }
-        refresh();
-        setMessage("Done: " + (files.length === 1 ? "one PDF" : formatNumber(files.length, 0) + " PDFs in one ZIP file") +
-                   ", " + formatBytes(total) + ". Nothing has left your device.", "ok");
-      }, function (error) {
-        busy = false;
-        refresh();
-        setMessage(error && error.message === "too big"
-          ? "Those files would come to more than 1 GB, because each one carries its own copy of the fonts. Make fewer, larger files."
-          : "The files could not be made. The PDF may be damaged in a way this page cannot work around.", "bad");
+    function makeFile() {
+      var info = new PdfDict();
+      FIELDS.forEach(function (k) {
+        var value = document.getElementById("f" + k).value.trim();
+        if (value !== "") { info.set(k, encodeTextString(value)); }
       });
+      if (keepDates.checked) {
+        ["CreationDate", "ModDate"].forEach(function (k) {
+          if (current.dates[k] instanceof PdfString) { info.set(k, current.dates[k]); }
+        });
+      }
+      if (keepOther.checked) {
+        current.other.forEach(function (o) {
+          if (o[3]) { info.set(o[0], o[1]); }
+        });
+      }
+      var parts;
+      try {
+        parts = rewriteDocument(current.doc, info, true);
+      } catch (error) {
+        setMessage("The PDF could not be saved. It may be damaged in a way this page cannot work around.", "bad");
+        return;
+      }
+      var size = parts.reduce(function (sum, part) { return sum + part.length; }, 0);
+      downloadBlob(new Blob(parts, { type: "application/pdf" }), outputName());
+      setMessage("Done: " + (info.keys().length ? info.keys().length + (info.keys().length === 1 ? " detail" : " details") + " saved" : "every detail removed") +
+                 ", " + formatBytes(size) + ". Nothing has left your device.", "ok");
     }
-    /* ---- END: making the files ---- */
+    /* ---- END: saving the new details ---- */
 
     /* ---- START: taking the chosen file ---- */
     function takeFile(file) {
@@ -1842,15 +1943,16 @@
       current = null;
       busy = true;
       problem = "";
+      show();
       refresh();
       setMessage("Reading " + (file.name || "the PDF") + String.fromCharCode(0x2026));
       readFile(file).then(function (entry) {
         if (gen !== generation) { return; }
         busy = false;
         current = entry;
-        if (modeSel.value === "ranges" && rangesIn.value.trim() === "") {
-          rangesIn.value = entry.pages.length > 1 ? "1-" + Math.ceil(entry.pages.length / 2) + ", " + (Math.ceil(entry.pages.length / 2) + 1) + "-" : "1";
-        }
+        keepDates.checked = true;
+        keepOther.checked = true;
+        show();
         refresh();
       }, function (error) {
         if (gen !== generation) { return; }
@@ -1858,6 +1960,7 @@
         var why = error && /^(not a PDF|too damaged to read|protected with a password|has no pages|over the 500 MB)/.test(error.message)
           ? error.message : "could not be read";
         problem = "Could not use " + String(file.name || "that file") + ": " + why + ".";
+        show();
         refresh();
       });
     }
@@ -1875,12 +1978,19 @@
       drop.addEventListener(type, function (e) { e.preventDefault(); drop.classList.remove("is-over"); });
     });
     drop.addEventListener("drop", function (e) { takeFile(e.dataTransfer && e.dataTransfer.files[0]); });
-    modeSel.addEventListener("change", refresh);
-    rangesIn.addEventListener("input", refresh);
-    everyIn.addEventListener("input", refresh);
+    FIELDS.forEach(function (k) { document.getElementById("f" + k).addEventListener("input", refresh); });
+
+    document.getElementById("clearAllBtn").addEventListener("click", function () {
+      if (!current) { return; }
+      FIELDS.forEach(function (k) { document.getElementById("f" + k).value = ""; });
+      keepDates.checked = false;
+      keepOther.checked = false;
+      refresh();
+      setMessage("Every box is empty and the dates and other details will be left out. Save to download the file without them.", "ok");
+    });
 
     dlBtn.addEventListener("click", function () {
-      if (current && groups && !busy) { makeFiles(); }
+      if (current && !busy) { makeFile(); }
     });
 
     document.getElementById("resetBtn").addEventListener("click", function () {
@@ -1889,11 +1999,12 @@
       busy = false;
       problem = "";
       fileInput.value = "";
-      rangesIn.value = "";
+      show();
       refresh();
     });
     /* ---- END: wiring ---- */
 
+    show();
     refresh();
   })();
   </script>
