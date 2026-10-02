@@ -6970,6 +6970,640 @@ T["markdown-previewer"] = r"""
   });
 """
 
+T["image-to-pdf"] = r"""
+  var DASH = String.fromCharCode(0x2014);
+  var TIMES = String.fromCharCode(0xD7);
+  var list = document.getElementById("list");
+  window.__saved = [];
+  window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+
+  /* ================= helpers ================= */
+  function feed(files) {
+    var dt = new DataTransfer();
+    files.forEach(function (f) { dt.items.add(f); });
+    var input = document.getElementById("file");
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  function settled() { return txt("msg") !== "" && !/^Reading/.test(txt("msg")); }
+  function wait(label, test, budget) {
+    return new Promise(function (resolve) { waitFor(label, test, resolve, budget); });
+  }
+  function pause(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+
+  /* four coloured quarters and a white dot, so a picture on its side is never the same picture */
+  function quarters(w, h, ramp) {
+    var c = document.createElement("canvas");
+    c.width = w; c.height = h;
+    var x = c.getContext("2d");
+    x.fillStyle = "rgb(220,30,30)"; x.fillRect(0, 0, w / 2, h / 2);
+    x.fillStyle = "rgb(30,180,60)"; x.fillRect(w / 2, 0, w / 2, h / 2);
+    x.fillStyle = "rgb(30,60,220)"; x.fillRect(0, h / 2, w / 2, h / 2);
+    x.fillStyle = "rgb(240,220,30)"; x.fillRect(w / 2, h / 2, w / 2, h / 2);
+    x.fillStyle = "#fff"; x.fillRect(w / 10, h / 10, h / 5, h / 5);
+    if (ramp) {
+      var d = x.getImageData(0, 0, w, h);
+      for (var i = 0; i < w * h; i++) { d.data[i * 4 + 3] = Math.round(255 * (i % w) / (w - 1)); }
+      x.putImageData(d, 0, 0);
+    }
+    return c;
+  }
+  function blobOf(canvas, type, quality) {
+    return new Promise(function (resolve) { canvas.toBlob(resolve, type, quality); });
+  }
+  function bytesOf(blob) { return blob.arrayBuffer().then(function (b) { return new Uint8Array(b); }); }
+
+  /* a JPEG with an EXIF block saying "turn me", big-endian, put right after the start marker */
+  function withExif(jpeg, orientation) {
+    var seg = [0x45, 0x78, 0x69, 0x66, 0, 0, 0x4D, 0x4D, 0, 0x2A, 0, 0, 0, 8, 0, 1,
+               0x01, 0x12, 0, 3, 0, 0, 0, 1, 0, orientation, 0, 0, 0, 0, 0, 0];
+    var out = new Uint8Array(jpeg.length + 4 + seg.length);
+    out.set([0xFF, 0xD8, 0xFF, 0xE1, (seg.length + 2) >> 8, (seg.length + 2) & 255], 0);
+    out.set(seg, 6);
+    out.set(jpeg.subarray(2), 6 + seg.length);
+    return out;
+  }
+
+  function latin1(bytes) {
+    var parts = [];
+    for (var i = 0; i < bytes.length; i += 32768) { parts.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 32768))); }
+    return parts.join("");
+  }
+  function same(a, b) {
+    if (!a || !b || a.length !== b.length) { return false; }
+    for (var i = 0; i < a.length; i++) { if (a[i] !== b[i]) { return false; } }
+    return true;
+  }
+  function inflate(u8) {
+    var s = new Blob([u8]).stream().pipeThrough(new DecompressionStream("deflate"));
+    return new Response(s).arrayBuffer().then(function (b) { return new Uint8Array(b); });
+  }
+  function pixelsOf(blob) {
+    return new Promise(function (resolve) {
+      var img = new Image();
+      img.onload = function () {
+        var c = document.createElement("canvas");
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        var x = c.getContext("2d");
+        x.drawImage(img, 0, 0);
+        var d = x.getImageData(0, 0, c.width, c.height).data;
+        var rgb = new Uint8Array(c.width * c.height * 3), alpha = new Uint8Array(c.width * c.height);
+        for (var i = 0, j = 0, k = 0; i < d.length; i += 4, j += 3, k++) {
+          rgb[j] = d[i]; rgb[j + 1] = d[i + 1]; rgb[j + 2] = d[i + 2]; alpha[k] = d[i + 3];
+        }
+        resolve({ rgb: rgb, alpha: alpha });
+      };
+      img.src = URL.createObjectURL(blob);
+    });
+  }
+
+  /* A PDF reader written for this test, sharing nothing with the page: it
+     follows the byte positions in the xref table and fails if any of them is
+     off by one, and it takes every stream by its /Length and fails if that
+     does not land exactly on "endstream". */
+  function readPdf(bytes) {
+    var text = latin1(bytes);
+    var sx = /startxref\n(\d+)\n%%EOF\n$/.exec(text);
+    if (!sx) { throw new Error("no startxref at the end"); }
+    var at = Number(sx[1]);
+    if (text.substr(at, 5) !== "xref\n") { throw new Error("startxref does not point at the table"); }
+    var head = /^xref\n0 (\d+)\n/.exec(text.slice(at));
+    var count = Number(head[1]);
+    var first = at + head[0].length;
+    if (text.substr(first, 20) !== "0000000000 65535 f \n") { throw new Error("entry 0 is wrong"); }
+    var objects = {};
+    for (var n = 1; n < count; n++) {
+      var m = /^(\d{10}) 00000 n \n$/.exec(text.substr(first + n * 20, 20));
+      if (!m) { throw new Error("entry " + n + " is malformed"); }
+      var off = Number(m[1]);
+      var tag = n + " 0 obj\n";
+      if (text.substr(off, tag.length) !== tag) { throw new Error("object " + n + " is not where the table says"); }
+      var start = off + tag.length;
+      var si = text.indexOf("\nstream\n", start);
+      var ei = text.indexOf("\nendobj\n", start);
+      var obj = { dict: text.slice(start, ei), stream: null };
+      if (si > -1 && si < ei) {
+        obj.dict = text.slice(start, si);
+        var len = Number(/\/Length (\d+)/.exec(obj.dict)[1]);
+        var data = si + 8;
+        obj.stream = bytes.subarray(data, data + len);
+        if (text.substr(data + len, 18) !== "\nendstream\nendobj\n") { throw new Error("object " + n + " has the wrong /Length"); }
+      }
+      objects[n] = obj;
+    }
+    var trailer = text.slice(first + count * 20);
+    var size = Number(/\/Size (\d+)/.exec(trailer)[1]);
+    if (size !== count) { throw new Error("/Size says " + size + ", the table has " + count); }
+    var root = objects[Number(/\/Root (\d+) 0 R/.exec(trailer)[1])];
+    var pagesObj = objects[Number(/\/Pages (\d+) 0 R/.exec(root.dict)[1])];
+    var kids = /\/Kids \[([^\]]*)\]/.exec(pagesObj.dict)[1].match(/\d+ 0 R/g).map(function (k) { return parseInt(k, 10); });
+    var pages = kids.map(function (k) {
+      var p = objects[k];
+      var image = objects[Number(/\/Im0 (\d+) 0 R/.exec(p.dict)[1])];
+      var smaskRef = /\/SMask (\d+) 0 R/.exec(image.dict);
+      return {
+        box: /\/MediaBox \[([^\]]*)\]/.exec(p.dict)[1],
+        content: latin1(objects[Number(/\/Contents (\d+) 0 R/.exec(p.dict)[1])].stream),
+        image: image,
+        smask: smaskRef ? objects[Number(smaskRef[1])] : null
+      };
+    });
+    return { text: text, objects: objects, trailer: trailer, count: /\/Count (\d+)/.exec(pagesObj.dict)[1], pages: pages,
+             info: objects[Number(/\/Info (\d+) 0 R/.exec(trailer)[1])] };
+  }
+  function matrix(content) {
+    var m = /^q (\S+) (\S+) (\S+) (\S+) (\S+) (\S+) cm \/Im0 Do Q\n$/.exec(content);
+    return m ? m.slice(1).map(Number) : null;
+  }
+  function close(a, b) {
+    if (!a || a.length !== b.length) { return false; }
+    return a.every(function (v, i) { return Math.abs(v - b[i]) < 0.0011; });
+  }
+  /* the expected picture box: fitted inside the margins and centred */
+  function fitted(pw, ph, W, H, marginMm) {
+    var m = marginMm * 72 / 25.4;
+    var s = Math.min((W - 2 * m) / pw, (H - 2 * m) / ph);
+    return { w: pw * s, h: ph * s, x: (W - pw * s) / 2, y: (H - ph * s) / 2 };
+  }
+  function download() {
+    var before = window.__saved.length;
+    click("dlBtn");
+    if (window.__saved.length !== before + 1) { return Promise.resolve(null); }
+    var saved = window.__saved[window.__saved.length - 1];
+    return bytesOf(saved.blob).then(function (bytes) {
+      var pdf = null, error = "";
+      try { pdf = readPdf(bytes); } catch (e) { error = e.message; }
+      return { saved: saved, bytes: bytes, pdf: pdf, error: error };
+    });
+  }
+  function row(i) { return list.children[i]; }
+  function nameOf(i) { return row(i).querySelector(".file-list__name").firstChild.data; }
+  function metaOf(i) { return row(i).querySelector(".file-list__meta").textContent; }
+  function btn(i, k) { return row(i).querySelectorAll("button")[k]; }
+
+  var F = {};
+  var chain = Promise.resolve();
+  function step(fn) { chain = chain.then(fn); }
+
+  /* ================= the page as it opens ================= */
+  eq("it asks for pictures", txt("msg"), "Choose one or more pictures.");
+  ok("download starts disabled", document.getElementById("dlBtn").disabled);
+  eq("the tiles start blank", txt("sPages") + txt("sIn") + txt("sOut"), DASH + DASH + DASH);
+  eq("orientation is hidden while pages follow the picture", getComputedStyle(document.getElementById("orientField")).display, "none");
+  eq("the empty list takes no room", getComputedStyle(list).display, "none");
+  ok("the file input takes many files", document.getElementById("file").multiple);
+
+  /* ================= making the test pictures ================= */
+  step(function () {
+    return Promise.all([blobOf(quarters(160, 100), "image/jpeg", 0.9), blobOf(quarters(40, 30, true), "image/png"),
+                        blobOf(quarters(30, 40), "image/png"), blobOf(quarters(8, 8), "image/png")])
+      .then(function (b) {
+        F.alphaBlob = b[1]; F.plainBlob = b[2];
+        return Promise.all(b.map(bytesOf)).then(function (u) {
+          F.jpeg = u[0]; F.turnedJpeg = withExif(u[0], 6);
+          F.turned = new File([F.turnedJpeg], "a-turned.jpg", { type: "image/jpeg" });
+          F.photo = new File([F.jpeg], "b-photo.jpg", { type: "image/jpeg" });
+          F.alpha = new File([u[1]], "c-alpha.png", { type: "image/png" });
+          F.p10 = new File([u[2]], "page 10.png", { type: "image/png" });
+          F.p2 = new File([u[2]], "page 2.png", { type: "image/png" });
+          F.small = u[3];
+          F.hostile = new File([u[3]], "<iframe onload=zq>.png", { type: "image/png" });
+          F.broken = new File([new Uint8Array([0x89, 0x50, 0x4E, 0x47, 1, 2, 3, 4, 5])], "broken.png", { type: "image/png" });
+        });
+      });
+  });
+
+  /* ================= seven files, one of them not a picture ================= */
+  step(function () {
+    feed([F.turned, F.photo, F.alpha, F.p10, F.broken, F.p2, F.hostile]);
+    return wait("the seven files are read", function () { return settled() && list.children.length === 6; }, 20000);
+  });
+  step(function () {
+    eq("six go in, in the order given", [0, 1, 2, 3, 4, 5].map(nameOf).join("|"),
+       "1. a-turned.jpg|2. b-photo.jpg|3. c-alpha.png|4. page 10.png|5. page 2.png|6. <iframe onload=zq>.png");
+    has("the one that is not a picture is named", txt("msg"), "Could not read broken.png");
+    has("and the rest are ready", txt("msg"), "Ready: 6 pages.");
+    eq("a name written as markup stays text", document.querySelectorAll("iframe").length, 0);
+    eq("the turned photo is listed the way it is shown, and kept as it is", metaOf(0), "100" + TIMES + "160 px, " + formatBytes(F.turned.size) + ", kept as it is");
+    eq("a PNG is listed with its size and is redrawn", metaOf(2), "40" + TIMES + "30 px, " + formatBytes(F.alpha.size));
+    eq("six pages", txt("sPages"), "6");
+    eq("the pictures' sizes added up", txt("sIn"), formatBytes(F.turned.size + F.photo.size + F.alpha.size + F.p10.size + F.p2.size + F.hostile.size));
+    ok("download is on", !document.getElementById("dlBtn").disabled);
+    eq("the first can not move up", btn(0, 0).disabled, true);
+    eq("the last can not move down", btn(5, 1).disabled, true);
+    eq("a middle one can move both ways", btn(2, 0).disabled + "," + btn(2, 1).disabled, "false,false");
+    has("every button says what it does", btn(1, 2).getAttribute("aria-label"), "Turn b-photo.jpg a quarter clockwise");
+    return download();
+  });
+  step(function (d) {
+    ok("the PDF reads back cleanly: every object where the table says, every length right", d && d.pdf, d ? d.error : "no download");
+    if (!d || !d.pdf) { return; }
+    F.first = d;
+    eq("named for several pictures", d.saved.name, "pictures.pdf");
+    eq("as a PDF", d.saved.blob.type, "application/pdf");
+    eq("the PDF tile is the file's size", txt("sOut"), formatBytes(d.bytes.length));
+    eq("it starts as a PDF 1.4 file", latin1(d.bytes.subarray(0, 9)), "%PDF-1.4\n");
+    eq("with the binary marker line", Array.prototype.slice.call(d.bytes.subarray(9, 15)).join(","), "37,226,227,207,211,10");
+    eq("six pages in the page tree", d.pdf.count + "/" + d.pdf.pages.length, "6/6");
+    has("it says what made it", d.pdf.info.dict, "/Producer (108toolbox.in Image to PDF)");
+    var p = d.pdf.pages;
+    eq("the turned photo's page is tall", p[0].box, "0 0 75 120");
+    ok("and it is turned by the drawing, not by redrawing", close(matrix(p[0].content), [0, -120, 75, 0, 0, 120]), p[0].content);
+    ok("its JPEG is in the PDF byte for byte, camera note and all", same(p[0].image.stream, F.turnedJpeg));
+    has("as a JPEG", p[0].image.dict, "/Width 160 /Height 100 /BitsPerComponent 8 /ColorSpace /DeviceRGB /Filter /DCTDecode");
+    eq("the plain photo's page is wide", p[1].box, "0 0 120 75");
+    ok("and drawn straight", close(matrix(p[1].content), [120, 0, 0, 75, 0, 0]), p[1].content);
+    ok("and byte for byte too", same(p[1].image.stream, F.jpeg));
+    eq("the see-through PNG's page", p[2].box, "0 0 30 22.5");
+    has("is stored without loss", p[2].image.dict, "/ColorSpace /DeviceRGB /Filter /FlateDecode /SMask");
+    ok("with a soft mask for the see-through part", p[2].smask !== null);
+    eq("an opaque PNG has no mask", p[3].smask, null);
+    eq("nothing else in the file is a stream than pictures and drawings",
+       Object.keys(d.pdf.objects).filter(function (k) { return d.pdf.objects[k].stream; }).length, 6 + 6 + 1);
+    return Promise.all([inflate(p[2].image.stream), inflate(p[2].smask.stream), inflate(p[3].image.stream),
+                        pixelsOf(F.alphaBlob), pixelsOf(F.plainBlob)]).then(function (r) {
+      ok("the PNG's colours come back exactly", same(r[0], r[3].rgb), r[0].length + " vs " + r[3].rgb.length);
+      ok("and its transparency exactly", same(r[1], r[3].alpha));
+      ok("the opaque PNG's colours exactly", same(r[2], r[4].rgb));
+      ok("the transparency really varies", r[1][0] < 20 && r[1][39] > 235, r[1][0] + " .. " + r[1][39]);
+    });
+  });
+
+  /* ================= page sizes, orientation and margins ================= */
+  step(function () {
+    set("size", "a4");
+    eq("orientation appears for paper sizes", getComputedStyle(document.getElementById("orientField")).display !== "none", true);
+    return download();
+  });
+  step(function (d) {
+    var p = d.pdf.pages;
+    eq("on A4 the tall picture gets an upright page", p[0].box, "0 0 595.28 841.89");
+    eq("and the wide one a sideways page", p[1].box, "0 0 841.89 595.28");
+    var b = fitted(120, 75, 841.89, 595.28, 0);
+    ok("the wide one fills the width and is centred", close(matrix(p[1].content), [b.w, 0, 0, b.h, b.x, b.y]), p[1].content);
+    var t = fitted(75, 120, 595.28, 841.89, 0);
+    ok("the turned one is fitted and still turned", close(matrix(p[0].content), [0, -t.h, t.w, 0, t.x, t.y + t.h]), p[0].content);
+    set("orient", "portrait");
+    return download();
+  });
+  step(function (d) {
+    eq("portrait makes every page upright", d.pdf.pages[1].box, "0 0 595.28 841.89");
+    var b = fitted(120, 75, 595.28, 841.89, 0);
+    ok("and the wide picture is fitted across it", close(matrix(d.pdf.pages[1].content), [b.w, 0, 0, b.h, b.x, b.y]), d.pdf.pages[1].content);
+    set("orient", "landscape");
+    return download();
+  });
+  step(function (d) {
+    eq("landscape makes every page sideways", d.pdf.pages[0].box, "0 0 841.89 595.28");
+    set("orient", "auto");
+    set("margin", "20");
+    return download();
+  });
+  step(function (d) {
+    var b = fitted(120, 75, 841.89, 595.28, 20);
+    ok("a 20 mm margin is kept clear", close(matrix(d.pdf.pages[1].content), [b.w, 0, 0, b.h, b.x, b.y]), d.pdf.pages[1].content);
+    ok("on every side", b.x >= 56.69 && b.y >= 56.69);
+    set("size", "letter");
+    set("margin", "10");
+    return download();
+  });
+  step(function (d) {
+    eq("US Letter, upright", d.pdf.pages[0].box, "0 0 612 792");
+    eq("and sideways", d.pdf.pages[1].box, "0 0 792 612");
+    var b = fitted(120, 75, 792, 612, 10);
+    ok("with a 10 mm margin", close(matrix(d.pdf.pages[1].content), [b.w, 0, 0, b.h, b.x, b.y]), d.pdf.pages[1].content);
+    set("size", "fit");
+    return download();
+  });
+  step(function (d) {
+    eq("back to the picture's own size, the margin goes around it", d.pdf.pages[1].box, "0 0 176.6929 131.6929");
+    ok("with the picture inside it", close(matrix(d.pdf.pages[1].content), [120, 0, 0, 75, 28.3465, 28.3465]), d.pdf.pages[1].content);
+    set("margin", "0");
+    eq("orientation hides again", getComputedStyle(document.getElementById("orientField")).display, "none");
+  });
+
+  /* ================= changing the list ================= */
+  step(function () {
+    btn(0, 1).click();
+    eq("down swaps the first two", nameOf(0) + "|" + nameOf(1), "1. b-photo.jpg|2. a-turned.jpg");
+    btn(0, 2).click();
+    eq("a quarter turn shows the picture on its side", metaOf(0), "100" + TIMES + "160 px, " + formatBytes(F.photo.size) + ", kept as it is");
+    eq("and turns its little picture", row(0).querySelector("img").style.transform, "rotate(90deg)");
+    return download();
+  });
+  step(function (d) {
+    eq("a plain photo turned once gets the same page as one the camera marked", d.pdf.pages[0].box, "0 0 75 120");
+    ok("and the same drawing", close(matrix(d.pdf.pages[0].content), [0, -120, 75, 0, 0, 120]), d.pdf.pages[0].content);
+    ok("still without touching its bytes", same(d.pdf.pages[0].image.stream, F.jpeg));
+    btn(0, 2).click();
+    return download();
+  });
+  step(function (d) {
+    ok("two turns turn it upside down", close(matrix(d.pdf.pages[0].content), [-120, 0, 0, -75, 120, 75]), d.pdf.pages[0].content);
+    btn(0, 2).click();
+    return download();
+  });
+  step(function (d) {
+    ok("three turns, a quarter the other way", close(matrix(d.pdf.pages[0].content), [0, 120, -75, 0, 75, 0]), d.pdf.pages[0].content);
+    btn(0, 2).click();
+    return download();
+  });
+  step(function (d) {
+    ok("four turns, back where it started", close(matrix(d.pdf.pages[0].content), [120, 0, 0, 75, 0, 0]), d.pdf.pages[0].content);
+    eq("and its little picture straight again", row(0).querySelector("img").style.transform, "rotate(0deg)");
+    btn(1, 0).click();
+    eq("up moves it back", nameOf(0), "1. a-turned.jpg");
+    btn(5, 3).click();
+    eq("remove takes one out", list.children.length, 5);
+    eq("and the pages follow", txt("sPages"), "5");
+    click("sortBtn");
+    var names = [0, 1, 2, 3, 4].map(nameOf).join("|");
+    eq("sort puts names in order, with numbers in their natural order", names,
+       "1. a-turned.jpg|2. b-photo.jpg|3. c-alpha.png|4. page 2.png|5. page 10.png");
+  });
+
+  /* ================= every camera turn, judged by the browser itself =================
+     For each of the eight EXIF turns the stored photo is drawn with the
+     PDF's own matrix (turned from PDF coordinates, y up, into canvas
+     coordinates, y down) and compared, pixel by pixel, with the same file as
+     the browser shows it. The browser obeys EXIF on its own, so it is the
+     referee here, and the page's table of turns is never consulted. */
+  function withExifLE(jpeg, orientation) {
+    var seg = [0x45, 0x78, 0x69, 0x66, 0, 0, 0x49, 0x49, 0x2A, 0, 8, 0, 0, 0, 1, 0,
+               0x12, 0x01, 3, 0, 1, 0, 0, 0, orientation, 0, 0, 0, 0, 0, 0, 0];
+    var out = new Uint8Array(jpeg.length + 4 + seg.length);
+    out.set([0xFF, 0xD8, 0xFF, 0xE1, (seg.length + 2) >> 8, (seg.length + 2) & 255], 0);
+    out.set(seg, 6);
+    out.set(jpeg.subarray(2), 6 + seg.length);
+    return out;
+  }
+  function imageOf(blob) {
+    return new Promise(function (resolve) {
+      var img = new Image();
+      img.onload = function () { resolve(img); };
+      img.onerror = function () { resolve(null); };
+      img.src = URL.createObjectURL(blob);
+    });
+  }
+  function canvasPixels(c) { return c.getContext("2d").getImageData(0, 0, c.width, c.height).data; }
+  function meanDiff(a, b) {
+    if (a.length !== b.length) { return 999; }
+    var sum = 0;
+    for (var i = 0; i < a.length; i += 4) { sum += Math.abs(a[i] - b[i]) + Math.abs(a[i + 1] - b[i + 1]) + Math.abs(a[i + 2] - b[i + 2]); }
+    return sum / (a.length / 4 * 3);
+  }
+  step(function () {
+    click("resetBtn");
+    F.turnFiles = [];
+    for (var n = 1; n <= 8; n++) {
+      F.turnFiles.push({ n: "EXIF " + n, bytes: withExif(F.jpeg, n) });
+    }
+    F.turnFiles.push({ n: "little-endian EXIF 8", bytes: withExifLE(F.jpeg, 8) });
+    F.turnFiles.push({ n: "little-endian EXIF 5", bytes: withExifLE(F.jpeg, 5) });
+    feed(F.turnFiles.map(function (t, i) { return new File([t.bytes], "turn" + (i + 1) + ".jpg", { type: "image/jpeg" }); }));
+    return wait("ten turned photos are read", function () { return settled() && list.children.length === 10; }, 40000);
+  });
+  step(function () {
+    ok("every one of them is kept as it is", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].every(function (i) { return /kept as it is$/.test(metaOf(i)); }));
+    return download();
+  });
+  step(function (d) {
+    var raw;
+    return imageOf(new Blob([F.jpeg], { type: "image/jpeg" })).then(function (img) {
+      raw = img;
+      var checks = F.turnFiles.map(function (t, i) {
+        return imageOf(new Blob([t.bytes], { type: "image/jpeg" })).then(function (shown) {
+          var page = d.pdf.pages[i];
+          var box = page.box.split(" ").map(Number);
+          var m = matrix(page.content);
+          var k = 4 / 3;
+          var W = 160, H = 100;
+          var pageH = box[3];
+          var cw = Math.round(box[2] * k), ch = Math.round(box[3] * k);
+          eq(t.n + ": the page is the size the browser shows the photo at", cw + TIMES + ch, shown.naturalWidth + TIMES + shown.naturalHeight);
+          var drawn = document.createElement("canvas");
+          drawn.width = cw; drawn.height = ch;
+          var g = drawn.getContext("2d");
+          g.setTransform(k * m[0] / W, -k * m[1] / W, -k * m[2] / H, k * m[3] / H, k * (m[2] + m[4]), k * (pageH - m[3] - m[5]));
+          g.drawImage(raw, 0, 0);
+          var seen = document.createElement("canvas");
+          seen.width = cw; seen.height = ch;
+          seen.getContext("2d").drawImage(shown, 0, 0);
+          var diff = meanDiff(canvasPixels(drawn), canvasPixels(seen));
+          ok(t.n + ": the PDF draws it exactly the way the browser shows it", diff < 3, "mean difference " + diff.toFixed(1));
+          ok(t.n + ": with the file's bytes untouched", same(page.image.stream, t.bytes));
+        });
+      });
+      return Promise.all(checks);
+    });
+  });
+
+  /* ================= EXIF the way real cameras write it =================
+     A general referee: whatever is in the PDF (a JPEG drawn with a matrix,
+     or plain pixels) is drawn here the way a PDF reader would draw it, and
+     compared with the original file as the browser shows it. */
+  function exifSegment(orientation, makeAndModelFirst) {
+    var entries = [];
+    if (makeAndModelFirst) {
+      entries.push([0x01, 0x0F, 0, 2, 0, 0, 0, 4, 0x43, 0x61, 0x6D, 0]);
+      entries.push([0x01, 0x10, 0, 2, 0, 0, 0, 4, 0x4F, 0x6E, 0x65, 0]);
+    }
+    entries.push([0x01, 0x12, 0, 3, 0, 0, 0, 1, 0, orientation, 0, 0]);
+    var seg = [0x45, 0x78, 0x69, 0x66, 0, 0, 0x4D, 0x4D, 0, 0x2A, 0, 0, 0, 8, 0, entries.length];
+    entries.forEach(function (e) { seg = seg.concat(e); });
+    seg = seg.concat([0, 0, 0, 0]);
+    return [0xFF, 0xE1, (seg.length + 2) >> 8, (seg.length + 2) & 255].concat(seg);
+  }
+  function insertAt(jpeg, pos, segment) {
+    var out = new Uint8Array(jpeg.length + segment.length);
+    out.set(jpeg.subarray(0, pos), 0);
+    out.set(segment, pos);
+    out.set(jpeg.subarray(pos), pos + segment.length);
+    return out;
+  }
+  /* the byte just after the frame header, and a copy of a JPEG with every APP1 block taken out */
+  function afterFrame(jpeg) {
+    var pos = 2;
+    while (pos < jpeg.length) {
+      var marker = jpeg[pos + 1], len = (jpeg[pos + 2] << 8) | jpeg[pos + 3];
+      if (marker === 0xC0) { return pos + 2 + len; }
+      pos += 2 + len;
+    }
+    return -1;
+  }
+  function withoutApp1(jpeg) {
+    var keep = [jpeg.subarray(0, 2)], pos = 2;
+    while (pos < jpeg.length) {
+      var marker = jpeg[pos + 1];
+      if (marker === 0xDA) { keep.push(jpeg.subarray(pos)); break; }
+      var len = (jpeg[pos + 2] << 8) | jpeg[pos + 3];
+      if (marker !== 0xE1) { keep.push(jpeg.subarray(pos, pos + 2 + len)); }
+      pos += 2 + len;
+    }
+    return new Blob(keep, { type: "image/jpeg" });
+  }
+  function drawLikeAReader(page) {
+    var box = page.box.split(" ").map(Number), m = matrix(page.content), k = 4 / 3;
+    var W = Number(/\/Width (\d+)/.exec(page.image.dict)[1]), H = Number(/\/Height (\d+)/.exec(page.image.dict)[1]);
+    var source;
+    if (/DCTDecode/.test(page.image.dict)) {
+      source = imageOf(withoutApp1(page.image.stream));
+    } else {
+      source = Promise.all([inflate(page.image.stream), page.smask ? inflate(page.smask.stream) : null]).then(function (r) {
+        var c = document.createElement("canvas"); c.width = W; c.height = H;
+        var data = new ImageData(W, H);
+        for (var i = 0; i < W * H; i++) {
+          data.data[i * 4] = r[0][i * 3]; data.data[i * 4 + 1] = r[0][i * 3 + 1]; data.data[i * 4 + 2] = r[0][i * 3 + 2];
+          data.data[i * 4 + 3] = r[1] ? r[1][i] : 255;
+        }
+        c.getContext("2d").putImageData(data, 0, 0);
+        return c;
+      });
+    }
+    return source.then(function (src) {
+      var out = document.createElement("canvas");
+      out.width = Math.round(box[2] * k); out.height = Math.round(box[3] * k);
+      var g = out.getContext("2d");
+      g.fillStyle = "#fff"; g.fillRect(0, 0, out.width, out.height);
+      g.setTransform(k * m[0] / W, -k * m[1] / W, -k * m[2] / H, k * m[3] / H, k * (m[2] + m[4]), k * (box[3] - m[3] - m[5]));
+      g.drawImage(src, 0, 0);
+      return out;
+    });
+  }
+  function asTheBrowserShows(bytes, type, width, height) {
+    return imageOf(new Blob([bytes], { type: type })).then(function (img) {
+      var out = document.createElement("canvas");
+      out.width = width; out.height = height;
+      var g = out.getContext("2d");
+      g.fillStyle = "#fff"; g.fillRect(0, 0, width, height);
+      g.drawImage(img, 0, 0, width, height);
+      return { canvas: out, w: img.naturalWidth, h: img.naturalHeight };
+    });
+  }
+  step(function () {
+    click("resetBtn");
+    F.real = [
+      { n: "orientation after Make and Model", bytes: insertAt(F.jpeg, 2, exifSegment(6, true)) },
+      { n: "EXIF placed after the frame header", bytes: insertAt(F.jpeg, afterFrame(F.jpeg), exifSegment(8, true)) },
+      { n: "two EXIF blocks, the first saying upright", bytes: insertAt(insertAt(F.jpeg, 2, exifSegment(6, false)), 2, exifSegment(1, true)) }
+    ];
+    feed(F.real.map(function (t, i) { return new File([t.bytes], "real" + (i + 1) + ".jpg", { type: "image/jpeg" }); }));
+    return wait("three photos with real-world EXIF are read", function () { return settled() && list.children.length === 3; }, 30000);
+  });
+  step(function () { return download(); });
+  step(function (d) {
+    return Promise.all(F.real.map(function (t, i) {
+      var page = d.pdf.pages[i];
+      return drawLikeAReader(page).then(function (drawn) {
+        return asTheBrowserShows(t.bytes, "image/jpeg", drawn.width, drawn.height).then(function (shown) {
+          eq(t.n + ": the page has the shape the browser shows", drawn.width + TIMES + drawn.height, shown.w + TIMES + shown.h);
+          var diff = meanDiff(canvasPixels(drawn), canvasPixels(shown.canvas));
+          ok(t.n + ": and the PDF shows what the browser shows", diff < 3, "mean difference " + diff.toFixed(1));
+          ok(t.n + ": kept as it is", /kept as it is$/.test(metaOf(i)), metaOf(i));
+        });
+      });
+    }));
+  });
+
+  /* ================= JPEGs that are kept and JPEGs that are redrawn, and odd sizes ================= */
+  step(function () {
+    click("resetBtn");
+    var JPEGS = {"GRAY": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/wAALCAAQABgBAREA/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/9oACAEBAAA/AMb/AIWB4B/4Z7/4RP8A4Qn/AIr7+0ftH/CR7x/q92d2/O/7n7ryMeX/AMtc7+K5jwD/AMv3/bP/ANmrra+da+tP2Cv+Z5/7cf8A24r60r//2Q==", "PROG": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wgARCAAQABgDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAUHBAb/xAAXAQADAQAAAAAAAAAAAAAAAAADBQYH/9oADAMBAAIQAxAAAAHEs5CtGaqi3mQR/wD/xAAYEAACAwAAAAAAAAAAAAAAAAAEEAYVFv/aAAgBAQABBQKwAzwDgS//xAAiEQAABAUFAQAAAAAAAAAAAAABBRESAAIDBFETFjFjouH/2gAIAQMBAT8BvTqU6tahaFNmoKq5yIITcIGMxtbu8/Y//8QAIxEAAAMGBwAAAAAAAAAAAAAAAQURAAISFTFRAwQTIWOh4f/aAAgBAgEBPwE/IJOXYmf1YoE2hSrwBVRvZp5x9+N//8QAJBAAAAIIBwAAAAAAAAAAAAAAEBQAAgQREhMhJDFBYYGCwvD/2gAIAQEABj8CKEr+ZEY09R2GaL7C3cOwf//EABwQAAEDBQAAAAAAAAAAAAAAADEAESBRgaHR8P/aAAgBAQABPyHKZqLkbRdrxL//2gAMAwEAAgADAAAAELv/AP/EABgRAQEBAQEAAAAAAAAAAAAAAAERIQBB/9oACAEDAQE/EFFxJqmAsHIAC0PHl//EABsRAAIBBQAAAAAAAAAAAAAAAAERIRAxQWGB/9oACAECAQE/EDGIY5vBErmlunf/xAAZEAABBQAAAAAAAAAAAAAAAAAxIFFhgaH/2gAIAQEAAT8QwC3C18oqDP/Z", "CMYK": "/9j/7gAOQWRvYmUAZAAAAAAA/9sAQwADAgIDAgIDAwMDBAMDBAUIBQUEBAUKBwcGCAwKDAwLCgsLDQ4SEA0OEQ4LCxAWEBETFBUVFQwPFxgWFBgSFBUU/8AAFAgAEAAYBEMRAE0RAFkRAEsRAP/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/aAA4EQwBNAFkASwAAPwD9B/ttl/Yf2b7J/pvmbvPz2+vXpxjp36181f8AC1fhX/wyd/wgn/Ct/wDi6f8Aa/2r/hL/ADF/1W/dv358z/V/uPs2PK/5bbvM4r5q/wCFq/Cv/hk7/hBP+Fb/APF0/wC1/tX/AAl/mL/qt+7fvz5n+r/cfZseV/y23eZxX6p1+eH/AAVY/wCaXf8AcU/9tK9Y/wCCd/8AzUD/ALh//tzXm/gn/l9/4B/7NRXwFX2RXUUUV+X9ftVRX6Mf8Egv+as/9wn/ANva+1f+Cbv/ADUT/uHf+3VfAX/BVj/ml3/cU/8AbSiv0Yr7Vr4Cor//2Q=="};
+    function fromB64(s) { var b = atob(s); var u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) { u[i] = b.charCodeAt(i); } return u; }
+    var dot = document.createElement("canvas"); dot.width = 1; dot.height = 1;
+    var strip = quarters(20000, 4);
+    return Promise.all([blobOf(dot, "image/png"), blobOf(strip, "image/png")]).then(function (b) {
+      F.odd = [fromB64(JPEGS.GRAY), fromB64(JPEGS.PROG), fromB64(JPEGS.CMYK)];
+      feed([new File([F.odd[0]], "grey.jpg", { type: "image/jpeg" }),
+            new File([F.odd[1]], "progressive.jpg", { type: "image/jpeg" }),
+            new File([F.odd[2]], "cmyk.jpg", { type: "image/jpeg" }),
+            new File([b[0]], "dot.png", { type: "image/png" }),
+            new File([b[1]], "strip.png", { type: "image/png" })]);
+      return wait("five odd pictures are read", function () { return settled() && list.children.length === 5; }, 40000);
+    });
+  });
+  step(function () {
+    has("a grey JPEG is kept as it is", metaOf(0), "kept as it is");
+    has("so is a progressive one", metaOf(1), "kept as it is");
+    ok("a CMYK JPEG is redrawn, because PDF readers disagree about its colours", !/kept as it is/.test(metaOf(2)), metaOf(2));
+    return download();
+  });
+  step(function (d) {
+    var p = d.pdf.pages;
+    has("the grey JPEG stays grey", p[0].image.dict, "/ColorSpace /DeviceGray /Filter /DCTDecode");
+    has("the progressive one stays a JPEG", p[1].image.dict, "/ColorSpace /DeviceRGB /Filter /DCTDecode");
+    has("the CMYK one is stored as plain colours", p[2].image.dict, "/ColorSpace /DeviceRGB /Filter /FlateDecode");
+    eq("a 1-pixel picture still gets the smallest page a reader accepts", p[3].box, "0 0 3 3");
+    ok("with the pixel in the middle of it", close(matrix(p[3].content), [0.75, 0, 0, 0.75, 1.125, 1.125]), p[3].content);
+    eq("a picture wider than any reader accepts is shrunk to the widest page there is", p[4].box, "0 0 14400 3");
+    ok("keeping its shape", close(matrix(p[4].content), [14400, 0, 0, 2.88, 0, 0.06]), p[4].content);
+    return Promise.all(["grey", "progressive", "CMYK"].map(function (label, i) {
+      return drawLikeAReader(p[i]).then(function (drawn) {
+        return asTheBrowserShows(F.odd[i], "image/jpeg", drawn.width, drawn.height).then(function (shown) {
+          var diff = meanDiff(canvasPixels(drawn), canvasPixels(shown.canvas));
+          ok("the " + label + " JPEG looks in the PDF the way the browser shows it", diff < 3, "mean difference " + diff.toFixed(1));
+        });
+      });
+    }));
+  });
+
+  /* ================= one picture, clearing, and a reset mid-way ================= */
+  step(function () {
+    click("resetBtn");
+    eq("clear empties the list", list.children.length, 0);
+    eq("and asks again", txt("msg"), "Choose one or more pictures.");
+    ok("and turns download off", document.getElementById("dlBtn").disabled);
+    eq("and blanks the tiles", txt("sPages") + txt("sIn") + txt("sOut"), DASH + DASH + DASH);
+    var before = window.__saved.length;
+    click("dlBtn");
+    eq("with nothing in it, nothing is saved", window.__saved.length, before);
+    feed([F.photo]);
+    return wait("one photo is read", function () { return settled() && list.children.length === 1; }, 10000);
+  });
+  step(function () {
+    return download();
+  });
+  step(function (d) {
+    eq("one picture's PDF is named after it", d.saved.name, "b-photo.pdf");
+    eq("one page", d.pdf.count, "1");
+    click("resetBtn");
+    feed([F.photo, F.alpha, F.p2, F.p10, F.turned]);
+    click("resetBtn");
+    return pause(1500);
+  });
+  step(function () {
+    eq("a clear while pictures are still being read leaves the list empty", list.children.length, 0);
+    eq("and nothing half-read turns up afterwards", txt("msg"), "Choose one or more pictures.");
+    feed([F.broken]);
+    return wait("a file that is not a picture is turned away", function () { return settled(); }, 10000);
+  });
+  step(function () {
+    has("with its name", txt("msg"), "Could not read broken.png");
+    ok("and no PDF", document.getElementById("dlBtn").disabled);
+    click("resetBtn");
+
+    /* ================= more than 200 ================= */
+    var many = [];
+    for (var i = 0; i < 201; i++) { many.push(new File([F.small], "p" + i + ".png", { type: "image/png" })); }
+    feed(many);
+    return wait("two hundred and one pictures are read", function () { return settled(); }, 400000);
+  });
+  step(function () {
+    eq("two hundred go in", txt("sPages"), "200");
+    has("and the visitor is told the rest were left out", txt("msg"), "Only 200 pictures fit in one PDF");
+    return download();
+  });
+  step(function (d) {
+    eq("the PDF has all two hundred pages", d && d.pdf ? d.pdf.count : "no pdf", "200");
+    click("resetBtn");
+  });
+
+  chain.then(function () { finish(); }, function (e) {
+    ok("the test ran to the end", false, String(e && e.stack || e));
+    finish();
+  });
+"""
+
 # ===== END: the test bodies ================================================
 
 
@@ -6988,6 +7622,7 @@ BUDGET_MS = {
     "qr-code-generator": 40000,
     "js-minifier": 30000,
     "markdown-previewer": 60000,
+    "image-to-pdf": 500000,
 }
 
 

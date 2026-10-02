@@ -396,6 +396,15 @@ const TOOLS = [
     popular: false
   },
   {
+    slug: "image-to-pdf",
+    name: "Image to PDF",
+    desc: "Turn photos, scans and screenshots into one PDF. JPGs go in untouched and nothing is uploaded.",
+    category: "PDF",
+    icon: "\u{1F4D1}",
+    keywords: ["image to pdf", "jpg to pdf", "png to pdf", "photo to pdf", "convert image to pdf", "pictures to pdf", "scan to pdf", "combine images into pdf", "jpeg to pdf", "webp to pdf"],
+    popular: false
+  },
+  {
     slug: "js-minifier",
     name: "JavaScript Minifier",
     desc: "Remove comments and whitespace from JavaScript without renaming anything or changing what it does.",

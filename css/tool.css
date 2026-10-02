@@ -379,3 +379,62 @@ table.data tbody tr:hover td { background: var(--surface); }
   font-size: .875em;
 }
 .md-preview input[type="checkbox"] { margin-right: var(--s2); }
+
+/* ---- A list of chosen files -------------------------------------------------
+   The pictures going into a PDF, in page order, each with its own buttons.
+   The buttons are real buttons with a spoken label, so the order can be
+   changed from a keyboard as easily as with a mouse. */
+.file-list {
+  list-style: none;
+  margin: var(--s4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s2);
+  max-height: 420px;
+  overflow: auto;
+}
+.file-list:empty { display: none; }
+.file-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+}
+.file-list img {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  object-fit: contain;
+  border-radius: 6px;
+  background: var(--surface-2);
+}
+.file-list__name {
+  flex: 1;
+  min-width: 0;
+  font-size: .875rem;
+  overflow-wrap: anywhere;
+}
+.file-list__meta { display: block; color: var(--text-soft); font-size: .8125rem; }
+.file-list__btns { display: flex; gap: var(--s1); flex: none; }
+.file-list__btns button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: .9375rem;
+  cursor: pointer;
+}
+.file-list__btns button:hover:not(:disabled) { border-color: var(--primary); }
+.file-list__btns button:disabled { opacity: .4; cursor: default; }
+/* On a phone the four buttons would leave the name a column one letter
+   wide, so they move to a row of their own under it. */
+@media (max-width: 560px) {
+  .file-list li { flex-wrap: wrap; }
+  .file-list__btns { width: 100%; justify-content: flex-end; }
+}

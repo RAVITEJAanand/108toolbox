@@ -231,10 +231,10 @@ make; it is written here so it is made with the number in front of us.
 | Text | 16 | 16 |
 | Image | 14 | 14 |
 | Converter | 14 | 13 |
-| PDF | 10 | 0 |
+| PDF | 10 | 1 |
 | Date & Time | 8 | 8 |
 | Random | 8 | 8 |
-| **Total** | **108** | **96** |
+| **Total** | **108** | **97** |
 
 ---
 
@@ -355,7 +355,7 @@ which never leave the tab, so the overlap is narrower than the word suggests.
 | 13 | `nato-phonetic-converter` ✅ | easy |
 | 14 | `currency-converter` | hard — **the only tool needing a live API** |
 
-### PDF (10) — all with `pdf-lib`, all in the browser
+### PDF (10) — all in the browser
 
 | # | Slug | Difficulty |
 |---|---|---|
@@ -363,7 +363,7 @@ which never leave the tab, so the overlap is narrower than the word suggests.
 | 2 | `split-pdf` | medium |
 | 3 | `remove-pdf-pages` | medium |
 | 4 | `rotate-pdf` | medium |
-| 5 | `image-to-pdf` | medium |
+| 5 | `image-to-pdf` ✅ | medium — written by hand, no library; judged by Windows' own PDF engine |
 | 6 | `add-pdf-page-numbers` | medium |
 | 7 | `protect-pdf` | medium — add a password |
 | 8 | `pdf-metadata-editor` | medium |
@@ -468,7 +468,7 @@ Libraries you will actually need:
 
 | Library | Licence | Used by |
 |---|---|---|
-| `pdf-lib` | MIT | all 10 PDF tools |
+| `pdf-lib` | MIT | PDF tools not written by hand; `image-to-pdf` ✅ needed none |
 | `pdf.js` | Apache-2.0 | `pdf-to-image` |
 | `PapaParse` | MIT | `csv-to-json`, `json-to-csv` ✅ |
 

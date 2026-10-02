@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Image to PDF — Turn JPG and PNG Pictures into One PDF</title>
+  <meta name="description" content="Turn photos, scans and screenshots into one PDF in your browser. JPGs go in untouched, phone photos stay upright, and nothing is ever uploaded.">
+  <link rel="canonical" href="https://108toolbox.in/tools/image-to-pdf.html">
+
+  <meta property="og:title" content="Image to PDF — Turn JPG and PNG Pictures into One PDF">
+  <meta property="og:description" content="Turn photos, scans and screenshots into one PDF in your browser. JPGs go in untouched, phone photos stay upright, and nothing is ever uploaded.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       It cannot stop inline script - every tool's code is inline - so it
+       takes away the exits instead: nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Two stylesheets: the shared system, then the tool-page extras -->
+  <link rel="stylesheet" href="../css/style.css?v=30">
+  <link rel="stylesheet" href="../css/tool.css?v=30">
+
+  <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
+       flash. It only reads a saved choice; with none, the CSS follows the
+       operating system on its own. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+
+  <!-- ===== Structured data: helps Google show the FAQ under your result =====
+       Generated from the same list as the FAQ section below, so the two
+       cannot say different things. Google ignores them if they drift. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Will my photos lose quality?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. A JPG is copied into the PDF unchanged, and every other kind of picture is stored without loss. Nothing is compressed a second time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does the PDF come out so big?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because the pictures go in as they are. A PDF of ten 3 MB photos is about 30 MB. To make it smaller, shrink the photos first with the Image Compressor and then add them here."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I change the order of the pages?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The arrows move a picture up or down, and Sort by name puts them in order of their file names, with numbers in their natural order, so photo 2 comes before photo 10."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my iPhone photo not accepted?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It is probably a HEIC file. A picture can only go in if your browser can open it: Safari can open HEIC, most other browsers cannot. Export it as a JPG first, or on an iPhone choose Settings, Camera, Formats, Most Compatible so new photos are saved as JPG."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many pictures can I add?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Up to 200 in one PDF. A picture that has to be redrawn, which is anything other than an ordinary JPG, can be up to 40 megapixels. JPGs are not redrawn, so they have no such limit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I search the text in the PDF?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Each page is a picture, so the words on a scanned page are part of the picture rather than text a computer can read. Making them searchable needs character recognition, which this page does not do."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens to an animated GIF?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Only its first frame goes into the PDF, because a PDF page cannot move."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are my pictures uploaded?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The PDF is put together by JavaScript inside your own browser and saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html" aria-current="page">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../tools.html?q=pdf">PDF</a><span>&rsaquo;</span>
+        <span>Image to PDF</span>
+      </nav>
+
+      <header class="tool-head">
+        <h1>Image to PDF</h1>
+        <p>Put photos, scans and screenshots into one PDF, one picture to a page,
+           in the order you choose. It all happens inside your browser, so the
+           pictures never leave your device.</p>
+      </header>
+
+      <!--TOOL:START-->
+      <div class="workspace workspace--split">
+
+        <!-- ---------- INPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">1. Choose pictures</span>
+
+          <label class="drop" id="drop" for="file">
+            <span class="drop__big" aria-hidden="true">&#128444;&#65039;</span>
+            <p><strong>Click to choose</strong> or drag pictures here</p>
+            <p style="margin-top:var(--s1)">JPG, PNG, WebP, GIF or BMP &mdash; as many as you like</p>
+            <input type="file" id="file" accept="image/*" multiple>
+          </label>
+
+          <ol class="file-list" id="list" aria-label="Pictures, in page order"></ol>
+
+          <div class="btn-row" style="margin-top:var(--s3)">
+            <button class="btn btn--ghost" type="button" id="sortBtn">Sort by name</button>
+          </div>
+        </div>
+
+        <!-- ---------- OUTPUT ---------- -->
+        <div class="panel">
+          <span class="panel__label">2. Pages</span>
+
+          <div class="field">
+            <label for="size">Page size</label>
+            <select id="size">
+              <option value="fit" selected>The same as each picture</option>
+              <option value="a4">A4</option>
+              <option value="letter">US Letter</option>
+            </select>
+          </div>
+
+          <div class="field" id="orientField">
+            <label for="orient">Orientation</label>
+            <select id="orient">
+              <option value="auto" selected>Automatic, to suit each picture</option>
+              <option value="portrait">Portrait</option>
+              <option value="landscape">Landscape</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="margin">Margin</label>
+            <select id="margin">
+              <option value="0" selected>None</option>
+              <option value="10">10 mm</option>
+              <option value="20">20 mm</option>
+            </select>
+          </div>
+
+          <div class="stats stats--3">
+            <div class="stat"><span class="stat__num" id="sPages">&mdash;</span><span class="stat__label">Pages</span></div>
+            <div class="stat"><span class="stat__num" id="sIn">&mdash;</span><span class="stat__label">Pictures</span></div>
+            <div class="stat"><span class="stat__num" id="sOut">&mdash;</span><span class="stat__label">PDF</span></div>
+          </div>
+
+          <div class="btn-row" style="margin-top:var(--s4)">
+            <button class="btn btn--primary" type="button" id="dlBtn" disabled>Download PDF</button>
+            <button class="btn btn--danger"  type="button" id="resetBtn">Clear</button>
+          </div>
+
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <!--TOOL:END-->
+      <!-- ---- START: the check-the-result notice ----
+           Rule 10 in CLAUDE.md. It sits directly under the tool, where the
+           answer appears, because that is the only place it will actually be
+           read; below the FAQ it would be furniture. check.py fails if a tool
+           page is missing it, and test_tools.py fails if it is in the markup
+           but not rendered. -->
+      <aside class="tool-warn">
+        <span class="tool-warn__icon" aria-hidden="true">&#9888;</span>
+        <p><strong>Check the result before you rely on it.</strong> This tool can
+           be wrong &mdash; a mistyped input, a rate or a rule that has changed
+           since this page was written, or a bug on this page. For anything that
+           matters &mdash; money, health, legal or exam work &mdash; confirm it
+           another way. <a href="../disclaimer.html">Read the full disclaimer</a>.</p>
+      </aside>
+      <!-- ---- END: the check-the-result notice ---- -->
+
+      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <section class="tool-info prose">
+        <h2>Why it matters that nothing is uploaded</h2>
+        <p>The pictures people turn into PDFs are rarely holiday snaps. They
+           are an Aadhaar or PAN card, a passport page, a bank statement, a
+           salary slip, a signed form. Most converters send those to a server
+           to do the work. This page does not: the PDF is put together by
+           JavaScript inside your own browser and saved straight to your
+           device. Once the page has loaded you could switch off your Wi-Fi
+           and it would still work.</p>
+
+        <h2>Your photos are not squeezed again</h2>
+        <p>A JPG goes into the PDF byte for byte, exactly as your camera or
+           phone saved it, so it loses nothing. PNG, WebP, GIF and BMP
+           pictures are stored without loss too, and a see-through PNG stays
+           see-through. The other side of that is size: the PDF comes out
+           about as big as the pictures together. To send a smaller file,
+           shrink the photos first with the
+           <a href="image-compressor.html">Image Compressor</a>.</p>
+
+        <h2>Phone photos stay the right way up</h2>
+        <p>A phone saves every photo the way its sensor saw it and adds a
+           note saying which way to turn it. Your browser and your gallery app
+           obey that note, but many PDF makers ignore it, which is why photos
+           often come out on their side. This page writes the turn into the
+           PDF itself, without redrawing the photo. If a picture is still not
+           the way you want it, the &#8635; button turns it a quarter at a
+           time.</p>
+
+        <h2>Choosing a page size</h2>
+        <p><strong>The same as each picture</strong> makes every page exactly
+           the size of its picture, at the 96 pixels to the inch a browser
+           shows it at, so nothing is added around it. <strong>A4</strong> and
+           <strong>US Letter</strong> fit each picture inside the margin,
+           centred and with its shape kept, ready to print. With the
+           orientation on automatic, a wide picture gets a sideways page so it
+           is not shrunk to fit a tall one.</p>
+
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <h3>Will my photos lose quality?</h3>
+          <p>No. A JPG is copied into the PDF unchanged, and every other kind of picture is stored without loss. Nothing is compressed a second time.</p>
+        </div>
+        <div class="faq">
+          <h3>Why does the PDF come out so big?</h3>
+          <p>Because the pictures go in as they are. A PDF of ten 3 MB photos is about 30 MB. To make it smaller, shrink the photos first with the Image Compressor and then add them here.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I change the order of the pages?</h3>
+          <p>Yes. The arrows move a picture up or down, and Sort by name puts them in order of their file names, with numbers in their natural order, so photo 2 comes before photo 10.</p>
+        </div>
+        <div class="faq">
+          <h3>Why is my iPhone photo not accepted?</h3>
+          <p>It is probably a HEIC file. A picture can only go in if your browser can open it: Safari can open HEIC, most other browsers cannot. Export it as a JPG first, or on an iPhone choose Settings, Camera, Formats, Most Compatible so new photos are saved as JPG.</p>
+        </div>
+        <div class="faq">
+          <h3>How many pictures can I add?</h3>
+          <p>Up to 200 in one PDF. A picture that has to be redrawn, which is anything other than an ordinary JPG, can be up to 40 megapixels. JPGs are not redrawn, so they have no such limit.</p>
+        </div>
+        <div class="faq">
+          <h3>Can I search the text in the PDF?</h3>
+          <p>No. Each page is a picture, so the words on a scanned page are part of the picture rather than text a computer can read. Making them searchable needs character recognition, which this page does not do.</p>
+        </div>
+        <div class="faq">
+          <h3>What happens to an animated GIF?</h3>
+          <p>Only its first frame goes into the PDF, because a PDF page cannot move.</p>
+        </div>
+        <div class="faq">
+          <h3>Are my pictures uploaded?</h3>
+          <p>No. The PDF is put together by JavaScript inside your own browser and saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
+        </div>
+
+        <h2>Related tools</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no ads, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=pdf">PDF tools</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+            <li><a href="../tools.html?q=random">Random tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared scripts, in order -->
+  <script src="../js/tools-data.js?v=30"></script>
+  <script src="../js/tool-helpers.js?v=30"></script>
+  <script>window.CURRENT_TOOL = "image-to-pdf";</script>
+  <script src="../js/main.js?v=30"></script>
+
+  <!-- ===== This tool's own logic ===== -->
+  <script data-tool>
+  (function () {
+    "use strict";
+
+    var fileInput = document.getElementById("file");
+    var drop      = document.getElementById("drop");
+    var list      = document.getElementById("list");
+    var sizeSel   = document.getElementById("size");
+    var orientSel = document.getElementById("orient");
+    var marginSel = document.getElementById("margin");
+    var dlBtn     = document.getElementById("dlBtn");
+    var msg       = document.getElementById("msg");
+    var DASH      = String.fromCharCode(0x2014);
+
+    var MAX_FILES  = 200;
+    var MAX_PIXELS = 40000000;  /* a picture that has to be redrawn: 40 megapixels */
+    var PX_TO_PT   = 0.75;      /* a CSS pixel is 1/96 inch and a PDF point 1/72 */
+    var MAX_PAGE   = 14400;     /* the largest page every PDF reader accepts: 200 inches */
+    var MIN_PAGE   = 3;         /* and the smallest */
+
+    var items = [];             /* the pictures, in page order */
+    var nextId = 1;
+    var resultParts = null;     /* the finished PDF, as pieces; a Blob is made only on Download */
+    var notice = "";
+    var queue = Promise.resolve();
+    var waiting = 0;
+    var failed = [];
+    var generation = 0;         /* moves on at every reset, so a file still being read joins nothing */
+
+    /* ---- START: writing a PDF file ----
+       A PDF is a header, a list of numbered objects, and at the end a table
+       (the "xref") giving the byte position where each object starts. A
+       reader jumps straight to an object through that table, so the
+       positions must be exact to the byte. This writer keeps count of every
+       byte it emits, so it always knows them.
+
+       The file is kept as a list of pieces rather than one big array, so a
+       PDF of many large photos never needs a second copy of itself in
+       memory: the pieces go straight into a Blob. */
+    function PdfWriter() {
+      this.parts = [];
+      this.length = 0;
+      this.offsets = [];
+      this.count = 0;
+    }
+
+    /* text here is always plain ASCII: names, numbers and operators */
+    PdfWriter.prototype.text = function (s) {
+      this.bytes(pdfBytes(s));
+    };
+
+    PdfWriter.prototype.bytes = function (u8) {
+      this.parts.push(u8);
+      this.length += u8.length;
+    };
+
+    /* the number the next object will have; it must be written later */
+    PdfWriter.prototype.reserve = function () {
+      this.count += 1;
+      return this.count;
+    };
+
+    /* "%PDF-1.4", then a comment of four bytes above 127, which tells any
+       program that copies the file that it is binary and must not be
+       "fixed" as text */
+    PdfWriter.prototype.header = function (version) {
+      this.text("%PDF-" + (version || "1.4") + "\n");
+      this.bytes(new Uint8Array([0x25, 0xE2, 0xE3, 0xCF, 0xD3, 0x0A]));
+    };
+
+    /* one object: its dictionary (or other value) and, for a stream, its bytes */
+    PdfWriter.prototype.object = function (num, value, stream) {
+      if (this.offsets[num] !== undefined) { throw new Error("object " + num + " written twice"); }
+      this.offsets[num] = this.length;
+      this.text(num + " 0 obj\n" + value);
+      if (stream) {
+        this.text("\nstream\n");
+        this.bytes(stream);
+        this.text("\nendstream");
+      }
+      this.text("\nendobj\n");
+    };
+
+    /* the cross-reference table and the trailer; returns the finished pieces */
+    PdfWriter.prototype.finish = function (rootNum, infoNum) {
+      var start = this.length;
+      var lines = ["xref\n0 " + (this.count + 1) + "\n0000000000 65535 f \n"];
+      for (var n = 1; n <= this.count; n++) {
+        if (this.offsets[n] === undefined) { throw new Error("object " + n + " was reserved but never written"); }
+        lines.push(("0000000000" + this.offsets[n]).slice(-10) + " 00000 n \n");
+      }
+      this.text(lines.join(""));
+      this.text("trailer\n<< /Size " + (this.count + 1) + " /Root " + rootNum + " 0 R" +
+                (infoNum ? " /Info " + infoNum + " 0 R" : "") + " >>\nstartxref\n" + start + "\n%%EOF\n");
+      return this.parts;
+    };
+
+    /* the bytes of a string of ASCII text */
+    function pdfBytes(s) {
+      var out = new Uint8Array(s.length);
+      for (var i = 0; i < s.length; i++) { out[i] = s.charCodeAt(i) & 0xFF; }
+      return out;
+    }
+
+    /* A number as a PDF wants it: at most four decimals, never an exponent
+       (1e-7 is not valid PDF), never "-0". */
+    function pdfNum(x) {
+      var r = Math.round(x * 10000) / 10000;
+      if (r === 0) { return "0"; }
+      var s = r.toFixed(4).replace(/0+$/, "").replace(/\.$/, "");
+      return s;
+    }
+    /* ---- END: writing a PDF file ---- */
+    /* ---- START: speaking to the visitor ---- */
+    function setMessage(text, kind) {
+      msg.textContent = text || "";
+      msg.className = "msg" + (kind ? " msg--" + kind : "");
+    }
+    /* ---- END: speaking to the visitor ---- */
+
+    /* ---- START: reading the turn a camera wrote into a JPEG ----
+       The EXIF block is a small TIFF file inside the JPEG. Its first
+       directory lists numbered tags; tag 0x0112 is the orientation, 1 to 8.
+       The same rule a browser uses: a SHORT, one value, or it does not
+       count. Every read is checked against the end of the block first.
+       Returns null if the segment is not EXIF at all (XMP uses the same
+       marker), and 1 if it is EXIF but says nothing usable about turning. */
+    function exifOrientation(b, start, len) {
+      var end = start + len;
+      if (len < 14 || b[start] !== 0x45 || b[start + 1] !== 0x78 || b[start + 2] !== 0x69 ||
+          b[start + 3] !== 0x66 || b[start + 4] !== 0 || b[start + 5] !== 0) { return null; }
+      var tiff = start + 6;
+      var little;
+      if (b[tiff] === 0x49 && b[tiff + 1] === 0x49) { little = true; }
+      else if (b[tiff] === 0x4D && b[tiff + 1] === 0x4D) { little = false; }
+      else { return 1; }
+      function u16(p) { return little ? b[p] | (b[p + 1] << 8) : (b[p] << 8) | b[p + 1]; }
+      function u32(p) {
+        return little ? b[p] + b[p + 1] * 256 + b[p + 2] * 65536 + b[p + 3] * 16777216
+                      : b[p] * 16777216 + b[p + 1] * 65536 + b[p + 2] * 256 + b[p + 3];
+      }
+      if (u16(tiff + 2) !== 42) { return 1; }
+      var ifd = tiff + u32(tiff + 4);
+      if (ifd < tiff || ifd + 2 > end) { return 1; }
+      var count = u16(ifd);
+      for (var i = 0; i < count; i++) {
+        var entry = ifd + 2 + i * 12;
+        if (entry + 12 > end) { return 1; }
+        if (u16(entry) === 0x0112) {
+          if (u16(entry + 2) !== 3 || u32(entry + 4) !== 1) { return 1; }
+          var value = u16(entry + 8);
+          return value >= 1 && value <= 8 ? value : 1;
+        }
+      }
+      return 1;
+    }
+    /* ---- END: reading the turn a camera wrote into a JPEG ---- */
+
+    /* ---- START: reading a JPEG's size and colours without decoding it ----
+       A JPEG is a row of segments, each starting with FF and a marker byte,
+       up to the start of the picture data (SOS). The frame header (SOF)
+       gives the size and the number of colour channels; the first EXIF
+       block, wherever it sits before SOS, gives the turn, which is how a
+       browser reads it too. Only the kinds every PDF reader can show are
+       kept as they are: 8-bit, grey or colour, baseline or progressive.
+       Anything else (CMYK, 12-bit, lossless, arithmetic-coded) returns null
+       and is redrawn by the browser instead. */
+    function readJpeg(b) {
+      if (!(b.length > 4 && b[0] === 0xFF && b[1] === 0xD8)) { return null; }
+      var pos = 2;
+      var orientation = null;
+      var frame = null;
+      while (pos + 4 <= b.length) {
+        if (b[pos] !== 0xFF) { return null; }
+        var marker = b[pos + 1];
+        if (marker === 0xFF) { pos += 1; continue; }
+        if (marker === 0x01 || (marker >= 0xD0 && marker <= 0xD8)) { pos += 2; continue; }
+        if (marker === 0xDA) { break; }
+        if (marker === 0xD9) { return null; }
+        var len = (b[pos + 2] << 8) | b[pos + 3];
+        if (len < 2 || pos + 2 + len > b.length) { return null; }
+        var seg = pos + 4;
+        if (marker === 0xE1 && orientation === null) { orientation = exifOrientation(b, seg, len - 2); }
+        if (marker === 0xC0 || marker === 0xC1 || marker === 0xC2) {
+          if (len < 8 || frame) { return null; }
+          var precision = b[seg];
+          var height = (b[seg + 1] << 8) | b[seg + 2];
+          var width = (b[seg + 3] << 8) | b[seg + 4];
+          var colors = b[seg + 5];
+          if (precision !== 8 || width === 0 || height === 0 || (colors !== 1 && colors !== 3)) { return null; }
+          frame = { width: width, height: height, colors: colors };
+        } else if (marker >= 0xC3 && marker <= 0xCF && marker !== 0xC4 && marker !== 0xC8 && marker !== 0xCC) {
+          return null;
+        }
+        pos += 2 + len;
+      }
+      if (!frame) { return null; }
+      frame.orientation = orientation || 1;
+      return frame;
+    }
+    /* ---- END: reading a JPEG's size and colours without decoding it ---- */
+
+    /* ---- START: squeezing bytes the way a PDF reader can unsqueeze them ----
+       FlateDecode in a PDF is zlib, which is exactly what the browser's own
+       CompressionStream("deflate") writes. */
+    function deflate(bytes) {
+      var stream = new Blob([bytes]).stream().pipeThrough(new CompressionStream("deflate"));
+      return new Response(stream).arrayBuffer().then(function (buffer) { return new Uint8Array(buffer); });
+    }
+    /* ---- END: squeezing bytes the way a PDF reader can unsqueeze them ---- */
+
+    /* ---- START: redrawing a picture that cannot go in as it is ----
+       The browser decodes it (turned the right way up already), and its
+       pixels go into the PDF without loss: the colours in one stream and,
+       if any pixel is see-through, the transparency in a second one (a
+       "soft mask") so the page shows through exactly where it should. */
+    function redraw(img) {
+      var w = img.naturalWidth;
+      var h = img.naturalHeight;
+      if (w * h > MAX_PIXELS) {
+        return Promise.reject(new Error("too large"));
+      }
+      if (typeof CompressionStream === "undefined") {
+        return Promise.reject(new Error("no compression"));
+      }
+      var canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      var px = ctx.getImageData(0, 0, w, h).data;
+      canvas.width = 0;
+      canvas.height = 0;
+
+      var rgb = new Uint8Array(w * h * 3);
+      var alpha = new Uint8Array(w * h);
+      var seeThrough = false;
+      for (var i = 0, j = 0, k = 0; i < px.length; i += 4, j += 3, k += 1) {
+        rgb[j] = px[i];
+        rgb[j + 1] = px[i + 1];
+        rgb[j + 2] = px[i + 2];
+        alpha[k] = px[i + 3];
+        if (px[i + 3] !== 255) { seeThrough = true; }
+      }
+      return deflate(rgb).then(function (data) {
+        var entry = { kind: "flate", data: data, smask: null, width: w, height: h, colors: 3, orientation: 1 };
+        if (!seeThrough) { return entry; }
+        return deflate(alpha).then(function (mask) { entry.smask = mask; return entry; });
+      });
+    }
+    /* ---- END: redrawing a picture that cannot go in as it is ---- */
+
+    /* ---- START: a small picture for the list ---- */
+    function thumbnail(img) {
+      var scale = Math.min(1, 96 / Math.max(img.naturalWidth, img.naturalHeight));
+      var canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+      canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+      return new Promise(function (resolve) {
+        canvas.toBlob(function (blob) { resolve(blob ? URL.createObjectURL(blob) : ""); }, "image/png");
+      });
+    }
+    /* ---- END: a small picture for the list ---- */
+
+    /* ---- START: reading one chosen file, without uploading it ----
+       The browser opens the picture first: that proves it is one, and gives
+       the size it shows it at, already turned the way the camera said. A
+       JPEG whose own header agrees with that size goes into the PDF byte for
+       byte, so a photo loses nothing. Everything else is redrawn. */
+    function readFile(file) {
+      var url = URL.createObjectURL(file);
+      var opened = new Promise(function (resolve) {
+        var img = new Image();
+        img.onload = function () { resolve(img.naturalWidth > 0 ? img : null); };
+        img.onerror = function () { resolve(null); };
+        img.src = url;
+      });
+      return opened.then(function (img) {
+        if (!img) { throw new Error("unreadable"); }
+        return file.arrayBuffer().then(function (buffer) {
+          var bytes = new Uint8Array(buffer);
+          var info = readJpeg(bytes);
+          if (info) {
+            var shownW = info.orientation >= 5 ? info.height : info.width;
+            var shownH = info.orientation >= 5 ? info.width : info.height;
+            if (shownW === img.naturalWidth && shownH === img.naturalHeight) {
+              return { kind: "jpeg", data: bytes, smask: null, width: info.width, height: info.height,
+                       colors: info.colors, orientation: info.orientation };
+            }
+          }
+          return redraw(img);
+        }).then(function (entry) {
+          return thumbnail(img).then(function (thumb) {
+            entry.id = nextId++;
+            entry.name = file.name || "picture";
+            entry.size = file.size;
+            entry.thumb = thumb;
+            entry.turns = 0;
+            return entry;
+          });
+        });
+      }).then(function (entry) {
+        URL.revokeObjectURL(url);
+        return entry;
+      }, function (error) {
+        URL.revokeObjectURL(url);
+        throw error;
+      });
+    }
+    /* ---- END: reading one chosen file, without uploading it ---- */
+
+    /* ---- START: turning a picture on the page ----
+       Browsers turn a phone photo the way its camera said; PDF readers do
+       not. So a JPEG's bytes go in unchanged and the turn is done by the
+       instruction that draws it, which loses nothing. Each row says where a
+       point (u, v) of the stored picture lands, as fractions of the picture
+       as shown: across = s0 + su*u + sv*v, up = t0 + tu*u + tv*v. */
+    var ORIENT = {
+      1: [0, 1, 0, 0, 0, 1],
+      2: [1, -1, 0, 0, 0, 1],
+      3: [1, -1, 0, 1, 0, -1],
+      4: [0, 1, 0, 1, 0, -1],
+      5: [1, 0, -1, 1, -1, 0],
+      6: [0, 0, 1, 1, -1, 0],
+      7: [0, 0, 1, 0, 1, 0],
+      8: [1, 0, -1, 0, 1, 0]
+    };
+
+    /* a further quarter turn clockwise of what is shown: (s, t) becomes (t, 1 - s) */
+    function quarterTurn(m) {
+      return [m[3], m[4], m[5], 1 - m[0], -m[1], -m[2]];
+    }
+
+    function placement(item) {
+      var m = ORIENT[item.orientation] || ORIENT[1];
+      for (var i = 0; i < item.turns; i++) { m = quarterTurn(m); }
+      return m;
+    }
+
+    /* the picture as shown is the stored one on its side for EXIF 5-8, and
+       again for every odd number of extra quarter turns */
+    function sideways(item) {
+      return (item.orientation >= 5) !== (item.turns % 2 === 1);
+    }
+    /* ---- END: turning a picture on the page ---- */
+
+    /* ---- START: deciding the page and where the picture sits on it ---- */
+    var PAPER = { a4: [595.28, 841.89], letter: [612, 792] };
+    var POINTS_PER_MM = 72 / 25.4;
+
+    function layoutPage(item) {
+      var turned = sideways(item);
+      var pw = (turned ? item.height : item.width) * PX_TO_PT;
+      var ph = (turned ? item.width : item.height) * PX_TO_PT;
+      var margin = Number(marginSel.value) * POINTS_PER_MM;
+      var pageW, pageH, scale;
+      if (sizeSel.value === "fit") {
+        scale = Math.min(1, (MAX_PAGE - 2 * margin) / pw, (MAX_PAGE - 2 * margin) / ph);
+        pageW = Math.max(MIN_PAGE, pw * scale + 2 * margin);
+        pageH = Math.max(MIN_PAGE, ph * scale + 2 * margin);
+      } else {
+        var paper = PAPER[sizeSel.value];
+        var landscape = orientSel.value === "landscape" || (orientSel.value === "auto" && pw > ph);
+        pageW = landscape ? paper[1] : paper[0];
+        pageH = landscape ? paper[0] : paper[1];
+        scale = Math.min((pageW - 2 * margin) / pw, (pageH - 2 * margin) / ph);
+      }
+      var w = pw * scale;
+      var h = ph * scale;
+      return { pageW: pageW, pageH: pageH, x: (pageW - w) / 2, y: (pageH - h) / 2, w: w, h: h };
+    }
+
+    /* the drawing instruction: a matrix that puts the stored picture's unit
+       square onto the box, turned as it should be, then "draw it" */
+    function pageContent(item, box) {
+      var m = placement(item);
+      var matrix = [box.w * m[1], box.h * m[4], box.w * m[2], box.h * m[5],
+                    box.x + box.w * m[0], box.y + box.h * m[3]];
+      return "q " + matrix.map(pdfNum).join(" ") + " cm /Im0 Do Q\n";
+    }
+    /* ---- END: deciding the page and where the picture sits on it ---- */
+
+    /* ---- START: building the PDF ----
+       One page per picture. Every object is numbered before any is written,
+       because the page list needs the numbers of pages not yet written. */
+    function buildPdf() {
+      var w = new PdfWriter();
+      w.header("1.4");
+      var catalog = w.reserve();
+      var pages = w.reserve();
+      var info = w.reserve();
+      var plan = items.map(function (item) {
+        return { item: item, image: w.reserve(), smask: item.smask ? w.reserve() : 0, content: w.reserve(), page: w.reserve() };
+      });
+
+      w.object(catalog, "<< /Type /Catalog /Pages " + pages + " 0 R >>");
+      w.object(pages, "<< /Type /Pages /Count " + plan.length + " /Kids [" +
+               plan.map(function (p) { return p.page + " 0 R"; }).join(" ") + "] >>");
+      w.object(info, "<< /Producer (108toolbox.in Image to PDF) >>");
+
+      plan.forEach(function (p) {
+        var item = p.item;
+        var box = layoutPage(item);
+        var size = " /Width " + item.width + " /Height " + item.height + " /BitsPerComponent 8";
+        if (item.kind === "jpeg") {
+          w.object(p.image, "<< /Type /XObject /Subtype /Image" + size + " /ColorSpace /" +
+                   (item.colors === 1 ? "DeviceGray" : "DeviceRGB") + " /Filter /DCTDecode /Length " + item.data.length + " >>", item.data);
+        } else {
+          w.object(p.image, "<< /Type /XObject /Subtype /Image" + size + " /ColorSpace /DeviceRGB /Filter /FlateDecode" +
+                   (p.smask ? " /SMask " + p.smask + " 0 R" : "") + " /Length " + item.data.length + " >>", item.data);
+          if (p.smask) {
+            w.object(p.smask, "<< /Type /XObject /Subtype /Image" + size + " /ColorSpace /DeviceGray /Filter /FlateDecode /Length " +
+                     item.smask.length + " >>", item.smask);
+          }
+        }
+        var content = pdfBytes(pageContent(item, box));
+        w.object(p.content, "<< /Length " + content.length + " >>", content);
+        w.object(p.page, "<< /Type /Page /Parent " + pages + " 0 R /MediaBox [0 0 " + pdfNum(box.pageW) + " " + pdfNum(box.pageH) +
+                 "] /Resources << /XObject << /Im0 " + p.image + " 0 R >> >> /Contents " + p.content + " 0 R >>");
+      });
+      return w.finish(catalog, info);
+    }
+    /* ---- END: building the PDF ---- */
+
+    /* ---- START: showing the list of pictures ----
+       Every name goes in as text, never as markup: a file name is whatever
+       the person who made the file typed. */
+    function button(label, text, action, disabled) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = text;
+      b.setAttribute("aria-label", label);
+      b.title = label;
+      b.disabled = !!disabled;
+      b.addEventListener("click", action);
+      return b;
+    }
+
+    function renderList() {
+      list.textContent = "";
+      items.forEach(function (item, index) {
+        var li = document.createElement("li");
+        var thumb = document.createElement("img");
+        thumb.alt = "";
+        if (item.thumb) { thumb.src = item.thumb; }
+        thumb.style.transform = "rotate(" + (item.turns * 90) + "deg)";
+        li.appendChild(thumb);
+
+        var name = document.createElement("span");
+        name.className = "file-list__name";
+        name.textContent = (index + 1) + ". " + item.name;
+        var meta = document.createElement("span");
+        meta.className = "file-list__meta";
+        var shownW = sideways(item) ? item.height : item.width;
+        var shownH = sideways(item) ? item.width : item.height;
+        meta.textContent = shownW + String.fromCharCode(0xD7) + shownH + " px, " + formatBytes(item.size) +
+                           (item.kind === "jpeg" ? ", kept as it is" : "");
+        name.appendChild(meta);
+        li.appendChild(name);
+
+        var btns = document.createElement("span");
+        btns.className = "file-list__btns";
+        btns.appendChild(button("Move " + item.name + " up", String.fromCharCode(0x2191), function () { move(index, -1); }, index === 0));
+        btns.appendChild(button("Move " + item.name + " down", String.fromCharCode(0x2193), function () { move(index, 1); }, index === items.length - 1));
+        btns.appendChild(button("Turn " + item.name + " a quarter clockwise", String.fromCharCode(0x21BB), function () { turn(index); }));
+        btns.appendChild(button("Remove " + item.name, String.fromCharCode(0x2715), function () { removeAt(index); }));
+        li.appendChild(btns);
+        list.appendChild(li);
+      });
+    }
+    /* ---- END: showing the list of pictures ---- */
+
+    /* ---- START: changing the list ---- */
+    function move(index, step) {
+      var to = index + step;
+      if (to < 0 || to >= items.length) { return; }
+      var moved = items.splice(index, 1)[0];
+      items.splice(to, 0, moved);
+      refresh();
+    }
+
+    function turn(index) {
+      items[index].turns = (items[index].turns + 1) % 4;
+      refresh();
+    }
+
+    function removeAt(index) {
+      var gone = items.splice(index, 1)[0];
+      if (gone && gone.thumb) { URL.revokeObjectURL(gone.thumb); }
+      refresh();
+    }
+
+    function sortByName() {
+      items.sort(function (a, b) {
+        return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }) || a.id - b.id;
+      });
+      refresh();
+    }
+    /* ---- END: changing the list ---- */
+
+    /* ---- START: making the PDF again after any change ----
+       Nothing is built while pictures are still being read: with a hundred
+       photos that would be a hundred PDFs. The pieces only point at the
+       pictures' bytes, so building is quick and copies nothing; the file
+       itself is assembled when Download is pressed. */
+    function refresh() {
+      renderList();
+      document.getElementById("orientField").style.display = sizeSel.value === "fit" ? "none" : "";
+      resultParts = null;
+      dlBtn.disabled = true;
+      var total = items.reduce(function (sum, item) { return sum + item.size; }, 0);
+      document.getElementById("sPages").textContent = items.length ? formatNumber(items.length, 0) : DASH;
+      document.getElementById("sIn").textContent = items.length ? formatBytes(total) : DASH;
+      document.getElementById("sOut").textContent = DASH;
+
+      if (waiting > 0) {
+        setMessage("Reading pictures" + String.fromCharCode(0x2026) + " " + waiting + " to go.");
+        return;
+      }
+      var problems = [notice, failed.length ? failureText() : ""].filter(Boolean).join(" ");
+      if (items.length === 0) {
+        setMessage(problems || "Choose one or more pictures.", problems ? "bad" : "");
+        return;
+      }
+      try {
+        resultParts = buildPdf();
+      } catch (error) {
+        resultParts = null;
+        setMessage("The PDF could not be made. Try fewer or smaller pictures.", "bad");
+        return;
+      }
+      var size = resultParts.reduce(function (sum, part) { return sum + part.length; }, 0);
+      document.getElementById("sOut").textContent = formatBytes(size);
+      dlBtn.disabled = false;
+      var ready = "Ready: " + items.length + (items.length === 1 ? " page." : " pages.") + " Nothing has left your device.";
+      setMessage(problems ? problems + " " + ready : ready, problems ? "bad" : "ok");
+    }
+
+    function failureText() {
+      return "Could not read " + failed.join(", ") + ". Only pictures this browser can open can go in; " +
+             "save it as JPG or PNG first.";
+    }
+    /* ---- END: making the PDF again after any change ---- */
+
+    /* ---- START: taking the files the visitor chose ----
+       One at a time, so a hundred photos never sit decoded in memory at
+       once, and in the order they were given. */
+    function addFiles(fileList) {
+      var files = Array.prototype.slice.call(fileList || []);
+      if (files.length === 0) { return; }
+      if (waiting === 0) { failed = []; notice = ""; }
+      var gen = generation;
+      var room = MAX_FILES - items.length - waiting;
+      if (files.length > room) {
+        files = files.slice(0, Math.max(0, room));
+        notice = "Only " + MAX_FILES + " pictures fit in one PDF; the rest were left out.";
+      }
+      files.forEach(function (file) {
+        waiting += 1;
+        queue = queue.then(function () {
+          if (gen !== generation) { return null; }
+          return readFile(file).then(function (entry) {
+            if (gen === generation) { items.push(entry); }
+            else if (entry.thumb) { URL.revokeObjectURL(entry.thumb); }
+          }, function (error) {
+            if (gen !== generation) { return; }
+            var why = error && error.message === "too large" ? " (over 40 megapixels)" :
+                      error && error.message === "no compression" ? " (this browser is too old to redraw it)" : "";
+            failed.push(String(file.name || "a file") + why);
+          }).then(function () {
+            if (gen !== generation) { return; }
+            waiting -= 1;
+            refresh();
+          });
+        });
+      });
+      refresh();
+    }
+    /* ---- END: taking the files the visitor chose ---- */
+
+    /* ---- START: the name of the file to save ---- */
+    function outputName() {
+      if (items.length === 1) { return items[0].name.replace(/\.[^.]*$/, "") + ".pdf"; }
+      return "pictures.pdf";
+    }
+    /* ---- END: the name of the file to save ---- */
+
+    /* ---- START: wiring ---- */
+    fileInput.addEventListener("change", function () {
+      addFiles(fileInput.files);
+      fileInput.value = "";
+    });
+    ["dragenter", "dragover"].forEach(function (type) {
+      drop.addEventListener(type, function (e) { e.preventDefault(); drop.classList.add("is-over"); });
+    });
+    ["dragleave", "drop"].forEach(function (type) {
+      drop.addEventListener(type, function (e) { e.preventDefault(); drop.classList.remove("is-over"); });
+    });
+    drop.addEventListener("drop", function (e) { addFiles(e.dataTransfer && e.dataTransfer.files); });
+
+    [sizeSel, orientSel, marginSel].forEach(function (control) {
+      control.addEventListener("change", refresh);
+    });
+    document.getElementById("sortBtn").addEventListener("click", sortByName);
+
+    dlBtn.addEventListener("click", function () {
+      if (resultParts && waiting === 0) { downloadBlob(new Blob(resultParts, { type: "application/pdf" }), outputName()); }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      items.forEach(function (item) { if (item.thumb) { URL.revokeObjectURL(item.thumb); } });
+      items = [];
+      failed = [];
+      notice = "";
+      waiting = 0;
+      generation += 1;
+      fileInput.value = "";
+      refresh();
+    });
+    /* ---- END: wiring ---- */
+
+    refresh();
+  })();
+  </script>
+</body>
+</html>

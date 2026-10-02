@@ -7,7 +7,7 @@ folder, so you never need to be told the project's history again.
 <https://108toolbox.in>. Plain HTML, CSS and JavaScript. No framework, no npm,
 no build step, and it stays that way.
 
-**Where it stands:** 96 of a planned 108 tools are built, tested and live.
+**Where it stands:** 97 of a planned 108 tools are built, tested and live.
 Phase 2 is finished; Phase 3 has started.
 
 ---
@@ -34,11 +34,11 @@ have gone off the path. (Editing it for a site-wide design change is fine.)
 
 ### 2. Never type a tool count into a page
 
-`96 tools live` is not typed anywhere. Any element with `data-tool-count` is
+`97 tools live` is not typed anywhere. Any element with `data-tool-count` is
 filled in by `main.js` straight from the registry:
 
 ```html
-<span data-tool-count="live">96</span> tools live
+<span data-tool-count="live">97</span> tools live
 <span data-tool-count="remaining">47</span> on the way
 ```
 
@@ -72,8 +72,8 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=28` → `?v=29` across all 106 pages (currently `?v=28`,
-512 occurrences), the template included.
+Find-and-replace `?v=30` → `?v=31` across all 107 pages (currently `?v=30`,
+517 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
 the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
@@ -108,7 +108,7 @@ python security.py     ATTACKS the files — hostile text in every box, hostile
 first keystroke still has a perfect title, a valid canonical and clean
 JSON-LD, and `check.py` will wave it through.
 
-**`test_tools.py` runs all 96, not just the one you changed.** That is the
+**`test_tools.py` runs all 97, not just the one you changed.** That is the
 point of it — a shared change like a `main.js` edit or a `?v=` bump can break
 a tool you never opened. It also **fails if a registered tool has no test at
 all**, so a new tool is not finished until its assertions exist. One tool
@@ -146,6 +146,23 @@ attribute in the preview after 30 hostile documents. Two real bugs came out of
 writing and running its test: a space between `*a* **b**` in a list item was
 thrown away as "structural" whitespace, and the message "1 image is not loaded"
 was shown about pictures that were in fact displayed.
+
+**PDF tools are written by hand and judged by Windows' own PDF engine.** No
+PDF library is installed or shipped. `image-to-pdf` writes the file itself
+(header, numbered objects, a byte-exact xref table) and was checked by
+opening every PDF it made with `Windows.Data.Pdf` from PowerShell, which
+shares no code with this site: page count, page size and a rendering of every
+page, compared with the page worked out independently in Pillow (64 pages in
+ten PDFs, all eight EXIF turns, transparency, A4 and Letter, margins, a 1-pixel
+picture and one wider than any reader accepts). Inside `test_tools.py` the
+browser is the referee for EXIF: the PDF's own drawing matrix is replayed on a
+canvas and compared pixel for pixel with the file as the browser shows it.
+
+**Headless Chrome's clock is virtual, so a long wait needs a big budget.**
+Reading 201 pictures took six real seconds and several hundred virtual ones;
+the 1 ms heartbeat makes the virtual clock run far ahead of the real one
+while the browser decodes. `image-to-pdf` has a `BUDGET_MS` of 500000 for
+that reason, not because it is slow.
 
 **The harness and the security probe go in front of the LAST `</body>`.** A page
 that builds an HTML document in its script has `"</body>"` inside a string, and
@@ -202,7 +219,7 @@ Umami or Cloudflare Web Analytics — or drop the claim. Not both.
 
 **Advertising is the same rule, and it is already decided.** The owner wants
 ads on once all 108 tools are live, and not before. The site currently
-promises "no ads" in the hero, in the footer of all 106 pages, in
+promises "no ads" in the hero, in the footer of all 107 pages, in
 `privacy.html` section 7 and in `disclaimer.html` section 9. Those promises
 get rewritten **first, in their own commit**, before a single line of ad code
 is added — otherwise the site starts lying to visitors on the day it starts
@@ -438,7 +455,7 @@ accepted the sitemap, not yet read it.
 
 ## What is built, and what is next
 
-**Live (96):** add-line-numbers, add-subtract-days, age-calculator,
+**Live (97):** add-line-numbers, add-subtract-days, age-calculator,
 area-converter, average-calculator, barcode-generator,
 base64-encoder-decoder, binary-decimal-hex-converter, bmi-calculator,
 calorie-calculator, case-converter, character-frequency-counter, coin-flip,
@@ -450,13 +467,14 @@ favicon-generator, find-and-replace, fraction-calculator,
 fuel-cost-calculator, gst-calculator, html-encoder-decoder, html-minifier,
 image-color-picker, image-compressor, image-cropper, image-converter,
 image-metadata-viewer, image-resizer, image-rotator, image-splitter,
-image-to-base64, js-minifier, json-formatter, json-to-csv, jwt-decoder,
-leap-year-checker, lorem-ipsum-generator, margin-markup-calculator,
-markdown-previewer, meme-generator, text-to-morse, nato-phonetic-converter,
-number-to-words, password-generator, percentage-calculator, photo-watermark,
-image-placeholder-generator, qr-code-generator, random-list-shuffler,
-random-number-generator, random-picker, ratio-calculator, readability-score,
-regex-tester, remove-duplicate-lines, remove-line-breaks, reverse-text,
+image-to-base64, image-to-pdf, js-minifier, json-formatter, json-to-csv,
+jwt-decoder, leap-year-checker, lorem-ipsum-generator,
+margin-markup-calculator, markdown-previewer, meme-generator, text-to-morse,
+nato-phonetic-converter, number-to-words, password-generator,
+percentage-calculator, photo-watermark, image-placeholder-generator,
+qr-code-generator, random-list-shuffler, random-number-generator,
+random-picker, ratio-calculator, readability-score, regex-tester,
+remove-duplicate-lines, remove-line-breaks, reverse-text,
 roman-numeral-converter, salary-calculator, scientific-calculator,
 hash-generator, shoe-size-converter, simple-interest-calculator,
 sip-calculator, sort-text-lines, speed-converter, sql-formatter,
@@ -482,7 +500,8 @@ and add it to the Maintenance list, or leave it.
 **Categories are 8 now**, expanded on 20 Sep 2026 at the 30-tool mark:
 Text, Image, Calculator, Developer, Converter, PDF, Date & Time, Random.
 Converter and Date & Time filled up on 21 Sep 2026 and their chips appeared
-on their own. PDF and Random have no tools yet, and that is fine — **`main.js` draws a chip only
+on their own, Random later, and PDF on 2 Oct 2026 with `image-to-pdf`. That is
+the design working — **`main.js` draws a chip only
 for a category that has at least one tool**, so `CATEGORIES` is the plan, not
 the inventory. A chip that opens an empty grid reads as broken rather than
 unfinished, which is exactly what the naive version of this change would have
@@ -490,9 +509,11 @@ shipped. `check.py` now also fails if a tool claims a category that is not in
 the list; that typo used to be invisible, because the tool still rendered but
 no chip ever matched it.
 
-The footer "Categories" column stays at the four real ones. Those links are
-searches (`tools.html?q=pdf`), so adding an empty category there is a dead
-link. Add each one when its category gets its first tool.
+The footer "Categories" column lists only categories that have tools. Those
+links are searches (`tools.html?q=pdf`), so adding an empty category there is
+a dead link. Add each one when its category gets its first tool. All eight are
+there now: PDF went in with its first tool, and Random, which had eight tools
+and had simply been forgotten, went in at the same time.
 
 **The India angle is the real SEO edge.** `gst-calculator`, `sip-calculator`,
 `salary-calculator`, `area-converter` and `number-to-words` (lakh/crore) have
