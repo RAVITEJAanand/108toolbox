@@ -114,7 +114,7 @@ page. Turning ads on without rewriting those first would make the site lie to
 its visitors on the day it starts earning — so the promises are rewritten
 first, in their own commit, and only then does the ad code go in.
 
-**What has to change**
+**What had to change — done 2 Oct 2026, in its own commit, before any ad code**
 
 | Where | What it says now |
 |---|---|
@@ -181,8 +181,9 @@ tracking" for something that is still true, such as "nothing uploaded".
 | Domain added to AdSense | done |
 | Ownership verified | done, 26 Sep 2026, by `ads.txt` |
 | Review requested | 26 Sep 2026, 08:49, at 61 tools — "Getting ready" |
-| Ad code on the site | **not done, and not until 108** |
-| Ads serving | **not until 108** |
+| Promises rewritten | done, 2 Oct 2026, at 108 |
+| Ad code on the site | next, once the consent message is set up |
+| Ads serving | after the ad code |
 
 Ownership was verified with `ads.txt` rather than the AdSense code snippet on
 purpose: the snippet *is* the ad library, and with Auto ads on it can place

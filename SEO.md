@@ -120,9 +120,8 @@ enforces the starred items.
    feeds DuckDuckGo and ChatGPT search.
 3. **HTTPS on, enforced.** Already in `DEPLOY.md` Step 6.
 4. **Analytics.** If you add any, pick a privacy-respecting one
-   (Plausible, Umami, Cloudflare Web Analytics). Adding Google Analytics
-   contradicts the "no tracking" line on your own homepage — either drop that
-   claim or do not add GA. Do not do both.
+   (Plausible, Umami, Cloudflare Web Analytics), and change section 8 of
+   `privacy.html` first: it says the site has no analytics.
 5. **Re-submit the sitemap** whenever you ship a batch of tools.
 
 Then leave it alone. Checking Search Console daily in month one is a way to

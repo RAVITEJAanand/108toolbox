@@ -327,17 +327,20 @@ touches a server, a third-party API, or someone else's content.
 
 ### 7. Do not add Google Analytics
 
-The homepage says "no tracking". If analytics are ever wanted, use Plausible,
-Umami or Cloudflare Web Analytics — or drop the claim. Not both.
+The site has no analytics, and `privacy.html` section 8 says so. If
+analytics are ever wanted, use Plausible, Umami or Cloudflare Web Analytics,
+and change section 8 first.
 
-**Advertising is the same rule, and it is already decided.** The owner wants
-ads on once all 108 tools are live, and not before. The site currently
-promises "no ads" in the hero, in the footer of all 118 pages, in
-`privacy.html` section 7 and in `disclaimer.html` section 9. Those promises
-get rewritten **first, in their own commit**, before a single line of ad code
-is added — otherwise the site starts lying to visitors on the day it starts
-earning. The full checklist, including what stays true and what AdSense
-requires, is in `ROADMAP.md` under "Advertising, once 108 is reached".
+**Advertising: the promises were rewritten first, as decided.** The owner
+wanted ads once all 108 tools were live, and not before. On 2 Oct 2026, with
+108 live and **before any ad code**, every "no ads" / "no tracking" promise
+was rewritten in its own commit: the footer of all 118 pages ("No sign-up,
+no file uploads."), the homepage hero ("nothing uploaded · no sign-up"),
+`privacy.html` sections 6, 7, 8 and 10 (Google AdSense named, its cookies,
+consent in the EEA/UK/Switzerland, the opt-out) and `disclaimer.html`
+section 9. What stays true and must never be dropped: the tools never send
+anyone's text or files anywhere. The checklist for the ad code itself is in
+`ROADMAP.md` under "Advertising, once 108 is reached".
 
 ### 8. Never name another website on the site
 
