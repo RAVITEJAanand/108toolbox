@@ -36,8 +36,8 @@
 
   <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=43">
-  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <link rel="stylesheet" href="../css/style.css?v=44">
+  <link rel="stylesheet" href="../css/tool.css?v=44">
   <!-- ---- END: the stylesheets ---- -->
 
   <!-- ---- START: dark mode, set before the page paints ---- -->
@@ -409,10 +409,10 @@
 
   <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=43"></script>
-  <script src="../js/tool-helpers.js?v=43"></script>
+  <script src="../js/tools-data.js?v=44"></script>
+  <script src="../js/tool-helpers.js?v=44"></script>
   <script>window.CURRENT_TOOL = "emi-calculator";</script>
-  <script src="../js/main.js?v=43"></script>
+  <script src="../js/main.js?v=44"></script>
   <!-- ---- END: the shared scripts, in order ---- -->
 
   <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
@@ -481,10 +481,11 @@
     var totalPayable = emi * months;
     var totalInterest = totalPayable - principal;
 
-    document.getElementById("emi").textContent       = formatNumber(Math.round(emi));
-    document.getElementById("principal").textContent = formatNumber(Math.round(principal));
-    document.getElementById("interest").textContent  = formatNumber(Math.round(totalInterest));
-    document.getElementById("total").textContent     = formatNumber(Math.round(totalPayable));
+    /* Rupees, so grouped in lakhs and crores whatever the browser's language */
+    document.getElementById("emi").textContent       = formatRupees(Math.round(emi));
+    document.getElementById("principal").textContent = formatRupees(Math.round(principal));
+    document.getElementById("interest").textContent  = formatRupees(Math.round(totalInterest));
+    document.getElementById("total").textContent     = formatRupees(Math.round(totalPayable));
 
     /* The bar: what share of every rupee paid is interest */
     var principalShare = principal / totalPayable * 100;
@@ -519,9 +520,9 @@
       if (month % 12 === 0 || month === months) {
         rows.push(
           "<tr><td>" + Math.ceil(month / 12) + "</td>" +
-          "<td>" + formatNumber(Math.round(yearPrincipal)) + "</td>" +
-          "<td>" + formatNumber(Math.round(yearInterest)) + "</td>" +
-          "<td>" + formatNumber(Math.round(balance)) + "</td></tr>"
+          "<td>" + formatRupees(Math.round(yearPrincipal)) + "</td>" +
+          "<td>" + formatRupees(Math.round(yearInterest)) + "</td>" +
+          "<td>" + formatRupees(Math.round(balance)) + "</td></tr>"
         );
         yearPrincipal = 0;
         yearInterest = 0;

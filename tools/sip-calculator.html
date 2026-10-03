@@ -35,8 +35,8 @@
   <!-- ---- END: the advertising script ---- -->
 
   <!-- ---- START: the stylesheets ---- -->
-  <link rel="stylesheet" href="../css/style.css?v=43">
-  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <link rel="stylesheet" href="../css/style.css?v=44">
+  <link rel="stylesheet" href="../css/tool.css?v=44">
   <!-- ---- END: the stylesheets ---- -->
 
   <!-- ---- START: dark mode, set before the page paints ---- -->
@@ -417,10 +417,10 @@
   <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
   <!-- ---- START: the shared scripts, in order ---- -->
-  <script src="../js/tools-data.js?v=43"></script>
-  <script src="../js/tool-helpers.js?v=43"></script>
+  <script src="../js/tools-data.js?v=44"></script>
+  <script src="../js/tool-helpers.js?v=44"></script>
   <script>window.CURRENT_TOOL = "sip-calculator";</script>
-  <script src="../js/main.js?v=43"></script>
+  <script src="../js/main.js?v=44"></script>
   <!-- ---- END: the shared scripts, in order ---- -->
 
   <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
@@ -447,7 +447,7 @@
     /* Money to the rupee. Paise on a ten-year projection is false precision. */
     function money(value) {
       if (!isFinite(value)) return String.fromCharCode(0x2014);
-      return RUPEE + formatNumber(Math.round(value), 0);
+      return RUPEE + formatRupees(Math.round(value), 0);
     }
     /* ---- END: reaching the page, reading its numbers and printing money ---- */
 

@@ -73,7 +73,7 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=43` → `?v=44` across all 118 pages (currently `?v=43`,
+Find-and-replace `?v=44` → `?v=45` across all 118 pages (currently `?v=44`,
 572 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
@@ -553,7 +553,7 @@ css/tool.css       Tool pages only: panels, stat tiles, drop zones, tables
 js/tools-data.js   THE REGISTRY — one object per tool
 js/main.js         Renders grids, search, chips, theme, related strip
 js/tool-helpers.js copyText, downloadText, downloadBlob, showToast,
-                   formatBytes, formatNumber
+                   formatBytes, formatNumber, formatRupees
 js/lib/pdfjs/      pdf.js 6.3.289, as published; only pdf-to-image loads it
 data/rates.js      Exchange rates, written by the bot below; never by hand
 .github/           workflows/rates.yml + rates/update_rates.py: the rates bot
@@ -744,6 +744,15 @@ links are searches (`tools.html?q=pdf`), so adding an empty category there is
 a dead link. Add each one when its category gets its first tool. All eight are
 there now: PDF went in with its first tool, and Random, which had eight tools
 and had simply been forgotten, went in at the same time.
+
+**Rupees are grouped in lakhs and crores everywhere.** Every rupee amount
+goes through `formatRupees()` in `js/tool-helpers.js`, which always uses
+`en-IN` (12,34,567), whatever language the browser is set to; everything
+that is not money keeps the visitor's own commas through `formatNumber()`.
+Until 3 Oct 2026 only `income-tax-calculator` and `currency-converter` did
+this, and a browser set to US English showed a ten-lakh SIP as 1,059,312.
+The tests run in US English, so each rupee tool has a test that fails if
+its amounts go back to the browser's grouping.
 
 **The India angle is the real SEO edge.** `gst-calculator`, `sip-calculator`,
 `salary-calculator`, `area-converter` and `number-to-words` (lakh/crore) have

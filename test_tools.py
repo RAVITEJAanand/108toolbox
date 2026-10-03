@@ -696,7 +696,9 @@ T["compound-interest-calculator"] = r"""
     has("with the reason", txt("formula"), "cannot be below zero");
     set("principal", "100000");
     near("and back", txt("finalOut"), 215892.5, 0.01);
-    finish();
+      set("principal", "1000000"); set("rate", "8"); set("years", "10");
+  ok("rupees are grouped in lakhs", /^\d{1,2}(,\d\d)+,\d{3}(\.\d\d)?$/.test(txt("finalOut").slice(1)), txt("finalOut"));
+  finish();
 """
 # ---- END: the test for compound-interest-calculator ----
 
@@ -786,7 +788,13 @@ T["emi-calculator"] = r"""
     eq("nor a schedule", document.querySelectorAll("#schedule tbody tr").length, 0);
     set("amount", "1000000");
     ok("and a real loan works again", txt("emi") !== DASH, txt("emi"));
-    finish();
+      set("amount", "2500000"); set("rate", "8.5"); set("years", "20");
+  eq("the loan is grouped in lakhs", txt("principal"), "25,00,000");
+  ok("and so is the total", /^\d{1,2}(,\d\d)+,\d{3}$/.test(txt("total")), txt("total"));
+  ok("and each year's balance in the table",
+     /^\d{1,2}(,\d\d)+,\d{3}$/.test(document.querySelector("#schedule tbody tr td:last-child").textContent),
+     document.querySelector("#schedule tbody tr td:last-child").textContent);
+  finish();
 """
 # ---- END: the test for emi-calculator ----
 
@@ -1001,7 +1009,11 @@ T["gst-calculator"] = r"""
     eq("a minus rate is refused, not read as 0%", txt("total"), DASH);
     has("with the reason", txt("formula"), "cannot be below zero");
     set("rate", "18");
-    finish();
+      set("mode", "exclusive"); set("rate", "18"); set("amount", "1234567");
+  eq("rupees are grouped in lakhs, whatever the browser's language", txt("base"),
+     String.fromCharCode(0x20B9) + "12,34,567");
+  set("amount", "1000");
+  finish();
 """
 # ---- END: the test for gst-calculator ----
 
@@ -1297,7 +1309,9 @@ T["margin-markup-calculator"] = r"""
         set("c1", "150"); set("c2", "100");
     eq("a loss reads minus first", txt("cOut"), String.fromCharCode(0x2212, 0x20B9) + "50");
     set("c1", "100"); set("c2", "150");
-    finish();
+      set("a1", "100000"); set("a2", "40");
+  eq("rupees are grouped in lakhs", txt("aOut"), String.fromCharCode(0x20B9) + "1,66,666.67");
+  finish();
 """
 # ---- END: the test for margin-markup-calculator ----
 
@@ -1527,7 +1541,9 @@ T["simple-interest-calculator"] = r"""
 
   set("period", "");
   near("empty period does not crash", txt("interest"), 0);
-    finish();
+      set("principal", "500000"); set("rate", "8"); set("period", "3");
+  ok("rupees are grouped in lakhs", /^\d{1,2}(,\d\d)+,\d{3}$/.test(txt("tOut").slice(1)), txt("tOut"));
+  finish();
 """
 # ---- END: the test for simple-interest-calculator ----
 
@@ -2193,7 +2209,10 @@ T["sip-calculator"] = r"""
     eq("a return of -100% is refused", txt("maturity"), DASH);
     set("rate", "12");
     near("and back to the example", txt("maturity"), 1161695, 2);
-    finish();
+      set("monthly", "5000"); set("rate", "12"); set("years", "10"); set("stepup", "0");
+  eq("what you put in is grouped in lakhs", txt("invested"), String.fromCharCode(0x20B9) + "6,00,000");
+  ok("and so is what it grows to", /^\d{1,2}(,\d\d)+,\d{3}$/.test(txt("maturity").slice(1)), txt("maturity"));
+  finish();
 """
 # ---- END: the test for sip-calculator ----
 
@@ -2780,7 +2799,7 @@ T["salary-calculator"] = r"""
   eq("and so is each month of it", cell(6, 2), M + R + "4,800");
   eq("no income tax is plain zero, not minus zero", cell(8, 1), R + "0");
   eq("in the monthly column too", cell(8, 2), R + "0");
-  eq("a positive row has no sign", cell(0, 1), R + (480000).toLocaleString());
+  eq("a positive row has no sign, and lakhs are grouped as lakhs", cell(0, 1), R + "4,80,000");
   ok("no row anywhere prints a sign after the rupee sign",
      Array.prototype.every.call(rows(), function (r) {
        return r.textContent.indexOf(R + "-") === -1 && r.textContent.indexOf(R + M) === -1;
@@ -2907,7 +2926,9 @@ T["fuel-cost-calculator"] = r"""
     has("nobody paying is refused too", txt("msg"), "At least one person");
     set("people", "1");
     near("and back", txt("tripCost"), 233, 1);
-    finish();
+      set("distance", "20000"); set("mileage", "10"); set("price", "100"); set("people", "1"); set("trips", "1");
+  ok("rupees are grouped in lakhs", /^\d{1,2}(,\d\d)+,\d{3}$/.test(txt("tripCost").slice(1)), txt("tripCost"));
+  finish();
 """
 # ---- END: the test for fuel-cost-calculator ----
 

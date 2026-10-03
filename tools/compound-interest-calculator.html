@@ -35,8 +35,8 @@
   <!-- ---- END: the advertising script ---- -->
 
   <!-- ---- START: the stylesheets ---- -->
-  <link rel="stylesheet" href="../css/style.css?v=43">
-  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <link rel="stylesheet" href="../css/style.css?v=44">
+  <link rel="stylesheet" href="../css/tool.css?v=44">
   <!-- ---- END: the stylesheets ---- -->
 
   <!-- ---- START: dark mode, set before the page paints ---- -->
@@ -411,10 +411,10 @@
   <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
   <!-- ---- START: the shared scripts, in order ---- -->
-  <script src="../js/tools-data.js?v=43"></script>
-  <script src="../js/tool-helpers.js?v=43"></script>
+  <script src="../js/tools-data.js?v=44"></script>
+  <script src="../js/tool-helpers.js?v=44"></script>
   <script>window.CURRENT_TOOL = "compound-interest-calculator";</script>
-  <script src="../js/main.js?v=43"></script>
+  <script src="../js/main.js?v=44"></script>
   <!-- ---- END: the shared scripts, in order ---- -->
 
   <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
@@ -445,7 +445,7 @@
       var rounded = Math.round(value * 100) / 100;
       var size = Math.abs(rounded);
       return (rounded < 0 ? String.fromCharCode(0x2212) : "") + RUPEE +
-             formatNumber(size, size % 1 === 0 ? 0 : 2);
+             formatRupees(size, size % 1 === 0 ? 0 : 2);
     }
 
     /* 2.5 years, not "3 years"; 0.1 years used to be printed as "0 years". */

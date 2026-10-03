@@ -35,8 +35,8 @@
   <!-- ---- END: the advertising script ---- -->
 
   <!-- ---- START: the stylesheets ---- -->
-  <link rel="stylesheet" href="../css/style.css?v=43">
-  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <link rel="stylesheet" href="../css/style.css?v=44">
+  <link rel="stylesheet" href="../css/tool.css?v=44">
   <!-- ---- END: the stylesheets ---- -->
 
   <!-- ---- START: dark mode, set before the page paints ---- -->
@@ -434,10 +434,10 @@
   <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
   <!-- ---- START: the shared scripts, in order ---- -->
-  <script src="../js/tools-data.js?v=43"></script>
-  <script src="../js/tool-helpers.js?v=43"></script>
+  <script src="../js/tools-data.js?v=44"></script>
+  <script src="../js/tool-helpers.js?v=44"></script>
   <script>window.CURRENT_TOOL = "gst-calculator";</script>
-  <script src="../js/main.js?v=43"></script>
+  <script src="../js/main.js?v=44"></script>
   <!-- ---- END: the shared scripts, in order ---- -->
 
   <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
@@ -466,7 +466,7 @@
        noise, so show decimals only when there actually are any. */
     function money(value) {
       var rounded = Math.round(value * 100) / 100;
-      return RUPEE + formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
+      return RUPEE + formatRupees(rounded, rounded % 1 === 0 ? 0 : 2);
     }
 
     /* Half of the GST, for the CGST and SGST lines. When the tax is an odd
@@ -475,7 +475,7 @@
        beside a total of 5.05. The half is shown exactly instead. */
     function half(tax) {
       var paise = Math.round(tax * 100);
-      return paise % 2 === 0 ? money(paise / 200) : RUPEE + formatNumber(paise / 200, 3);
+      return paise % 2 === 0 ? money(paise / 200) : RUPEE + formatRupees(paise / 200, 3);
     }
 
     /* The decimal count is a CEILING, not a demand. Forcing two decimals the

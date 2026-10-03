@@ -89,6 +89,22 @@ function formatNumber(value, decimals) {
 }
 /* ---- END: a number with the visitor's own commas ---- */
 
+/* ---- START: a rupee amount, grouped the Indian way ----
+   12,34,567 and never 1,234,567, whatever language the browser is set to.
+   A rupee figure is read in lakhs and crores; a browser set to US English
+   used to show a ten-lakh SIP as 1,059,312, which an Indian reader has to
+   stop and count. income-tax-calculator and currency-converter already
+   grouped rupees this way; every rupee tool does now. Everything that is
+   not money keeps the visitor's own commas. */
+function formatRupees(value, decimals) {
+  if (!isFinite(value)) return String.fromCharCode(0x2014);
+  return value.toLocaleString("en-IN", {
+    minimumFractionDigits: decimals || 0,
+    maximumFractionDigits: decimals === undefined ? 0 : decimals
+  });
+}
+/* ---- END: a rupee amount, grouped the Indian way ---- */
+
 /* ---- START: making a string safe to put inside HTML ----
 
    Needed wherever a message is built as markup — because it carries a
