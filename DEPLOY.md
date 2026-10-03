@@ -8,9 +8,27 @@ No command line needed. GitHub Pages hosts it free, forever, with free HTTPS.
 
 ---
 
-## Step 0 — VERIFY YOUR DOMAIN EMAIL. Do this first, today.
+## Step 0 — Verify your domain email ✅
 
-GoDaddy is showing **"Your domain is pending WHOIS verification"**.
+Done. On 3 Oct 2026, two weeks after registration, GoDaddy's page for the
+domain no longer showed the verification banner, and the registry listed no
+hold on it. What that page showed instead, worth knowing for next time:
+
+- **Registered 19 Sep 2026, expires 19 Sep 2027, auto-renew OFF** (renewal
+  ₹899/yr then). If it lapses, the site, Search Console and AdSense all go
+  with it. Either turn auto-renew on, or put a reminder in a calendar for
+  August 2027.
+- The transfer lock is on (the registry shows `client transfer prohibited`),
+  which is free and is what stops someone moving the domain away.
+- **Never press "Connect Domain"** or anything "powered by Airo" there: they
+  change DNS to point the domain at another service (GoDaddy's own website
+  builder or a partner's), and the four A records and
+  the `www` CNAME are what point the domain at GitHub Pages. "Your Domain is
+  Hot", the protection plans and the five-domain bundle are sales banners.
+
+What the step was, for the record:
+
+GoDaddy was showing **"Your domain is pending WHOIS verification"**.
 
 This is not a suggestion. Under ICANN rules the registrar must verify your
 contact email, and **if you do not verify within 15 days the domain is
