@@ -395,6 +395,17 @@
     var originalType = "image/png";
     var resultBlob = null;
 
+    /* Encoding is asynchronous, so each run is numbered and a run that ends
+       after a newer one started is thrown away. Without it a slow, huge
+       resize that failed was overtaken by the run before it: the page said
+       "Ready" beside 100000 x 50000 and offered the old, small picture. */
+    var generation = 0;
+
+    /* What a browser can be trusted to draw. Chrome stops at 32,767 pixels
+       a side; phones give up long before Chrome's area limit. */
+    var MAX_SIDE = 16384;
+    var MAX_PIXELS = 50000000;
+
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
       msg.textContent = text || "";
@@ -477,14 +488,32 @@
     /* ---- END: keeping the shape while one side is typed ---- */
 
     /* ---- START: redrawing at the new size ---- */
+    /* A size that will not be made takes the last picture with it. */
+    function refuse(message) {
+      generation++;
+      resultBlob = null;
+      preview.innerHTML = "";
+      document.getElementById("sBytes").textContent = String.fromCharCode(0x2014);
+      dlBtn.disabled = true;
+      setMessage(message, "bad");
+    }
+
     function render() {
       if (!loaded) { return; }
       var size = targetSize();
       if (!size) {
-        setMessage("Type a size above zero.", "bad");
-        dlBtn.disabled = true;
+        document.getElementById("sNew").textContent = String.fromCharCode(0x2014);
+        refuse("Type a size above zero.");
         return;
       }
+      document.getElementById("sNew").textContent =
+        size.w + " " + String.fromCharCode(0x00D7) + " " + size.h;
+      if (size.w > MAX_SIDE || size.h > MAX_SIDE || size.w * size.h > MAX_PIXELS) {
+        refuse("That is more than a browser can draw safely: up to " + formatNumber(MAX_SIDE) +
+               " pixels a side and " + formatNumber(MAX_PIXELS / 1000000) + " million pixels in all.");
+        return;
+      }
+      var mine = ++generation;
 
       var canvas = document.createElement("canvas");
       canvas.width = size.w;
@@ -496,11 +525,9 @@
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(loaded, 0, 0, size.w, size.h);
 
-      document.getElementById("sNew").textContent =
-        size.w + " " + String.fromCharCode(0x00D7) + " " + size.h;
-
       canvas.toBlob(function (blob) {
-        if (!blob) { setMessage("This browser could not produce the image.", "bad"); return; }
+        if (mine !== generation) { return; }
+        if (!blob) { refuse("This browser could not produce an image that large. Try a smaller size."); return; }
         resultBlob = blob;
 
         preview.innerHTML = "";
@@ -566,6 +593,7 @@
     });
 
     document.getElementById("resetBtn").addEventListener("click", function () {
+      generation++;
       loaded = null; resultBlob = null;
       fileInput.value = "";
       preview.innerHTML = "";

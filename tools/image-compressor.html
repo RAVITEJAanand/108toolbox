@@ -354,7 +354,15 @@
   var loadedImage = null;
   var originalName = "image";
   var originalSize = 0;
+  var originalType = "";
   var resultBlob  = null;
+  var checkedImage = null;          /* the image hadTransparency was worked out for */
+  /* Encoding is asynchronous. Each run is numbered, and a run that finishes
+     after a newer one started - or after Reset - is thrown away. Without it,
+     pressing Reset while a big photo was still encoding brought the old
+     picture back, ready to download. */
+  var generation = 0;
+  var hadTransparency = false;
 
   /* ---- START: speaking to the visitor ---- */
   function setMessage(text, kind) {
@@ -374,6 +382,7 @@
 
     originalName = file.name.replace(/\.[^.]+$/, "");
     originalSize = file.size;
+    originalType = file.type;
 
     var reader = new FileReader();
     reader.onload = function () {
@@ -390,19 +399,48 @@
   }
   /* ---- END: reading the chosen file into an image, without uploading it ---- */
 
+  /* ---- START: does the picture have see-through parts? ----
+     Read in bands of rows, so a big photo never needs one huge copy of its
+     pixels at once. A JPEG cannot have any, so it is not read at all. */
+  function hasTransparency(ctx, w, h) {
+    var band = Math.max(1, Math.floor(1000000 / Math.max(1, w)));
+    for (var y = 0; y < h; y += band) {
+      var data = ctx.getImageData(0, y, w, Math.min(band, h - y)).data;
+      for (var i = 3; i < data.length; i += 4) {
+        if (data[i] < 255) return true;
+      }
+    }
+    return false;
+  }
+  /* ---- END: does the picture have see-through parts? ---- */
+
   /* ---- START: redrawing to a canvas and re-encoding at the chosen quality ---- */
   /* ---- Step 2: draw it to a canvas and re-encode at the chosen quality ---- */
   function compress() {
     if (!loadedImage) return;
+    var mine = ++generation;
 
     var canvas = document.createElement("canvas");
     canvas.width  = loadedImage.naturalWidth;
     canvas.height = loadedImage.naturalHeight;
-    canvas.getContext("2d").drawImage(loadedImage, 0, 0);
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(loadedImage, 0, 0);
+    if (checkedImage !== loadedImage) {
+      checkedImage = loadedImage;
+      hadTransparency = !/jpe?g$/i.test(originalType) &&
+                        hasTransparency(ctx, canvas.width, canvas.height);
+    }
+    /* JPG cannot store transparency, and the encoder turns see-through
+       pixels black: a PNG logo came out on a black square. White is put
+       BEHIND what is already drawn, which is what a logo on a page needs. */
+    ctx.globalCompositeOperation = "destination-over";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     /* JPEG is the only format where the quality number really bites, so we
        always output JPEG here. The converter tool handles format changes. */
     canvas.toBlob(function (blob) {
+      if (mine !== generation) return;
       if (!blob) { setMessage("Compression failed in this browser.", "bad"); return; }
 
       resultBlob = blob;
@@ -421,10 +459,13 @@
       savedEl.style.color = saved > 0 ? "var(--success)" : "var(--danger)";
 
       dlBtn.disabled = false;
-      setMessage(saved > 0
+      var whiteNote = hadTransparency
+        ? " Its see-through parts are white now: a JPG cannot keep transparency."
+        : "";
+      setMessage((saved > 0
         ? "Ready. " + formatBytes(originalSize - blob.size) + " smaller than the original."
-        : "This image is already smaller than the compressed version. Try a lower quality.",
-        saved > 0 ? "ok" : "bad");
+        : "This image is already smaller than the compressed version. Try a lower quality.")
+        + whiteNote, saved > 0 ? "ok" : "bad");
 
     }, "image/jpeg", quality.value / 100);
   }
@@ -452,6 +493,7 @@
   });
 
   document.getElementById("resetBtn").addEventListener("click", function () {
+    generation++;
     loadedImage = null; resultBlob = null;
     fileInput.value = "";
     preview.innerHTML = "";

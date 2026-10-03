@@ -412,18 +412,78 @@
        a quoted value and a comment must be carried through byte for byte. If
        a customer is called 'Select' that is a name, not a clause, and any
        approach that does not know the difference will capitalise it. */
+    /* Operators of more than one character are one piece each. Read a
+       character at a time, "a >= 1" came out as "a > = 1", <> as "< >" and
+       || as "| |" - SQL no database accepts. Longest first. */
+    var OPERATORS = ["->>", "#>>", "<=>", "!~*", "->", "#>", ">=", "<=", "<>", "!=",
+                     "||", "::", ":=", "<<", ">>", "@>", "<@", "&&", "=>", "~*", "!~"];
+
     function tokenize(sql) {
       var tokens = [];
       var i = 0;
+      var gap = false;        /* was there white space before this piece? */
+      function push(kind, text) {
+        tokens.push({ kind: kind, text: text, gap: gap });
+        gap = false;
+      }
+      /* The end of a quoted value that starts at `from`. Two quotes in a row
+         are an escaped quote inside it, not the end: 'it''s' is one string. */
+      function quotedEnd(from) {
+        var quote = sql.charAt(from);
+        var j = from + 1;
+        while (j < sql.length) {
+          if (sql.charAt(j) === quote) {
+            if (sql.charAt(j + 1) === quote) { j += 2; continue; }
+            return j + 1;
+          }
+          j += 1;
+        }
+        return sql.length;
+      }
       while (i < sql.length) {
         var ch = sql.charAt(i);
 
-        if (/\s/.test(ch)) { i += 1; continue; }
+        if (/\s/.test(ch)) { gap = true; i += 1; continue; }
+
+        /* N'text', E'text', B'0101', X'FF': the letter belongs to the value.
+           Split off, N 'text' is a column called N with an alias. */
+        if (/[NnEeBbXx]/.test(ch) && sql.charAt(i + 1) === "'") {
+          var prefixedEnd = quotedEnd(i + 1);
+          push("string", sql.slice(i, prefixedEnd));
+          i = prefixedEnd;
+          continue;
+        }
+
+        /* $$ ... $$ and $tag$ ... $tag$ are PostgreSQL's quotes; $1 is a
+           parameter. Both are one piece. */
+        if (ch === "$") {
+          var dollar = /^\$([A-Za-z_][A-Za-z0-9_]*)?\$/.exec(sql.slice(i));
+          if (dollar) {
+            var close = sql.indexOf(dollar[0], i + dollar[0].length);
+            close = close === -1 ? sql.length : close + dollar[0].length;
+            push("string", sql.slice(i, close));
+            i = close;
+            continue;
+          }
+          var param = /^\$\d+/.exec(sql.slice(i));
+          if (param) { push("name", param[0]); i += param[0].length; continue; }
+        }
+
+        /* :name, @name and @@name are parameters and variables, one piece
+           each ("::" is the cast operator and is read below). */
+        if ((ch === ":" && /[A-Za-z_]/.test(sql.charAt(i + 1))) ||
+            (ch === "@" && /[@A-Za-z_]/.test(sql.charAt(i + 1)))) {
+          var v = i + 1;
+          while (v < sql.length && /[@A-Za-z0-9_$]/.test(sql.charAt(v))) { v += 1; }
+          push("name", sql.slice(i, v));
+          i = v;
+          continue;
+        }
 
         if (ch === "-" && sql.charAt(i + 1) === "-") {
           var lineEnd = sql.indexOf("\n", i);
           if (lineEnd === -1) { lineEnd = sql.length; }
-          tokens.push({ kind: "comment", text: sql.slice(i, lineEnd) });
+          push("comment", sql.slice(i, lineEnd));
           i = lineEnd;
           continue;
         }
@@ -431,25 +491,14 @@
         if (ch === "/" && sql.charAt(i + 1) === "*") {
           var blockEnd = sql.indexOf("*/", i + 2);
           blockEnd = blockEnd === -1 ? sql.length : blockEnd + 2;
-          tokens.push({ kind: "comment", text: sql.slice(i, blockEnd) });
+          push("comment", sql.slice(i, blockEnd));
           i = blockEnd;
           continue;
         }
 
         if (ch === "'" || ch === '"' || ch === "`") {
-          var quote = ch;
-          var j = i + 1;
-          while (j < sql.length) {
-            if (sql.charAt(j) === quote) {
-              /* Two in a row is an escaped quote inside the value, not the
-                 end of it: 'it''s' is one string. */
-              if (sql.charAt(j + 1) === quote) { j += 2; continue; }
-              j += 1;
-              break;
-            }
-            j += 1;
-          }
-          tokens.push({ kind: "string", text: sql.slice(i, j) });
+          var j = quotedEnd(i);
+          push("string", sql.slice(i, j));
           i = j;
           continue;
         }
@@ -458,24 +507,26 @@
           var k = i;
           while (k < sql.length && /[A-Za-z0-9_$.]/.test(sql.charAt(k))) { k += 1; }
           var word = sql.slice(i, k);
-          tokens.push({
-            kind: KEYWORD_SET["k" + word.toLowerCase()] ? "keyword" : "name",
-            text: word
-          });
+          push(KEYWORD_SET["k" + word.toLowerCase()] ? "keyword" : "name", word);
           i = k;
           continue;
         }
 
-        if (/[0-9]/.test(ch)) {
-          var n = i;
-          while (n < sql.length && /[0-9.]/.test(sql.charAt(n))) { n += 1; }
-          tokens.push({ kind: "number", text: sql.slice(i, n) });
-          i = n;
+        /* 1.5e3 and .5 are one number each; they came out as "1.5 e3"
+           and ". 5". */
+        if (/[0-9]/.test(ch) || (ch === "." && /[0-9]/.test(sql.charAt(i + 1)))) {
+          var number = /^(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?/.exec(sql.slice(i))[0];
+          push("number", number);
+          i += number.length;
           continue;
         }
 
-        tokens.push({ kind: "punct", text: ch });
-        i += 1;
+        var op = null;
+        for (var o = 0; o < OPERATORS.length && !op; o++) {
+          if (sql.substr(i, OPERATORS[o].length) === OPERATORS[o]) { op = OPERATORS[o]; }
+        }
+        push("punct", op || ch);
+        i += (op || ch).length;
       }
       return tokens;
     }
@@ -525,10 +576,14 @@
         if (line.trim() !== "") { lines.push(pad(level) + line.trim()); }
         line = "";
       }
-      function add(text) {
+      /* glue: written straight after the last piece, with no space. A dot
+         and the :: cast always join what is either side of them, which is
+         also what keeps t.* and "schema"."table" whole. */
+      function add(text, glue) {
         if (line === "") { line = text; return; }
         var last = line.charAt(line.length - 1);
-        if (text === "," || text === ")" || text === ";" || last === "(") {
+        if (glue || text === "," || text === ")" || text === ";" || last === "(" ||
+            text === "." || last === "." || text === "::" || line.slice(-2) === "::") {
           line += text;
         } else {
           line += " " + text;
@@ -540,7 +595,11 @@
         var token = tokens[i];
 
         if (token.kind === "punct" && token.text === "(") {
-          add("(");
+          /* COUNT(*) stays COUNT(*). Written "COUNT (*)" it is an error in
+             MySQL, which wants no space between a function and its bracket;
+             a bracket typed straight after a word is kept against it. */
+          var prev = tokens[i - 1];
+          add("(", !token.gap && prev && (prev.kind === "name" || prev.kind === "keyword"));
           depth += 1;
           if (depth > deepest) { deepest = depth; }
           continue;
@@ -582,6 +641,18 @@
           newLine(currentLevel + (listMode ? 1 : 0));
           line = render(token);
           currentLevel = 1;
+          continue;
+        }
+
+        /* A minus or plus straight in front of a number, with no value
+           before it, is the number's sign: "= -5" stays "= -5", not "= - 5". */
+        var before = tokens[i - 1];
+        var beforeThat = tokens[i - 2];
+        if (token.kind === "number" && !token.gap && before && before.kind === "punct" &&
+            (before.text === "-" || before.text === "+") &&
+            (!beforeThat || beforeThat.kind === "keyword" ||
+             (beforeThat.kind === "punct" && beforeThat.text !== ")"))) {
+          add(render(token), true);
           continue;
         }
 

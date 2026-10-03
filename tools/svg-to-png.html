@@ -412,14 +412,53 @@
       if (!open) { return null; }
       var tag = open[0];
 
-      var w = /\swidth\s*=\s*["']([0-9.]+)/.exec(tag);
-      var h = /\sheight\s*=\s*["']([0-9.]+)/.exec(tag);
-      if (w && h) { return { w: parseFloat(w[1]), h: parseFloat(h[1]) }; }
-
+      var w = length(tag, "width");
+      var h = length(tag, "height");
       var box = /viewBox\s*=\s*["']\s*[-0-9.]+[ ,]+[-0-9.]+[ ,]+([0-9.]+)[ ,]+([0-9.]+)/.exec(tag);
-      if (box) { return { w: parseFloat(box[1]), h: parseFloat(box[2]) }; }
-      return null;
+      var vb = box ? { w: parseFloat(box[1]), h: parseFloat(box[2]) } : null;
+      var result = null;
+      if (w > 0 && h > 0) { result = { w: w, h: h }; }
+      /* One side given, or a size in % (which means nothing outside a page):
+         the viewBox supplies the shape. */
+      else if (vb && vb.w > 0 && vb.h > 0) {
+        if (w > 0) { result = { w: w, h: w * vb.h / vb.w }; }
+        else if (h > 0) { result = { w: h * vb.w / vb.h, h: h }; }
+        else { result = { w: vb.w, h: vb.h }; }
+      }
+      if (result) { result.tag = tag; result.hasViewBox = !!vb; }
+      return result;
     }
+
+    /* A width or height in any unit, in CSS pixels. width="2cm" used to be
+       read as 2 pixels; a percentage is a share of something an image does
+       not have, so it is NaN here and the viewBox decides. */
+    var UNIT_PX = { "": 1, px: 1, pt: 96 / 72, pc: 16, mm: 96 / 25.4, cm: 96 / 2.54, "in": 96 };
+    function length(tag, name) {
+      var m = new RegExp("\\s" + name + "\\s*=\\s*[\"']\\s*([0-9]*\\.?[0-9]+(?:[eE][-+]?[0-9]+)?)\\s*([a-zA-Z%]*)\\s*[\"']").exec(tag);
+      if (!m) { return null; }
+      var factor = UNIT_PX[m[2].toLowerCase()];
+      return factor ? parseFloat(m[1]) * factor : NaN;
+    }
+
+    /* ---- START: an <svg> tag a browser will draw as a picture ----
+       The size is written into the tag in pixels, so every unit, a missing
+       side and a % all draw the same way, and a viewBox is added when there
+       is none so the drawing scales with it. An <svg> copied out of a web
+       page has no xmlns, which a page forgives and a picture does not: it
+       used to be refused as "could not draw". The namespace is added. */
+    function drawable(svg, size, outW, outH) {
+      var tag = size.tag.replace(/\s(width|height)\s*=\s*("[^"]*"|'[^']*')/gi, "");
+      var extra = ' width="' + outW + '" height="' + outH + '"';
+      if (!size.hasViewBox) { extra += ' viewBox="0 0 ' + size.w + " " + size.h + '"'; }
+      var added = !/\sxmlns\s*=/.test(tag);
+      if (added) { extra += ' xmlns="http://www.w3.org/2000/svg"'; }
+      if (svg.indexOf("xlink:") > -1 && !/\sxmlns:xlink\s*=/.test(tag)) {
+        extra += ' xmlns:xlink="http://www.w3.org/1999/xlink"';
+      }
+      tag = tag.replace(/^<svg/i, "<svg" + extra);
+      return { text: svg.replace(size.tag, tag), addedNamespace: added };
+    }
+    /* ---- END: an <svg> tag a browser will draw as a picture ---- */
     /* ---- END: the size the SVG says it is ---- */
 
     /* ---- START: drawing the SVG onto a canvas ---- */
@@ -434,27 +473,38 @@
         setMessage("Paste some SVG code on the left.");
         return;
       }
-      if (svg.indexOf("<svg") === -1) {
-        setMessage("That does not contain an <svg> tag.", "bad");
+      /* A refused SVG takes the last picture with it: left on screen under
+         the error, it looked like the answer and could still be saved. */
+      function refuse(message) {
+        pending += 1;
+        resultBlob = null;
+        preview.innerHTML = "";
+        document.getElementById("sDims").textContent = String.fromCharCode(0x2014);
+        document.getElementById("sBytes").textContent = String.fromCharCode(0x2014);
+        setMessage(message, "bad");
         dlBtn.disabled = true;
+      }
+
+      if (svg.indexOf("<svg") === -1) {
+        refuse("That does not contain an <svg> tag.");
         return;
       }
 
       var size = naturalSize(svg);
       if (!size || !(size.w > 0) || !(size.h > 0)) {
-        setMessage("This SVG has no size to work from - it needs a width and "
-                 + "height, or a viewBox.", "bad");
-        dlBtn.disabled = true;
+        refuse("This SVG has no size to work from - it needs a width and "
+             + "height, or a viewBox.");
         return;
       }
 
       var factor = Number(scale.value) || 1;
       var outW = Math.max(1, Math.round(size.w * factor));
       var outH = Math.max(1, Math.round(size.h * factor));
+      var ready = drawable(svg, size, outW, outH);
 
       /* encodeURIComponent, not btoa: the SVG may hold any language's text and
          btoa refuses anything above U+00FF. */
-      var url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+      var url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(ready.text);
 
       /* Each render is numbered. A slow one finishing after a newer one must
          not overwrite the newer result, which is what happens while someone
@@ -473,7 +523,7 @@
 
         canvas.toBlob(function (blob) {
           if (mine !== pending) { return; }
-          if (!blob) { setMessage("This browser could not produce the PNG.", "bad"); return; }
+          if (!blob) { refuse("This browser could not produce the PNG."); return; }
           resultBlob = blob;
 
           preview.innerHTML = "";
@@ -486,14 +536,14 @@
             outW + " " + String.fromCharCode(0x00D7) + " " + outH;
           document.getElementById("sBytes").textContent = formatBytes(blob.size);
           dlBtn.disabled = false;
-          setMessage("Ready. Drawn in your browser; nothing was uploaded.", "ok");
+          setMessage("Ready. Drawn in your browser; nothing was uploaded." +
+            (ready.addedNamespace ? " The SVG had no xmlns, which a picture needs, so it was added." : ""), "ok");
         }, "image/png");
       };
       img.onerror = function () {
         if (mine !== pending) { return; }
-        setMessage("The browser could not draw this SVG. Check it is complete "
-                 + "and that nothing sits before the opening tag.", "bad");
-        dlBtn.disabled = true;
+        refuse("The browser could not draw this SVG. Check it is complete "
+             + "and that nothing sits before the opening tag.");
       };
       img.src = url;
     }

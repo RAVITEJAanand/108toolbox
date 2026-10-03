@@ -376,17 +376,31 @@
     var PLUS    = String.fromCharCode(0x002B);
     var APPROX  = String.fromCharCode(0x2248);
     var NEWLINE = String.fromCharCode(0x000A);
+    var EM_DASH = String.fromCharCode(0x2014);   /* "no answer"; a minus sign looked like one */
 
     var SIGNS = { add: PLUS, sub: MINUS, mul: TIMES, div: DIVIDE };
 
     /* ---- START: reaching the page and reading whole numbers ---- */
     function el(id) { return document.getElementById(id); }
 
-    /* Fractions are whole numbers all the way down, so parseInt, not
-       parseFloat. A decimal typed into a numerator is simply truncated. */
+    /* Fractions are whole numbers all the way down. An empty box is 0;
+       anything that is not a whole number is NaN, and the caller says so.
+       This used to be parseInt, which read 1.5 as 1 without a word, so
+       1.5/2 + 1/2 came out as 1 instead of 5/4. */
     function int(id) {
-      var n = parseInt(el(id).value, 10);
-      return isNaN(n) ? 0 : n;
+      var text = el(id).value.trim();
+      if (text === "") { return 0; }
+      return /^[-+]?\d+$/.test(text) ? Number(text) : NaN;
+    }
+
+    /* Whole numbers, and small enough that every step stays exact. */
+    var WHOLE_ONLY = "Use whole numbers only - the top and bottom of a fraction "
+                   + "have no decimal point. 1.5 over 2 is the same as 3 over 4.";
+    var TOO_BIG = "Those numbers are too big to work out exactly. Try smaller ones.";
+    function problemWith(numbers) {
+      if (numbers.some(isNaN)) { return WHOLE_ONLY; }
+      if (!numbers.every(Number.isSafeInteger)) { return TOO_BIG; }
+      return "";
     }
     /* ---- END: reaching the page and reading whole numbers ---- */
 
@@ -447,21 +461,24 @@
 
     /* ---- START: the main calculation ---- */
     function runMain() {
-      var a = toImproper(int("aw"), int("an"), int("ad"));
-      var b = toImproper(int("bw"), int("bn"), int("bd"));
+      var typed = ["aw", "an", "ad", "bw", "bn", "bd"].map(int);
+      var problem = problemWith(typed);
+      var a = problem ? null : toImproper(typed[0], typed[1], typed[2]);
+      var b = problem ? null : toImproper(typed[3], typed[4], typed[5]);
       var op = el("op").value;
 
       function fail(message) {
         el("errWrap").hidden = false;
         el("err").textContent = message;
-        el("ansFrac").textContent = MINUS;
+        el("ansFrac").textContent = EM_DASH;
         el("ansAlt").textContent = "";
-        el("mixed").textContent = MINUS;
-        el("dec").textContent = MINUS;
-        el("perc").textContent = MINUS;
+        el("mixed").textContent = EM_DASH;
+        el("dec").textContent = EM_DASH;
+        el("perc").textContent = EM_DASH;
         el("working").textContent = "";
       }
 
+      if (problem) { fail(problem); return; }
       if (!a || !b) { fail("A denominator cannot be zero - nothing can be divided into zero parts."); return; }
       if (op === "div" && b.n === 0) { fail("You cannot divide by zero, and the second fraction is zero."); return; }
 
@@ -487,6 +504,9 @@
       }
 
       if (raw.d < 0) { raw.n = -raw.n; raw.d = -raw.d; }
+      /* Past 2^53 a JavaScript number stops being exact, and a fraction
+         built from rounded numbers is simply wrong. */
+      if (!Number.isSafeInteger(raw.n) || !Number.isSafeInteger(raw.d)) { fail(TOO_BIG); return; }
 
       var answer = simplify(raw);
       var value  = answer.n / answer.d;
@@ -518,13 +538,15 @@
       var n = int("sn");
       var d = int("sd");
 
-      if (d === 0) {
-        el("sAns").textContent  = MINUS;
-        el("sHow").textContent  = "A denominator cannot be zero.";
-        el("sGcd").textContent  = MINUS;
-        el("sDec").textContent  = MINUS;
-        return;
+      function refuse(message) {
+        el("sAns").textContent  = EM_DASH;
+        el("sHow").textContent  = message;
+        el("sGcd").textContent  = EM_DASH;
+        el("sDec").textContent  = EM_DASH;
       }
+      var problem = problemWith([n, d]);
+      if (problem) { refuse(problem); return; }
+      if (d === 0) { refuse("A denominator cannot be zero."); return; }
 
       if (d < 0) { n = -n; d = -d; }
       var g = gcd(n, d);

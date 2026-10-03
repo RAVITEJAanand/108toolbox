@@ -382,11 +382,17 @@
 
     /* ---- START: how many copies were asked for ---- */
     /* Read the count defensively: the field is a number input, but a person
-       can still empty it or paste letters into it. */
+       can still empty it or type something that is not a count. An answer
+       is { count } or { problem }. Ten million used to come back as
+       100,000 copies without a word, and 2.7 as 2. */
     function copyCount() {
-      var n = parseInt(copies.value, 10);
-      if (isNaN(n) || n < 1) return 0;
-      return Math.min(n, MAX_COPIES);
+      var typed = copies.value.trim();
+      if (typed === "") return { count: 0 };
+      var n = Number(typed);
+      if (!isFinite(n) || Math.floor(n) !== n) return { problem: "Type a whole number of copies." };
+      if (n < 1) return { problem: "Ask for at least one copy." };
+      if (n > MAX_COPIES) return { problem: "Up to " + formatNumber(MAX_COPIES) + " copies at a time." };
+      return { count: n };
     }
     /* ---- END: how many copies were asked for ---- */
 
@@ -395,12 +401,17 @@
       customWrap.hidden = sep.value !== "custom";
 
       var text  = input.value;
-      var count = copyCount();
+      var asked = copyCount();
+      var count = asked.count || 0;
       var glue  = separator();
 
       msg.textContent = "";
       msg.className   = "msg";
 
+      if (asked.problem) {
+        msg.textContent = asked.problem;
+        msg.className = "msg msg--bad";
+      }
       if (text === "" || count === 0) {
         output.textContent = "";
         cCopies.textContent = "0";

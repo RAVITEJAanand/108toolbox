@@ -500,6 +500,18 @@ T["case-converter"] = r"""
     set("input", "hello. world here.");
     document.querySelector("[data-mode='sentence']").click();
     check("sentence case", txt("output"), "Hello. World here.");
+        /* An identifier is letters and digits. Splitting at spaces alone kept
+       the punctuation: "don't stop, NASA." became don't_stop,_nasa. */
+    var TE = String.fromCharCode(0x0C24, 0x0C46, 0x0C32, 0x0C41, 0x0C17, 0x0C41);
+    function mode(m) { document.querySelector("[data-mode='" + m + "']").click(); return txt("output"); }
+    set("input", "don't stop, NASA. It" + String.fromCharCode(0x2019) + "s 3.5 km! " + TE + " " + String.fromCharCode(0xD83D, 0xDE00));
+    check("snake_case keeps letters and digits only", mode("snake"), "dont_stop_nasa_its_3_5_km_" + TE);
+    check("kebab-case too", mode("kebab"), "dont-stop-nasa-its-3-5-km-" + TE);
+    check("camelCase too", mode("camel"), "dontStopNasaIts35Km" + TE);
+    set("input", "XMLHttpRequest parseJSONData");
+    check("a run of capitals is one word", mode("snake"), "xml_http_request_parse_json_data");
+    set("input", "user_first-name.value");
+    check("snake, kebab and dots all come apart", mode("camel"), "userFirstNameValue");
     finish();
 """
 
@@ -608,6 +620,35 @@ T["compound-interest-calculator"] = r"""
 
   set("years", 10); set("principal", "");
   near("empty principal does not crash", txt("finalOut"), 0);
+        /* 0.1 years was printed as "0 years", compounding "added ₹-27.42",
+       and a minus rate was quietly worked out as 0%. */
+    var R = String.fromCharCode(0x20B9), M = String.fromCharCode(0x2212), DASH = String.fromCharCode(0x2014);
+    set("principal", "100000"); set("rate", "8"); set("freq", "1"); set("years", "0.1");
+    has("a tenth of a year is written as one", txt("formula"), "over 0.1 years at");
+    /* Worked in Python: 100000 x 1.08^0.1 - 100000 - 800 = -27.42 */
+    eq("part of a period pays less than simple interest", txt("edge"), R + "27.42");
+    eq("and the label says so the right way round",
+       document.getElementById("edge").nextElementSibling.textContent, "Compounding pays less by");
+    set("years", "2.5");
+    has("2.5 years stays 2.5", txt("formula"), "over 2.5 years at");
+    eq("over a whole period the label is the usual one",
+       document.getElementById("edge").nextElementSibling.textContent, "Compounding adds");
+    set("years", "1");
+    has("one year is a year", txt("formula"), "over 1 year at");
+
+    set("years", "10"); set("rate", "-5");
+    /* Worked in Python: 100000 x 0.95^10 = 59,873.69 */
+    near("a minus rate is worked out, not read as 0%", txt("finalOut"), 59873.69, 0.01);
+    has("as money that shrinks", txt("formula"), "shrinks to");
+    eq("the loss reads with its minus first", txt("earned").charAt(0) + txt("earned").charAt(1), M + R);
+    has("and the note says it shrinks", txt("doubleNote"), "shrinks every year");
+    set("rate", "-100");
+    eq("-100% is refused", txt("finalOut"), DASH);
+    set("rate", "8"); set("principal", "-5");
+    eq("so is a minus principal", txt("finalOut"), DASH);
+    has("with the reason", txt("formula"), "cannot be below zero");
+    set("principal", "100000");
+    near("and back", txt("finalOut"), 215892.5, 0.01);
     finish();
 """
 
@@ -641,6 +682,33 @@ T["discount-calculator"] = r"""
 
     set("c1", "0");
     check("zero price is safe", txt("cOut"), "0");
+        /* 150% off printed a price of -1,000. */
+    var DASH = String.fromCharCode(0x2014);
+    set("a1", "2000"); set("a2", "150");
+    check("more than 100% off has no price", txt("aOut"), DASH);
+    check("and nothing saved either", txt("aSaved"), DASH);
+    has("the line under it says why", txt("aFormula"), "from 0% to 100%");
+    set("a2", "100");
+    check("exactly 100% off is free", txt("aOut"), "0");
+    set("a2", "-10");
+    check("a minus discount is refused too", txt("aOut"), DASH);
+    set("a1", "-2000"); set("a2", "10");
+    check("and a minus price", txt("aOut"), DASH);
+    has("with its own reason", txt("aFormula"), "price cannot be below zero");
+    set("a1", "2000"); set("a2", "25");
+    check("back to the example", txt("aOut"), "1,500");
+
+    set("b1", "1500"); set("b2", "120");
+    check("working back from 120% off has no answer", txt("bOut"), DASH);
+    has("and says why", txt("bFormula"), "from 0% to 100%");
+    set("b2", "25");
+
+    set("c1", "2000"); set("c2", "50"); set("c3", "120");
+    check("a second discount over 100% is refused", txt("cOut"), DASH);
+    check("in every tile", txt("cGap"), DASH);
+    has("with the reason", txt("cFormula"), "from 0% to 100%");
+    set("c3", "20");
+    check("and back", txt("cOut"), "800");
     finish();
 """
 
@@ -681,6 +749,40 @@ T["find-and-replace"] = r"""
     ok("bad regex is reported, not thrown",
        document.getElementById("status").textContent.length > 0);
     tick("optRegex", false);
+        /* "Whole words only" was \b, which knows only A-Z, 0-9 and _: it never
+       found a Telugu word, nor an accented one, nor C++. */
+    var TE = String.fromCharCode(0x0C24, 0x0C46, 0x0C32, 0x0C41, 0x0C17, 0x0C41);
+    var TE2 = String.fromCharCode(0x0C2D, 0x0C3E, 0x0C37);
+    tick("optRegex", false); tick("optCase", false); tick("optWord", true);
+    set("input", TE + " " + TE2 + " " + TE + "x " + TE + ".");
+    set("findBox", TE); set("replaceBox", "T");
+    eq("a Telugu word is found whole", txt("output"), "T " + TE2 + " " + TE + "x T.");
+    has("twice, not inside a longer word", txt("status"), "2 replacements");
+    set("input", TE + String.fromCharCode(0x0C41) + " " + TE);
+    eq("a vowel sign after it makes it part of a longer word", txt("output"),
+       TE + String.fromCharCode(0x0C41) + " T");
+
+    var CAFE = "caf" + String.fromCharCode(0xE9);
+    set("input", CAFE + " " + CAFE + "s " + CAFE);
+    set("findBox", CAFE); set("replaceBox", "tea");
+    eq("an accented word is found whole", txt("output"), "tea " + CAFE + "s tea");
+    set("input", "C++ and C++11 and C++");
+    set("findBox", "C++"); set("replaceBox", "Java");
+    eq("so is a word that ends in symbols", txt("output"), "Java and C++11 and Java");
+    set("input", "cat concat cat_x cat.");
+    set("findBox", "cat"); set("replaceBox", "dog");
+    eq("plain English is unchanged", txt("output"), "dog concat cat_x dog.");
+    set("input", "CAT Cat cat");
+    eq("and ignoring case still works", txt("output"), "dog dog dog");
+
+    tick("optRegex", true);
+    set("input", TE + " " + TE + "x");
+    set("findBox", TE + "|" + TE2); set("replaceBox", "[$&]");
+    eq("whole words work with a pattern too", txt("output"), "[" + TE + "] " + TE + "x");
+    set("input", "a-b a-bc");
+    set("findBox", "a\\-b"); set("replaceBox", "X");
+    eq("a pattern the Unicode rules refuse falls back to the old edges", txt("output"), "X a-bc");
+    tick("optRegex", false); tick("optWord", false);
     finish();
 """
 
@@ -730,6 +832,43 @@ T["fraction-calculator"] = r"""
   has("says already lowest terms", txt("sHow"), "already in lowest terms");
   set("sd", 0);
   has("zero denominator handled", txt("sHow"), "cannot be zero");
+        /* parseInt read 1.5 as 1, so 1.5/2 + 1/2 quietly came out as 1. */
+    var DASH = String.fromCharCode(0x2014);
+    set("op", "add");
+    set("aw", "0"); set("an", "1.5"); set("ad", "2");
+    set("bw", "0"); set("bn", "1"); set("bd", "2");
+    shown("a decimal on top is refused", "errWrap");
+    has("with the reason", txt("err"), "whole numbers only");
+    eq("and no answer, shown as a dash rather than a minus sign", txt("ansFrac"), DASH);
+    eq("in every tile", txt("dec"), DASH);
+    set("an", "3"); set("ad", "4");
+    eq("written as 3/4 instead it works", txt("ansFrac"), "5/4");
+    gone("with the error gone", "errWrap");
+    set("bd", "2.0");
+    shown("a decimal point anywhere is refused, even .0", "errWrap");
+    set("bd", "2");
+    /* Letters never reach the page: these are number boxes, and the
+       browser empties one that holds letters. */
+    set("aw", "");
+    gone("an empty box is still a zero", "errWrap");
+
+    /* Past 2^53 the arithmetic stops being exact. */
+    set("an", "99999999999"); set("ad", "99999999998"); set("bn", "99999999997"); set("bd", "99999999996");
+    shown("a sum too big to be exact is refused", "errWrap");
+    has("and says so", txt("err"), "too big to work out exactly");
+    set("an", "99999999999999999999");
+    shown("so is a number too big to type exactly", "errWrap");
+    set("an", "3"); set("ad", "4"); set("bn", "1"); set("bd", "2");
+
+    set("sn", "1.5"); set("sd", "2");
+    has("the simplify box refuses a decimal too", txt("sHow"), "whole numbers only");
+    eq("with a dash", txt("sAns"), DASH);
+    set("sn", "99999999999999999999"); set("sd", "2");
+    has("and a number too big to hold exactly", txt("sHow"), "too big to work out exactly");
+    set("sn", "6"); set("sd", "0");
+    eq("a zero denominator shows a dash there as well", txt("sAns"), DASH);
+    set("sn", "126"); set("sd", "294");
+    eq("and back to the example", txt("sAns"), "3/7");
     finish();
 """
 
@@ -802,7 +941,47 @@ T["image-compressor"] = r"""
             function () { return txt("sAfter").length > 1; },
             function () {
               ok("size still reported after requality", txt("sAfter").length > 1, before);
-              finish();
+                /* A PNG with see-through parts saved as JPG used to come out on a BLACK
+     square: the canvas hands transparent pixels to the JPEG encoder as
+     black. The tool now puts white behind the picture for JPG. */
+  (function () {
+    window.__saved = window.__saved || [];
+    window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+    click("resetBtn");
+    
+    var c = document.createElement("canvas"); c.width = 120; c.height = 80;
+    var x = c.getContext("2d"); x.fillStyle = "#ff0000"; x.fillRect(40, 20, 40, 40);
+    c.toBlob(function (png) {
+      var dt = new DataTransfer();
+      dt.items.add(new File([png], "logo.png", { type: "image/png" }));
+      var input = document.getElementById("file");
+      input.files = dt.files;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      waitFor("a transparent PNG is taken in", function () {
+        return !document.getElementById("dlBtn").disabled;
+      }, function () {
+        var count = window.__saved.length;
+        click("dlBtn");
+        waitFor("and saved as a JPG", function () { return window.__saved.length > count; }, function () {
+          var saved = window.__saved[window.__saved.length - 1];
+          eq("compressor: the file is a JPEG", saved.blob.type, "image/jpeg");
+          createImageBitmap(saved.blob).then(function (bmp) {
+            var k = document.createElement("canvas"); k.width = bmp.width; k.height = bmp.height;
+            var kx = k.getContext("2d"); kx.drawImage(bmp, 0, 0);
+            var d = kx.getImageData(2, 2, 1, 1).data;
+            ok("compressor: a see-through corner comes out white, not black",
+               d[0] > 245 && d[1] > 245 && d[2] > 245, Array.prototype.join.call(d, ","));
+            var m = kx.getImageData(bmp.width >> 1, bmp.height >> 1, 1, 1).data;
+            ok("compressor: and the picture itself is unchanged",
+               m[0] > 220 && m[1] < 40 && m[2] < 40, Array.prototype.join.call(m, ","));
+            has("compressor: and the page says the see-through parts are white now",
+                txt("msg"), "see-through parts are white");
+            finish();
+          });
+        }, 20000);
+      }, 20000);
+    }, "image/png");
+  })();
             });
         });
     });
@@ -871,6 +1050,89 @@ T["json-formatter"] = r"""
        box.innerHTML.slice(0, 120));
     ok("and the visitor still sees what they typed, as characters",
        box.textContent.indexOf("<iframe") > -1, box.textContent.slice(0, 90));
+        /* The result used to be JSON.stringify(JSON.parse(text)), which changed
+       what it printed: big numbers rounded, 1e400 became null, and a key
+       written twice lost its first value - all under "Valid JSON". The text
+       is now laid out token by token. For everyday JSON that must give
+       exactly what JSON.stringify gives, so 300 random documents, each
+       pasted with different spacing, are compared with it. */
+    var seed = 12345;
+    function rnd(n) { seed = (seed * 1103515245 + 12345) % 2147483648; return seed % n; }
+    var PIECES = ["a", "b", "{", "}", "[", "]", ",", ":", " ", "\"", "\\", "\n", "\t",
+                  String.fromCharCode(0x0C24), String.fromCharCode(0xD83D, 0xDE00), "/", "x y"];
+    function randomString() {
+      var s = "", k = rnd(6);
+      while (k--) { s += PIECES[rnd(PIECES.length)]; }
+      return s;
+    }
+    function randomValue(depth) {
+      var kind = rnd(depth > 3 ? 4 : 7);
+      if (kind === 0) return rnd(2000) - 1000;
+      if (kind === 1) return (rnd(100000) - 50000) / 7;
+      if (kind === 2) return randomString();
+      if (kind === 3) return [true, false, null][rnd(3)];
+      if (kind === 4) { var a = [], m = rnd(4); while (m--) a.push(randomValue(depth + 1)); return a; }
+      var o = {}, k = rnd(4);
+      while (k--) o["k" + rnd(50) + randomString()] = randomValue(depth + 1);
+      return o;
+    }
+    var SPACING = [0, 1, 3, "\t", " \n "];
+    var wrong = [];
+    for (var doc = 0; doc < 300; doc++) {
+      var v = randomValue(0);
+      set("input", JSON.stringify(v, null, SPACING[doc % SPACING.length]));
+      click("beautifyBtn");
+      if (txt("output") !== JSON.stringify(v, null, 2)) { wrong.push("beautify " + JSON.stringify(v)); }
+      click("minifyBtn");
+      if (txt("output") !== JSON.stringify(v)) { wrong.push("minify " + JSON.stringify(v)); }
+    }
+    eq("300 random documents laid out exactly as JSON.stringify would", wrong.length, 0);
+    if (wrong.length) { ok("first difference", false, wrong[0].slice(0, 200)); }
+
+    set("indent", "tab");
+    set("input", '{"a":[1,{"b":2}]}');
+    click("beautifyBtn");
+    eq("a tab indent", txt("output"), '{\n\t"a": [\n\t\t1,\n\t\t{\n\t\t\t"b": 2\n\t\t}\n\t]\n}');
+    set("indent", "4");
+    click("beautifyBtn");
+    eq("a four-space indent", txt("output"), '{\n    "a": [\n        1,\n        {\n            "b": 2\n        }\n    ]\n}');
+    set("indent", "2");
+
+    set("input", '{"id":12345678901234567890,"x":1.0,"y":1e400,"z":-0,"w":2E-3}');
+    click("beautifyBtn");
+    eq("every number comes out exactly as it was written",
+       txt("output"), '{\n  "id": 12345678901234567890,\n  "x": 1.0,\n  "y": 1e400,\n  "z": -0,\n  "w": 2E-3\n}');
+    has("and the page says which ones other programs would change",
+        txt("msg"), "12345678901234567890, 1e400 are kept exactly as written");
+    click("minifyBtn");
+    eq("minifying keeps them too", txt("output"), '{"id":12345678901234567890,"x":1.0,"y":1e400,"z":-0,"w":2E-3}');
+
+    set("input", '{"a":1,"a":2,"b":{"c":1,"\\u0063":2}}');
+    click("beautifyBtn");
+    eq("a key written twice keeps both values", txt("output"),
+       '{\n  "a": 1,\n  "a": 2,\n  "b": {\n    "c": 1,\n    "\\u0063": 2\n  }\n}');
+    has("and the page names it", txt("msg"), 'The keys "a", "c" appear twice in one object');
+    eq("every key is counted, both copies included", txt("sKeys"), "5");
+    eq("the depth is three", txt("sDepth"), "3");
+
+    set("input", '{"a":1}');
+    click("beautifyBtn");
+    eq("ordinary JSON draws no caveat", txt("msg"), "Valid JSON · formatted with 2 spaces");
+
+    set("input", ' [ {} , [ ] , "x" ] ');
+    click("beautifyBtn");
+    eq("empty containers stay on one line", txt("output"), '[\n  {},\n  [],\n  "x"\n]');
+    set("input", "42");
+    click("beautifyBtn");
+    eq("a bare number is valid JSON too", txt("output"), "42");
+    eq("with no keys", txt("sKeys"), "0");
+    eq("and a depth of one", txt("sDepth"), "1");
+
+    set("input", '{"<img src=x onerror=zq>":1,"<img src=x onerror=zq>":2}');
+    click("beautifyBtn");
+    eq("a duplicate key is named as text, never as markup",
+       document.getElementById("msg").querySelectorAll("img").length, 0);
+    has("and is still readable", txt("msg"), "<img src=x onerror=zq>");
     finish();
 """
 
@@ -1235,6 +1497,26 @@ T["text-repeater"] = r"""
     set("copies", "2");
     check("recovers after refusal", out(), "ab\nab");
     check("warning cleared", document.getElementById("msg").textContent, "");
+        /* Ten million copies came back as 100,000 without a word; 2.7 as 2;
+       0 and -2 as nothing, also without a word. */
+    set("input", "hi"); set("sep", "nl");
+    set("copies", "10000000");
+    eq("too many copies makes nothing", txt("output"), "");
+    has("and says the limit", txt("msg"), "Up to 100,000 copies at a time");
+    set("copies", "100000");
+    eq("the limit itself works", txt("cCopies"), "100,000");
+    eq("with nothing to say", txt("msg"), "");
+    set("copies", "2.7");
+    eq("a fraction makes nothing", txt("output"), "");
+    has("and asks for a whole number", txt("msg"), "whole number");
+    set("copies", "0");
+    has("zero asks for at least one", txt("msg"), "at least one copy");
+    set("copies", "-2");
+    has("so does a minus count", txt("msg"), "at least one copy");
+    set("copies", "");
+    eq("an empty box is quietly nothing", txt("msg"), "");
+    set("copies", "3");
+    eq("and three is three", txt("output"), "hi\nhi\nhi");
     finish();
 """
 
@@ -1471,8 +1753,46 @@ T["date-difference-calculator"] = r"""
     set("start", "2024-02-01"); set("end", "2024-03-01");
     eq("february in a leap year", txt("days"), "29 days");
 
+    /* This line used to assert "0 months, 28 days" under a label saying
+       one month - the test had learnt the bug. The page promises a month. */
     set("start", "2026-01-31"); set("end", "2026-02-28");
-    has("31 Jan to 28 Feb is one month", txt("breakdown"), "0 years, 0 months, 28 days");
+    has("31 Jan to 28 Feb is one month", txt("breakdown"), "0 years, 1 month, 0 days");
+    set("end", "2026-03-01");
+    has("and to 1 March a month and a day, never minus two days", txt("breakdown"), "0 years, 1 month, 1 day");
+    set("start", "2024-02-29"); set("end", "2025-02-28");
+    has("29 February to 28 February next year is a year", txt("breakdown"), "1 year, 0 months, 0 days");
+    set("start", "2026-02-28"); set("end", "2026-03-31");
+    has("28 February to 31 March", txt("breakdown"), "0 years, 1 month, 3 days");
+
+    /* 600 random pairs against a count written here independently: step a
+       month at a time from the earlier date, each step clamped to the end
+       of its month, and stop before passing the later one. */
+    (function () {
+      var DAYMS = 86400000, seed = 7, wrong = [];
+      function rnd(n) { seed = (seed * 1103515245 + 12345) % 2147483648; return seed % n; }
+      function day(t) { return new Date(t).toISOString().slice(0, 10); }
+      function step(y, m, d, k) {
+        var mm = m + k, yy = y + Math.floor(mm / 12);
+        mm = ((mm % 12) + 12) % 12;
+        var last = [31, (yy % 4 === 0 && yy % 100 !== 0) || yy % 400 === 0 ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][mm];
+        return Date.UTC(yy, mm, Math.min(d, last));
+      }
+      for (var k = 0; k < 600; k++) {
+        var t1 = Date.UTC(1990, 0, 1) + rnd(15000) * DAYMS;
+        var t2 = t1 + rnd(k % 3 ? 400 : 4000) * DAYMS;
+        var a = new Date(t1), y = a.getUTCFullYear(), m = a.getUTCMonth(), d = a.getUTCDate();
+        var n = 0;
+        while (step(y, m, d, n + 1) <= t2) { n++; }
+        var left = Math.round((t2 - step(y, m, d, n)) / DAYMS);
+        var want = Math.floor(n / 12) + (Math.floor(n / 12) === 1 ? " year, " : " years, ") +
+                   (n % 12) + (n % 12 === 1 ? " month, " : " months, ") +
+                   left + (left === 1 ? " day" : " days") + " on the calendar";
+        set("start", day(t1)); set("end", day(t2));
+        if (txt("breakdown") !== want) { wrong.push(day(t1) + " to " + day(t2) + ": " + txt("breakdown") + " / " + want); }
+      }
+      eq("600 random gaps agree with a month-by-month count", wrong.length, 0);
+      if (wrong.length) { ok("first", false, wrong[0]); }
+    })();
 
     set("start", "");
     shown("a missing date is refused", "errWrap");
@@ -1512,8 +1832,46 @@ T["add-subtract-days"] = r"""
     set("unit", "days"); set("amount", "0");
     eq("zero leaves the date alone", txt("result"), "1 January 2026");
 
-    set("start", "");
-    shown("a missing date is refused", "errWrap");
+    /* A minus amount used to be read as nothing: the starting date came
+       back as the answer. It now counts the other way, and says so. */
+    set("start", "2026-10-03"); set("unit", "days"); set("direction", "add"); set("amount", "-5");
+    eq("adding minus five days goes back five", txt("result"), "28 September 2026");
+    has("the sum shows the way it went", txt("formula"), "minus 5 days");
+    has("and the note says why", txt("note"), "A minus amount counts the other way, so this goes backwards.");
+    set("direction", "sub");
+    eq("subtracting minus five goes forwards", txt("result"), "8 October 2026");
+    set("direction", "add");
+
+    /* parseInt read 1.5 as 1. */
+    set("amount", "1.5");
+    shown("a fraction is refused", "errWrap");
+    has("asking for a whole number", txt("err"), "whole number of days");
+    eq("with no date shown", txt("result"), String.fromCharCode(0x2014));
+
+    /* Ten million years printed "NaN undefined NaN" and threw. */
+    set("unit", "years"); set("amount", "99999999999999999999");
+    shown("a date past any calendar is refused", "errWrap");
+    has("and the page says how far it goes", txt("err"), "years 1 to 9999");
+    set("amount", "7973");
+    eq("9999 is still reachable", txt("result"), "3 October 9999");
+    gone("without an error", "errWrap");
+    set("amount", "7974");
+    shown("10000 is not", "errWrap");
+    set("direction", "sub"); set("amount", "2025");
+    eq("year 1 is reachable going back", txt("result"), "3 October 1");
+    set("amount", "2026");
+    shown("year 0 is not", "errWrap");
+    set("direction", "add");
+
+    /* The working-day loop stopped after 200,000 steps and printed wherever
+       it had reached. */
+    set("unit", "business"); set("amount", "150000");
+    shown("too many working days is refused", "errWrap");
+    has("with the limit named", txt("err"), "100,000 working days");
+    set("amount", "100000");
+    gone("the limit itself is fine", "errWrap");
+    /* Worked out separately in Python, counting Monday to Friday. */
+    eq("and lands where 100,000 working days lead", txt("isoOut"), "2410-01-22");
     finish();
 """
 
@@ -1543,6 +1901,36 @@ T["sip-calculator"] = r"""
 
     set("monthly", "");
     near("an empty box does not crash it", txt("maturity"), 0);
+        /* 2.5 years quietly became 2, and a minus step-up or return became 0%. */
+    var DASH = String.fromCharCode(0x2014);
+    set("monthly", "5000"); set("rate", "12"); set("stepup", "0"); set("years", "2.5");
+    near("2.5 years is 30 instalments", txt("invested"), 150000);
+    /* 5000 a month at 1% a month for 30 months, paid at the start of each:
+       5000 x 1.01 x (1.01^30 - 1) / 0.01 = 175,664 (worked in Python). */
+    near("growing for all thirty months", txt("maturity"), 175664, 1);
+    eq("two whole years and a part year in the table", rows().length, 3);
+    eq("the part year says how long it is", cell(2, 0), "Year 3 (6 months)");
+    has("and so does the summary", txt("formula"), "for 2 years and 6 months at");
+
+    set("years", "10"); set("stepup", "-10");
+    /* Worked in Python: 5000, falling 10% each anniversary, 1% a month. */
+    near("a falling instalment is worked out, not ignored", txt("invested"), 390793, 2);
+    near("and grows to what Python works out", txt("maturity"), 833449, 2);
+    has("and named as falling", txt("formula"), "falling 10.00% each year");
+    set("stepup", "0"); set("rate", "-6");
+    ok("a minus return loses money", parseFloat(txt("maturity").replace(/[^0-9.]/g, "")) < 600000, txt("maturity"));
+    set("rate", "12");
+
+    set("years", "80");
+    eq("past fifty years is refused", txt("maturity"), DASH);
+    has("with the limit", txt("formula"), "Up to 50 years");
+    set("years", "10"); set("monthly", "-5");
+    eq("a minus amount is refused", txt("maturity"), DASH);
+    has("with the reason", txt("formula"), "cannot be below zero");
+    set("monthly", "5000"); set("rate", "-100");
+    eq("a return of -100% is refused", txt("maturity"), DASH);
+    set("rate", "12");
+    near("and back to the example", txt("maturity"), 1161695, 2);
     finish();
 """
 
@@ -2804,7 +3192,37 @@ T["image-resizer"] = r"""
             eq("reset clears the original size", txt("sOriginal"), DASH);
             eq("and disables the download",
                document.getElementById("dlBtn").disabled, true);
-            finish();
+                        /* A size no browser can draw used to fail quietly: the run
+               before it finished later, the page said "Ready" beside the
+               huge size, and Download gave the old, small picture. */
+            makeImage("file", 200, 200, function () {
+              waitFor("a fresh picture is ready",
+                function () { return !document.getElementById("dlBtn").disabled; },
+                function () {
+                  set("mode", "percent");
+                  set("percent", 50);
+                  set("percent", 20000);
+                  eq("40000 pixels a side is refused at once", txt("sNew"), "40000" + X + "40000");
+                  has("with the limits named", txt("msg"), "up to 16,384 pixels a side");
+                  eq("and nothing to download", document.getElementById("dlBtn").disabled, true);
+                  eq("nor a size for a file that was not made", txt("sBytes"), DASH);
+                  setTimeout(function () {
+                    eq("the 50% run that finished after it is thrown away",
+                       document.getElementById("dlBtn").disabled, true);
+                    has("and the refusal is still what the page says", txt("msg"), "16,384");
+                    set("mode", "px");
+                    set("width", "20000");
+                    has("a single side past the limit is refused too", txt("msg"), "16,384");
+                    set("percent", 50); set("mode", "percent");
+                    waitFor("and an ordinary size works again",
+                      function () { return !document.getElementById("dlBtn").disabled; },
+                      function () {
+                        eq("at the size asked for", txt("sNew"), "100" + X + "100");
+                        finish();
+                      });
+                  }, 1500);
+                });
+            });
           });
       });
   });
@@ -2938,7 +3356,46 @@ T["svg-to-png"] = r"""
 
                   click("clearBtn");
                   has("clearing asks for input again", txt("msg"), "Paste some SVG");
-                  finish();
+                                    /* Sizes in other units, a % size and a missing xmlns. */
+                  window.__saved = [];
+                  window.downloadBlob = function (blob, name) { window.__saved.push(blob); };
+                  set("scale", "1");
+                  set("input", '<svg xmlns="http://www.w3.org/2000/svg" width="2cm" height="1in"><rect width="10" height="10"/></svg>');
+                  waitFor("2cm by 1in is 76 by 96 pixels, not 2 by 1",
+                    function () { return txt("sDims") === "76" + X + "96"; },
+                    function () {
+                      set("input", '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 4 3"><rect width="4" height="3"/></svg>');
+                      waitFor("a % size takes the viewBox's shape, not a square",
+                        function () { return txt("sDims") === "4" + X + "3"; },
+                        function () {
+                          set("input", '<svg xmlns="http://www.w3.org/2000/svg" width="300" viewBox="0 0 4 3"><rect width="4" height="3"/></svg>');
+                          waitFor("a width alone takes its height from the viewBox",
+                            function () { return txt("sDims") === "300" + X + "225"; },
+                            function () {
+                              set("scale", "4");
+                              set("input", '<svg width="10" height="10"><rect x="5" y="5" width="5" height="5" fill="#ff0000"/></svg>');
+                              waitFor("an SVG with no xmlns is drawn, at four times its size",
+                                function () { return txt("sDims") === "40" + X + "40"; },
+                                function () {
+                                  has("and the page says the namespace was added", txt("msg"), "had no xmlns");
+                                  click("dlBtn");
+                                  createImageBitmap(window.__saved[window.__saved.length - 1]).then(function (bmp) {
+                                    var c = document.createElement("canvas"); c.width = bmp.width; c.height = bmp.height;
+                                    var x = c.getContext("2d"); x.drawImage(bmp, 0, 0);
+                                    var red = x.getImageData(35, 35, 1, 1).data, clear = x.getImageData(10, 10, 1, 1).data;
+                                    ok("the drawing scaled with it: red at 35,35", red[0] > 240 && red[3] > 240, Array.prototype.join.call(red, ","));
+                                    ok("and nothing at 10,10", clear[3] === 0, Array.prototype.join.call(clear, ","));
+
+                                    set("input", '<svg xmlns="http://www.w3.org/2000/svg"><rect width="10" height="10"/></svg>');
+                                    eq("a refused SVG leaves no size behind", txt("sDims"), String.fromCharCode(0x2014));
+                                    eq("no picture", document.querySelectorAll("#preview img").length, 0);
+                                    eq("and nothing to download", document.getElementById("dlBtn").disabled, true);
+                                    finish();
+                                  });
+                                });
+                            });
+                        });
+                    });
                 });
             });
         });
@@ -3623,6 +4080,26 @@ T["json-to-csv"] = r"""
 
   click("clearBtn");
   has("clearing asks for JSON", txt("msg"), "Paste some JSON");
+    /* JSON.parse rounds every number to about 16 digits, so an account
+     number or an ID used to reach the table changed. */
+  set("input", '[{"id":12345678901234567890,"amt":1e400,"small":12.5,"n":-9007199254740993}]');
+  eq("long numbers reach the table digit for digit", txt("output"),
+     "id,amt,small,n\r\n12345678901234567890,1e400,12.5,-9007199254740993");
+  has("and the page says so", txt("msg"), "3 numbers are longer than a computer holds exactly (such as 12345678901234567890)");
+  set("input", '[{"id":9007199254740991}]');
+  eq("the largest exact one is an ordinary number", txt("output"), "id\r\n9007199254740991");
+  eq("with nothing to say about it", txt("msg"), "1 row, 1 column.");
+  set("input", '{"t":"a 12345678901234567890 in a string","u":"x"}');
+  eq("digits inside a string are never touched", txt("output"), "t,u\r\na 12345678901234567890 in a string,x");
+  eq("and draw no note", txt("msg"), "1 row, 2 columns.");
+  set("input", '{"t":"say \\"12345678901234567890\\" now"}');
+  eq("nor are digits after an escaped quotation mark", txt("output"), 't\r\n"say ""12345678901234567890"" now"');
+  eq("which draw no note either", txt("msg"), "1 row, 1 column.");
+
+  /* JSON.parse also keeps only the last of two keys with one name. */
+  set("input", '[{"a":1,"a":2,"b":3}]');
+  eq("a repeated key keeps its last value", txt("output"), "a,b\r\n2,3");
+  has("and the page says the first was not used", txt("msg"), 'The key "a" appears twice in one object');
   finish();
 """
 
@@ -3877,6 +4354,34 @@ T["sql-formatter"] = r"""
 
   click("clearBtn");
   has("clearing asks for SQL", txt("msg"), "Paste some SQL");
+    /* The page says nothing is added, and it was adding spaces INSIDE
+     pieces of SQL: >= became "> =", <> "< >", $1 "$ 1", t.* "t. *",
+     1.5e3 "1.5 e3" and COUNT(*) "COUNT (*)" - which MySQL refuses. None
+     of that SQL would run. Each case below is the whole output. */
+  set("input", "select a from t where a>=1 and b<>2 and c!=3 and d<=4 and e||f = 'x' and g::int = 5 and h->>'k' = 'v'");
+  eq("operators of two and three characters stay whole", out(),
+     "SELECT\n  a\nFROM t\nWHERE a >= 1\n  AND b <> 2\n  AND c != 3\n  AND d <= 4\n  AND e || f = 'x'\n  AND g::INT = 5\n  AND h ->> 'k' = 'v'");
+  set("input", "select * from t where id = $1 and name = :name and x = @var and y = @@sess and z = ? and t.* is not null");
+  eq("parameters, variables and t.* stay whole", out(),
+     "SELECT\n  *\nFROM t\nWHERE id = $1\n  AND name = :name\n  AND x = @var\n  AND y = @@sess\n  AND z = ?\n  AND t.* IS NOT NULL");
+  set("input", "select upper(name), coalesce(a,b), count(distinct x), now(), count (*) from t");
+  eq("a bracket typed against a function stays against it, one typed apart stays apart", out(),
+     "SELECT\n  upper(name),\n  COALESCE(a, b),\n  COUNT(DISTINCT x),\n  now(),\n  COUNT (*)\nFROM t");
+  set("input", "select -1, a-1, a - -2, (-3), 1.5e3, .5, 2E-4 from t where b in (-1,+2)");
+  eq("numbers stay whole, signs included", out(),
+     "SELECT\n  -1,\n  a - 1,\n  a - -2,\n  (-3),\n  1.5e3,\n  .5,\n  2E-4\nFROM t\nWHERE b IN (-1, +2)");
+  set("input", "select N'name', E'tab', x'FF', $$ body $1 $$, $fn$ x $fn$ from \"s\".\"t\" where a = 'it''s'");
+  eq("prefixed and dollar-quoted strings and quoted names stay whole", out(),
+     "SELECT\n  N'name',\n  E'tab',\n  x'FF',\n  $$ body $1 $$,\n  $fn$ x $fn$\nFROM \"s\".\"t\"\nWHERE a = 'it''s'");
+  set("input", "select x::numeric(10,2) from t where a in(1,2)");
+  eq("a cast with a size, and IN written against its bracket", out(),
+     "SELECT\n  x::NUMERIC(10, 2)\nFROM t\nWHERE a IN(1, 2)");
+
+  /* Formatting the output again changes nothing. */
+  set("input", "select a,b , c from t join u on t.id=u.id where a>=-1 and b<>'x' or c::int=$2 order by 1");
+  var once = out();
+  set("input", once);
+  eq("formatting twice is the same as once", out(), once);
   finish();
 """
 
@@ -3910,6 +4415,36 @@ T["readability-score"] = r"""
 
   click("clearBtn");
   eq("clearing empties the box", val("input"), "");
+    /* Every full stop used to end a sentence: titles, initials, p.m. and
+     even the point in 3.50. Short "sentences" pushed the score up. */
+  function sentences(text) { set("input", text); return txt("sSentences"); }
+  eq("titles and p.m. do not end a sentence",
+     sentences("Dr. Smith went home at 5 p.m. today with his dog. He slept well. Mr. Rao said e.g. this is fine."), "3");
+  eq("a decimal point does not either",
+     sentences("It costs 3.50 rupees today in the big market. That is cheap for everyone here."), "2");
+  eq("nor do initials",
+     sentences("J. K. Rowling wrote many books for young readers. They sold very well indeed."), "2");
+  eq("a short form followed by a capital letter does end one",
+     sentences("We lived for ten long years in the U.S. Then we moved back home again."), "2");
+  eq("and etc. before a capital",
+     sentences("Bring pens, paper, books etc. And bring your lunch box with you today."), "2");
+  eq("question and exclamation marks always end one",
+     sentences("Wait for me here please! Did you really see it there? Yes I did see it."), "3");
+  eq("a quotation mark after the full stop belongs to that sentence",
+     sentences("He looked at us and said \"Stop right now.\" Then he walked away slowly."), "2");
+  eq("and a run of dots ends one",
+     sentences("I waited and waited for the bus... It never came to our stop at all."), "2");
+
+  /* That example was measured as nine "sentences" of two words each. */
+  set("input", "Dr. Smith went home at 5 p.m. today. He slept. Mr. Rao said e.g. this is fine.");
+  near("so its sentences average six words, not two", txt("sPerSentence"), 6, 0.05);
+
+  /* Telugu text has words, none of them A to Z. */
+  var TE = String.fromCharCode(0x0C24, 0x0C46, 0x0C32, 0x0C41, 0x0C17, 0x0C41);
+  set("input", (TE + " " + TE + " " + TE + ". ").repeat(6));
+  has("text in another script is told the score is for English", txt("msg"), "worked out for English");
+  set("input", "Too short.");
+  has("while short English is still asked for ten words", txt("msg"), "at least ten words");
   finish();
 """
 
@@ -4614,7 +5149,45 @@ T["image-cropper"] = r"""
                 eq("reset clears the size", txt("sSize"), DASH);
                 eq("disables the download", document.getElementById("dlBtn").disabled, true);
                 eq("and frees the shape", val("aspect"), "free");
-                finish();
+                  /* A PNG with see-through parts saved as JPG used to come out on a BLACK
+     square: the canvas hands transparent pixels to the JPEG encoder as
+     black. The tool now puts white behind the picture for JPG. */
+  (function () {
+    window.__saved = window.__saved || [];
+    window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+    click("resetBtn");
+    set("fmt", "image/jpeg");
+    var c = document.createElement("canvas"); c.width = 120; c.height = 80;
+    var x = c.getContext("2d"); x.fillStyle = "#ff0000"; x.fillRect(40, 20, 40, 40);
+    c.toBlob(function (png) {
+      var dt = new DataTransfer();
+      dt.items.add(new File([png], "logo.png", { type: "image/png" }));
+      var input = document.getElementById("file");
+      input.files = dt.files;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      waitFor("a transparent PNG is taken in", function () {
+        return !document.getElementById("dlBtn").disabled;
+      }, function () {
+        var count = window.__saved.length;
+        click("dlBtn");
+        waitFor("and saved as a JPG", function () { return window.__saved.length > count; }, function () {
+          var saved = window.__saved[window.__saved.length - 1];
+          eq("cropper: the file is a JPEG", saved.blob.type, "image/jpeg");
+          createImageBitmap(saved.blob).then(function (bmp) {
+            var k = document.createElement("canvas"); k.width = bmp.width; k.height = bmp.height;
+            var kx = k.getContext("2d"); kx.drawImage(bmp, 0, 0);
+            var d = kx.getImageData(2, 2, 1, 1).data;
+            ok("cropper: a see-through corner comes out white, not black",
+               d[0] > 245 && d[1] > 245 && d[2] > 245, Array.prototype.join.call(d, ","));
+            var m = kx.getImageData(bmp.width >> 1, bmp.height >> 1, 1, 1).data;
+            ok("cropper: and the picture itself is unchanged",
+               m[0] > 220 && m[1] < 40 && m[2] < 40, Array.prototype.join.call(m, ","));
+            finish();
+          });
+        }, 20000);
+      }, 20000);
+    }, "image/png");
+  })();
               }, 4000);
           }, 4000);
       });
@@ -4930,7 +5503,45 @@ T["photo-watermark"] = r"""
                 eq("reset puts the copyright sign back",
                    val("text"), String.fromCharCode(0x00A9) + " Your Name");
                 eq("disables the download", document.getElementById("dlBtn").disabled, true);
-                finish();
+                  /* A PNG with see-through parts saved as JPG used to come out on a BLACK
+     square: the canvas hands transparent pixels to the JPEG encoder as
+     black. The tool now puts white behind the picture for JPG. */
+  (function () {
+    window.__saved = window.__saved || [];
+    window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+    click("resetBtn");
+    set("fmt", "image/jpeg");
+    var c = document.createElement("canvas"); c.width = 120; c.height = 80;
+    var x = c.getContext("2d"); x.fillStyle = "#ff0000"; x.fillRect(40, 20, 40, 40);
+    c.toBlob(function (png) {
+      var dt = new DataTransfer();
+      dt.items.add(new File([png], "logo.png", { type: "image/png" }));
+      var input = document.getElementById("file");
+      input.files = dt.files;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      waitFor("a transparent PNG is taken in", function () {
+        return !document.getElementById("dlBtn").disabled;
+      }, function () {
+        var count = window.__saved.length;
+        click("dlBtn");
+        waitFor("and saved as a JPG", function () { return window.__saved.length > count; }, function () {
+          var saved = window.__saved[window.__saved.length - 1];
+          eq("watermark: the file is a JPEG", saved.blob.type, "image/jpeg");
+          createImageBitmap(saved.blob).then(function (bmp) {
+            var k = document.createElement("canvas"); k.width = bmp.width; k.height = bmp.height;
+            var kx = k.getContext("2d"); kx.drawImage(bmp, 0, 0);
+            var d = kx.getImageData(2, 2, 1, 1).data;
+            ok("watermark: a see-through corner comes out white, not black",
+               d[0] > 245 && d[1] > 245 && d[2] > 245, Array.prototype.join.call(d, ","));
+            var m = kx.getImageData(bmp.width >> 1, bmp.height >> 1, 1, 1).data;
+            ok("watermark: and the picture itself is unchanged",
+               m[0] > 220 && m[1] < 40 && m[2] < 40, Array.prototype.join.call(m, ","));
+            finish();
+          });
+        }, 20000);
+      }, 20000);
+    }, "image/png");
+  })();
               });
           });
       });
@@ -5049,7 +5660,45 @@ T["meme-generator"] = r"""
             click("resetBtn");
             eq("reset puts the classic top line back", val("top"), "WHEN THE CODE WORKS");
             eq("and disables the download", document.getElementById("dlBtn").disabled, true);
+              /* A PNG with see-through parts saved as JPG used to come out on a BLACK
+     square: the canvas hands transparent pixels to the JPEG encoder as
+     black. The tool now puts white behind the picture for JPG. */
+  (function () {
+    window.__saved = window.__saved || [];
+    window.downloadBlob = function (blob, name) { window.__saved.push({ blob: blob, name: name }); };
+    click("resetBtn");
+    set("fmt", "image/jpeg");
+    var c = document.createElement("canvas"); c.width = 120; c.height = 80;
+    var x = c.getContext("2d"); x.fillStyle = "#ff0000"; x.fillRect(40, 20, 40, 40);
+    c.toBlob(function (png) {
+      var dt = new DataTransfer();
+      dt.items.add(new File([png], "logo.png", { type: "image/png" }));
+      var input = document.getElementById("file");
+      input.files = dt.files;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      waitFor("a transparent PNG is taken in", function () {
+        return !document.getElementById("dlBtn").disabled;
+      }, function () {
+        var count = window.__saved.length;
+        click("dlBtn");
+        waitFor("and saved as a JPG", function () { return window.__saved.length > count; }, function () {
+          var saved = window.__saved[window.__saved.length - 1];
+          eq("meme: the file is a JPEG", saved.blob.type, "image/jpeg");
+          createImageBitmap(saved.blob).then(function (bmp) {
+            var k = document.createElement("canvas"); k.width = bmp.width; k.height = bmp.height;
+            var kx = k.getContext("2d"); kx.drawImage(bmp, 0, 0);
+            var d = kx.getImageData(2, 2, 1, 1).data;
+            ok("meme: a see-through corner comes out white, not black",
+               d[0] > 245 && d[1] > 245 && d[2] > 245, Array.prototype.join.call(d, ","));
+            var m = kx.getImageData(bmp.width >> 1, bmp.height >> 1, 1, 1).data;
+            ok("meme: and the picture itself is unchanged",
+               m[0] > 220 && m[1] < 40 && m[2] < 40, Array.prototype.join.call(m, ","));
             finish();
+          });
+        }, 20000);
+      }, 20000);
+    }, "image/png");
+  })();
           });
       });
   });
@@ -10665,6 +11314,22 @@ T["currency-converter"] = r"""  /* ================= independent arithmetic and 
   eq("which is 0.01038", shown("result"), "0.01038 USD");
   set("amount", "0");
   eq("nothing converts to nothing", shown("result"), "0 USD");
+  /* Dropping every comma read the European "1.000,50" as 1.0005 and "1,5"
+     as 15. A comma is a thousands separator here, so the last one must be
+     followed by exactly three digits. */
+  var DASH = String.fromCharCode(0x2014);
+  ["1.000,50", "1.234,567", "1,5", "1,50", "1,0000", "12,34.5"].forEach(function (typed) {
+    set("amount", typed);
+    eq(typed + " is refused rather than guessed", shown("result"), DASH);
+    has(typed + ": and the page asks for a decimal dot", txt("msg"), "Write decimals with a dot");
+  });
+  set("amount", "12,345.67");
+  ok("12,345.67 is fine", shown("result") !== DASH, shown("result"));
+  set("amount", "1,00,000.50");
+  ok("and so is the Indian 1,00,000.50", shown("result") !== DASH, shown("result"));
+  set("amount", "-5");
+  eq("a minus amount is refused", shown("result"), DASH);
+  has("with the right reason", txt("msg"), "cannot be below zero");
   set("amount", " 2 500.50 ");
   eq("spaces in the amount are fine", shown("result"), money(expect(R, 2500.5, "INR", "USD"), "USD") + " USD");
   set("amount", ".5");
@@ -10708,7 +11373,7 @@ T["currency-converter"] = r"""  /* ================= independent arithmetic and 
 
   /* ================= amounts it refuses ================= */
   [["", "Type an amount."], ["abc", "Type the amount as a number, such as 1500 or 99.50."],
-   ["-5", "Type the amount as a number, such as 1500 or 99.50."], ["1.2.3", "Type the amount as a number, such as 1500 or 99.50."],
+   ["-5", "An amount to convert cannot be below zero."], ["1.2.3", "Type the amount as a number, such as 1500 or 99.50."],
    ["1e5", "Type the amount as a number, such as 1500 or 99.50."], ["2000000000000000", "That amount is too large to convert."]
   ].forEach(function (c) {
     set("amount", c[0]);

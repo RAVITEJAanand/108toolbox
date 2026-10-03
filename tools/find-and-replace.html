@@ -350,11 +350,28 @@
     /* ---- END: keeping a dollar sign literal in the replacement ---- */
 
     /* ---- START: building the pattern from the options ---- */
+    /* A letter of any alphabet, a mark that sits on one (Telugu vowel
+       signs are marks), a digit, or an underscore. */
+    var WORD_CHAR = "[\\p{L}\\p{M}\\p{N}_]";
+
     function buildPattern(needle) {
       var source = optRegex.checked ? needle : escapeRegex(needle);
-      if (optWord.checked) source = "\\b(?:" + source + ")\\b";
       /* g = every match, not just the first. i = ignore case. */
-      return new RegExp(source, optCase.checked ? "g" : "gi");
+      var flags = optCase.checked ? "g" : "gi";
+      if (optWord.checked) {
+        /* "Whole words" used to be \b, which only knows A to Z, 0 to 9 and
+           the underscore: to it a Telugu word has no edges at all, so
+           whole-word search never found one. These edges know every
+           alphabet. */
+        try {
+          return new RegExp("(?<!" + WORD_CHAR + ")(?:" + source + ")(?!" + WORD_CHAR + ")", flags + "u");
+        } catch (e) {
+          /* A pattern written for the older rules can be refused by the
+             Unicode ones; it keeps the old edges rather than failing. */
+          source = "\\b(?:" + source + ")\\b";
+        }
+      }
+      return new RegExp(source, flags);
     }
     /* ---- END: building the pattern from the options ---- */
 

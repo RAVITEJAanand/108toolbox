@@ -453,6 +453,67 @@
     }
     /* ---- END: turning the parsed JSON into rows ---- */
 
+    /* ---- START: what JSON.parse would quietly change ----
+       JSON.parse turns every number into a JavaScript number, which holds
+       about 15 or 16 digits: an account number or an ID such as
+       12345678901234567890 came out of this page as 12345678901234567000,
+       and 1e400 as Infinity. It also keeps only the last of two keys with
+       the same name. This walks the text once (it has already been parsed,
+       so it is valid) and finds both. */
+    function scanText(text) {
+      var i = 0, n = text.length, stack = [], inexact = [], duplicates = [];
+      for (;;) {
+        while (i < n && " \t\n\r".indexOf(text.charAt(i)) > -1) { i++; }
+        if (i >= n) { break; }
+        var ch = text.charAt(i), top = stack[stack.length - 1];
+        if (ch === "{") { stack.push({ names: Object.create(null), wantKey: true }); i++; }
+        else if (ch === "[") { stack.push(null); i++; }
+        else if (ch === "}" || ch === "]") { stack.pop(); i++; }
+        else if (ch === ",") { if (top) { top.wantKey = true; } i++; }
+        else if (ch === ":") { i++; }
+        else if (ch === '"') {
+          var from = i;
+          i++;
+          while (i < n && text.charAt(i) !== '"') { i += text.charAt(i) === "\\" ? 2 : 1; }
+          i++;
+          if (top && top.wantKey) {
+            top.wantKey = false;
+            var name = JSON.parse(text.slice(from, i));
+            if (top.names["k" + name] && duplicates.indexOf(name) === -1) { duplicates.push(name); }
+            top.names["k" + name] = true;
+          }
+        } else {
+          var start = i;
+          while (i < n && " \t\n\r,:]}".indexOf(text.charAt(i)) === -1) { i++; }
+          var word = text.slice(start, i);
+          if (/^-?\d/.test(word)) {
+            var value = Number(word);
+            if (!isFinite(value) || (/^-?\d+$/.test(word) && Math.abs(value) > 9007199254740991)) {
+              inexact.push({ start: start, end: i, word: word });
+            }
+          }
+        }
+      }
+      return { inexact: inexact, duplicates: duplicates };
+    }
+
+    /* The numbers it found are put in quotes before parsing, so they reach
+       the table digit for digit, as text. */
+    function protectNumbers(text, inexact) {
+      for (var k = inexact.length - 1; k >= 0; k--) {
+        var it = inexact[k];
+        text = text.slice(0, it.start) + '"' + it.word + '"' + text.slice(it.end);
+      }
+      return text;
+    }
+    /* ---- END: what JSON.parse would quietly change ---- */
+
+    /* ---- START: one, or more than one ---- */
+    function count(n, word) {
+      return formatNumber(n, 0) + " " + word + (n === 1 ? "" : "s");
+    }
+    /* ---- END: one, or more than one ---- */
+
     /* ---- START: the conversion ---- */
     function convert() {
       var raw = input.value.trim();
@@ -479,6 +540,11 @@
            so it must never move to an innerHTML message without escaping. */
         setMessage("That is not valid JSON. " + error.message, "bad");
         return;
+      }
+
+      var scan = scanText(raw);
+      if (scan.inexact.length) {
+        data = JSON.parse(protectNumbers(raw, scan.inexact));
       }
 
       var rows = toRows(data);
@@ -520,13 +586,21 @@
       var ragged = rows.some(function (row) {
         return Object.keys(row).length !== columns.length;
       });
+      var notes = count(rows.length, "row") + ", " + count(columns.length, "column") + ".";
       if (ragged) {
-        setMessage(rows.length + " rows, " + columns.length + " columns. Not "
-                 + "every row had every key, so some cells are empty - nothing "
-                 + "was dropped.", "ok");
-      } else {
-        setMessage(rows.length + " rows, " + columns.length + " columns.", "ok");
+        notes += " Not every row had every key, so some cells are empty - nothing was dropped.";
       }
+      if (scan.inexact.length) {
+        notes += " " + (scan.inexact.length === 1 ? "One number is" : count(scan.inexact.length, "number") + " are")
+               + " longer than a computer holds exactly (such as " + scan.inexact[0].word.slice(0, 30)
+               + "), so " + (scan.inexact.length === 1 ? "it was" : "they were") + " copied digit for digit.";
+      }
+      if (scan.duplicates.length) {
+        notes += " The key \"" + scan.duplicates[0].slice(0, 40) + "\"" + (scan.duplicates.length > 1
+               ? " and " + (scan.duplicates.length - 1) + " more appear" : " appears")
+               + " twice in one object; only the last value of each is in the table.";
+      }
+      setMessage(notes, "ok");
     }
     /* ---- END: the conversion ---- */
 

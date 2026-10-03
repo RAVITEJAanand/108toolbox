@@ -537,7 +537,15 @@
       if (!img) { return; }
       var out = document.createElement("canvas");
       out.width = sel.w; out.height = sel.h;
-      out.getContext("2d").drawImage(img, sel.x, sel.y, sel.w, sel.h, 0, 0, sel.w, sel.h);
+      var octx = out.getContext("2d");
+      /* JPG cannot store transparency, and the encoder turns see-through
+         pixels black. White goes down first for JPG; PNG and WebP keep
+         their transparency. */
+      if (fmt.value === "image/jpeg") {
+        octx.fillStyle = "#ffffff";
+        octx.fillRect(0, 0, sel.w, sel.h);
+      }
+      octx.drawImage(img, sel.x, sel.y, sel.w, sel.h, 0, 0, sel.w, sel.h);
 
       pending += 1;
       var mine = pending;

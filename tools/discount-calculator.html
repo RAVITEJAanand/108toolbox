@@ -383,11 +383,32 @@
     }
     /* ---- END: reaching the page and printing money and percentages ---- */
 
+    /* ---- START: what a discount and a price can be ----
+       A discount is from 0% to 100% and a price is not below zero. 150% off
+       used to print a price of -1,000, as if the shop would pay you; now
+       the answer is a dash and the line under it says why. */
+    function problem(price, discounts) {
+      if (price < 0) { return "a price cannot be below zero"; }
+      for (var i = 0; i < discounts.length; i++) {
+        if (discounts[i] < 0 || discounts[i] > 100) { return "a discount is from 0% to 100%"; }
+      }
+      return "";
+    }
+    /* ---- END: what a discount and a price can be ---- */
+
     /* ---- START: the price after one discount ---- */
     /* ---- A: price after one discount ---- */
     function runA() {
       var price = num("a1");
       var off   = num("a2");
+      var why   = problem(price, [off]);
+      if (why) {
+        el("aOut").textContent = EM_DASH;
+        el("aSaved").textContent = EM_DASH;
+        el("aPay").textContent = EM_DASH;
+        el("aFormula").textContent = why;
+        return;
+      }
       var saved = price * (off / 100);
       var pay   = price - saved;
 
@@ -405,6 +426,12 @@
     function runB() {
       var paid = num("b1");
       var off  = num("b2");
+      var why  = problem(paid, [off]);
+      if (why) {
+        el("bOut").textContent = EM_DASH;
+        el("bFormula").textContent = why;
+        return;
+      }
 
       /* 100% off means the original could have been anything, so the sum has
          no answer rather than a wrong one. */
@@ -429,6 +456,12 @@
       var price  = num("c1");
       var first  = num("c2");
       var second = num("c3");
+      var why    = problem(price, [first, second]);
+      if (why) {
+        ["cOut", "cReal", "cNaive", "cGap"].forEach(function (id) { el(id).textContent = EM_DASH; });
+        el("cFormula").textContent = why;
+        return;
+      }
 
       var afterFirst = price * (1 - first / 100);
       var finalPrice = afterFirst * (1 - second / 100);

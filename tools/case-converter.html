@@ -349,12 +349,20 @@
   /* Break any text into plain lowercase words, so every format starts from
      the same clean list. This is what makes camelCase work on "Hello World"
      AND on "hello_world". */
+  /* camelCase, snake_case and kebab-case make one identifier, so a word
+     is letters and digits only - in any alphabet, with the marks Telugu
+     writes its vowels with. Splitting at spaces alone used to carry the
+     punctuation along: "don't stop, NASA." became don't_stop,_nasa. An
+     apostrophe inside a word is dropped rather than splitting it. */
+  var APOSTROPHES = new RegExp("['" + String.fromCharCode(0x2019) + "]", "g");
+
   function toWords(text) {
     return text
-      .replace(/([a-z0-9])([A-Z])/g, "$1 $2")   /* splits camelCase */
-      .replace(/[_\-]+/g, " ")                  /* snake_case and kebab-case */
+      .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")   /* XMLHttp -> XML Http */
+      .replace(/([a-z0-9])([A-Z])/g, "$1 $2")      /* splits camelCase */
+      .replace(APOSTROPHES, "")
       .toLowerCase()
-      .split(/\s+/)
+      .split(/[^\p{L}\p{M}\p{N}]+/u)               /* also snake_ and kebab- */
       .filter(function (w) { return w !== ""; });
   }
 

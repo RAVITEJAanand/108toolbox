@@ -377,8 +377,11 @@
                        "December"];
 
     /* Stepping a working day at a time is cheap, but somebody typing 99999999
-       should not freeze the tab. */
+       should not freeze the tab. The loop used to stop at this many steps
+       and print wherever it had got to, as if that were the answer; now a
+       count that could need more is refused before the loop starts. */
     var MAX_BUSINESS_STEPS = 200000;
+    var MAX_BUSINESS_DAYS = 100000;
 
     /* ---- START: reaching the page ---- */
     function el(id) { return document.getElementById(id); }
@@ -490,10 +493,11 @@
     /* ---- START: the whole calculation ---- */
     function run() {
       var start = parse(el("start").value);
-      var raw = parseInt(el("amount").value, 10);
-      var amount = isNaN(raw) ? 0 : Math.max(0, raw);
+      var typed = el("amount").value.trim();
+      var amount = typed === "" ? 0 : Number(typed);
       var unit = el("unit").value;
       var forwards = el("direction").value === "add";
+      var unitWord = unit === "business" ? "working days" : unit;
 
       function fail(message) {
         el("errWrap").hidden = false;
@@ -508,9 +512,32 @@
       }
 
       if (!start) { fail("Pick a real starting date."); return; }
-      el("errWrap").hidden = true;
+
+      /* parseInt used to read 1.5 as 1 and a minus sign as nothing at all:
+         "-5 days" quietly printed the starting date. A fraction is refused;
+         a minus amount counts the other way, and the sum below says so. */
+      if (!isFinite(amount) || Math.floor(amount) !== amount) {
+        fail("Type a whole number of " + unitWord + ".");
+        return;
+      }
+      var turned = amount < 0;
+      if (turned) { amount = -amount; forwards = !forwards; }
+      if (unit === "business" && amount > MAX_BUSINESS_DAYS) {
+        fail("Up to " + formatNumber(MAX_BUSINESS_DAYS, 0) + " working days at a time.");
+        return;
+      }
 
       var landing = move(start, amount, unit, forwards);
+
+      /* Far enough out, a date stops existing: 10 million years printed
+         "NaN undefined NaN" and the page threw. Years 1 to 9999 are what a
+         date box can show and what the calendar arithmetic is good for. */
+      if (isNaN(landing.getTime()) || landing.getUTCFullYear() < 1 ||
+          landing.getUTCFullYear() > 9999) {
+        fail("That lands outside the years 1 to 9999, which is as far as this calendar goes.");
+        return;
+      }
+      el("errWrap").hidden = true;
 
       el("result").textContent = longDate(landing);
       el("weekday").textContent = dayName(landing);
@@ -522,7 +549,6 @@
       var fromToday = Math.round((landing - todayUTC) / DAY);
       el("fromToday").textContent = formatNumber(fromToday, 0);
 
-      var unitWord = unit === "business" ? "working days" : unit;
       el("formula").textContent =
         longDate(start) + " " + (forwards ? "plus " : "minus ") +
         formatNumber(amount, 0) + " " + unitWord + " = " + longDate(landing) +
@@ -532,12 +558,14 @@
          31 becoming a 28 is exactly the surprise people write in about. */
       var clamped = (unit === "months" || unit === "years") &&
                     landing.getUTCDate() !== start.getUTCDate();
-      el("note").textContent = clamped
+      el("note").textContent = ((turned
+        ? "A minus amount counts the other way, so this goes " + (forwards ? "forwards. " : "backwards. ")
+        : "") + (clamped
         ? "The starting day is later than the last day of the target month, so it has been pulled back to " +
           landing.getUTCDate() + " " + MONTH_NAMES[landing.getUTCMonth()] + "."
         : (unit === "business"
             ? "Working days are Monday to Friday. Public holidays are not deducted."
-            : "");
+            : ""))).trim();
 
       buildTable(start);
     }

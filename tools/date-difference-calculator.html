@@ -384,23 +384,32 @@
     /* ---- END: parsing a date input safely ---- */
 
     /* ---- START: the calendar breakdown, years months days ----
-       Borrowing uses the length of the month before the later date, which is
-       what makes 31 January to 28 February come out as one month. */
-    function calendarGap(a, b) {
-      var years = b.getUTCFullYear() - a.getUTCFullYear();
-      var months = b.getUTCMonth() - a.getUTCMonth();
-      var days = b.getUTCDate() - a.getUTCDate();
+       A month on from a date is the same day of the next month, or that
+       month's last day when it is shorter: 31 January plus one month is
+       28 February. That is how the page says it counts, and how a notice
+       period or a rent agreement counts. So the answer is the most whole
+       months that still land on or before the later date, then the days
+       left over.
 
-      if (days < 0) {
-        months = months - 1;
-        var previousMonthEnd = new Date(Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), 0));
-        days = days + previousMonthEnd.getUTCDate();
-      }
-      if (months < 0) {
-        years = years - 1;
-        months = months + 12;
-      }
-      return { years: years, months: months, days: days };
+       The old version subtracted day from day and borrowed the length of
+       the month before. It gave 31 January to 28 February as 28 days, not
+       the month the page promises, and 31 January to 1 March as
+       "1 month, -2 days". */
+    function plusMonths(date, count) {
+      var year = date.getUTCFullYear();
+      var month = date.getUTCMonth() + count;
+      var lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+      return new Date(Date.UTC(year, month, Math.min(date.getUTCDate(), lastDay)));
+    }
+
+    function calendarGap(a, b) {
+      var months = (b.getUTCFullYear() - a.getUTCFullYear()) * 12 +
+                   (b.getUTCMonth() - a.getUTCMonth());
+      /* That many months lands in the later date's own month, and can pass
+         it when the later date's day is smaller; one fewer never does. */
+      if (plusMonths(a, months) > b) { months = months - 1; }
+      var days = Math.round((b - plusMonths(a, months)) / DAY);
+      return { years: Math.floor(months / 12), months: months % 12, days: days };
     }
     /* ---- END: the calendar breakdown ---- */
 

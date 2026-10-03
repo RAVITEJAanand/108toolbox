@@ -377,33 +377,119 @@
   }
   /* ---- END: turning a character position into a line number ---- */
 
-  /* ---- START: counting the keys and the depth of the parsed value ---- */
-  /* Count every key and find the deepest nesting, walking the parsed object */
-  function inspect(value, depth) {
-    depth = depth || 1;
-    var keys = 0, maxDepth = depth;
+  /* ---- START: laying the text out again, token by token ----
+     JSON.parse decides whether the text is valid. It does NOT write the
+     result any more, because turning the text into JavaScript values and
+     back changed it: 12345678901234567890 came back as
+     12345678901234567000, 1e400 as null, and of two keys both called "a"
+     only the second survived - all under "Valid JSON". Here every key,
+     string and number is copied across exactly as it was written, and only
+     the spaces between them change. Only ever called on text JSON.parse
+     has accepted, so it does not need to cope with broken input. */
+  function relayout(text, unit) {
+    var out = "", i = 0, n = text.length;
+    var stack = [];                 /* one entry per open { or [ */
+    var keys = 0, maxDepth = 0, duplicates = [], inexact = [];
 
-    if (value && typeof value === "object") {
-      var entries = Array.isArray(value) ? value : Object.keys(value).map(function (k) {
-        keys++;
-        return value[k];
-      });
-      if (Array.isArray(value)) entries = value;
-
-      entries.forEach(function (child) {
-        var found = inspect(child, depth + 1);
-        keys += found.keys;
-        if (found.maxDepth > maxDepth) maxDepth = found.maxDepth;
-      });
+    function newline() {
+      return unit === "" ? "" : "\n" + new Array(stack.length + 1).join(unit);
     }
-    return { keys: keys, maxDepth: maxDepth };
+    function skipSpace() {
+      while (i < n && " \t\n\r".indexOf(text.charAt(i)) > -1) { i++; }
+    }
+    function readString() {
+      var from = i;
+      i++;                                      /* the opening quote */
+      while (i < n && text.charAt(i) !== '"') { i += text.charAt(i) === "\\" ? 2 : 1; }
+      i++;                                      /* the closing quote */
+      return text.slice(from, i);
+    }
+    function aValue() { maxDepth = Math.max(maxDepth, stack.length + 1); }
+
+    for (;;) {
+      skipSpace();
+      if (i >= n) { break; }
+      var ch = text.charAt(i);
+      var top = stack[stack.length - 1];
+
+      if (ch === "{" || ch === "[") {
+        aValue();
+        i++;
+        skipSpace();
+        var close = ch === "{" ? "}" : "]";
+        if (text.charAt(i) === close) { out += ch + close; i++; continue; }
+        /* An object remembers its keys, to spot one written twice. */
+        stack.push(ch === "{" ? { names: Object.create(null), wantKey: true } : null);
+        out += ch + newline();
+      } else if (ch === "}" || ch === "]") {
+        stack.pop();
+        i++;
+        out += newline() + ch;
+      } else if (ch === ",") {
+        i++;
+        if (top) { top.wantKey = true; }
+        out += "," + newline();
+      } else if (ch === ":") {
+        i++;
+        out += unit === "" ? ":" : ": ";
+      } else if (ch === '"') {
+        var str = readString();
+        if (top && top.wantKey) {
+          top.wantKey = false;
+          keys++;
+          var name = JSON.parse(str);           /* an escaped "a" is still "a" */
+          if (top.names["k" + name] && duplicates.indexOf(name) === -1) { duplicates.push(name); }
+          top.names["k" + name] = true;
+        } else {
+          aValue();
+        }
+        out += str;
+      } else {
+        /* A number, true, false or null: up to the next comma, bracket or space. */
+        var from = i;
+        while (i < n && " \t\n\r,:]}".indexOf(text.charAt(i)) === -1) { i++; }
+        var word = text.slice(from, i);
+        aValue();
+        if (/^-?\d/.test(word)) {
+          var value = Number(word);
+          if (!isFinite(value) || (/^-?\d+$/.test(word) && Math.abs(value) > 9007199254740991)) {
+            inexact.push(word);
+          }
+        }
+        out += word;
+      }
+    }
+    return { text: out, keys: keys, maxDepth: maxDepth, duplicates: duplicates, inexact: inexact };
   }
-  /* ---- END: counting the keys and the depth of the parsed value ---- */
+  /* ---- END: laying the text out again, token by token ---- */
+
+  /* ---- START: the two things worth saying about valid JSON ---- */
+  function caveats(laid) {
+    var notes = "";
+    function quoted(list) {
+      var shown = list.slice(0, 3).map(function (s) { return "<strong>" + escapeHtml(s.length > 40 ? s.slice(0, 40) + String.fromCharCode(0x2026) : s) + "</strong>"; });
+      return shown.join(", ") + (list.length > 3 ? " and " + (list.length - 3) + " more" : "");
+    }
+    if (laid.duplicates.length) {
+      notes += "<br>" + (laid.duplicates.length === 1 ? "The key " : "The keys ") +
+        quoted(laid.duplicates.map(function (k) { return JSON.stringify(k); })) +
+        " appear" + (laid.duplicates.length === 1 ? "s" : "") +
+        " twice in one object. Both copies are kept here, as written, but most programs keep only the last.";
+    }
+    if (laid.inexact.length) {
+      notes += "<br>" + quoted(laid.inexact) + (laid.inexact.length === 1 ? " is" : " are") +
+        " kept exactly as written here, but " + (laid.inexact.length === 1 ? "it is" : "they are") +
+        " past what JavaScript and many other languages can hold exactly - reading it there would change it.";
+    }
+    return notes;
+  }
+  /* ---- END: the two things worth saying about valid JSON ---- */
+
 
   /* ---- START: the indent the visitor chose ---- */
   function indentValue() {
     var choice = document.getElementById("indent").value;
-    return choice === "tab" ? "\t" : parseInt(choice, 10);
+    return choice === "tab" ? "\t" : new Array(parseInt(choice, 10) + 1).join(" ");
   }
   /* ---- END: the indent the visitor chose ---- */
 
@@ -419,9 +505,8 @@
       return;
     }
 
-    var parsed;
     try {
-      parsed = JSON.parse(text);
+      JSON.parse(text);
     } catch (error) {
       /* Pull the character position out of the browser's message if it is there */
       var match = /position (\d+)/.exec(error.message);
@@ -441,22 +526,20 @@
       return;
     }
 
-    /* JSON.stringify does all the formatting work — the third argument is the indent */
-    var result = mode === "minify"
-      ? JSON.stringify(parsed)
-      : JSON.stringify(parsed, null, indentValue());
+    var laid = relayout(text, mode === "minify" ? "" : indentValue());
+    var result = laid.text;
 
     output.textContent = result;
 
-    var stats = inspect(parsed);
-    document.getElementById("sKeys").textContent  = formatNumber(stats.keys);
-    document.getElementById("sDepth").textContent = stats.maxDepth;
+    document.getElementById("sKeys").textContent  = formatNumber(laid.keys);
+    document.getElementById("sDepth").textContent = laid.maxDepth;
     document.getElementById("sSize").textContent  = formatBytes(new Blob([result]).size);
 
     setMessage("Valid JSON · " +
       (mode === "minify"
         ? "minified to " + formatBytes(new Blob([result]).size)
-        : "formatted with " + document.getElementById("indent").selectedOptions[0].text.toLowerCase()),
+        : "formatted with " + document.getElementById("indent").selectedOptions[0].text.toLowerCase()) +
+      caveats(laid),
       "ok");
   }
   /* ---- END: parsing, reformatting and drawing the result ---- */

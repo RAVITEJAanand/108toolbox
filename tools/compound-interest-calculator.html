@@ -383,9 +383,19 @@
       return isNaN(n) ? 0 : n;
     }
 
+    /* A minus goes in front of the rupee sign: -27.42 used to read
+       "₹-27.42". Math.abs also turns a rounded -0 into 0. */
     function money(value) {
       var rounded = Math.round(value * 100) / 100;
-      return RUPEE + formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
+      var size = Math.abs(rounded);
+      return (rounded < 0 ? String.fromCharCode(0x2212) : "") + RUPEE +
+             formatNumber(size, size % 1 === 0 ? 0 : 2);
+    }
+
+    /* 2.5 years, not "3 years"; 0.1 years used to be printed as "0 years". */
+    function duration(t) {
+      var shown = Math.round(t * 100) / 100;
+      return shown.toLocaleString(undefined, { maximumFractionDigits: 2 }) + (shown === 1 ? " year" : " years");
     }
     /* ---- END: reaching the page and reading its numbers ---- */
 
@@ -443,10 +453,25 @@
 
     /* ---- START: drawing the answer ---- */
     function run() {
-      var principal = Math.max(0, num("principal"));
-      var rate      = Math.max(0, num("rate"));
-      var t         = Math.max(0, num("years"));
+      var principal = num("principal");
+      var rate      = num("rate");
+      var t         = num("years");
       var freq      = parseFloat(el("freq").value) || 1;
+
+      /* These used to be clamped to zero without a word, so -5% was worked
+         out as 0% under a note saying "At 0%". A minus rate is real (money
+         that loses value) and is worked out; what cannot mean anything is
+         refused. */
+      var problem = principal < 0 ? "The principal cannot be below zero." :
+                    t < 0 ? "The number of years cannot be below zero." :
+                    rate <= -100 ? "A rate of -100% or less would leave nothing at all." : "";
+      if (problem) {
+        ["finalOut", "earned", "simple", "edge"].forEach(function (id) { el(id).textContent = EM_DASH; });
+        el("formula").textContent = problem;
+        el("doubleNote").textContent = "";
+        el("rows").textContent = "";
+        return;
+      }
 
       var finalAmount = amountAfter(principal, rate, freq, t);
       var earned      = finalAmount - principal;
@@ -455,15 +480,24 @@
       el("finalOut").textContent = money(finalAmount);
       el("earned").textContent   = money(earned);
       el("simple").textContent   = money(simple);
-      el("edge").textContent     = money(earned - simple);
+      /* Over part of one compounding period the formula's fractional power
+         pays a little LESS than simple interest. "Compounding adds -27.42"
+         said that badly; the label turns round instead. */
+      var edge = earned - simple;
+      el("edge").textContent     = money(Math.abs(edge));
+      el("edge").nextElementSibling.textContent =
+        Math.round(edge * 100) < 0 ? "Compounding pays less by" : "Compounding adds";
 
       el("formula").textContent =
-        money(principal) + " grows to " + money(finalAmount) + " over " +
-        formatNumber(t, 0) + " years at " + formatNumber(rate, 2) + "%, " +
+        money(principal) + (finalAmount < principal ? " shrinks to " : " grows to ") +
+        money(finalAmount) + " over " +
+        duration(t) + " at " + formatNumber(rate, 2) + "%, " +
         "compounded " + el("freq").options[el("freq").selectedIndex].text.toLowerCase();
 
       var doubling = yearsToDouble(rate, freq);
-      el("doubleNote").textContent = doubling === null
+      el("doubleNote").textContent = rate < 0
+        ? "At a minus rate the money shrinks every year instead of growing."
+        : doubling === null
         ? "At 0% the money never doubles " + EM_DASH + " it just sits there."
         : "At this rate the money doubles every " +
           formatNumber(doubling, 2) + " years. The rule of 72 guesses " +

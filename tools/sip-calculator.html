@@ -400,22 +400,29 @@
        a step-up changes the instalment every year and a formula that handled
        that would be unreadable. With the step-up at zero this produces the
        same number as the textbook formula, to the paise. */
-    function simulate(monthly, annualRate, years, stepUp) {
+    function simulate(monthly, annualRate, months, stepUp) {
       var monthlyRate = annualRate / 12 / 100;
       var balance = 0;
       var invested = 0;
       var instalment = monthly;
       var rows = [];
 
-      for (var year = 1; year <= years; year++) {
-        for (var month = 0; month < 12; month++) {
-          /* Paid at the START of the month, so it earns for that whole month.
-             Adding before the growth is what puts the (1 + i) in the formula. */
-          balance = (balance + instalment) * (1 + monthlyRate);
-          invested = invested + instalment;
+      /* Counted in months, so 2.5 years is 30 instalments. It used to be
+         whole years only, and 2.5 quietly became 2. */
+      for (var m = 1; m <= months; m++) {
+        /* Paid at the START of the month, so it earns for that whole month.
+           Adding before the growth is what puts the (1 + i) in the formula. */
+        balance = (balance + instalment) * (1 + monthlyRate);
+        invested = invested + instalment;
+        if (m % 12 === 0) {
+          rows.push({ label: "Year " + (m / 12), invested: invested, balance: balance });
+          instalment = instalment * (1 + stepUp / 100);
         }
-        rows.push({ year: year, invested: invested, balance: balance });
-        instalment = instalment * (1 + stepUp / 100);
+      }
+      if (months % 12) {
+        rows.push({ label: "Year " + Math.ceil(months / 12) + " (" + (months % 12) +
+                           (months % 12 === 1 ? " month)" : " months)"),
+                    invested: invested, balance: balance });
       }
 
       return { balance: balance, invested: invested, rows: rows };
@@ -430,7 +437,7 @@
 
       rows.forEach(function (r) {
         var tr = document.createElement("tr");
-        ["Year " + r.year, money(r.invested), money(r.balance)]
+        [r.label, money(r.invested), money(r.balance)]
           .forEach(function (text) {
             var td = document.createElement("td");
             td.textContent = text;
@@ -443,13 +450,42 @@
     /* ---- END: the year by year table ---- */
 
     /* ---- START: the whole calculation ---- */
-    function run() {
-      var monthly = Math.max(0, num("monthly"));
-      var rate = Math.max(0, num("rate"));
-      var years = Math.min(MAX_YEARS, Math.max(0, Math.floor(num("years"))));
-      var stepUp = Math.max(0, num("stepup"));
+    /* "2 years", "2 years and 6 months" */
+    function span(months) {
+      var y = Math.floor(months / 12), m = months % 12;
+      var parts = [];
+      if (y) { parts.push(y + (y === 1 ? " year" : " years")); }
+      if (m) { parts.push(m + (m === 1 ? " month" : " months")); }
+      return parts.join(" and ");
+    }
 
-      var result = simulate(monthly, rate, years, stepUp);
+    function run() {
+      var monthly = num("monthly");
+      var rate = num("rate");
+      var yearsTyped = num("years");
+      var stepUp = num("stepup");
+
+      /* Each of these used to be clamped without a word: a minus step-up
+         became 0%, a minus return 0%, 80 years 50. A falling market and a
+         shrinking instalment are both real, so a minus return and a minus
+         step-up are worked out; only what cannot mean anything is refused. */
+      var problem =
+        monthly < 0 ? "A monthly amount cannot be below zero." :
+        yearsTyped < 0 ? "The number of years cannot be below zero." :
+        yearsTyped > MAX_YEARS ? "Up to " + MAX_YEARS + " years." :
+        rate <= -100 ? "A return of -100% or worse would leave nothing at all." :
+        stepUp <= -100 ? "A step-up of -100% or less would stop the SIP altogether." : "";
+      if (problem) {
+        ["maturity", "invested", "returns", "multiple"].forEach(function (id) {
+          el(id).textContent = String.fromCharCode(0x2014);
+        });
+        el("formula").textContent = problem;
+        el("rows").textContent = "";
+        return;
+      }
+      var months = Math.round(yearsTyped * 12);
+
+      var result = simulate(monthly, rate, months, stepUp);
       var gains = result.balance - result.invested;
 
       el("maturity").textContent = money(result.balance);
@@ -459,18 +495,18 @@
         ? formatNumber(result.balance / result.invested, 2) + TIMES
         : String.fromCharCode(0x2014);
 
-      el("formula").textContent = years === 0
+      el("formula").textContent = months === 0
         ? "Set a number of years to see a projection"
-        : money(monthly) + " a month for " + years +
-          (years === 1 ? " year" : " years") + " at " +
+        : money(monthly) + " a month for " + span(months) + " at " +
           formatNumber(rate, 2) + "% a year" +
-          (stepUp > 0 ? ", rising " + formatNumber(stepUp, 2) + "% each year" : "");
+          (stepUp > 0 ? ", rising " + formatNumber(stepUp, 2) + "% each year" :
+           stepUp < 0 ? ", falling " + formatNumber(-stepUp, 2) + "% each year" : "");
 
       buildTable(result.rows);
 
       /* Say this on the page, not only in the prose below it. Somebody who
          reads nothing else should still see that it is an assumption. */
-      el("note").textContent = stepUp > 0
+      el("note").textContent = stepUp !== 0
         ? "Assumes a steady " + formatNumber(rate, 2) +
           "% every month and a step-up on each anniversary. Returns are not guaranteed, and expense ratio, exit load and capital gains tax are not deducted."
         : "Assumes a steady " + formatNumber(rate, 2) +

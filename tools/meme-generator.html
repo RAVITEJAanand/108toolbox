@@ -581,10 +581,27 @@
       document.getElementById("sizeOut").textContent = sizeEl.value;
     });
 
+    /* ---- START: a white backing for a JPG ----
+       JPG cannot store transparency, and a canvas hands its see-through
+       pixels to the JPEG encoder as black: a PNG logo saved as JPG came out
+       on a black square. For JPG only, the picture is copied onto white
+       first; PNG keeps its transparency. */
+    function onWhite(canvas) {
+      var flat = document.createElement("canvas");
+      flat.width = canvas.width;
+      flat.height = canvas.height;
+      var c = flat.getContext("2d");
+      c.fillStyle = "#ffffff";
+      c.fillRect(0, 0, flat.width, flat.height);
+      c.drawImage(canvas, 0, 0);
+      return flat;
+    }
+    /* ---- END: a white backing for a JPG ---- */
+
     dlBtn.addEventListener("click", function () {
       if (!img) { return; }
       var type = fmtEl.value;
-      stage.toBlob(function (blob) {
+      (type === "image/jpeg" ? onWhite(stage) : stage).toBlob(function (blob) {
         if (!blob) { setMessage("This browser could not produce the file.", "bad"); return; }
         downloadBlob(blob, name + "-meme." + (type === "image/jpeg" ? "jpg" : "png"));
       }, type, 0.92);

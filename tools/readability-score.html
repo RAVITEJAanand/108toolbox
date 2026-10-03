@@ -406,14 +406,39 @@ We looked at it first. Then we changed it. It works now.</textarea>
     /* ---- END: syllables, by rule of thumb ---- */
 
     /* ---- START: cutting the text into sentences ----
-       A full stop, question mark or exclamation mark ends one. Abbreviations
-       carrying full stops are counted as endings too, which is wrong and is
-       what every tool of this kind does - worth knowing when the number looks
-       surprising. */
+       A full stop, question mark or exclamation mark ends one - when a space
+       or the end of the text follows it. Every full stop used to count, so
+       "Dr. Smith left at 5 p.m. today." was four sentences, 3.50 was two,
+       and short "sentences" pushed the score up to 100 and "Very easy".
+
+       A full stop after a title (Mr., Dr.) or an initial (J. K.) never ends
+       a sentence. One after a short form such as e.g., etc. or p.m. ends it
+       only when a capital letter follows. */
+    var TITLES = /^(mr|mrs|ms|dr|prof|sr|jr|st|mt|rs|vs|gen|col|capt|lt|sgt|rev|hon|smt|shri)$/i;
+    var SHORT_FORMS = /^(etc|approx|inc|ltd|co|corp|dept|govt|est|no|nos|fig|figs|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec|mon|tue|wed|thu|fri|sat|sun)$/i;
+
     function sentencesOf(text) {
-      return text.split(/[.!?]+[\s"')\]]*/)
+      var sentences = [];
+      var from = 0;
+      var ending = /[.!?]+["')\]]*(?=\s|$)/g;
+      var m;
+      while ((m = ending.exec(text)) !== null) {
+        var end = m.index + m[0].length;
+        if (m[0].charAt(0) === "." && m[0].indexOf("!") === -1 && m[0].indexOf("?") === -1) {
+          var before = /(\S*)$/.exec(text.slice(from, m.index))[1].replace(/^["'(\[]+/, "");
+          var after = /^\s*(\S?)/.exec(text.slice(end))[1];
+          var initial = /^[A-Za-z]$/.test(before);
+          var dotted = /^([A-Za-z]\.)+[A-Za-z]$/.test(before);       /* e.g, p.m, U.S */
+          if (TITLES.test(before) || initial) { continue; }
+          if ((dotted || SHORT_FORMS.test(before)) && !/[A-Z]/.test(after)) { continue; }
+        }
+        sentences.push(text.slice(from, end));
+        from = end;
+      }
+      sentences.push(text.slice(from));
+      return sentences
         .map(function (s) { return s.trim(); })
-        .filter(function (s) { return s !== ""; });
+        .filter(function (s) { return /[A-Za-z0-9]/.test(s); });
     }
 
     function wordsOf(text) {
@@ -445,8 +470,16 @@ We looked at it first. Then we changed it. It works now.</textarea>
         document.getElementById("bigBand").textContent = "Flesch Reading Ease";
         worst.textContent = "";
         summary = "";
-        setMessage("Write or paste at least ten words - a score from fewer "
-                 + "than that would be noise.");
+        /* Telugu or Hindi text has plenty of words, none of them A to Z, and
+           was told to write at least ten. */
+        var latin = (text.match(/[A-Za-z]/g) || []).length;
+        var letters = (text.match(/\p{L}/gu) || []).length;
+        setMessage(letters > 20 && latin < letters / 2
+          ? "This score is worked out for English, from its syllables and "
+            + "sentences. Text that is mostly in another script has nothing "
+            + "it can measure."
+          : "Write or paste at least ten words - a score from fewer "
+            + "than that would be noise.");
         return;
       }
 

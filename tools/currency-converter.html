@@ -436,8 +436,22 @@
     }
 
     function readAmount() {
-      var text = amountIn.value.replace(/[\s,]/g, "");
+      var typed = amountIn.value.trim();
+      var text = typed.replace(/[\s,]/g, "");
       if (text === "") { return { error: "Type an amount." }; }
+      if (text.charAt(0) === "-") { return { error: "An amount to convert cannot be below zero." }; }
+      /* A comma here separates thousands: 1,500 or 1,00,000. Whatever the
+         grouping, the last comma is followed by exactly three digits. "1,5"
+         and "1.000,50" are someone writing a decimal comma, and simply
+         dropping the commas read them as 15 and 1.0005 - a thousand times
+         too little, without a word. */
+      var lastComma = typed.lastIndexOf(",");
+      if (lastComma > -1) {
+        var firstDot = typed.indexOf(".");
+        if (!/^\d{3}(\.|$)/.test(typed.slice(lastComma + 1)) || (firstDot > -1 && firstDot < lastComma)) {
+          return { error: "Write decimals with a dot, as in 1500.50 or 1,500.50. Here a comma only separates thousands, so " + typed + " is not clear." };
+        }
+      }
       if (!/^\d*\.?\d+$|^\d+\.$/.test(text)) { return { error: "Type the amount as a number, such as 1500 or 99.50." }; }
       var value = Number(text);
       if (value > 1e15) { return { error: "That amount is too large to convert." }; }
