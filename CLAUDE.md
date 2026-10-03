@@ -8,8 +8,8 @@ folder, so you never need to be told the project's history again.
 no build step, and it stays that way.
 
 **Where it stands:** 108 of a planned 108 tools are built, tested and live
-(2 Oct 2026). What comes next is the owner's plan for advertising: rewrite
-the "no ads" promises in their own commit first (rule 7), then AdSense.
+(2 Oct 2026), and the AdSense code is on the tool pages (rule 7), waiting
+for Google to approve the site. Work now is fixing what testing finds.
 
 ---
 
@@ -675,10 +675,9 @@ count problem rule 2 exists to stop, one file further out.
 `ROADMAP.md`), and `currency-converter`, whose rates bot must keep running
 (see Deployment).
 
-`salary-calculator` is still deliberately skipped. CTC to in-hand
-needs current income tax slabs, and a figure that goes stale without anyone
-noticing is worse than no tool. Build it with a visible "rates as of" date
-and add it to the Maintenance list, or leave it.
+`salary-calculator` was built without income tax slabs on purpose: the
+visitor types their own monthly TDS, so nothing in it goes stale. The slabs
+live in `income-tax-calculator` alone, which is the one to update.
 
 **Categories are 8 now**, expanded on 20 Sep 2026 at the 30-tool mark:
 Text, Image, Calculator, Developer, Converter, PDF, Date & Time, Random.

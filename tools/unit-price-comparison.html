@@ -500,6 +500,9 @@
       });
       var best = sorted[0];
       var worst = sorted[sorted.length - 1];
+      var amounts = packs.map(function (p) { return p.amount; });
+      var biggest = Math.max.apply(null, amounts);
+      var smallest = Math.min.apply(null, amounts);
 
       var scale = scaleFor(best.perBase);
       var unitWords = scale === 1 ? best.base : scale + " " + best.base;
@@ -533,10 +536,18 @@
         setMessage("Only " + formatNumber(gap, 1) + "% between the best and "
                  + "the worst - close enough that it is not worth choosing "
                  + "on price.", "ok");
-      } else if (best.amount < worst.amount) {
-        setMessage("The SMALLER pack wins here. Bigger being cheaper is a "
-                 + "habit of thought rather than a rule, and shops price to "
-                 + "that habit.", "ok");
+      } else if (best.amount < biggest) {
+        /* Compared with the biggest pack, not with the worst one. "The
+           smaller pack wins" used to be said whenever the winner was
+           smaller than the WORST pack - so in the default example 1 kg won,
+           a 500 g pack was on the shelf beside it, and the page still said
+           the smaller pack had won. Say exactly what is true instead. */
+        setMessage((best.amount === smallest
+            ? (packs.length === 2 ? "The SMALLER pack wins here. "
+                                  : "The SMALLEST pack wins here. ")
+            : "The BIGGEST pack is not the best buy here. ")
+          + "Bigger being cheaper is a habit of thought rather than a rule, "
+          + "and shops price to that habit.", "ok");
       } else {
         setMessage("Best value by " + formatNumber(gap, 1) + "% - worth having "
                  + "if you will use all of it. A big pack half thrown away is "

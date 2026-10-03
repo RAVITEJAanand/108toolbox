@@ -81,10 +81,10 @@
       },
       {
         "@type": "Question",
-        "name": "What does the % key do?",
+        "name": "What does the mod key do?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "The remainder after division - 7 % 3 is 1. It is not a percentage key. For a percentage, divide: 15% of 80 is 80 * 15 / 100."
+          "text": "It gives the remainder after division: 7 mod 3 is 1. You can type it as mod or as %, and the key writes %. It is not a percentage key. For a percentage, divide: 15% of 80 is 80 * 15 / 100."
         }
       },
       {
@@ -304,8 +304,12 @@
         <h2>The small print of the keypad</h2>
         <p><code>log</code> is base 10 and <code>ln</code> is natural, which is
            the usual convention and is worth checking on any calculator you did
-           not write. <code>%</code> is the remainder after division, not a
-           percentage &mdash; for percentages use plain arithmetic.
+           not write. The <strong>mod</strong> key writes <code>%</code>, the
+           remainder after division, and typing the word <code>mod</code> does
+           the same: <code>10 mod 3</code> is 1. It is not a percentage &mdash;
+           for percentages use plain arithmetic. A negative number keeps its
+           sign, as in most programming languages: <code>-7 mod 3</code> is
+           -1, not 2.
            <code>!</code> is factorial and only for whole numbers up to 170,
            after which the answer is larger than the machine can hold.
            <code>2(3+4)</code> works and means what it looks like.</p>
@@ -324,8 +328,8 @@
           <p>log is base 10 here and ln is base e, which is the common convention. It is worth checking on any calculator, because a few use log for the natural logarithm and the two differ by a factor of about 2.3.</p>
         </div>
         <div class="faq">
-          <h3>What does the % key do?</h3>
-          <p>The remainder after division - 7 % 3 is 1. It is not a percentage key. For a percentage, divide: 15% of 80 is 80 * 15 / 100.</p>
+          <h3>What does the mod key do?</h3>
+          <p>It gives the remainder after division: 7 mod 3 is 1. You can type it as mod or as %, and the key writes %. It is not a percentage key. For a percentage, divide: 15% of 80 is 80 * 15 / 100.</p>
         </div>
         <div class="faq">
           <h3>Can I use it for very large numbers?</h3>
@@ -469,10 +473,17 @@
        as code. That is three lines and an open door: whatever is in the box
        gets executed. Reading it properly costs more code and means nothing
        typed here is ever run. */
+    /* The word mod is the remainder, the same as %. The key is labelled mod,
+       so people type "10 mod 3". It is swapped for % BEFORE the spaces go,
+       because once they are gone it reads 10mod3 and "mod3" looks like the
+       name of a function. Letters on either side mean some other word
+       ("modulo" is still refused); digits, spaces and brackets do not. */
+    var MOD_WORD = /(^|[^a-zA-Z])mod(?![a-zA-Z])/gi;
+
     function tokenize(text) {
       var tokens = [];
       var i = 0;
-      var s = text.replace(/\s+/g, "");
+      var s = text.replace(MOD_WORD, "$1%").replace(/\s+/g, "");
 
       while (i < s.length) {
         var ch = s.charAt(i);
@@ -681,7 +692,13 @@
       lastAnswer = shown.text;
       document.getElementById("sExact").textContent = shown.exact ? "exact" : "rounded";
 
-      if (!isFinite(value)) {
+      if (isNaN(value)) {
+        /* Not too big: there is no answer at all among the real numbers. */
+        setMessage("There is no real-number answer - for example the square "
+                 + "root or logarithm of a negative number, asin or acos of "
+                 + "a number past 1, 0 / 0, or a remainder after dividing "
+                 + "by 0.", "bad");
+      } else if (!isFinite(value)) {
         setMessage("That is past what the number format can hold, or a "
                  + "division by zero.", "bad");
       } else if (/(sin|cos|tan)\(/i.test(text)) {

@@ -398,6 +398,41 @@ T["average-calculator"] = r"""
     check("text is skipped", txt("mean"), "15");
     check("and reported", document.getElementById("msg").textContent.indexOf("skipped") > -1, true);
 
+    /* "apple" was caught only because it has an e in it. A word without
+       one vanished: "5, abc, 7" counted two numbers and said nothing. */
+    set("input", "5, abc, 7");
+    check("a word with no e is counted out", txt("count"), "2");
+    check("and named", txt("msg"), "1 entry is not a number and was skipped: abc.");
+    set("input", "Rs.500, 1.2.3, 5-3, Q1, 2026-10-03, 4");
+    check("what is not one number is never half-read", txt("count"), "1");
+    check("each is named", txt("msg"),
+          "5 entries are not numbers and were skipped: Rs.500, 1.2.3, 5-3, Q1, 2026-10-03.");
+    set("input", String.fromCharCode(0x20B9) + "500, 50%, 3.5kg, (2), +1, .5, 1e3, " + String.fromCharCode(0x2212) + "4");
+    check("a symbol before or a unit after still counts", txt("count"), "8");
+    check("and is read right, typographic minus included", txt("sum"), "1,553");
+    check("with nothing reported", txt("msg"), "");
+    set("input", "3.5 kg, 4 kg, 5 kg");
+    check("a unit after a space is named once", txt("msg"), "3 entries are not numbers and were skipped: kg.");
+    check("while the numbers count", txt("count"), "3");
+    set("input", "1 a b c d e f g 2");
+    check("a long list of words is cut short", txt("msg"),
+          "7 entries are not numbers and were skipped: a, b, c, d, e and 2 more.");
+    set("input", "1, " + "x".repeat(40));
+    check("a long entry is cut short too", txt("msg"),
+          "1 entry is not a number and was skipped: " + "x".repeat(24) + String.fromCharCode(0x2026) + ".");
+    set("input", "<img src=x onerror=zq>, 1");
+    check("a skipped entry is shown as text, never as markup",
+          document.getElementById("msg").children.length, 0);
+
+    /* Both standard deviations: 2,4,4,4,5,5,7,9 has sigma 2 and
+       s = sqrt(32 / 7) = 2.138... */
+    set("input", "2,4,4,4,5,5,7,9");
+    check("population standard deviation", txt("sd"), "2");
+    check("sample standard deviation", txt("sdSample"), "2.14");
+    set("input", "42");
+    check("one number has a population spread of 0", txt("sd"), "0");
+    check("and no sample spread at all", txt("sdSample"), String.fromCharCode(0x2014));
+
     set("input", "");
     check("empty shows a dash", txt("mean"), String.fromCharCode(0x2014));
     check("and zero count", txt("count"), "0");
@@ -2024,6 +2059,20 @@ T["salary-calculator"] = r"""
   near("take-home row matches the headline", cell(9, 1), 1059312, 1);
   near("monthly column divides by twelve", cell(0, 2), 40000);
 
+  /* A deduction is printed with the minus in front of the rupee sign, and
+     a zero is plain zero. It used to read "Rs-57,600" and "Rs-0", with the
+     rupee sign where Rs is here. */
+  var M = String.fromCharCode(0x2212), R = String.fromCharCode(0x20B9);
+  eq("your PF is shown as a minus", cell(6, 1), M + R + "57,600");
+  eq("and so is each month of it", cell(6, 2), M + R + "4,800");
+  eq("no income tax is plain zero, not minus zero", cell(8, 1), R + "0");
+  eq("in the monthly column too", cell(8, 2), R + "0");
+  eq("a positive row has no sign", cell(0, 1), R + (480000).toLocaleString());
+  ok("no row anywhere prints a sign after the rupee sign",
+     Array.prototype.every.call(rows(), function (r) {
+       return r.textContent.indexOf(R + "-") === -1 && r.textContent.indexOf(R + M) === -1;
+     }), document.getElementById("rows").textContent);
+
   /* Non-metro drops HRA to 40% of basic, but HRA is inside CTC either way,
      so take-home must not move - only the special allowance absorbs it. */
   set("city", "nonmetro");
@@ -2069,6 +2118,7 @@ T["salary-calculator"] = r"""
   /* An impossible basic must say so rather than print a negative row. */
   set("basicPct", 95);
   has("impossible basic is explained", txt("msg"), "too high");
+  eq("and the negative balancing row reads as a minus", cell(2, 1).charAt(0) + cell(2, 1).charAt(1), M + R);
   set("basicPct", 40);
   eq("and the warning clears", txt("msg"), "");
 
@@ -2976,6 +3026,15 @@ T["random-number-generator"] = r"""
   set("lo", 1); set("hi", 4); set("howMany", 6);
   click("drawBtn");
   has("six different numbers out of four is refused", txt("msg"), "cannot all");
+  /* The fifty from the draw before used to stay on screen under the error,
+     looking like the answer, and Copy handed them over. */
+  eq("and the last draw is not left on screen", txt("output"), "");
+  eq("nor in the tiles", txt("sCount"), String.fromCharCode(0x2014));
+  var copied = null, realCopy = window.copyText;
+  window.copyText = function (t) { copied = t; };
+  click("copyBtn");
+  window.copyText = realCopy;
+  eq("and Copy has nothing old to hand over", copied, null);
 
   tick("unique", false);
   set("lo", 100); set("hi", 1); set("howMany", 3);
@@ -4072,6 +4131,26 @@ T["time-zone-converter"] = r"""
   eq("and India is always five and a half hours ahead", txt("sOffset"), "UTC+05:30");
   has("the list names the zone, not a city", txt("output"), "Asia/Kolkata");
   has("and marks where the visitor is", txt("output"), "where you are");
+
+  /* Chrome on an Indian PC reports the old name Asia/Calcutta. Taken as it
+     came, India was listed twice, once under each name. */
+  var raw = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  var offered = Array.prototype.map.call(
+    document.getElementById("zone").options, function (o) { return o.value; });
+  eq("no zone is offered twice", new Set(offered).size, offered.length);
+  var listed = txt("output").split("\n").map(function (r) {
+    return r.replace(/  <- where you are$/, "").split(" ").pop();
+  }).filter(function (z) { return z !== ""; });
+  eq("no zone is listed twice", new Set(listed).size, listed.length);
+  ok("and no old name reaches the page",
+     ["Asia/Calcutta", "Asia/Katmandu", "Asia/Saigon"].every(function (z) {
+       return offered.indexOf(z) === -1 && listed.indexOf(z) === -1;
+     }), raw);
+  if (raw === "Asia/Calcutta") {
+    eq("this browser's Asia/Calcutta is shown as Asia/Kolkata", txt("sHere"), "Asia/Kolkata");
+    has("and the mark sits on it", txt("output"), "Asia/Kolkata  <- where you are");
+    eq("India is offered once", offered.filter(function (z) { return z === "Asia/Kolkata"; }).length, 1);
+  }
   has("India keeps one offset all year, and the page says so",
       txt("msg"), "same offset all year");
 
@@ -4123,7 +4202,32 @@ T["unit-price-comparison"] = r"""
   ok("a saving of about 13 per cent",
      num("sSaving") > 12 && num("sSaving") < 14, txt("sSaving"));
   has("the winner is marked in the list", txt("output"), "BEST  Pack 2");
-  has("and the page says the smaller pack won", txt("msg"), "SMALLER pack wins");
+  /* 1 kg won with a 500 g pack beside it, and the page used to say "the
+     SMALLER pack wins". What is true is that the biggest did not. */
+  has("the page says the biggest pack lost", txt("msg"), "BIGGEST pack is not the best buy");
+  ok("and not that the smaller one won", txt("msg").indexOf("SMALL") === -1, txt("msg"));
+
+  /* The smallest of three winning: 500 g at 30 (6.00 per 100 g) beats 8.20
+     and 9.40. Against 1 kg alone the gap is still wide enough to name a
+     winner rather than call it a tie. */
+  set("p1", "30");
+  eq("the smallest pack can win", txt("bigBest"), "Pack 1");
+  has("and is called the smallest of three", txt("msg"), "SMALLEST pack wins");
+  /* Of two packs it is the smaller. */
+  set("p3", ""); set("q3", "");
+  has("of two it is the smaller", txt("msg"), "SMALLER pack wins");
+  /* The biggest winning is the ordinary case, and says so. */
+  set("p1", "60");
+  eq("the bigger pack can win", txt("bigBest"), "Pack 2");
+  has("and the page says by how much", txt("msg"), "Best value by");
+  /* The dearest pack need not be the biggest. 500 g at 60 is the worst buy
+     here and 2.5 kg at 225 sits between, so 1 kg wins while the biggest
+     loses - which the page must say, rather than praise a big pack. */
+  set("p3", "225"); set("q3", "2.5");
+  eq("1 kg wins between a dear small pack and a big one", txt("bigBest"), "Pack 2");
+  has("and the biggest is said to have lost", txt("msg"), "BIGGEST pack is not the best buy");
+  set("p1", "45"); set("p3", "235");
+  eq("back to the example", txt("bigBest"), "Pack 2");
 
   /* Kilos and grams are the same measure, so they compare happily. */
   set("u1", "kg"); set("q1", "0.5");
@@ -4181,6 +4285,38 @@ T["scientific-calculator"] = r"""
   eq("factorial", txt("answer"), "120");
   set("expr", "7%3");
   eq("the percent key is a remainder", txt("answer"), "1");
+
+  /* The key is labelled mod, so the word is typed too. It used to be read
+     as 10mod3 with the spaces gone, and "mod3" was refused as a function. */
+  set("expr", "10 mod 3");
+  eq("mod typed as a word is the remainder", txt("answer"), "1");
+  set("expr", "10mod3");
+  eq("with no spaces as well", txt("answer"), "1");
+  set("expr", "2 + 10 mod 4");
+  eq("mod ranks with * and /, above +", txt("answer"), "4");
+  set("expr", "-7 mod 3");
+  eq("a negative keeps its sign, as the page says", txt("answer"), "-1");
+  set("expr", "10 MOD (2+2)");
+  eq("in capitals and before a bracket", txt("answer"), "2");
+  set("expr", "17 mod pi");
+  eq("and before a constant", txt("answer"), String(Number((17 % Math.PI).toPrecision(12))));
+  click("clearBtn");
+  document.querySelector('[data-ins="%"]').click();
+  eq("the mod key still writes %", val("expr"), "%");
+  set("expr", "modulo(3)");
+  has("a longer word is not mod", txt("msg"), "not a function");
+
+  /* No answer at all is a different thing from an answer too big. */
+  set("expr", "sqrt(-1)");
+  eq("the square root of -1 is not a number", txt("answer"), "not a number");
+  has("and the page says there is no real answer", txt("msg"), "no real-number answer");
+  ok("rather than blaming a division by zero", txt("msg").indexOf("past what") === -1, txt("msg"));
+  set("expr", "0/0");
+  has("0 / 0 has no answer either", txt("msg"), "no real-number answer");
+  set("expr", "1/0");
+  has("1 / 0 is still called a division by zero", txt("msg"), "division by zero");
+  set("expr", "ln(0)");
+  has("and ln(0) runs off the end of the format", txt("msg"), "past what");
   set("expr", "log(100)");
   eq("log is base ten", txt("answer"), "2");
   set("expr", "ln(e)");
@@ -11477,6 +11613,10 @@ def registered_slugs():
 
 # ===== START: main =========================================================
 def main():
+    # A failure line can quote the page, rupee sign and all. A Windows
+    # console that cannot print one used to crash here, in the middle of
+    # the report, and hide every failure after it.
+    sys.stdout.reconfigure(errors="backslashreplace")
     wanted = sys.argv[1:]
     slugs = registered_slugs()
 

@@ -392,8 +392,15 @@
       return isFinite(v) ? v : 0;
     }
 
+    /* The minus goes in front of the rupee sign, and it is the real minus
+       sign: "−₹57,600", not "₹-57,600". A zero row is plain "₹0":
+       Math.round(-0.3) is -0, which printed as "₹-0", and Math.abs turns it
+       into an ordinary 0 (-0 < 0 is false, so it gets no minus either). */
+    var MINUS = String.fromCharCode(0x2212);
+
     function money(value) {
-      return "₹" + formatNumber(Math.round(value));
+      var rupees = Math.round(value);
+      return (rupees < 0 ? MINUS : "") + "₹" + formatNumber(Math.abs(rupees));
     }
     /* ---- END: reading a number out of a box ---- */
 

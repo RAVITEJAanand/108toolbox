@@ -2,5 +2,5 @@
 User-agent: *
 Allow: /
 
-# Point crawlers at the sitemap. Change the domain when you buy one.
+# Point crawlers at the sitemap.
 Sitemap: https://108toolbox.in/sitemap.xml

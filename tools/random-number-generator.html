@@ -505,10 +505,24 @@
     }
     /* ---- END: drawing without repeats ---- */
 
+    /* ---- START: emptying the list and the tiles ----
+       Used by Reset, and by a refused draw: numbers from the LAST draw left
+       on screen under an error look like the answer to the new settings,
+       and Copy would hand them over as if they were. */
+    function clearDraw() {
+      last = [];
+      output.textContent = "";
+      document.getElementById("sCount").textContent = String.fromCharCode(0x2014);
+      document.getElementById("sLow").textContent = String.fromCharCode(0x2014);
+      document.getElementById("sHigh").textContent = String.fromCharCode(0x2014);
+    }
+    /* ---- END: emptying the list and the tiles ---- */
+
     /* ---- START: the draw itself ---- */
     function draw() {
       var s = readSettings();
       if (s.error) {
+        clearDraw();
         setMessage(s.error, "bad");
         return;
       }
@@ -557,11 +571,7 @@
     document.getElementById("resetBtn").addEventListener("click", function () {
       lo.value = 1; hi.value = 100; howMany.value = 1;
       unique.checked = false; sorted.checked = false;
-      last = [];
-      output.textContent = "";
-      document.getElementById("sCount").textContent = String.fromCharCode(0x2014);
-      document.getElementById("sLow").textContent = String.fromCharCode(0x2014);
-      document.getElementById("sHigh").textContent = String.fromCharCode(0x2014);
+      clearDraw();
       setMessage("");
     });
 

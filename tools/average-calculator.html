@@ -70,7 +70,7 @@
         "name": "How should I separate my numbers?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "However you like. Commas, spaces, new lines, tabs or semicolons all work, and you can mix them. Negative numbers and decimals are fine. Anything that is not a number is ignored and counted separately so you know it was skipped."
+          "text": "However you like. Commas, spaces, new lines, tabs or semicolons all work, and you can mix them. Negative numbers and decimals are fine. A symbol in front or a unit behind is fine: ₹500, 50% and 3.5kg all count. Anything else that is not a number is skipped, and the page names it so you can see what was left out."
         }
       },
       {
@@ -178,15 +178,19 @@
             <div class="stat"><span class="stat__num" id="range">&mdash;</span><span class="stat__label">Range</span></div>
           </div>
 
-          <div class="stats stats--3" style="margin-top:var(--s2)">
+          <div class="stats" style="margin-top:var(--s2)">
             <div class="stat"><span class="stat__num" id="count">0</span><span class="stat__label">How many</span></div>
             <div class="stat"><span class="stat__num" id="sum">&mdash;</span><span class="stat__label">Total</span></div>
-            <div class="stat"><span class="stat__num" id="sd">&mdash;</span><span class="stat__label">Std deviation</span></div>
           </div>
 
           <div class="stats" style="margin-top:var(--s2)">
             <div class="stat"><span class="stat__num" id="min">&mdash;</span><span class="stat__label">Smallest</span></div>
             <div class="stat"><span class="stat__num" id="max">&mdash;</span><span class="stat__label">Largest</span></div>
+          </div>
+
+          <div class="stats" style="margin-top:var(--s2)">
+            <div class="stat"><span class="stat__num" id="sd">&mdash;</span><span class="stat__label">Std deviation, population (&sigma;)</span></div>
+            <div class="stat"><span class="stat__num" id="sdSample">&mdash;</span><span class="stat__label">Std deviation, sample (s)</span></div>
           </div>
 
           <p class="msg" id="msg"></p>
@@ -268,9 +272,17 @@
         <p><strong>Standard deviation</strong> answers the same question more
           carefully: on average, how far is each number from the mean? A small
           standard deviation means the values huddle close together; a large one
-          means they are scattered. This page reports the population standard
-          deviation, which treats your list as the whole group rather than as a
-          sample drawn from a larger one.</p>
+          means they are scattered.</p>
+
+        <p>There are two of them, and this page shows both. The
+          <strong>population</strong> standard deviation (&sigma;) divides by how
+          many numbers there are, and treats your list as the whole group
+          &mdash; every student in the class. The <strong>sample</strong>
+          standard deviation (s) divides by one fewer, and is the one to use
+          when your list is a sample from a bigger group, as in most
+          statistics coursework. The sample figure is never the smaller of the
+          two, and with a single number it is left blank: one value cannot
+          show how spread out a group is.</p>
 
         <h2>Frequently asked questions</h2>
         <div class="faq">
@@ -283,7 +295,7 @@
         </div>
         <div class="faq">
           <h3>How should I separate my numbers?</h3>
-          <p>However you like. Commas, spaces, new lines, tabs or semicolons all work, and you can mix them. Negative numbers and decimals are fine. Anything that is not a number is ignored and counted separately so you know it was skipped.</p>
+          <p>However you like. Commas, spaces, new lines, tabs or semicolons all work, and you can mix them. Negative numbers and decimals are fine. A symbol in front or a unit behind is fine: ₹500, 50% and 3.5kg all count. Anything else that is not a number is skipped, and the page names it so you can see what was left out.</p>
         </div>
         <div class="faq">
           <h3>Is my data sent anywhere?</h3>
@@ -374,23 +386,56 @@
 
     var current = { values: [] };
 
-    /* ---- START: reading numbers out of whatever was pasted ---- */
-    /* Split on anything that is not part of a number. Keeping the minus sign
-       and the decimal point means "-3.5" survives, while "kg" does not. */
-    function parseNumbers(text) {
-      var pieces = text.split(/[^0-9.eE+-]+/);
-      var values = [];
-      var skipped = 0;
+    /* ---- START: reading numbers out of whatever was pasted ----
+       The list is cut into entries at spaces, commas, semicolons, tabs and
+       new lines. An entry counts when it is ONE number, with at most a
+       symbol in front and a unit behind: "-3.5", "₹500", "50%", "3.5kg".
+       Anything else is skipped and named, never quietly dropped.
 
-      pieces.forEach(function (piece) {
-        if (piece === "") return;
-        var n = parseFloat(piece);
+       This used to split on every character that is not part of a number,
+       which looked tidy and lost things without a word: "5, abc, 7" was
+       counted as two numbers and said nothing, "Rs.500" became 0.5, and
+       "1.2.3" became 1.2. */
+    var ENTRY = /^[^0-9a-zA-Z.+-]*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)[^0-9.+-]*$/;
+
+    function parseNumbers(text) {
+      var values = [];
+      var skipped = [];
+
+      /* A pasted minus is often the typographic one, U+2212. Left alone it
+         would be read as a symbol in front of the number, and -5 as 5. */
+      text.split(MINUS).join("-").split(/[\s,;]+/).forEach(function (entry) {
+        if (entry === "") return;
+        var found = ENTRY.exec(entry);
+        var n = found ? Number(found[1]) : NaN;
         /* isFinite rejects NaN and Infinity together, which is what we want:
            a stray "." or "1e999" should not poison every later result. */
-        if (isFinite(n)) values.push(n); else skipped++;
+        if (isFinite(n)) values.push(n); else skipped.push(entry);
       });
 
       return { values: values, skipped: skipped };
+    }
+
+    /* Names the skipped entries, so "abc" is visible and fixable. A few are
+       enough to see what went wrong; a whole pasted paragraph is not. */
+    function skippedNote(skipped) {
+      /* "kg, kg, kg" is named once. A set, not indexOf, because a pasted
+         page of prose would make indexOf slow on every keystroke. */
+      var seen = Object.create(null);
+      var distinct = skipped.filter(function (entry) {
+        if (seen["k" + entry]) return false;
+        seen["k" + entry] = true;
+        return true;
+      });
+      var shown = distinct.slice(0, 5).map(function (entry) {
+        return entry.length > 24
+          ? entry.slice(0, 24) + String.fromCharCode(0x2026) : entry;
+      });
+      var more = distinct.length - shown.length;
+      return (skipped.length === 1
+          ? "1 entry is not a number and was skipped: "
+          : skipped.length + " entries are not numbers and were skipped: ")
+        + shown.join(", ") + (more > 0 ? " and " + more + " more" : "") + ".";
     }
     /* ---- END: reading numbers out of whatever was pasted ---- */
 
@@ -433,19 +478,26 @@
       return { list: winners, times: best };
     }
 
-    function stdDev(values, mean) {
-      if (values.length === 0) return 0;
+    /* Two standard deviations, because statistics has two and a single
+       unlabelled one is a guess about which the visitor wanted. Population
+       (sigma) divides by n: the list IS the whole group. Sample (s) divides
+       by n - 1: the list is a sample from a bigger group, as in most
+       coursework. A sample of one has no spread to estimate, so it is a
+       dash rather than a confident zero. */
+    function stdDev(values, mean, sample) {
+      var divisor = sample ? values.length - 1 : values.length;
+      if (divisor <= 0) return NaN;
       var total = values.reduce(function (acc, v) {
         var d = v - mean;
         return acc + d * d;
       }, 0);
-      return Math.sqrt(total / values.length);
+      return Math.sqrt(total / divisor);
     }
     /* ---- END: the statistics themselves ---- */
 
     /* ---- START: emptying the panel ---- */
     function blank() {
-      ["mean","median","mode","range","sum","sd","min","max"].forEach(function (id) {
+      ["mean","median","mode","range","sum","sd","sdSample","min","max"].forEach(function (id) {
         out(id).textContent = EM_DASH;
       });
       out("count").textContent = "0";
@@ -462,7 +514,7 @@
 
       if (values.length === 0) {
         blank();
-        msg.textContent = parsed.skipped > 0
+        msg.textContent = parsed.skipped.length > 0
           ? "Nothing here looks like a number."
           : "";
         msg.className = "msg";
@@ -480,7 +532,8 @@
       out("range").textContent  = round(max - min);
       out("count").textContent  = formatNumber(values.length);
       out("sum").textContent    = round(sum);
-      out("sd").textContent     = round(stdDev(values, mean));
+      out("sd").textContent     = round(stdDev(values, mean, false));
+      out("sdSample").textContent = round(stdDev(values, mean, true));
       out("min").textContent    = round(min);
       out("max").textContent    = round(max);
 
@@ -502,17 +555,17 @@
 
       /* Two things worth saying out loud, because neither is visible */
       var notes = [];
-      if (parsed.skipped > 0) {
-        notes.push(parsed.skipped +
-          (parsed.skipped === 1 ? " entry was" : " entries were") +
-          " not a number and got skipped");
+      if (parsed.skipped.length > 0) {
+        notes.push(skippedNote(parsed.skipped));
       }
       if (m.list.length > 0 && m.times > 1) {
-        notes.push("the mode appears " + m.times + " times");
+        notes.push("The mode appears " + m.times + " times.");
       }
 
-      msg.textContent = notes.length ? notes.join("; ") + "." : "";
-      msg.className = "msg";
+      /* textContent, never innerHTML: the skipped entries are the
+         visitor's own text (rule 11). */
+      msg.textContent = notes.join(" ");
+      msg.className = parsed.skipped.length > 0 ? "msg msg--bad" : "msg";
     }
     /* ---- END: drawing the answer ---- */
 
@@ -541,7 +594,8 @@
         "Range: "    + out("range").textContent,
         "Smallest: " + out("min").textContent,
         "Largest: "  + out("max").textContent,
-        "Std deviation: " + out("sd").textContent
+        "Std deviation, population: " + out("sd").textContent,
+        "Std deviation, sample: " + out("sdSample").textContent
       ];
       copyText(lines.join("\n"));
     });

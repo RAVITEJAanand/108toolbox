@@ -401,6 +401,35 @@
 
     var lastText = "";
 
+    /* ---- START: the visitor's own zone, under its current name ----
+       Browsers report some zones by an old name: Chrome on many Indian PCs
+       says Asia/Calcutta, which is Asia/Kolkata renamed. Taken as it comes,
+       India appeared twice in the list and the "where you are" mark sat on
+       the old name. The old names here are the ones still reported; each is
+       used only if this browser also knows the new one. */
+    var RENAMED = Object.assign(Object.create(null), {
+      "Asia/Calcutta": "Asia/Kolkata",
+      "Asia/Katmandu": "Asia/Kathmandu",
+      "Asia/Saigon": "Asia/Ho_Chi_Minh",
+      "Asia/Rangoon": "Asia/Yangon",
+      "Europe/Kiev": "Europe/Kyiv",
+      "Atlantic/Faeroe": "Atlantic/Faroe",
+      "America/Godthab": "America/Nuuk"
+    });
+
+    function localZone() {
+      var zone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+      var renamed = RENAMED[zone];
+      if (!renamed) { return zone; }
+      try {
+        new Intl.DateTimeFormat("en-GB", { timeZone: renamed });
+        return renamed;
+      } catch (e) {
+        return zone;                   /* an older browser: keep what it said */
+      }
+    }
+    /* ---- END: the visitor's own zone, under its current name ---- */
+
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
       msg.textContent = text || "";
@@ -497,7 +526,7 @@
         return;
       }
 
-      var here = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+      var here = localZone();
       var rows = [];
       var seen = Object.create(null);
 
@@ -546,7 +575,7 @@
 
     /* ---- START: wiring ---- */
     function fillZones() {
-      var here = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+      var here = localZone();
       var options = ZONES.slice();
       if (!options.some(function (z) { return z[0] === here; })) {
         options.unshift([here, "where you are"]);
