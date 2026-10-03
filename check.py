@@ -624,7 +624,10 @@ def content_box(node):
     return node
 
 
-html_pages = sorted(ROOT.glob("*.html")) + sorted((ROOT / "tools").glob("*.html"))
+# The template is checked too; the _test- copies test_tools.py builds for a
+# moment while it runs are not, and may vanish mid-read.
+html_pages = sorted(ROOT.glob("*.html")) + sorted(
+    p for p in (ROOT / "tools").glob("*.html") if not p.name.startswith("_test-"))
 for path in html_pages:
     builder = TreeBuilder()
     builder.feed(path.read_text(encoding="utf-8"))
@@ -690,6 +693,39 @@ if len(cross_bad) > 12:
 if not cross_bad:
     ok("no START/END pair crosses another — the markers nest cleanly, in every file")
 # ---- END: 4i. The markers must nest, never cross ----
+
+# ---- START: 4l. Every box has a name a screen reader can read ----
+# A box inside a sentence - "What is [ ] % of [ ]?" - looks labelled to the
+# eye and is announced as "spin button" and nothing else, because no <label>
+# points at it. On 3 Oct 2026, 40 of the 467 boxes, choices and tick boxes
+# on the tools were like that: the percentage, discount, margin and ratio
+# sentences, the inches beside a feet box, the unit next to an amount. They
+# carry an aria-label now. A control is named by a <label for> that points
+# at it, a <label> around it, or aria-label / aria-labelledby.
+unnamed = []
+for path in html_pages:
+    builder = TreeBuilder()
+    builder.feed(path.read_text(encoding="utf-8"))
+    pointed = {n.attrs.get("for") for n in find(builder.root, lambda n: n.tag == "label")}
+    for ctl in find(builder.root, lambda n: n.tag in ("input", "select", "textarea")):
+        if (ctl.attrs.get("type") or "").lower() == "hidden":
+            continue
+        named = (ctl.attrs.get("id") in pointed or (ctl.attrs.get("aria-label") or "").strip()
+                 or (ctl.attrs.get("aria-labelledby") or "").strip())
+        up = ctl.parent
+        while not named and up is not None:
+            named = up.tag == "label"
+            up = up.parent
+        if not named:
+            unnamed.append("%s: <%s id=\"%s\"> has no label a screen reader can read"
+                           % (path.relative_to(ROOT).as_posix(), ctl.tag, ctl.attrs.get("id", "")))
+for problem in unnamed[:12]:
+    fail(problem)
+if len(unnamed) > 12:
+    fail("...and %d more boxes with no name" % (len(unnamed) - 12))
+if not unnamed:
+    ok("every box, choice and tick box has a name a screen reader can read")
+# ---- END: 4l. Every box has a name a screen reader can read ----
 
 # ---- START: 4g. ROADMAP.md agrees with the registry ----
 # The same rot as the tool counts, one file further out. The "Built" column

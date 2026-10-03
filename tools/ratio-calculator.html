@@ -161,9 +161,9 @@
           <span class="panel__label">Simplify a ratio</span>
           <!-- ---- START: the boxes: a1, a2 ---- -->
           <div class="btn-row" style="align-items:center;gap:var(--s2)">
-            <input type="number" id="a1" value="1920" step="any" style="max-width:130px">
+            <input type="number" id="a1" aria-label="First number of the ratio" value="1920" step="any" style="max-width:130px">
             <span>:</span>
-            <input type="number" id="a2" value="1080" step="any" style="max-width:130px">
+            <input type="number" id="a2" aria-label="Second number of the ratio" value="1080" step="any" style="max-width:130px">
           </div>
           <!-- ---- END: the boxes: a1, a2 ---- -->
           <!-- ---- START: the main answer and the sum behind it ---- -->
@@ -187,11 +187,11 @@
           <span class="panel__label">Find the missing number</span>
           <!-- ---- START: the boxes: b1, b2, b3 ---- -->
           <div class="btn-row" style="align-items:center;gap:var(--s2)">
-            <input type="number" id="b1" value="3" step="any" style="max-width:100px">
+            <input type="number" id="b1" aria-label="A, in A is to B" value="3" step="any" style="max-width:100px">
             <span>:</span>
-            <input type="number" id="b2" value="4" step="any" style="max-width:100px">
+            <input type="number" id="b2" aria-label="B, in A is to B" value="4" step="any" style="max-width:100px">
             <span>=</span>
-            <input type="number" id="b3" value="15" step="any" style="max-width:100px">
+            <input type="number" id="b3" aria-label="C, in C is to the missing number" value="15" step="any" style="max-width:100px">
             <span>:</span>
             <span class="result__num" id="bOut" style="font-size:1.75rem">20</span>
           </div>
@@ -208,9 +208,9 @@
           <!-- ---- START: the boxes: c1, c2 ---- -->
           <div class="btn-row" style="align-items:center;gap:var(--s2)">
             <span>Divide</span>
-            <input type="number" id="c1" value="5000" step="any" style="max-width:140px">
+            <input type="number" id="c1" aria-label="Amount to divide" value="5000" step="any" style="max-width:140px">
             <span>in the ratio</span>
-            <input type="text" id="c2" value="2:3" style="max-width:160px">
+            <input type="text" id="c2" aria-label="Ratio, such as 2:3" value="2:3" style="max-width:160px">
           </div>
           <!-- ---- END: the boxes: c1, c2 ---- -->
           <!-- ---- START: the hint "Use any number of parts, separated by..." ---- -->

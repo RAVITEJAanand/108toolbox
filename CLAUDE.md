@@ -582,6 +582,10 @@ colour or a size** — add a token first.
 - Spacing is a strict 4px scale, `--s1` … `--s9`
 - No webfonts, no image files. Icons are emoji, the favicon is inline SVG.
   The homepage weighs about 46 KB and should stay under 100 KB.
+- **Every box, choice and tick box has a name a screen reader can read**: a
+  `<label for>`, a `<label>` around it, or an `aria-label` for a box that
+  sits inside a sentence ("What is [ ] % of [ ]?"). 40 boxes were announced
+  as nothing but "spin button" until 3 Oct 2026; `check.py` 4l fails one now.
 - **The homepage may be loud. A tool page must be calm** — someone landed
   there to do one job. Tool above the fold, always; explanation below it.
 
