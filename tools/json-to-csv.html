@@ -208,6 +208,9 @@
           <!-- ---- START: the "Flatten nested objects into dotted columns" tick box ---- -->
           <label class="check"><input type="checkbox" id="flatten" checked> Flatten nested objects into dotted columns</label>
           <!-- ---- END: the "Flatten nested objects into dotted columns" tick box ---- -->
+          <!-- ---- START: the "Stop spreadsheet formulas" tick box ---- -->
+          <label class="check"><input type="checkbox" id="guard" checked> Stop spreadsheet formulas: put a ' before text that starts with = + - or @</label>
+          <!-- ---- END: the "Stop spreadsheet formulas" tick box ---- -->
 
           <!-- ---- START: the buttons: Download .csv, Copy, Clear ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
@@ -328,6 +331,18 @@
            columns.</p>
         <!-- ---- END: the "The quoting rules, followed properly" section ---- -->
 
+        <!-- ---- START: the "Text that starts with =, +, - or @" section ---- -->
+        <h2>Text that starts with =, +, - or @</h2>
+        <p>A spreadsheet reads a cell that starts with one of those as a
+           formula and runs it. Data from a form or a website can hold
+           exactly that, and a formula can fetch things or show a misleading
+           figure the moment the file is opened. So, with the box ticked, such
+           text gets a <code>'</code> in front: a spreadsheet then shows it as
+           plain text. A number such as <code>-5</code> is left alone, and the
+           message says how many cells were changed. Untick the box to keep
+           every value exactly as it was.</p>
+        <!-- ---- END: the "Text that starts with =, +, - or @" section ---- -->
+
         <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
@@ -437,11 +452,13 @@
     var delim   = document.getElementById("delim");
     var bom     = document.getElementById("bom");
     var flatten = document.getElementById("flatten");
+    var guard   = document.getElementById("guard");
     var output  = document.getElementById("output");
     var msg     = document.getElementById("msg");
     var DASH    = String.fromCharCode(0x2014);
 
     var lastCsv = "";
+    var guarded = 0;
     /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: speaking to the visitor ---- */
@@ -467,6 +484,7 @@
     function field(value, sep) {
       if (value === null || value === undefined) { return ""; }
       var text = typeof value === "object" ? JSON.stringify(value) : String(value);
+      if (typeof value === "string") { text = defused(text); }
       if (text.indexOf(sep) > -1 || text.indexOf('"') > -1 ||
           text.indexOf("\n") > -1 || text.indexOf("\r") > -1) {
         return '"' + text.replace(/"/g, '""') + '"';
@@ -474,6 +492,21 @@
       return text;
     }
     /* ---- END: one field, quoted only when it has to be ---- */
+
+    /* ---- START: text a spreadsheet would run as a formula ----
+       A cell that starts with = + - or @ is a formula to Excel and its
+       relatives, and data from a form can hold one on purpose. A ' in front
+       makes the spreadsheet show it as text. A plain number (-5, +3.2) is
+       safe and stays as it is; so does everything when the box is unticked.
+       A tab or a carriage return at the start counts too: some programs
+       skip them and then see the formula behind. */
+    function defused(text) {
+      if (!guard.checked || !/^[=+\-@\t\r]/.test(text)) { return text; }
+      if (/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(text)) { return text; }
+      guarded++;
+      return "'" + text;
+    }
+    /* ---- END: text a spreadsheet would run as a formula ---- */
 
     /* ---- START: flattening an object into dotted keys ----
        CSV is a flat grid and JSON is not, and no standard bridges them. Dots
@@ -623,6 +656,7 @@
       });
 
       var sep = separator();
+      guarded = 0;
       var lines = [columns.map(function (c) { return field(c, sep); }).join(sep)];
       rows.forEach(function (row) {
         lines.push(columns.map(function (c) {
@@ -651,6 +685,12 @@
                + " longer than a computer holds exactly (such as " + scan.inexact[0].word.slice(0, 30)
                + "), so " + (scan.inexact.length === 1 ? "it was" : "they were") + " copied digit for digit.";
       }
+      if (guarded) {
+        notes += " " + (guarded === 1 ? "One cell starts" : count(guarded, "cell") + " start")
+               + " with = + - or @, so a ' was put in front: a spreadsheet shows "
+               + (guarded === 1 ? "it" : "them") + " as text instead of running "
+               + (guarded === 1 ? "it as a formula." : "them as formulas.");
+      }
       if (scan.duplicates.length) {
         notes += " The key \"" + scan.duplicates[0].slice(0, 40) + "\"" + (scan.duplicates.length > 1
                ? " and " + (scan.duplicates.length - 1) + " more appear" : " appears")
@@ -661,7 +701,7 @@
     /* ---- END: the conversion ---- */
 
     /* ---- START: wiring ---- */
-    [input, delim, bom, flatten].forEach(function (el) {
+    [input, delim, bom, flatten, guard].forEach(function (el) {
       el.addEventListener("input", convert);
       el.addEventListener("change", convert);
     });
@@ -670,7 +710,7 @@
       if (!lastCsv) { showToast("Nothing to download"); return; }
       /* The mark goes in as a real character; the Blob writes it as the three
          UTF-8 bytes Excel looks for. */
-      var body = (bom.checked ? "\uFEFF" : "") + lastCsv;
+      var body = (bom.checked ? String.fromCharCode(0xFEFF) : "") + lastCsv;
       downloadBlob(new Blob([body], { type: "text/csv;charset=utf-8" }), "data.csv");
     });
 

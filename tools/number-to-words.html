@@ -185,6 +185,10 @@
           </div>
           <!-- ---- END: the figures: Grouped, Digits before the point ---- -->
 
+          <!-- ---- START: the note when the number is rounded to the paisa ---- -->
+          <p class="hint" id="roundNote"></p>
+          <!-- ---- END: the note when the number is rounded to the paisa ---- -->
+
           <!-- ---- START: the error message ---- -->
           <!-- Plain wrapper, because .msg carries its own display and would
                then beat the browser rule for the hidden attribute. -->
@@ -561,6 +565,7 @@
         el("cheque").textContent = "";
         el("grouped").textContent = String.fromCharCode(0x2014);
         el("digits").textContent = String.fromCharCode(0x2014);
+        el("roundNote").textContent = "";
       }
 
       if (raw === "" || isNaN(value)) { fail("Type a number to see it in words."); return; }
@@ -571,14 +576,31 @@
 
       el("errWrap").hidden = true;
 
-      var negative = value < 0;
       var abs = Math.abs(value);
 
-      /* Split rupees from paise by rounding to two decimals first, so 0.005
-         does not become nought paise through a floating point accident. */
-      var totalPaise = Math.round(abs * 100);
-      var whole = Math.floor(totalPaise / 100);
-      var paise = totalPaise % 100;
+      /* Rupees and paise are split without multiplying the whole number by
+         100: past about fourteen digits that product is more than JavaScript
+         holds exactly, and 543210987654321 came out as 543210987654320 and
+         96 paise. The fraction alone is small, so it rounds to the paisa
+         exactly - and 0.005 still becomes one paisa, not nought. */
+      var whole = Math.floor(abs);
+      var paise = Math.round((abs - whole) * 100);
+      if (paise === 100) { whole += 1; paise = 0; }
+      /* -0.001 rounds to nothing, and used to be read as "minus zero". */
+      var negative = value < 0 && (whole > 0 || paise > 0);
+
+      /* 1.999 used to become "two" without a word: the rounding to the paisa
+         is right for money, and now it is said. It is read off what was
+         typed - a digit other than nought past the second place - because
+         adding the paise back in floating point is not exact (3 + 0.47 is
+         3.4699999999999998) and would draw the note for no reason. */
+      var rounded = /[eE]/.test(raw)
+        ? abs < 1e13 && Math.abs(abs * 100 - Math.round(abs * 100)) > 1e-6
+        : /\.\d{2}\d*[1-9]/.test(raw);
+      el("roundNote").textContent = rounded
+        ? "Rounded to the paisa, two places after the point: " + raw + " is read as " +
+          (negative ? "-" : "") + whole + "." + (paise < 10 ? "0" : "") + paise + "."
+        : "";
 
       var digits = String(whole);
       var paiseText = paise < 10 ? "0" + paise : String(paise);

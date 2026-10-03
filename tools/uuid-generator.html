@@ -467,17 +467,31 @@
         return;
       }
 
-      var wanted = Math.floor(Number(count.value));
-      if (!isFinite(wanted) || wanted < 1) { wanted = 1; }
-      if (wanted > 100) { wanted = 100; }
-      count.value = wanted;
+      /* A count it cannot make used to be swapped without a word: 0 or a
+         word made one UUID, 2.5 made two and a million made 100. */
+      var raw = count.value.trim();
+      var wanted = Number(raw);
+      if (raw === "" || !isFinite(wanted) || wanted < 1 || Math.floor(wanted) !== wanted) {
+        output.textContent = "";
+        msg.className = "msg msg--bad";
+        msg.textContent = "Type how many you need: a whole number from 1 to 100.";
+        document.getElementById("cCount").textContent = "0";
+        return;
+      }
+      var capped = wanted > 100;
+      if (capped) {
+        wanted = 100;
+        count.value = wanted;
+      }
 
       var list = [];
       for (var i = 0; i < wanted; i++) { list.push(dress(uuid4())); }
       output.textContent = list.join("\n");
 
       msg.className = "msg msg--ok";
-      msg.textContent = wanted === 1
+      msg.textContent = capped
+        ? "100 fresh UUIDs: 100 is the most this page makes at once. Press Generate again for another 100."
+        : wanted === 1
         ? "One fresh UUID, made in this browser."
         : wanted + " fresh UUIDs, made in this browser. Press Generate again for a new set.";
 

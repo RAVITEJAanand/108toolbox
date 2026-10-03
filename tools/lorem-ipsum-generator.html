@@ -200,6 +200,10 @@
             <button class="btn btn--primary" type="button" id="genBtn">Generate</button>
           </div>
           <!-- ---- END: the "Generate" button ---- -->
+
+          <!-- ---- START: the message line ---- -->
+          <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
         <!-- ---- END: the "Options" panel ---- -->
 
@@ -445,10 +449,25 @@
     var unit    = document.getElementById("unit").value;
     var classic = document.getElementById("classic").checked;
 
-    /* Clamp the number so a typo cannot freeze the page */
+    /* A cap so a typo cannot freeze the page. The box is not rewritten
+       while it is typed in, and a number it cannot use is said: 0 and -3
+       used to make one word without a word of their own. */
     var countBox = document.getElementById("count");
-    var count = Math.min(200, Math.max(1, parseInt(countBox.value, 10) || 1));
-    countBox.value = count;
+    var msg = document.getElementById("msg");
+    var rawCount = countBox.value.trim();
+    var count = Number(rawCount);
+    if (rawCount === "" || !isFinite(count) || count < 1 || Math.floor(count) !== count) {
+      document.getElementById("output").textContent = "";
+      msg.textContent = "Type how many you want: a whole number from 1 to 200.";
+      msg.className = "msg msg--bad";
+      return;
+    }
+    msg.textContent = "";
+    msg.className = "msg";
+    if (count > 200) {
+      count = 200;
+      msg.textContent = "Made 200: that is the most this page makes at once.";
+    }
 
     var text = "";
 

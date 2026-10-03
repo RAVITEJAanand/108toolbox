@@ -444,7 +444,20 @@
       minus: 8722, radic: 8730, infin: 8734, ne: 8800, le: 8804, ge: 8805,
       alpha: 945, beta: 946, gamma: 947, delta: 948, pi: 960, sigma: 963,
       Omega: 937, lambda: 955, mu: 956,
-      spades: 9824, clubs: 9827, hearts: 9829, diams: 9830
+      spades: 9824, clubs: 9827, hearts: 9829, diams: 9830,
+      /* Capital forms HTML also accepts, from the days before lower case */
+      AMP: 38, LT: 60, GT: 62, QUOT: 34, COPY: 169, REG: 174, TRADE: 8482
+    };
+
+    /* &#150; and its neighbours (128 to 159) are not the control characters
+       their numbers name. Old Windows pages wrote them meaning the Windows
+       letters, and a browser reads them so: &#150; is an en dash, &#128; the
+       euro sign. These are the numbers a browser uses instead. */
+    var WINDOWS_1252 = {
+      128: 8364, 130: 8218, 131: 402, 132: 8222, 133: 8230, 134: 8224, 135: 8225,
+      136: 710, 137: 8240, 138: 352, 139: 8249, 140: 338, 142: 381,
+      145: 8216, 146: 8217, 147: 8220, 148: 8221, 149: 8226, 150: 8211, 151: 8212,
+      152: 732, 153: 8482, 154: 353, 155: 8250, 156: 339, 158: 382, 159: 376
     };
     /* ---- END: the named entities this page knows ---- */
 
@@ -487,6 +500,7 @@
             cp = (body.charAt(1) === "x" || body.charAt(1) === "X")
                ? parseInt(body.slice(2), 16)
                : parseInt(body.slice(1), 10);
+            if (WINDOWS_1252[cp]) { cp = WINDOWS_1252[cp]; }
           } else if (Object.prototype.hasOwnProperty.call(NAMED, body)) {
             /* hasOwnProperty, not a plain lookup: &constructor; and
                &toString; would otherwise find something on the prototype and
@@ -498,8 +512,9 @@
           }
 
           /* Surrogates and anything past the last code point are not
-             characters; fromCodePoint throws on them. */
-          if (!isFinite(cp) || cp < 0 || cp > 0x10FFFF ||
+             characters; fromCodePoint throws on them. Nor is nought: &#0;
+             used to come out as an invisible NUL character. */
+          if (!isFinite(cp) || cp <= 0 || cp > 0x10FFFF ||
               (cp >= 0xD800 && cp <= 0xDFFF)) {
             unknown++;
             return whole;

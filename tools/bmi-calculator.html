@@ -548,6 +548,20 @@
 
       var m = metresAndKilos();
 
+      /* A minus number used to be read as it stood: -1 ft and 80 in made a
+         height of 68 inches and a BMI beside it. */
+      var typed = metric ? [cm, kg] : [ft, inch, lb];
+      if (typed.some(function (box) { return num(box) < 0; })) {
+        bmiOut.textContent  = EM_DASH;
+        formula.textContent = "";
+        category.textContent = "Height and weight cannot be below zero.";
+        category.className = "msg msg--bad";
+        healthyRange.textContent = EM_DASH;
+        toChange.textContent = EM_DASH;
+        markerDot.style.left = "0%";
+        return;
+      }
+
       if (m.m <= 0 || m.kilos <= 0) {
         bmiOut.textContent  = EM_DASH;
         formula.textContent = "enter your height and weight";

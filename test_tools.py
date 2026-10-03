@@ -493,6 +493,17 @@ T["bmi-calculator"] = r"""
 
     set("cm", ""); set("kg", "");
     check("empty input shows a dash", txt("bmi"), String.fromCharCode(0x2014));
+        /* -1 ft and 80 in used to make 68 inches and a BMI beside it. */
+    var DASH = String.fromCharCode(0x2014);
+    set("units", "imperial"); set("ft", "-1"); set("inch", "80"); set("lb", "150");
+    eq("a minus height gives no BMI", txt("bmi"), DASH);
+    has("and says why", txt("category"), "cannot be below zero");
+    set("ft", "5"); set("inch", "8");
+    ok("an ordinary height gives one", txt("bmi") !== DASH, txt("bmi"));
+    set("units", "metric"); set("cm", "170"); set("kg", "-65");
+    eq("a minus weight is refused too", txt("bmi"), DASH);
+    set("kg", "65");
+    eq("and a real one works again", txt("bmi"), "22.5");
     finish();
 """
 # ---- END: the test for bmi-calculator ----
@@ -1231,6 +1242,18 @@ T["lorem-ipsum-generator"] = r"""
     click("genBtn");
     ok("four sentences", txt("output").split(".").filter(function (s) {
        return s.trim() !== ""; }).length === 4);
+        /* 0 and -3 used to make one word; the box was rewritten while typed in. */
+    set("count", "0");
+    eq("nought makes nothing", txt("output"), "");
+    has("and says what it takes", txt("msg"), "a whole number from 1 to 200");
+    eq("the box is not typed over", val("count"), "0");
+    set("count", "-3");
+    eq("nor does a minus number", txt("output"), "");
+    set("count", "500"); set("unit", "words");
+    eq("500 words is cut to the most", txt("output").split(/\s+/).filter(Boolean).length, 200);
+    has("and says so", txt("msg"), "Made 200");
+    set("count", "4");
+    eq("an ordinary count has nothing to say", txt("msg"), "");
     finish();
 """
 # ---- END: the test for lorem-ipsum-generator ----
@@ -1307,6 +1330,23 @@ T["password-generator"] = r"""
     tick("optLower", true);
     ok("one type ticked makes passwords again", document.querySelectorAll("#list button").length > 0);
     ["optUpper", "optDigit", "optSymbol"].forEach(function (id) { tick(id, true); });
+        /* The box used to be rewritten on every key: emptied to type 10, it
+       became 1 at once, then 110, then 50 without a word. */
+    set("howMany", "");
+    eq("an emptied box is left empty while typing", val("howMany"), "");
+    has("and asks for a number", txt("msg"), "a whole number from 1 to 50");
+    eq("with no passwords under it", document.querySelectorAll("#list button").length, 0);
+    set("howMany", "10");
+    eq("typing 10 makes ten", document.querySelectorAll("#list button").length, 10);
+    eq("and the box says 10, not 110", val("howMany"), "10");
+    set("howMany", "500");
+    eq("500 makes the most it can", document.querySelectorAll("#list button").length, 50);
+    has("and says that is the most", txt("msg"), "Made 50");
+    set("howMany", "0");
+    eq("nought makes none", document.querySelectorAll("#list button").length, 0);
+    set("howMany", "5");
+    eq("five again", document.querySelectorAll("#list button").length, 5);
+    eq("with nothing to say", txt("msg"), "");
     finish();
 """
 # ---- END: the test for password-generator ----
@@ -1703,6 +1743,24 @@ T["tip-calculator"] = r"""
     document.querySelector("[data-tip='20']").click();
     check("quick button sets 20 percent", txt("tipVal"), "20");
     check("and recalculates", txt("total"), "1,480.80");
+        /* A minus bill or tax used to give a minus tip without a word. */
+    var DASH = String.fromCharCode(0x2014);
+    tick("optRound", false);
+    set("bill", "-100");
+    eq("a minus bill gives no total", txt("total"), DASH);
+    has("and says why", txt("msg"), "The bill cannot be below zero.");
+    set("bill", "1000"); set("tip", "10"); set("people", "1");
+    tick("optNoTax", true);
+    set("tax", "-50");
+    has("a minus tax is refused", txt("msg"), "The tax cannot be below zero.");
+    eq("with no tip shown", txt("tipAmount"), DASH);
+    set("tax", "1500");
+    has("a tax bigger than the bill is called a slip", txt("msg"), "is not less than the bill");
+    eq("and the tip is on the whole bill", txt("tipAmount"), "100");
+    set("tax", "100");
+    eq("an ordinary tax is taken off first", txt("tipAmount"), "90");
+    has("and said", txt("msg"), "the bill without tax");
+    tick("optNoTax", false); set("tax", "0");
     finish();
 """
 # ---- END: the test for tip-calculator ----
@@ -1789,6 +1847,16 @@ T["area-converter"] = r"""
 
     set("amount", "");
     near("an empty box does not crash it", txt("out"), 0);
+        /* A minus area used to convert like any other number. */
+    var DASH = String.fromCharCode(0x2014);
+    set("amount", "-5");
+    eq("a minus area gives no answer", txt("out"), DASH);
+    eq("nor square metres", txt("sqm"), DASH);
+    has("and says why", txt("warn"), "An area cannot be below zero.");
+    eq("as an error", document.getElementById("warn").className, "msg msg--bad");
+    set("amount", "1");
+    eq("a real area clears it", txt("warn"), "");
+    eq("back to a quiet hint", document.getElementById("warn").className, "hint");
     finish();
 """
 # ---- END: the test for area-converter ----
@@ -1843,6 +1911,32 @@ T["number-to-words"] = r"""
 
     set("amount", "");
     shown("an empty box is refused", "errWrap");
+        /* 1.999 used to become "two" without a word, and -0.001 "minus zero". */
+    set("amount", "1.999");
+    eq("1.999 is read as two", txt("words"), "two");
+    has("and the rounding is said", txt("roundNote"), "1.999 is read as 2.00");
+    set("amount", "1.990");
+    eq("a nought at the end changes nothing, so no note", txt("roundNote"), "");
+    set("amount", "-0.001");
+    eq("minus a thousandth rounds to zero, not minus zero", txt("words"), "zero");
+    set("amount", "-2.999");
+    eq("a minus amount keeps its sign", txt("words"), "minus three");
+    has("and its note does too", txt("roundNote"), "-2.999 is read as -3.00");
+    /* 543210987654321 times 100 is past what JavaScript holds exactly: it
+       used to be read as 543210987654320 and 96 paise. */
+    set("amount", "543210987654321");
+    eq("fifteen digits keep their last digit", txt("grouped"), "54,32,10,98,76,54,321");
+    eq("and gain no paise", txt("words").indexOf("point"), -1);
+    has("the words end where the number does", txt("words"), "seventy-six lakh fifty-four thousand three hundred twenty-one");
+    eq("and draw no rounding note", txt("roundNote"), "");
+    set("amount", "3.47");
+    eq("an ordinary amount in paise draws no note", txt("roundNote"), "");
+    eq("and reads its paise", txt("words"), "three point four seven");
+    set("amount", "0.005");
+    has("half a paisa rounds up, and says so", txt("roundNote"), "0.005 is read as 0.01");
+    set("amount", "abc");
+    eq("a refusal clears the note", txt("roundNote"), "");
+    set("amount", "1234567.50");
     finish();
 """
 # ---- END: the test for number-to-words ----
@@ -2578,6 +2672,17 @@ T["leap-year-checker"] = r"""
     ok("every year from 1800 to 2400 matches the rule", wrong === 0,
        wrong + " wrong, first " + firstWrong);
     /* ---- END: six hundred years against the rule ---- */
+        /* The Gregorian calendar began in 1582; earlier years were read with no
+       word that the rule is carried backwards. */
+    set("year", "1500");
+    has("1500 says the Gregorian rule is carried backwards", txt("why"), "The Gregorian calendar began in 1582");
+    has("and that the Julian calendar made it a leap year", txt("why"), "by that calendar 1500 was a leap year");
+    set("year", "1200");
+    has("1200 is a leap year under both", txt("why"), "every fourth year.");
+    eq("so there is no contrast to draw", txt("why").indexOf("by that calendar"), -1);
+    set("year", "1583");
+    eq("from 1583 there is no note", txt("why").indexOf("Gregorian calendar began"), -1);
+    set("year", "2024");
     finish();
 """
 # ---- END: the test for leap-year-checker ----
@@ -3141,7 +3246,20 @@ T["base64-encoder-decoder"] = r"""
 
   set("input", "");
   eq("an empty box prints nothing", out(), "");
-    finish();
+      /* A data: address used to be refused whole, as "not Base64". */
+  set("mode", "decode");
+  set("input", "data:text/plain;base64,SGVsbG8=");
+  eq("a data: address decodes what is after its comma", out(), "Hello");
+  has("and says the front was set aside", txt("msg"), "The data: address in front (text/plain) was set aside.");
+  set("input", "data:image/png;base64,iVBORw0KGgo=");
+  has("a picture is named as one", txt("msg"), "This is 8 bytes of image/png, not text.");
+  set("input", "data:,hello");
+  has("a data: address without base64 is explained", txt("msg"), "without ;base64");
+  set("input", "SGVsbG8=");
+  eq("plain Base64 still decodes", out(), "Hello");
+  eq("with nothing about addresses", txt("msg").indexOf("data:"), -1);
+  set("mode", "encode"); set("input", "");
+  finish();
 """
 # ---- END: the test for base64-encoder-decoder ----
 
@@ -3230,9 +3348,11 @@ T["uuid-generator"] = r"""
 
   set("count", 500);
   eq("too many is clamped", val("count"), "100");
+  has("and the page says so", txt("msg"), "100 is the most this page makes at once");
   set("count", 0);
-  eq("zero is clamped to one", val("count"), "1");
-  eq("and one line is printed", out().split("\n").length, 1);
+  eq("zero is refused, not quietly made into one", out(), "");
+  set("count", 1);
+  eq("one makes one line", out().split("\n").length, 1);
   has("the message reads for one", txt("msg"), "One fresh UUID");
 
   tick("optUpper", true);
@@ -3259,7 +3379,21 @@ T["uuid-generator"] = r"""
   click("clearBtn");
   eq("clear empties the list", out(), "");
   eq("and zeroes the count", txt("cCount"), "0");
-    finish();
+      /* A count it cannot make used to be swapped without a word: 0 made one,
+     2.5 made two and a million made 100. */
+  set("count", "0"); click("genBtn");
+  eq("nought is refused, not made into one", out(), "");
+  has("and the page says what it takes", txt("msg"), "a whole number from 1 to 100");
+  set("count", "2.5"); click("genBtn");
+  eq("half a UUID is refused too", out(), "");
+  set("count", "1000000");
+  eq("a million makes the most it can", out().split("\n").length, 100);
+  has("and says that is the most", txt("msg"), "100 is the most this page makes at once");
+  eq("the box shows what was made", val("count"), "100");
+  set("count", "3"); click("genBtn");
+  eq("an ordinary count is just made", out().split("\n").length, 3);
+  eq("with nothing about a limit", txt("msg").indexOf("most"), -1);
+  finish();
 """
 # ---- END: the test for uuid-generator ----
 
@@ -3397,7 +3531,26 @@ T["html-encoder-decoder"] = r"""
 
   set("input", "");
   eq("an empty box prints nothing", out(), "");
-    finish();
+      /* &#0; used to come out as an invisible NUL character. */
+  set("mode", "decode");
+  set("input", "a&#0;b");
+  eq("&#0; is left alone like any number that names no character", out(), "a&#0;b");
+  has("and said", txt("msg"), "left 1 entity alone");
+  /* &#150; was an invisible control character; a browser shows a dash. */
+  set("input", "&#150; &#128; &#x96; &#147;x&#148;");
+  eq("Windows numbers read as a browser reads them", out(),
+     String.fromCharCode(0x2013) + " " + String.fromCharCode(0x20AC) + " " +
+     String.fromCharCode(0x2013) + " " + String.fromCharCode(0x201C) + "x" + String.fromCharCode(0x201D));
+  set("input", "&#129;");
+  eq("a number Windows never used stays as it is", out(), String.fromCharCode(0x81));
+  /* &AMP; and friends are in HTML's own list, and were left alone. */
+  set("input", "&AMP; &LT;b&GT; &COPY; &QUOT; &REG; &TRADE;");
+  eq("capital names HTML accepts are decoded", out(),
+     "& <b> " + String.fromCharCode(0xA9) + ' " ' + String.fromCharCode(0xAE) + " " + String.fromCharCode(0x2122));
+  set("input", "&Amp;");
+  eq("a mixed-case name is not one, and stays", out(), "&Amp;");
+  set("mode", "encode"); set("input", "");
+  finish();
 """
 # ---- END: the test for html-encoder-decoder ----
 
@@ -4480,6 +4633,25 @@ T["json-to-csv"] = r"""
   set("input", '[{"a":1,"a":2,"b":3}]');
   eq("a repeated key keeps its last value", txt("output"), "a,b\r\n2,3");
   has("and the page says the first was not used", txt("msg"), 'The key "a" appears twice in one object');
+    /* A cell that starts with = + - or @ is a formula to a spreadsheet: data
+     from a form could run one the moment the file was opened. */
+  set("input", '[{"a":"=1+1","b":"-5","c":"+91 98765 43210","d":"@SUM(A1)","e":5,"f":"-x","g":"plain","h":-7}]');
+  eq("formula text gets a ' in front, numbers and plain text do not", lines()[1],
+     "'=1+1,-5,'+91 98765 43210,'@SUM(A1),5,'-x,plain,-7");
+  has("and the page counts them", txt("msg"), "4 cells start with = + - or @, so a ' was put in front");
+  set("input", '[{"=cmd":"1"}]');
+  eq("a column name is text from the file too", lines()[0], "'=cmd");
+  has("one cell is counted as one", txt("msg"), "One cell starts with = + - or @");
+  set("input", '[{"a":"=HYPERLINK(\\"x\\",\\"y\\")"}]');
+  eq("a guarded formula is still quoted properly", lines()[1], '"\'=HYPERLINK(""x"",""y"")"');
+  set("input", '[{"a":"\\t=1"}]');
+  eq("a tab in front does not hide one", lines()[1], "'\t=1");
+  tick("guard", false);
+  set("input", '[{"a":"=1+1","b":"@x"}]');
+  eq("unticked, every value is kept exactly", lines()[1], "=1+1,@x");
+  eq("with nothing to say about it", txt("msg"), "1 row, 2 columns.");
+  tick("guard", true);
+  eq("ticking it again guards them", lines()[1], "'=1+1,'@x");
   finish();
 """
 # ---- END: the test for json-to-csv ----

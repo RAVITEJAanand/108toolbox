@@ -589,6 +589,16 @@
           (next === null ? EM_DASH : next) + " ahead.";
       }
 
+      /* The Gregorian calendar began in October 1582. Before that the rule is
+         only carried backwards, and the calendar people actually used - the
+         Julian - had a leap day every fourth year, century years included. */
+      if (year <= 1582) {
+        var julian = ((year % 4) + 4) % 4 === 0;
+        el("why").textContent += " The Gregorian calendar began in 1582, so for " + year +
+          " this is its rule carried backwards. The Julian calendar used then had a leap year every fourth year" +
+          (julian === verdict.leap ? "." : ", so by that calendar " + year + (julian ? " was" : " was not") + " a leap year.");
+      }
+
       fillNearby(year);
     }
     /* ---- END: the check itself ---- */

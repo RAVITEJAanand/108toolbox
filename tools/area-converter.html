@@ -500,6 +500,19 @@
       var from = unit(el("from").value);
       var to = unit(el("to").value);
 
+      /* A minus area used to convert like any other number. */
+      if (amount < 0) {
+        el("out").textContent = String.fromCharCode(0x2014);
+        el("formula").textContent = "";
+        el("sqm").textContent = String.fromCharCode(0x2014);
+        el("sqft").textContent = String.fromCharCode(0x2014);
+        el("warn").className = "msg msg--bad";
+        el("warn").textContent = "An area cannot be below zero.";
+        buildTable(NaN);
+        return;
+      }
+      el("warn").className = "hint";
+
       /* Go through square metres every time. Converting directly between two
          units would need a table of every pair, and one wrong cell in it
          would be almost impossible to spot. */

@@ -470,9 +470,21 @@
       /* The tip is taken from the bill minus tax when that box is ticked.
          Tax larger than the bill is a typo, so fall back to the whole bill
          rather than producing a negative tip. */
+      /* A minus bill or tax used to give a minus tip, or a total below the
+         bill, without a word. */
+      var taxAmount = num(tax);
+      if (amount < 0 || (optNoTax.checked && taxAmount < 0)) {
+        [totalOut, tipAmount, perPerson, tipEach].forEach(function (el) {
+          el.textContent = String.fromCharCode(0x2014);
+        });
+        formula.textContent = "";
+        msg.textContent = amount < 0 ? "The bill cannot be below zero." : "The tax cannot be below zero.";
+        msg.className = "msg msg--bad";
+        return;
+      }
       var taxable = amount;
+      var taxTooBig = optNoTax.checked && taxAmount > 0 && taxAmount >= amount;
       if (optNoTax.checked) {
-        var taxAmount = num(tax);
         taxable = taxAmount > 0 && taxAmount < amount ? amount - taxAmount : amount;
       }
 
@@ -493,7 +505,12 @@
       formula.textContent = money(amount) + " " + PLUS + " " + money(tipValue) +
         " tip" + (heads > 1 ? ", split " + heads + " ways" : "");
 
-      if (optNoTax.checked && taxable !== amount) {
+      if (taxTooBig) {
+        /* It used to fall back to the whole bill silently. */
+        msg.textContent = "The tax (" + money(taxAmount) + ") is not less than the bill, which " +
+                          "looks like a slip - so the tip is worked out on the whole bill.";
+        msg.className = "msg msg--bad";
+      } else if (optNoTax.checked && taxable !== amount) {
         msg.textContent = "Tip calculated on " + money(taxable) +
                           ", the bill without tax (" + percent + "% " + TIMES +
                           " " + money(taxable) + ").";

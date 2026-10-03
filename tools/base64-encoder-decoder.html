@@ -457,8 +457,20 @@
          tool that refused it would be refusing the normal case. Both
          alphabets are accepted too - there is no way to paste the wrong
          one. */
+      /* A data: address carries its Base64 after the comma. The whole
+         address used to be refused as "not Base64". */
+      var media = "";
+      var uri = /^data:([^,]*?)(;base64)?,/i.exec(text.trim());
+      if (uri) {
+        if (!uri[2]) {
+          return { ok: false,
+                   why: "That is a data: address without ;base64 - the text after its comma is not Base64." };
+        }
+        media = uri[1].split(";")[0] || "text/plain";
+        text = text.trim().slice(uri[0].length);
+      }
       var clean = text.replace(/\s+/g, "").replace(/-/g, "+").replace(/_/g, "/");
-      if (!clean) { return { ok: true, text: "", bytes: 0 }; }
+      if (!clean) { return { ok: true, text: "", bytes: 0, media: media }; }
 
       if (!/^[A-Za-z0-9+/]*={0,2}$/.test(clean)) {
         return { ok: false,
@@ -484,11 +496,13 @@
            confident rubbish instead of saying it cannot read this. */
         return { ok: true,
                  text: new TextDecoder("utf-8", { fatal: true }).decode(bytes),
-                 bytes: bytes.length };
+                 bytes: bytes.length, media: media };
       } catch (e) {
         return { ok: false, bytes: bytes.length,
-                 why: "This is " + bytes.length + " bytes of data that is not text - "
-                      + "probably a file such as an image." };
+                 why: media && !/^text\//.test(media)
+                   ? "This is " + bytes.length + " bytes of " + media + ", not text."
+                   : "This is " + bytes.length + " bytes of data that is not text - "
+                     + "probably a file such as an image." };
       }
     }
     /* ---- END: turning Base64 back into text ---- */
@@ -523,7 +537,8 @@
           msg.textContent = "Paste Base64 on the left.";
         } else if (got.ok) {
           msg.className = "msg msg--ok";
-          msg.textContent = "Decoded " + plainBytes + " bytes of text.";
+          msg.textContent = "Decoded " + plainBytes + " bytes of text." +
+            (got.media ? " The data: address in front (" + got.media + ") was set aside." : "");
         } else {
           msg.className = "msg msg--bad";
           msg.textContent = got.why;
