@@ -22,6 +22,7 @@ nothing that breaks the next validation.
 import concurrent.futures
 import functools
 import http.server
+import os
 import pathlib
 import re
 import subprocess
@@ -451,6 +452,17 @@ T["average-calculator"] = r"""
     /* A value that collides with a built-in property name */
     set("input", "1, 1, 2");
     check("mode still works", txt("mode"), "1");
+        /* Past 9,007,199,254,740,991 a number no longer holds every digit, and
+       the page used to print the ones it does not have. */
+    var TIMES_TEN = " " + String.fromCharCode(0x00D7) + " 10";
+
+    set("input", "1e20 1e20");
+    has("a huge average is written as a power of ten", txt("mean"), TIMES_TEN);
+    set("input", "2 4");
+    eq("and an ordinary one is not", txt("mean"), "3");
+        set("input", "-0");
+    eq("a list of minus zero has a median of zero, not -0", txt("median"), "0");
+    set("input", "2 4");
     finish();
 """
 # ---- END: the test for average-calculator ----
@@ -698,6 +710,17 @@ T["compound-interest-calculator"] = r"""
     near("and back", txt("finalOut"), 215892.5, 0.01);
       set("principal", "1000000"); set("rate", "8"); set("years", "10");
   ok("rupees are grouped in lakhs", /^\d{1,2}(,\d\d)+,\d{3}(\.\d\d)?$/.test(txt("finalOut").slice(1)), txt("finalOut"));
+      /* Past 9,007,199,254,740,991 a number no longer holds every digit, and
+       the page used to print the ones it does not have. */
+    var TIMES_TEN = " " + String.fromCharCode(0x00D7) + " 10";
+
+    set("principal", "100000"); set("rate", "8"); set("years", "1000"); set("freq", "365");
+    has("a thousand years of interest is written as a power of ten", txt("finalOut"), TIMES_TEN);
+    ok("in a few characters, not forty invented digits", txt("finalOut").length < 20, txt("finalOut"));
+    set("years", "10");
+      set("principal", "100000"); set("rate", "8"); set("years", "-0");
+  eq("minus zero years reads as 0 years", txt("formula").indexOf("-0"), -1);
+  set("years", "10");
   finish();
 """
 # ---- END: the test for compound-interest-calculator ----
@@ -760,6 +783,15 @@ T["discount-calculator"] = r"""
     has("with the reason", txt("cFormula"), "from 0% to 100%");
     set("c3", "20");
     check("and back", txt("cOut"), "800");
+        set("a1", "-0"); set("a2", "25");
+    eq("a price of minus zero is zero", txt("aOut"), "0");
+    eq("and so is what it saves, not -0", txt("aSaved"), "0");
+    /* formatNumber, the helper every tool shares, writes a number past what
+       JavaScript holds exactly as a power of ten. */
+    set("a1", "1e20"); set("a2", "25");
+    eq("a huge price is written as a power of ten", txt("aOut"),
+       "7.5 " + String.fromCharCode(0x00D7) + " 10" + String.fromCharCode(0x00B9, 0x2079));
+    set("a1", "2000");
     finish();
 """
 # ---- END: the test for discount-calculator ----
@@ -1012,6 +1044,10 @@ T["gst-calculator"] = r"""
       set("mode", "exclusive"); set("rate", "18"); set("amount", "1234567");
   eq("rupees are grouped in lakhs, whatever the browser's language", txt("base"),
      String.fromCharCode(0x20B9) + "12,34,567");
+  set("amount", "1000");
+    /* -0 used to come out as "₹-0", the sign after the rupee and on a zero. */
+  set("mode", "exclusive"); set("rate", "18"); set("amount", "-0");
+  eq("minus zero is zero", txt("base"), String.fromCharCode(0x20B9) + "0");
   set("amount", "1000");
   finish();
 """
@@ -1311,7 +1347,10 @@ T["margin-markup-calculator"] = r"""
     set("c1", "100"); set("c2", "150");
       set("a1", "100000"); set("a2", "40");
   eq("rupees are grouped in lakhs", txt("aOut"), String.fromCharCode(0x20B9) + "1,66,666.67");
-  finish();
+      set("a1", "100"); set("a2", "-0");
+    eq("a margin of minus zero is a markup of zero", txt("aMarkup"), "0%");
+    set("a2", "40");
+    finish();
 """
 # ---- END: the test for margin-markup-calculator ----
 
@@ -1375,6 +1414,17 @@ T["percentage-calculator"] = r"""
     ok("200 to 250 is +25%", txt("cOut").indexOf("25") > -1, txt("cOut"));
     set("c1", "250"); set("c2", "200");
     ok("250 to 200 is a fall", txt("cOut").indexOf("20") > -1, txt("cOut"));
+        /* Past 9,007,199,254,740,991 a number no longer holds every digit, and
+       the page used to print the ones it does not have. */
+    var TIMES_TEN = " " + String.fromCharCode(0x00D7) + " 10";
+
+    set("a1", "1e20"); set("a2", "1e20");
+    has("a huge percentage is written as a power of ten", txt("aOut"), TIMES_TEN);
+    set("a1", "15"); set("a2", "200");
+    eq("and an ordinary one is not", txt("aOut"), "30");
+        set("a1", "-0.00001"); set("a2", "1");
+    eq("a minus amount that rounds to nothing is zero", txt("aOut"), "0");
+    set("a1", "15"); set("a2", "200");
     finish();
 """
 # ---- END: the test for percentage-calculator ----
@@ -1873,6 +1923,15 @@ T["area-converter"] = r"""
     set("amount", "1");
     eq("a real area clears it", txt("warn"), "");
     eq("back to a quiet hint", document.getElementById("warn").className, "hint");
+        /* Past 9,007,199,254,740,991 a number no longer holds every digit, and
+       the page used to print the ones it does not have. */
+    var TIMES_TEN = " " + String.fromCharCode(0x00D7) + " 10";
+
+    set("from", "acre"); set("to", "sqft"); set("amount", "1e20");
+    eq("10^20 acres in square feet shows four true figures and the size", txt("out"),
+       "4.356" + TIMES_TEN + String.fromCharCode(0x00B2, 0x2074));
+    set("amount", "1");
+    eq("an ordinary area is written out in full", txt("out"), "43,560");
     finish();
 """
 # ---- END: the test for area-converter ----
@@ -1998,6 +2057,17 @@ T["temperature-converter"] = r"""
 
     set("from", "c"); set("value", "");
     near("an empty box does not crash it", txt("oc"), 0);
+        /* Past 9,007,199,254,740,991 a number no longer holds every digit, and
+       the page used to print the ones it does not have. */
+    var TIMES_TEN = " " + String.fromCharCode(0x00D7) + " 10";
+
+    set("value", "1e20");
+    has("a huge temperature is written as a power of ten", txt("headline"), TIMES_TEN);
+    set("value", "37");
+        set("from", "c"); set("value", "-0");
+    has("minus zero degrees is zero", txt("oc"), "0 ");
+    eq("with no sign", txt("oc").charAt(0), "0");
+    set("value", "37");
     finish();
 """
 # ---- END: the test for temperature-converter ----
@@ -2212,6 +2282,13 @@ T["sip-calculator"] = r"""
       set("monthly", "5000"); set("rate", "12"); set("years", "10"); set("stepup", "0");
   eq("what you put in is grouped in lakhs", txt("invested"), String.fromCharCode(0x20B9) + "6,00,000");
   ok("and so is what it grows to", /^\d{1,2}(,\d\d)+,\d{3}$/.test(txt("maturity").slice(1)), txt("maturity"));
+    /* A minus rate loses money; the loss used to read "₹-29,274". */
+  set("monthly", "5000"); set("rate", "-5.5"); set("years", "10"); set("stepup", "0");
+  eq("a loss puts the minus before the rupee", txt("returns").slice(0, 2),
+     String.fromCharCode(0x2212, 0x20B9));
+  set("monthly", "-0"); set("rate", "12");
+  eq("and minus zero a month is zero", txt("invested"), String.fromCharCode(0x20B9) + "0");
+  set("monthly", "5000");
   finish();
 """
 # ---- END: the test for sip-calculator ----
@@ -2258,6 +2335,14 @@ T["unit-converter"] = r"""
         set("kind", "length"); set("amount", "0.0000001");
     has("a tiny amount is not shown as 0", txt("formula"), "0.0000001");
     set("amount", "1");
+        /* Past 9,007,199,254,740,991 a number no longer holds every digit, and
+       the page used to print the ones it does not have. */
+    var TIMES_TEN = " " + String.fromCharCode(0x00D7) + " 10";
+
+    set("amount", "1e25");
+    has("a huge amount is written as a power of ten", txt("out"), TIMES_TEN);
+    set("amount", "1");
+    eq("and an ordinary one is not", txt("out").indexOf(TIMES_TEN), -1);
     finish();
 """
 # ---- END: the test for unit-converter ----
@@ -2624,6 +2709,17 @@ T["speed-converter"] = r"""
 
     set("value", "");
     shown("an empty box is refused", "errWrap");
+        /* Past 9,007,199,254,740,991 a number no longer holds every digit, and
+       the page used to print the ones it does not have. */
+    var TIMES_TEN = " " + String.fromCharCode(0x00D7) + " 10";
+
+    set("from", "kmh"); set("value", "1e20");
+    has("a huge speed is written as a power of ten", txt("asMph"), TIMES_TEN);
+    set("value", "100");
+    eq("and an ordinary one is not", txt("asMph"), "62.14 mph");
+        set("from", "kmh"); set("value", "-0");
+    eq("minus zero is zero", txt("asMph"), "0 mph");
+    set("value", "100");
     finish();
 """
 # ---- END: the test for speed-converter ----
@@ -3124,6 +3220,12 @@ T["cooking-measurement-converter"] = r"""
   has("zero is refused with a reason", txt("msg"), "above zero");
   set("amount", 1);
   has("and the normal note returns", txt("msg"), "approximate");
+        /* 10^20 cups used to be written 1.04e+22 g, which no cook reads. */
+    set("amount", "99999999999999999999");
+    ok("a huge amount is written as a power of ten",
+       txt("rows").indexOf(" " + String.fromCharCode(0x00D7) + " 10") > -1 && txt("rows").indexOf("e+") === -1,
+       txt("rows").slice(0, 120));
+    set("amount", "1");
     finish();
 """
 # ---- END: the test for cooking-measurement-converter ----
@@ -4534,59 +4636,107 @@ T["jwt-decoder"] = r"""
 T["regex-tester"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
   function marks(sel) { return document.querySelectorAll("#highlight " + sel).length; }
+  var DASH = String.fromCharCode(0x2014);
+
+  /* The matching runs on a thread of its own (js/regex-worker.js), so an
+     answer arrives a moment after the typing. Each step does something,
+     waits until highlight's data-state says the answer is on the screen,
+     then checks it. */
+  var steps = [];
+  function step(label, act, check) { steps.push([label, act, check]); }
+  function ready() { return document.getElementById("highlight").dataset.state === "done"; }
+  function next() {
+    var s = steps.shift();
+    if (!s) { finish(); return; }
+    s[1]();
+    waitFor(s[0], ready, function () { s[2](); next(); }, 15000);
+  }
 
   /* Opens on an email pattern over two lines of sample text. */
-  eq("two addresses match", num("sMatches"), 2);
-  eq("the pattern has two groups", txt("sGroups"), "2");
-  has("the first group caught the name", txt("matchList"), "priya");
-  has("the second caught the domain", txt("matchList"), "108toolbox");
-  eq("both are highlighted", marks("mark"), 2);
+  step("the first answer arrives", function () {}, function () {
+    eq("two addresses match", num("sMatches"), 2);
+    eq("the pattern has two groups", txt("sGroups"), "2");
+    has("the first group caught the name", txt("matchList"), "priya");
+    has("the second caught the domain", txt("matchList"), "108toolbox");
+    eq("both are highlighted", marks("mark"), 2);
+  });
 
   /* The word boundary is the lesson: without it, .in matches inside
      .invalid and an address that should not match does. */
-  set("pattern", "(\\w+)@(\\w+)\\.in");
-  eq("without the boundary a third address matches", num("sMatches"), 3);
-  set("pattern", "(\\w+)@(\\w+)\\.in\\b");
-  eq("with it, back to two", num("sMatches"), 2);
+  step("the pattern without a boundary runs", function () { set("pattern", "(\\w+)@(\\w+)\\.in"); }, function () {
+    eq("without the boundary a third address matches", num("sMatches"), 3);
+  });
+  step("the pattern with one runs", function () { set("pattern", "(\\w+)@(\\w+)\\.in\\b"); }, function () {
+    eq("with it, back to two", num("sMatches"), 2);
+  });
+  step("without g it runs", function () { tick("fG", false); }, function () {
+    eq("without the g flag only the first is found", num("sMatches"), 1);
+  });
+  step("with g again", function () { tick("fG", true); }, function () {});
 
-  tick("fG", false);
-  eq("without the g flag only the first is found", num("sMatches"), 1);
-  tick("fG", true);
-
-  set("pattern", "PRIYA");
-  eq("capitals matter by default", num("sMatches"), 0);
-  tick("fI", true);
-  eq("until the i flag is ticked", num("sMatches"), 1);
-  tick("fI", false);
+  step("capitals run", function () { set("pattern", "PRIYA"); }, function () {
+    eq("capitals matter by default", num("sMatches"), 0);
+  });
+  step("the i flag runs", function () { tick("fI", true); }, function () {
+    eq("until the i flag is ticked", num("sMatches"), 1);
+  });
+  step("without i again", function () { tick("fI", false); }, function () {});
 
   /* A pattern able to match nothing matches nothing everywhere. */
-  set("pattern", "\\d*");
-  has("zero-length matches are called out", txt("msg"), "zero length");
-  ok("and drawn as empty markers", marks("mark.rx-empty") > 0);
+  step("a pattern that matches nothing runs", function () { set("pattern", "\\d*"); }, function () {
+    has("zero-length matches are called out", txt("msg"), "zero length");
+    ok("and drawn as empty markers", marks("mark.rx-empty") > 0);
+  });
 
-  set("pattern", "(unclosed");
-  has("an invalid pattern is reported", txt("msg"), "not a valid pattern");
+  step("an invalid pattern is looked at", function () { set("pattern", "(unclosed"); }, function () {
+    has("an invalid pattern is reported", txt("msg"), "not a valid pattern");
+  });
 
   /* Warned about, never refused - plenty of such patterns are fine in use. */
-  set("pattern", "(a+)+b");
-  set("text", "aaaaaaaa");
-  has("a repeat inside a repeat is warned about",
-      txt("msg"), "repeat inside a repeat");
+  step("a repeat inside a repeat runs", function () { set("pattern", "(a+)+b"); set("text", "aaaaaaaa"); }, function () {
+    has("a repeat inside a repeat is warned about",
+        txt("msg"), "repeat inside a repeat");
+  });
+
+  /* ...and one that never finishes no longer freezes the page: on a thread
+     of its own it is stopped after three seconds. 2 to the 48th ways of
+     dividing these a's would take far longer than anyone waits. */
+  step("a pattern that never finishes is stopped", function () {
+    set("pattern", "(a+)+$");
+    set("text", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!");
+  }, function () {
+    has("the page says it was stopped", txt("msg"), "Stopped after 3 seconds");
+    has("and why", txt("msg"), "repeat inside a repeat");
+    eq("with no count beside it", txt("sMatches"), DASH);
+    eq("and the text shown plainly", marks("mark"), 0);
+  });
+  step("the next pattern runs on a fresh thread", function () { set("pattern", "a+"); set("text", "aa b aaa"); }, function () {
+    eq("after a stopped run, the next one still works", num("sMatches"), 2);
+  });
+  step("a stuck run is dropped when the pattern changes", function () {
+    set("text", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!");
+    set("pattern", "(a+)+$");
+    set("pattern", "a");
+  }, function () {
+    eq("the newest pattern is the one answered", num("sMatches"), 48);
+    eq("with nothing about stopping", txt("msg").indexOf("Stopped"), -1);
+  });
 
   /* The highlight is built as markup, so the visitor's text must be escaped
      on the way in. This is rule 11 at the one place on the site that has to
      build HTML out of what somebody typed. */
-  set("pattern", "span");
-  set("text", "<span onclick=zq>hello</span>");
-  eq("the pattern still matches inside markup-looking text", num("sMatches"), 2);
-  eq("but nothing became a real element", marks("span"), 0);
-  ok("the angle brackets are shown as characters",
-     document.getElementById("highlight").textContent.indexOf("<span") === 0,
-     document.getElementById("highlight").textContent.slice(0, 40));
+  step("markup-looking text runs", function () { set("pattern", "span"); set("text", "<span onclick=zq>hello</span>"); }, function () {
+    eq("the pattern still matches inside markup-looking text", num("sMatches"), 2);
+    eq("but nothing became a real element", marks("span"), 0);
+    ok("the angle brackets are shown as characters",
+       document.getElementById("highlight").textContent.indexOf("<span") === 0,
+       document.getElementById("highlight").textContent.slice(0, 40));
+  });
 
-  click("resetBtn");
-  has("reset asks for a pattern", txt("msg"), "Type a pattern");
-  finish();
+  step("reset runs", function () { click("resetBtn"); }, function () {
+    has("reset asks for a pattern", txt("msg"), "Type a pattern");
+  });
+  next();
 """
 # ---- END: the test for regex-tester ----
 
@@ -12822,6 +12972,7 @@ T["compress-pdf"] = r"""
 # ahead of the real one. A tool that builds four zips can need twenty virtual
 # seconds and two real ones. Ask for more here, per tool; nothing else changes.
 BUDGET_MS = {
+    "regex-tester": 60000,        # a run is stopped after 3 s, on purpose, more than once
     "compress-pdf": 600000,
     "income-tax-calculator": 15000,
     "currency-converter": 15000,
@@ -12877,7 +13028,9 @@ def build(slug):
 # them from there. The server notes every request, and a request for a file
 # that is not there fails the test: a wrong address for one of pdf.js's
 # files may only show as a fallback font on the page, but never as a 404.
-HTTP_SLUGS = {"pdf-to-image"}
+# regex-tester starts a worker from js/, which Chrome refuses to a page opened
+# from a file; over http it runs as it does on the site.
+HTTP_SLUGS = {"pdf-to-image", "regex-tester"}
 REQUESTS = []
 
 
@@ -12910,6 +13063,31 @@ def local_server():
 # ===== END: a local web server =============================================
 
 
+# ---- START: running Chrome, and ending all of it if it hangs ----
+def run_chrome(args, limit):
+    """Chrome's output, and whether it ran out of time. On a timeout the whole
+    process tree is ended, not only chrome.exe: a renderer stuck in a page's
+    endless loop outlived it and kept the output pipe open, and the run then
+    waited forever. A mutation that put regex-tester's matching back on the
+    page did exactly that, for twenty minutes."""
+    proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            text=True, encoding="utf-8", errors="replace")
+    try:
+        out, _ = proc.communicate(timeout=limit)
+        return out, False
+    except subprocess.TimeoutExpired:
+        if os.name == "nt":
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], capture_output=True)
+        else:
+            proc.kill()
+        try:
+            proc.communicate(timeout=30)
+        except subprocess.TimeoutExpired:
+            pass
+        return "", True
+# ---- END: running Chrome, and ending all of it if it hangs ----
+
+
 def run_one(slug):
     """Open the test page in Chrome and return its PASS/FAIL lines."""
     target = build(slug)
@@ -12921,18 +13099,14 @@ def run_one(slug):
     limit = max(90, budget_for(slug) // 200)
     timed_out = False
     try:
-        dom = subprocess.run(
+        # A timeout is not the same as a script that threw: Chrome itself ran
+        # out of time, usually because the machine was busy. Saying so (below)
+        # saves a hunt.
+        dom, timed_out = run_chrome(
             [CHROME, "--headless", "--disable-gpu", "--no-sandbox", NO_ADS_FLAG,
              "--window-size=1280,900",
              "--virtual-time-budget=%d" % (budget_for(slug) + 3000),
-             "--dump-dom", url],
-            capture_output=True, text=True, encoding="utf-8",
-            errors="replace", timeout=limit).stdout
-    except subprocess.TimeoutExpired:
-        # Not the same as a script that threw: Chrome itself ran out of time,
-        # usually because the machine was busy. Saying so saves a hunt.
-        dom = ""
-        timed_out = True
+             "--dump-dom", url], limit)
     finally:
         # Always clean up. A leftover _test- file is harmless to check.py but
         # confusing to find in a diff a week later.

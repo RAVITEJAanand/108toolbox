@@ -305,6 +305,8 @@ stamps = set()
 for page in list(ROOT.glob("*.html")) + sorted((ROOT / "tools").glob("*.html")):
     stamps.update(re.findall(r'(?:href|src)="[^"]*\.(?:css|js)\?v=(\d+)"',
                              page.read_text(encoding="utf-8")))
+    # A worker started from a script (regex-tester) carries the stamp too.
+    stamps.update(re.findall(r'"[^"]*\.js\?v=(\d+)"', page.read_text(encoding="utf-8")))
 
 lock_file = ROOT / "assets.lock"
 
@@ -874,6 +876,9 @@ for path in list(ROOT.glob("*.html")) + tool_pages():
     for src in re.findall(r'src="([^"#?:]+\.js)(?:\?[^"]*)?"', text):
         if not (path.parent / src).resolve().exists():
             fail("%s loads %s which does not exist" % (path.name, src))
+    for src in re.findall(r'new Worker\([A-Z_]*\)|"(\.\./js/[^"?]+\.js)\?v=\d+"', text):
+        if src and not (path.parent / src).resolve().exists():
+            fail("%s starts a worker from %s which does not exist" % (path.name, src))
 
 if not any("links to" in p or "loads" in p for p in problems):
     ok("no dead internal links")

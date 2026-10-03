@@ -82,6 +82,10 @@ function formatBytes(bytes) {
    Intl does the local formatting for us — no manual comma logic. */
 function formatNumber(value, decimals) {
   if (!isFinite(value)) return "—";
+  if (isTooBig(value)) return formatBig(value);
+  /* Minus zero (typed as -0, or a minus amount rounded away) printed as
+     "-0"; 0 has no sign. */
+  if (value === 0) value = 0;
   return value.toLocaleString(undefined, {
     minimumFractionDigits: decimals || 0,
     maximumFractionDigits: decimals === undefined ? 0 : decimals
@@ -98,12 +102,39 @@ function formatNumber(value, decimals) {
    not money keeps the visitor's own commas. */
 function formatRupees(value, decimals) {
   if (!isFinite(value)) return String.fromCharCode(0x2014);
+  if (isTooBig(value)) return formatBig(value);
+  if (value === 0) value = 0;             /* no "-0", as above */
   return value.toLocaleString("en-IN", {
     minimumFractionDigits: decimals || 0,
     maximumFractionDigits: decimals === undefined ? 0 : decimals
   });
 }
 /* ---- END: a rupee amount, grouped the Indian way ---- */
+
+/* ---- START: a number too big to show every digit ----
+   Past 9,007,199,254,740,991 a JavaScript number no longer holds every whole
+   number exactly, and toLocaleString then prints digits it does not have:
+   10^20 acres came out as 4,356,000,000,000,000,600,000,000 square feet, the
+   600 made up, and a thousand years of interest as a forty-digit figure.
+   Such a number is written as 4.356 × 10²⁴ instead: four figures that are
+   true, and its size. */
+var SUPERSCRIPT_DIGITS = [0x2070, 0x00B9, 0x00B2, 0x00B3, 0x2074, 0x2075, 0x2076, 0x2077, 0x2078, 0x2079];
+
+function isTooBig(value) {
+  return Math.abs(value) > 9007199254740991;
+}
+
+function formatBig(value) {
+  var parts = value.toExponential(3).split("e");
+  var mantissa = parts[0].replace(/\.?0+$/, "");
+  var power = parseInt(parts[1], 10);
+  var raised = String(Math.abs(power)).split("").map(function (digit) {
+    return String.fromCharCode(SUPERSCRIPT_DIGITS[Number(digit)]);
+  }).join("");
+  return mantissa + " " + String.fromCharCode(0x00D7) + " 10" +
+         (power < 0 ? String.fromCharCode(0x207B) : "") + raised;
+}
+/* ---- END: a number too big to show every digit ---- */
 
 /* ---- START: making a string safe to put inside HTML ----
 

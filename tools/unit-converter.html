@@ -35,8 +35,8 @@
   <!-- ---- END: the advertising script ---- -->
 
   <!-- ---- START: the stylesheets ---- -->
-  <link rel="stylesheet" href="../css/style.css?v=44">
-  <link rel="stylesheet" href="../css/tool.css?v=44">
+  <link rel="stylesheet" href="../css/style.css?v=46">
+  <link rel="stylesheet" href="../css/tool.css?v=46">
   <!-- ---- END: the stylesheets ---- -->
 
   <!-- ---- START: dark mode, set before the page paints ---- -->
@@ -401,10 +401,10 @@
   <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
   <!-- ---- START: the shared scripts, in order ---- -->
-  <script src="../js/tools-data.js?v=44"></script>
-  <script src="../js/tool-helpers.js?v=44"></script>
+  <script src="../js/tools-data.js?v=46"></script>
+  <script src="../js/tool-helpers.js?v=46"></script>
   <script>window.CURRENT_TOOL = "unit-converter";</script>
-  <script src="../js/main.js?v=44"></script>
+  <script src="../js/main.js?v=46"></script>
   <!-- ---- END: the shared scripts, in order ---- -->
 
   <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
@@ -489,6 +489,7 @@
     function show(value) {
       if (!isFinite(value)) return String.fromCharCode(0x2014);
       if (value === 0) return "0";
+      if (isTooBig(value)) return formatBig(value);
       var abs = Math.abs(value);
       /* Under one, significant figures rather than decimal places: six
          decimals turned 0.0000001 m into "0" and the sum read

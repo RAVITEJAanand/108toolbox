@@ -35,8 +35,8 @@
   <!-- ---- END: the advertising script ---- -->
 
   <!-- ---- START: the stylesheets ---- -->
-  <link rel="stylesheet" href="../css/style.css?v=44">
-  <link rel="stylesheet" href="../css/tool.css?v=44">
+  <link rel="stylesheet" href="../css/style.css?v=46">
+  <link rel="stylesheet" href="../css/tool.css?v=46">
   <!-- ---- END: the stylesheets ---- -->
 
   <!-- ---- START: dark mode, set before the page paints ---- -->
@@ -415,10 +415,10 @@
   <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
   <!-- ---- START: the shared scripts, in order ---- -->
-  <script src="../js/tools-data.js?v=44"></script>
-  <script src="../js/tool-helpers.js?v=44"></script>
+  <script src="../js/tools-data.js?v=46"></script>
+  <script src="../js/tool-helpers.js?v=46"></script>
   <script>window.CURRENT_TOOL = "speed-converter";</script>
-  <script src="../js/main.js?v=44"></script>
+  <script src="../js/main.js?v=46"></script>
   <!-- ---- END: the shared scripts, in order ---- -->
 
   <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
@@ -466,9 +466,12 @@
        a Mach reading of 0.0817 does not collapse to 0.08. */
     function pretty(value) {
       if (!isFinite(value)) { return EM_DASH; }
+      if (value === 0) { value = 0; }      /* "0 mph", never "-0 mph" */
       var size = Math.abs(value);
       var text;
-      if (size >= 1) {
+      if (isTooBig(value)) {
+        text = formatBig(value);
+      } else if (size >= 1) {
         text = value.toLocaleString(undefined, { maximumFractionDigits: 2 });
       } else {
         text = value.toLocaleString(undefined, { maximumSignificantDigits: 3 });

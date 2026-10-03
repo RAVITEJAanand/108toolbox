@@ -73,8 +73,9 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=44` → `?v=45` across all 118 pages (currently `?v=44`,
-572 occurrences), the template included.
+Find-and-replace `?v=46` → `?v=47` across all 118 pages (currently `?v=46`,
+573 occurrences: 572 in tags and the worker address inside
+`regex-tester`'s script), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
 the quietest: tools 46 and 47 were added to `js/tools-data.js` without a bump,
@@ -269,6 +270,20 @@ tick, which keeps the clock near real time for every test at once (the full
 run went from about 3 minutes to about 6). `pdf-to-image` and
 `compress-pdf` run a stronger pacer of their own. A timeout in a heavy test
 is a test problem to fix, never a re-run until it passes.
+
+**`regex-tester` matches on a thread of its own** (`js/regex-worker.js`).
+A pattern such as `(a+)+$` on text that nearly matches runs effectively
+forever, and a regular expression cannot be interrupted, so on the page it
+froze the tab for half a minute. The worker is ended after 3 seconds and a
+fresh one started; a page opened from a file (no workers there) matches on
+the page as before, which is the path `security.py` exercises. Its test runs
+over http (`HTTP_SLUGS`) and waits on `#highlight`'s `data-state`. The
+worker's address carries the `?v=` stamp, and `check.py` counts it.
+
+**A Chrome that runs out of time is ended as a whole tree.** `run_chrome()`
+in `test_tools.py` and `security.py` uses `taskkill /T`: killing `chrome.exe`
+alone left a renderer stuck in a page's endless loop holding the output pipe,
+and the run waited for twenty minutes until it was stopped by hand.
 
 **The harness and the security probe go in front of the LAST `</body>`.** A page
 that builds an HTML document in its script has `"</body>"` inside a string, and
@@ -757,6 +772,14 @@ Until 3 Oct 2026 only `income-tax-calculator` and `currency-converter` did
 this, and a browser set to US English showed a ten-lakh SIP as 1,059,312.
 The tests run in US English, so each rupee tool has a test that fails if
 its amounts go back to the browser's grouping.
+
+**A number too big to hold exactly is written as a power of ten.** Past
+9,007,199,254,740,991 a JavaScript number loses digits, and toLocaleString
+prints the ones it does not have: 10^20 acres came out as
+4,356,000,000,000,000,600,000,000 square feet. `formatNumber()` and
+`formatRupees()` write such a number as `4.356 × 10²⁴` (`formatBig()`), as
+do the tools with formatters of their own (area, unit, speed, temperature,
+cooking, average, percentage). Minus zero prints as 0 everywhere.
 
 **The India angle is the real SEO edge.** `gst-calculator`, `sip-calculator`,
 `salary-calculator`, `area-converter` and `number-to-words` (lakh/crore) have

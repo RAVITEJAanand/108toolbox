@@ -36,6 +36,7 @@ It needs Chrome and takes about a minute. Run it before a deploy that touched
 any tool's own code, and always after adding a tool.
 """
 import concurrent.futures
+import os
 import pathlib
 import re
 import shutil
@@ -71,6 +72,31 @@ def ok(msg):
 # ---- END: the settings, and the report every part below writes to ----
 
 
+# ---- START: running Chrome, and ending all of it if it hangs ----
+def run_chrome(args, limit):
+    """Chrome's output, and whether it ran out of time. On a timeout the whole
+    process tree is ended, not only chrome.exe: a renderer stuck in a page's
+    endless loop outlived it and kept the output pipe open, and the run then
+    waited forever. A mutation that put regex-tester's matching back on the
+    page did exactly that, for twenty minutes."""
+    proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            text=True, encoding="utf-8", errors="replace")
+    try:
+        out, _ = proc.communicate(timeout=limit)
+        return out, False
+    except subprocess.TimeoutExpired:
+        if os.name == "nt":
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], capture_output=True)
+        else:
+            proc.kill()
+        try:
+            proc.communicate(timeout=30)
+        except subprocess.TimeoutExpired:
+            pass
+        return "", True
+# ---- END: running Chrome, and ending all of it if it hangs ----
+
+
 # ---- START: running one page in a real browser with a probe attached -------
 def probe_page(path, probe, tag, size="1280,900"):
     """Load `path` with `probe` injected, return what the probe wrote."""
@@ -86,15 +112,13 @@ def probe_page(path, probe, tag, size="1280,900"):
     copy.write_text(head + probe + closing + tail,
                     encoding="utf-8", newline="\n")
     try:
-        dom = subprocess.run(
+        dom, timed_out = run_chrome(
             [CHROME, "--headless", "--disable-gpu", "--no-sandbox", NO_ADS_FLAG,
              "--user-data-dir=" + str(profile),
              "--window-size=" + size, "--virtual-time-budget=20000",
-             "--dump-dom", copy.as_uri()],
-            capture_output=True, text=True, encoding="utf-8",
-            errors="replace", timeout=120).stdout
-    except subprocess.TimeoutExpired:
-        return "TIMEOUT"
+             "--dump-dom", copy.as_uri()], 120)
+        if timed_out:
+            return "TIMEOUT"
     finally:
         copy.unlink(missing_ok=True)
         shutil.rmtree(profile, ignore_errors=True)

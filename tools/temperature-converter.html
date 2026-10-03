@@ -35,8 +35,8 @@
   <!-- ---- END: the advertising script ---- -->
 
   <!-- ---- START: the stylesheets ---- -->
-  <link rel="stylesheet" href="../css/style.css?v=44">
-  <link rel="stylesheet" href="../css/tool.css?v=44">
+  <link rel="stylesheet" href="../css/style.css?v=46">
+  <link rel="stylesheet" href="../css/tool.css?v=46">
   <!-- ---- END: the stylesheets ---- -->
 
   <!-- ---- START: dark mode, set before the page paints ---- -->
@@ -394,10 +394,10 @@
   <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
   <!-- ---- START: the shared scripts, in order ---- -->
-  <script src="../js/tools-data.js?v=44"></script>
-  <script src="../js/tool-helpers.js?v=44"></script>
+  <script src="../js/tools-data.js?v=46"></script>
+  <script src="../js/tool-helpers.js?v=46"></script>
   <script>window.CURRENT_TOOL = "temperature-converter";</script>
-  <script src="../js/main.js?v=44"></script>
+  <script src="../js/main.js?v=46"></script>
   <!-- ---- END: the shared scripts, in order ---- -->
 
   <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
@@ -441,7 +441,9 @@
        become 98.60 while 310.15 keeps the digits it needs. */
     function show(value, suffix) {
       if (!isFinite(value)) return String.fromCharCode(0x2014);
-      var text = value.toLocaleString(undefined, { maximumFractionDigits: 2 });
+      if (value === 0) value = 0;          /* "0 °C", never "-0 °C" */
+      var text = isTooBig(value) ? formatBig(value)
+               : value.toLocaleString(undefined, { maximumFractionDigits: 2 });
       return text.replace(/^-/, MINUS) + " " + suffix;
     }
 

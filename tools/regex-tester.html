@@ -36,8 +36,8 @@
 
   <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=44">
-  <link rel="stylesheet" href="../css/tool.css?v=44">
+  <link rel="stylesheet" href="../css/style.css?v=46">
+  <link rel="stylesheet" href="../css/tool.css?v=46">
   <!-- ---- END: the stylesheets ---- -->
 
   <!-- ---- START: dark mode, set before the page paints ---- -->
@@ -454,10 +454,10 @@ The old address arun@oldserver.invalid no longer works.</textarea>
 
   <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=44"></script>
-  <script src="../js/tool-helpers.js?v=44"></script>
+  <script src="../js/tools-data.js?v=46"></script>
+  <script src="../js/tool-helpers.js?v=46"></script>
   <script>window.CURRENT_TOOL = "regex-tester";</script>
-  <script src="../js/main.js?v=44"></script>
+  <script src="../js/main.js?v=46"></script>
   <!-- ---- END: the shared scripts, in order ---- -->
 
   <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
@@ -476,6 +476,9 @@ The old address arun@oldserver.invalid no longer works.</textarea>
     var FLAGS = [["fG", "g"], ["fI", "i"], ["fM", "m"], ["fS", "s"], ["fU", "u"]];
     var MAX_MATCHES = 5000;
     var lastList = "";
+    /* A pattern still running after this long is stopped (see below). */
+    var LIMIT_MS = 3000;
+    var WORKER_URL = "../js/regex-worker.js?v=46";
     /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: speaking to the visitor ---- */
@@ -574,42 +577,105 @@ The old address arun@oldserver.invalid no longer works.</textarea>
     }
     /* ---- END: listing what each group caught ---- */
 
-    /* ---- START: running the test ---- */
-    function run() {
-      var source = pattern.value;
-      var subject = text.value;
+    /* ---- START: the separate thread the matching runs on ----
+       A pattern such as (a+)+$ against text that nearly matches takes
+       effectively forever, and a regular expression cannot be interrupted
+       once it starts: run on the page it froze the whole tab for half a
+       minute. js/regex-worker.js runs it on a thread of its own instead;
+       the page stays usable, and a run still going after LIMIT_MS is
+       stopped by ending that thread and starting a fresh one.
 
-      var flags = "";
-      FLAGS.forEach(function (pair) {
-        if (document.getElementById(pair[0]).checked) { flags += pair[1]; }
-      });
+       A page opened straight from a file cannot start a worker, and an old
+       browser may have none: then the page matches by itself, as it always
+       did. highlight's data-state says "working" while a run is out and
+       "done" when its answer is on the screen. */
+    var worker = null;
+    var asked = 0;          /* the number of the newest run */
+    var waiting = false;    /* that run is out on the worker */
+    var limit = null, slow = null;
+    var pending = null;     /* what the run out on the worker was given */
 
-      if (source === "") {
-        highlight.textContent = subject;
-        matchList.textContent = "";
-        lastList = "";
-        document.getElementById("sMatches").textContent = DASH;
-        document.getElementById("sGroups").textContent = DASH;
-        document.getElementById("sTime").textContent = DASH;
-        setMessage("Type a pattern above.");
-        return;
-      }
-
-      var re;
+    function startWorker() {
+      worker = null;
+      if (typeof Worker === "undefined") { return; }
       try {
-        re = new RegExp(source, flags);
+        worker = new Worker(WORKER_URL);
       } catch (e) {
-        highlight.textContent = subject;
-        matchList.textContent = "";
-        document.getElementById("sMatches").textContent = DASH;
-        setMessage("That is not a valid pattern: " + e.message, "bad");
+        worker = null;
         return;
       }
+      worker.onmessage = function (event) {
+        var reply = event.data;
+        if (!waiting || reply.id !== asked) { return; }   /* overtaken by a newer run */
+        settle();
+        show(pending.subject, pending.source, rebuild(reply.found || []), reply.took || 0);
+      };
+      worker.onerror = function (event) {
+        /* The file did not load, or broke: this run and every later one
+           are matched on the page. */
+        if (event.preventDefault) { event.preventDefault(); }
+        worker = null;
+        if (waiting) {
+          settle();
+          var re = new RegExp(pending.source, pending.flags);
+          var started = performance.now();
+          var found = collect(re, pending.subject);
+          show(pending.subject, pending.source, found, performance.now() - started);
+        }
+      };
+    }
 
-      var started = performance.now();
-      var found = collect(re, subject);
-      var took = performance.now() - started;
+    /* The run out on the worker is answered, stopped or no longer wanted. */
+    function settle() {
+      waiting = false;
+      clearTimeout(limit);
+      clearTimeout(slow);
+    }
 
+    /* Drop a run that is still out: it may be stuck, and it is stale. */
+    function cancel() {
+      asked += 1;
+      if (waiting) {
+        settle();
+        if (worker) { worker.terminate(); }
+        startWorker();
+      }
+      highlight.dataset.state = "done";
+    }
+
+    /* A match comes back as plain data; this makes it look like the match
+       object the painting and listing below were written for. */
+    function rebuild(list) {
+      return list.map(function (r) {
+        var m = r.parts.slice();
+        m.index = r.index;
+        m.groups = r.named || undefined;
+        return m;
+      });
+    }
+
+    function stopRun(subject, source) {
+      settle();
+      if (worker) { worker.terminate(); }
+      startWorker();
+      highlight.textContent = subject;
+      matchList.textContent = "";
+      lastList = "";
+      document.getElementById("sMatches").textContent = DASH;
+      document.getElementById("sGroups").textContent = DASH;
+      document.getElementById("sTime").textContent = "over " + LIMIT_MS / 1000 + " s";
+      setMessage("Stopped after " + LIMIT_MS / 1000 + " seconds, still trying. " +
+        (looksExplosive(source)
+          ? "This pattern has a repeat inside a repeat: on text that nearly matches it tries "
+            + "every way of dividing the text, and the ways double with each character. "
+          : "On this text the pattern backtracks without end. ") +
+        "The page stayed usable because the matching runs on its own.", "bad");
+      highlight.dataset.state = "done";
+    }
+    /* ---- END: the separate thread the matching runs on ---- */
+
+    /* ---- START: showing what a run found ---- */
+    function show(subject, source, found, took) {
       paint(subject, found);
       lastList = describe(found);
       matchList.textContent = found.length
@@ -648,6 +714,68 @@ The old address arun@oldserver.invalid no longer works.</textarea>
                  + " in " + (took < 1 ? "under a millisecond" : Math.round(took) + " ms")
                  + ".", "ok");
       }
+      highlight.dataset.state = "done";
+    }
+    /* ---- END: showing what a run found ---- */
+
+    /* ---- START: running the test ---- */
+    function run() {
+      var source = pattern.value;
+      var subject = text.value;
+
+      var flags = "";
+      FLAGS.forEach(function (pair) {
+        if (document.getElementById(pair[0]).checked) { flags += pair[1]; }
+      });
+
+      if (source === "") {
+        cancel();
+        highlight.textContent = subject;
+        matchList.textContent = "";
+        lastList = "";
+        document.getElementById("sMatches").textContent = DASH;
+        document.getElementById("sGroups").textContent = DASH;
+        document.getElementById("sTime").textContent = DASH;
+        setMessage("Type a pattern above.");
+        return;
+      }
+
+      var re;
+      try {
+        re = new RegExp(source, flags);
+      } catch (e) {
+        cancel();
+        highlight.textContent = subject;
+        matchList.textContent = "";
+        document.getElementById("sMatches").textContent = DASH;
+        setMessage("That is not a valid pattern: " + e.message, "bad");
+        return;
+      }
+
+      /* A run still out is stale now, and may be stuck: end it. */
+      cancel();
+      var mine = asked;
+
+      if (!worker) {
+        var started = performance.now();
+        var found = collect(re, subject);
+        show(subject, source, found, performance.now() - started);
+        return;
+      }
+
+      waiting = true;
+      pending = { subject: subject, source: source, flags: flags };
+      highlight.dataset.state = "working";
+      worker.postMessage({ id: mine, source: source, flags: flags, subject: subject, max: MAX_MATCHES });
+      slow = setTimeout(function () {
+        if (waiting && mine === asked) {
+          setMessage("Still matching - a pattern that is this slow on this text is stopped after "
+                     + LIMIT_MS / 1000 + " seconds.");
+        }
+      }, 300);
+      limit = setTimeout(function () {
+        if (waiting && mine === asked) { stopRun(subject, source); }
+      }, LIMIT_MS);
     }
     /* ---- END: running the test ---- */
 
@@ -675,6 +803,7 @@ The old address arun@oldserver.invalid no longer works.</textarea>
     /* ---- END: wiring ---- */
 
     /* ---- START: the first run, when the page opens ---- */
+    startWorker();
     run();
     /* ---- END: the first run, when the page opens ---- */
   })();
