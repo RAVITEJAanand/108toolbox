@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Data Storage Converter &mdash; Bytes, KB, MB, GB, TB</title>
   <meta name="description" content="Convert bytes, KB, MB, GB and TB, with the 1024-based KiB and MiB kept separate, so you can see why a 1 TB drive shows as 931 GB. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/data-storage-converter.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,33 +131,43 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
         <span>Data Storage Converter</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Data Storage Converter</h1>
         <p>Bytes, kilobytes, megabytes, gigabytes and terabytes, with the 1024-based units kept separate instead of quietly mixed in. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
+      <!-- ---- START: the panels "Convert" and "The same amount, in every unit" ---- -->
       <div class="workspace workspace--wide">
 
-        <!-- ---------- the conversion ---------- -->
+        <!-- ---- START: the "Convert" panel - the conversion ---- -->
         <div class="panel">
           <span class="panel__label">Convert</span>
 
+          <!-- ---- START: the "Amount" box ---- -->
           <div class="field">
             <label for="value">Amount</label>
             <input type="number" id="value" value="1" step="any" min="0">
           </div>
+          <!-- ---- END: the "Amount" box ---- -->
 
+          <!-- ---- START: the "This is in" choice ---- -->
           <div class="field">
             <label for="from">This is in</label>
             <select id="from">
@@ -166,30 +186,41 @@
               <option value="gbit">Gigabits (Gb) &mdash; internet speed</option>
             </select>
           </div>
+          <!-- ---- END: the "This is in" choice ---- -->
 
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result">
             <span class="result__num" id="headline">931.32 GiB</span>
             <span class="result__label" id="reading"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
 
+          <!-- ---- START: the figures: Bytes exactly, Decimal (1000), Binary (1024) ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="asBytes">1,000,000,000,000</span><span class="stat__label">Bytes exactly</span></div>
             <div class="stat"><span class="stat__num" id="asGb">1,000 GB</span><span class="stat__label">Decimal (1000)</span></div>
             <div class="stat"><span class="stat__num" id="asGib">931.32 GiB</span><span class="stat__label">Binary (1024)</span></div>
           </div>
+          <!-- ---- END: the figures: Bytes exactly, Decimal (1000), Binary (1024) ---- -->
 
+          <!-- ---- START: the note the script fills in (#note) ---- -->
           <p class="hint" id="note"></p>
+          <!-- ---- END: the note the script fills in (#note) ---- -->
 
+          <!-- ---- START: the error message ---- -->
           <!-- Plain wrapper: .msg carries its own display, which would beat
                the browser rule for the hidden attribute. -->
           <div id="errWrap" hidden style="margin-top:var(--s3)">
             <p class="msg msg--bad" id="err"></p>
           </div>
+          <!-- ---- END: the error message ---- -->
         </div>
+        <!-- ---- END: the "Convert" panel - the conversion ---- -->
 
-        <!-- ---------- every unit at once ---------- -->
+        <!-- ---- START: the "The same amount, in every unit" panel - every unit at once ---- -->
         <div class="panel">
           <span class="panel__label">The same amount, in every unit</span>
+          <!-- ---- START: the table: Unit, Amount, Bytes each ---- -->
           <div class="table-wrap">
             <table class="data">
               <thead>
@@ -198,12 +229,18 @@
               <tbody id="rows"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Unit, Amount, Bytes each ---- -->
         </div>
+        <!-- ---- END: the "The same amount, in every unit" panel - every unit at once ---- -->
       </div>
+      <!-- ---- END: the panels "Convert" and "The same amount, in every unit" ---- -->
 
+      <!-- ---- START: the panels "What the box says, and what the computer says" ---- -->
       <div class="workspace" style="margin-top:var(--s5)">
+        <!-- ---- START: the "What the box says, and what the computer says" panel ---- -->
         <div class="panel">
           <span class="panel__label">What the box says, and what the computer says</span>
+          <!-- ---- START: the table: Marked on the drive, Bytes, Windows shows ---- -->
           <div class="table-wrap">
             <table class="data">
               <thead>
@@ -218,12 +255,17 @@
               </tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Marked on the drive, Bytes, Windows shows ---- -->
+          <!-- ---- START: the hint "Windows is dividing by 1024 and still..." ---- -->
           <p class="hint">Windows is dividing by 1024 and still writing GB. The
           figure in the middle column is what is actually on the drive, and it
           is exactly what was advertised.</p>
+          <!-- ---- END: the hint "Windows is dividing by 1024 and still..." ---- -->
         </div>
+        <!-- ---- END: the "What the box says, and what the computer says" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the panels "What the box says, and what the computer says" ---- -->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -252,8 +294,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Type the amount and pick the unit it is already in.</li>
@@ -262,7 +305,9 @@
           <li>The table lists every unit at once, so you never have to convert
               twice.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "The 1000 against 1024 problem" section ---- -->
         <h2>The 1000 against 1024 problem</h2>
         <p>Kilo means a thousand everywhere else in measurement, and that is
         what drive manufacturers use: a kilobyte is 1000 bytes, a megabyte is a
@@ -278,14 +323,18 @@
         <p>The gap compounds. It is 2.4% at kilobytes, 4.9% at megabytes, 7.4%
         at gigabytes and about 10% by the time you reach terabytes. That last
         one is the missing 69 GB everybody notices on a new drive.</p>
+        <!-- ---- END: the "The 1000 against 1024 problem" section ---- -->
 
+        <!-- ---- START: the "Why your new drive looks smaller than the box" section ---- -->
         <h2>Why your new drive looks smaller than the box</h2>
         <p>A 1 TB drive holds 1,000,000,000,000 bytes, exactly as advertised.
         Windows divides that by 1024 four times, gets 931.32, and then writes
         &ldquo;GB&rdquo; next to it. Nothing has been lost and nothing has been
         taken by formatting &mdash; the same drive on macOS or Linux reads as
         1 TB, because those count in thousands like the box does.</p>
+        <!-- ---- END: the "Why your new drive looks smaller than the box" section ---- -->
 
+        <!-- ---- START: the "Bits and bytes are not the same letter" section ---- -->
         <h2>Bits and bytes are not the same letter</h2>
         <p>A byte is 8 bits. Storage is sold in bytes and written with a capital
         B; internet speed is sold in bits and written with a small b. So a
@@ -295,7 +344,9 @@
         <p>This catches people out in both directions, and the only clue in the
         writing is the case of one letter. Both are in the list above so you can
         see the factor of eight for yourself.</p>
+        <!-- ---- END: the "Bits and bytes are not the same letter" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Why does my 1 TB drive show as 931 GB?</h3>
@@ -328,15 +379,20 @@
           Nothing is uploaded and nothing is saved - close the tab and it is
           gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -387,18 +443,24 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "data-storage-converter";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: fixed values used below ---- */
     /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
     var EM_DASH = String.fromCharCode(0x2014);
+    /* ---- END: fixed values used below ---- */
     /* ---- START: reaching the page ---- */
     var ALMOST  = String.fromCharCode(0x2248) + " ";   /* the approximately-equal sign */
 
@@ -601,5 +663,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

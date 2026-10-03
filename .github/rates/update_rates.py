@@ -22,6 +22,7 @@ import sys
 import urllib.request
 import xml.etree.ElementTree as ET
 
+# ---- START: where the rates come from, where they go, and what they must hold ----
 URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
 OUT = pathlib.Path(__file__).resolve().parents[2] / "data" / "rates.js"
 NS = "{http://www.ecb.int/vocabulary/2002-08-01/eurofxref}"
@@ -30,6 +31,7 @@ HEADER = (
     "/* Exchange rates for tools/currency-converter.html: the euro reference\n"
     "   rates published by the European Central Bank each working day. Written by\n"
     "   .github/rates/update_rates.py; do not edit by hand. */\n")
+# ---- END: where the rates come from, where they go, and what they must hold ----
 
 
 # ---- START: fetching and reading the reference rates ----
@@ -106,6 +108,7 @@ def read_existing(path):
 # ---- END: the file the page loads ----
 
 
+# ---- START: running it: fetch, check, then write ----
 def main():
     xml_bytes = pathlib.Path(sys.argv[1]).read_bytes() if len(sys.argv) > 1 else fetch()
     new = parse(xml_bytes)
@@ -127,3 +130,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+# ---- END: running it: fetch, check, then write ----

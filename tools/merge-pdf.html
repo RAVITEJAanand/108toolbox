@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Merge PDF — Join PDF Files into One, Free and Private</title>
   <meta name="description" content="Join PDF files into one in your browser, in the order you choose. Nothing is uploaded, so statements and ID scans never leave your device.">
   <link rel="canonical" href="https://108toolbox.in/tools/merge-pdf.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -114,9 +124,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -151,64 +162,86 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=pdf">PDF</a><span>&rsaquo;</span>
         <span>Merge PDF</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Merge PDF</h1>
         <p>Join two or more PDFs into one file, in the order you choose. The
            joining happens inside your browser, so your documents never leave
            your device.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "1. Choose PDFs" panel ---- -->
         <div class="panel">
           <span class="panel__label">1. Choose PDFs</span>
 
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#128206;</span>
             <p><strong>Click to choose</strong> or drag PDF files here</p>
             <p style="margin-top:var(--s1)">Two or more, up to 100 at a time</p>
             <input type="file" id="file" accept="application/pdf,.pdf" multiple>
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
 
+          <!-- ---- START: the list of chosen files ---- -->
           <ol class="file-list" id="list" aria-label="PDFs, in the order they will be joined"></ol>
+          <!-- ---- END: the list of chosen files ---- -->
 
+          <!-- ---- START: the "Sort by name" button ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--ghost" type="button" id="sortBtn">Sort by name</button>
           </div>
+          <!-- ---- END: the "Sort by name" button ---- -->
         </div>
+        <!-- ---- END: the "1. Choose PDFs" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "2. The joined PDF" panel ---- -->
         <div class="panel">
           <span class="panel__label">2. The joined PDF</span>
 
+          <!-- ---- START: the figures: Pages, The PDFs, Joined ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sPages">&mdash;</span><span class="stat__label">Pages</span></div>
             <div class="stat"><span class="stat__num" id="sIn">&mdash;</span><span class="stat__label">The PDFs</span></div>
             <div class="stat"><span class="stat__num" id="sOut">&mdash;</span><span class="stat__label">Joined</span></div>
           </div>
+          <!-- ---- END: the figures: Pages, The PDFs, Joined ---- -->
 
+          <!-- ---- START: the buttons: Download PDF, Clear ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="dlBtn" disabled>Download PDF</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Clear</button>
           </div>
+          <!-- ---- END: the buttons: Download PDF, Clear ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
+          <!-- ---- START: the message line ---- -->
           <p class="msg" style="margin-top:var(--s2)">The files are joined in the order of the list. Use the arrows to change it.</p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "2. The joined PDF" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -237,8 +270,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "Why it matters that nothing is uploaded" section ---- -->
         <h2>Why it matters that nothing is uploaded</h2>
         <p>The PDFs people join are usually the ones they least want to hand
            to a stranger: bank statements for a loan, salary slips, an
@@ -246,7 +280,9 @@
            online PDF joiners upload those to their own server to do the work.
            This page reads each file inside your browser, puts the pages
            together there, and saves the result straight to your device.</p>
+        <!-- ---- END: the "Why it matters that nothing is uploaded" section ---- -->
 
+        <!-- ---- START: the "The pages are copied, not redrawn" section ---- -->
         <h2>The pages are copied, not redrawn</h2>
         <p>Each page goes into the joined file exactly as it was: the same
            text, which you can still select and search, the same fonts and the
@@ -254,14 +290,18 @@
            to another inside the same document still works. The joined file
            is often slightly smaller than the files together, because
            anything a document stored but no page used is left out.</p>
+        <!-- ---- END: the "The pages are copied, not redrawn" section ---- -->
 
+        <!-- ---- START: the "What is not carried over" section ---- -->
         <h2>What is not carried over</h2>
         <p>Things that belong to a whole document rather than to its pages
            do not survive joining: bookmarks (the outline in a reader's side
            panel), file attachments, and the ability to fill in a form. A
            filled-in form keeps what was typed in it, as it looks, but its
            boxes can no longer be edited.</p>
+        <!-- ---- END: the "What is not carried over" section ---- -->
 
+        <!-- ---- START: the "Damaged and protected files" section ---- -->
         <h2>Damaged and protected files</h2>
         <p>A PDF whose index is damaged, which happens with files cut short by
            a failed download or an email gateway, is read anyway by searching
@@ -269,7 +309,9 @@
            protected with a password cannot be joined: its contents are
            encrypted. Open it with the password in your PDF reader, save a
            copy without protection, and add that copy here.</p>
+        <!-- ---- END: the "Damaged and protected files" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Does joining reduce the quality?</h3>
@@ -299,14 +341,19 @@
           <h3>Are my PDFs uploaded?</h3>
           <p>No. The PDFs are read and joined by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -357,18 +404,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "merge-pdf";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fileInput = document.getElementById("file");
     var drop      = document.getElementById("drop");
     var list      = document.getElementById("list");
@@ -387,6 +438,7 @@
     var failed = [];
     var notice = "";
     var generation = 0;
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: writing a PDF file ----
        A PDF is a header, a list of numbered objects, and at the end a table
@@ -1842,8 +1894,11 @@
     });
     /* ---- END: wiring ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     refresh();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

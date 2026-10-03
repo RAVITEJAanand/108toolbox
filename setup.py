@@ -24,9 +24,11 @@ import pathlib
 import re
 import sys
 
+# ---- START: where the project is ----
 ROOT = pathlib.Path(__file__).parent
+# ---- END: where the project is ----
 
-# ---- What we are replacing -------------------------------------------------
+# ---- START: what we are replacing: the details in the files now, and the factory defaults ----
 # These are DETECTED from the current files, not hard-coded, so this script
 # still works after it has already been run once. Change your domain later and
 # just run it again.
@@ -74,8 +76,10 @@ TARGETS = (
     + list((ROOT / "tools").glob("*.html"))
     + [ROOT / "robots.txt", ROOT / "sitemap.xml", ROOT / "README.md"]
 )
+# ---- END: what we are replacing ----
 
 
+# ---- START: asking a question, and tidying the address typed ----
 def ask(prompt, default=""):
     """Prompt with a default shown in brackets."""
     suffix = " [%s]: " % default if default else ": "
@@ -92,8 +96,10 @@ def normalise_url(url):
     if url and not url.startswith(("http://", "https://")):
         url = "https://" + url
     return url
+# ---- END: asking a question, and tidying the address typed ----
 
 
+# ---- START: the rewrite itself: ask, replace every placeholder, report ----
 def main():
     parser = argparse.ArgumentParser(add_help=True)
     parser.add_argument("--name",  help='Site name, e.g. "QuickTools"')
@@ -218,3 +224,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+# ---- END: the rewrite itself: ask, replace every placeholder, report ----

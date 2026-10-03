@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Currency Converter — Rupee, Dollar, Euro and Dirham Rates</title>
   <meta name="description" content="Convert between the rupee, US dollar, euro, pound, dirham and 30 more currencies at the day's reference rates. Free, nothing to sign up for.">
   <link rel="canonical" href="https://108toolbox.in/tools/currency-converter.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -98,9 +108,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -135,71 +146,99 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
         <span>Currency Converter</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Currency Converter</h1>
         <p>Convert any amount between 36 currencies at the day's reference rates,
            and see the same amount in the currencies people use most.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "1. Amount and currencies" panel ---- -->
         <div class="panel">
           <span class="panel__label">1. Amount and currencies</span>
 
+          <!-- ---- START: the "Amount" box ---- -->
           <div class="field">
             <label for="amount">Amount</label>
             <input type="text" id="amount" value="1" inputmode="decimal" autocomplete="off" spellcheck="false">
           </div>
+          <!-- ---- END: the "Amount" box ---- -->
+          <!-- ---- START: the "From" choice ---- -->
           <div class="field">
             <label for="from">From</label>
             <select id="from"></select>
           </div>
+          <!-- ---- END: the "From" choice ---- -->
+          <!-- ---- START: the "To" choice ---- -->
           <div class="field">
             <label for="to">To</label>
             <select id="to"></select>
           </div>
+          <!-- ---- END: the "To" choice ---- -->
 
+          <!-- ---- START: the buttons: ⇆ Swap, Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--ghost" type="button" id="swapBtn">&#8646; Swap</button>
             <button class="btn btn--danger" type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: ⇆ Swap, Reset ---- -->
 
+          <!-- ---- START: the note the script fills in (#dateLine) ---- -->
           <p class="hint" id="dateLine"></p>
+          <!-- ---- END: the note the script fills in (#dateLine) ---- -->
         </div>
+        <!-- ---- END: the "1. Amount and currencies" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "2. Converted" panel ---- -->
         <div class="panel">
           <span class="panel__label">2. Converted</span>
 
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result">
             <span class="result__num" id="result">&mdash;</span>
             <span class="result__label" id="resultLabel"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
+          <!-- ---- START: the note the script fills in (#rateLine) ---- -->
           <p class="hint" id="rateLine"></p>
+          <!-- ---- END: the note the script fills in (#rateLine) ---- -->
+          <!-- ---- START: the note the script fills in (#pegLine) ---- -->
           <p class="hint" id="pegLine"></p>
+          <!-- ---- END: the note the script fills in (#pegLine) ---- -->
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
 
+          <!-- ---- START: the table: The same amount in, Amount ---- -->
           <div class="table-wrap" style="margin-top:var(--s4)">
             <table class="data">
               <thead><tr><th scope="col">The same amount in</th><th scope="col">Amount</th></tr></thead>
               <tbody id="others"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: The same amount in, Amount ---- -->
         </div>
+        <!-- ---- END: the "2. Converted" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -228,8 +267,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "Where the rates come from" section ---- -->
         <h2>Where the rates come from</h2>
         <p>The rates are the euro reference rates the European Central Bank
            publishes every working day at about 4 pm Central European Time.
@@ -239,7 +279,9 @@
            working day's rates stay. A rate between two currencies other than
            the euro, such as dollars to rupees, is worked out through the
            euro.</p>
+        <!-- ---- END: the "Where the rates come from" section ---- -->
 
+        <!-- ---- START: the "Why your bank gives a different rate" section ---- -->
         <h2>Why your bank gives a different rate</h2>
         <p>These are reference rates: the middle of the market, with nothing
            added. A bank, a card or a money transfer service adds its own
@@ -247,14 +289,18 @@
            makes this page a good way to check what a transfer really costs:
            convert the amount here, compare it with what will arrive, and the
            difference is the margin.</p>
+        <!-- ---- END: the "Why your bank gives a different rate" section ---- -->
 
+        <!-- ---- START: the "Dirham, riyal and other fixed currencies" section ---- -->
         <h2>Dirham, riyal and other fixed currencies</h2>
         <p>The UAE dirham, Saudi riyal, Qatari riyal, Omani rial and Bahraini
            dinar are fixed by their central banks to the US dollar, and the
            Nepalese rupee to the Indian rupee at 1.6. They are not among the
            reference rates, so the page works them out from the currency they
            are fixed to, and says so under the result.</p>
+        <!-- ---- END: the "Dirham, riyal and other fixed currencies" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How often are the rates updated?</h3>
@@ -276,14 +322,19 @@
           <h3>Is anything I type sent anywhere?</h3>
           <p>No. The rates are a small file on this site that loads with the page, and the conversion happens in your own browser. Nothing you type is sent anywhere or stored.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -334,19 +385,23 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "currency-converter";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
   <script src="../data/rates.js"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: the page elements this script reads and writes ---- */
     var amountIn   = document.getElementById("amount");
     var fromSel    = document.getElementById("from");
     var toSel      = document.getElementById("to");
@@ -357,6 +412,7 @@
     var dateLine   = document.getElementById("dateLine");
     var msg        = document.getElementById("msg");
     var others     = document.getElementById("others");
+    /* ---- END: the page elements this script reads and writes ---- */
 
     /* ---- START: the currencies ---- */
     var NAMES = {
@@ -566,8 +622,11 @@
     });
     /* ---- END: wiring ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     refresh();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

@@ -8,7 +8,7 @@
    workspace stays quiet and the only strong colour is the primary button.
    ========================================================================== */
 
-/* ---- Breadcrumb --------------------------------------------------------- */
+/* ---- START: Breadcrumb ---- */
 .crumbs {
   display: flex;
   flex-wrap: wrap;
@@ -21,8 +21,9 @@
 .crumbs a { color: var(--text-soft); font-weight: 500; }
 .crumbs a:hover { color: var(--primary); }
 .crumbs span { margin: 0 var(--s1); opacity: .6; }
+/* ---- END: Breadcrumb ---- */
 
-/* ---- Tool heading ------------------------------------------------------- */
+/* ---- START: Tool heading ---- */
 .tool-head { margin-bottom: var(--s6); }
 .tool-head h1 {
   font-size: clamp(1.75rem, 4.5vw, 2.5rem);
@@ -35,8 +36,9 @@
   margin: 0;
   max-width: 44rem;
 }
+/* ---- END: Tool heading ---- */
 
-/* ---- The two-panel workspace -------------------------------------------- */
+/* ---- START: The two-panel workspace ---- */
 /* minmax(0, ...) and not a bare 1fr: a bare fr column can never be narrower
    than its widest content - the longest option of a <select>, a wide table -
    so on a phone the panel pushed the whole page sideways. 16 tools did that
@@ -69,8 +71,9 @@
   color: var(--text-soft);
   margin-bottom: var(--s3);
 }
+/* ---- END: The two-panel workspace ---- */
 
-/* ---- Form controls ------------------------------------------------------ */
+/* ---- START: Form controls ---- */
 .field { margin-bottom: var(--s4); }
 .field:last-child { margin-bottom: 0; }
 .field label {
@@ -106,14 +109,15 @@ textarea:focus, input:focus, select:focus {
   box-shadow: 0 0 0 4px var(--primary-soft);
 }
 
-/* Range slider */
+/* ---- START: Range slider ---- */
 input[type="range"] {
   width: 100%;
   accent-color: var(--primary);   /* one line = styled slider in all modern browsers */
   height: 44px;
 }
+/* ---- END: Range slider ---- */
 
-/* Checkbox rows */
+/* ---- START: Checkbox rows ---- */
 .check {
   display: flex;
   align-items: center;
@@ -123,10 +127,13 @@ input[type="range"] {
 }
 .check input { width: 18px; height: 18px; accent-color: var(--primary); margin: 0; flex: none; }
 .check label { cursor: pointer; }
-/* A disabled option must LOOK disabled, or people keep clicking it */
+/* ---- END: Checkbox rows ---- */
+/* ---- START: A disabled option must LOOK disabled, or people keep clicking it ---- */
 .check input:disabled + label { opacity: .45; cursor: not-allowed; }
+/* ---- END: A disabled option must LOOK disabled, or people keep clicking it ---- */
+/* ---- END: Form controls ---- */
 
-/* ---- Stat tiles (the output of counters/calculators) -------------------- */
+/* ---- START: Stat tiles (the output of counters/calculators) ---- */
 /* minmax(0, 1fr) for the same reason as .workspace: a big rupee figure
    must not push a phone's page sideways. Three tiles stack on a phone, and
    the figures shrink a little with the screen; anywhere-wrapping is only the
@@ -164,7 +171,7 @@ input[type="range"] {
   margin-top: 2px;
 }
 
-/* The single big answer, for calculators that have exactly one */
+/* ---- START: The single big answer, for calculators that have exactly one ---- */
 .result {
   background: linear-gradient(135deg, var(--primary-soft), transparent 70%);
   border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
@@ -183,8 +190,9 @@ input[type="range"] {
   color: var(--primary);
 }
 .result__label { font-size: .875rem; color: var(--text-soft); }
+/* ---- END: The single big answer, for calculators that have exactly one ---- */
 
-/* Read-only output box */
+/* ---- START: Read-only output box ---- */
 .out {
   min-height: 240px;
   max-height: 480px;
@@ -199,13 +207,16 @@ input[type="range"] {
   white-space: pre-wrap;
   word-break: break-word;
 }
+/* ---- END: Read-only output box ---- */
 
-/* Status messages */
+/* ---- START: Status messages ---- */
 .msg { font-size: .9375rem; font-weight: 500; margin-top: var(--s3); }
 .msg--ok   { color: var(--success); }
 .msg--bad  { color: var(--danger); }
+/* ---- END: Status messages ---- */
+/* ---- END: Stat tiles (the output of counters/calculators) ---- */
 
-/* ---- File drop zone (image tools) -------------------------------------- */
+/* ---- START: File drop zone (image tools) ---- */
 /* display:block is NOT optional here. A <label> is display:inline by default,
    so without it the dashed border breaks into fragments around the inline
    boxes, the block-level <p> children escape the box, and the whole thing
@@ -237,8 +248,9 @@ input[type="range"] {
   border: 1px solid var(--border);
   box-shadow: var(--sh1);
 }
+/* ---- END: File drop zone (image tools) ---- */
 
-/* ---- Small data table (amortisation, key/value output) ----------------- */
+/* ---- START: Small data table (amortisation, key/value output) ---- */
 .table-wrap {
   overflow-x: auto;
   border: 1px solid var(--border);
@@ -270,8 +282,9 @@ table.data th {
 }
 table.data th:first-child, table.data td:first-child { text-align: left; }
 table.data tbody tr:hover td { background: var(--surface); }
+/* ---- END: Small data table (amortisation, key/value output) ---- */
 
-/* ---- SEO content below the tool ---------------------------------------- */
+/* ---- START: SEO content below the tool ---- */
 .tool-info {
   border-top: 1px solid var(--border);
   padding-top: var(--s7);
@@ -289,9 +302,10 @@ table.data tbody tr:hover td { background: var(--surface); }
 .faq:hover { border-left-color: var(--primary); }
 .faq h3 { margin-bottom: var(--s2); color: var(--text); }
 .faq p  { color: var(--text-soft); margin: 0; }
+/* ---- END: SEO content below the tool ---- */
 
 
-/* ---- The check-the-result notice, on every tool page --------------------
+/* ---- START: The check-the-result notice, on every tool page ----
    It has to be seen without shouting. A tool page is calm on purpose, so
    this is a tinted note with one strong edge rather than a full amber slab.
    Flex keeps the icon beside the text instead of floating inside it, and the
@@ -325,8 +339,9 @@ table.data tbody tr:hover td { background: var(--surface); }
   font-weight: 600;
   text-decoration: underline;
 }
+/* ---- END: The check-the-result notice, on every tool page ---- */
 
-/* ---- Markdown preview -----------------------------------------------------
+/* ---- START: Markdown preview ----
    The rendered result of the Markdown Previewer. Everything here is scoped to
    .md-preview so that a heading or a table in somebody's document cannot
    restyle the page around it. */
@@ -392,8 +407,9 @@ table.data tbody tr:hover td { background: var(--surface); }
   font-size: .875em;
 }
 .md-preview input[type="checkbox"] { margin-right: var(--s2); }
+/* ---- END: Markdown preview ---- */
 
-/* ---- A list of chosen files -------------------------------------------------
+/* ---- START: A list of chosen files ----
    The pictures going into a PDF, in page order, each with its own buttons.
    The buttons are real buttons with a spoken label, so the order can be
    changed from a keyboard as easily as with a mouse. */
@@ -458,14 +474,17 @@ table.data tbody tr:hover td { background: var(--surface); }
 }
 .file-list__btns button:hover:not(:disabled) { border-color: var(--primary); }
 .file-list__btns button:disabled { opacity: .4; cursor: default; }
+/* ---- START: on a phone, the buttons go under the file's name ---- */
 /* On a phone the four buttons would leave the name a column one letter
    wide, so they move to a row of their own under it. */
 @media (max-width: 560px) {
   .file-list li { flex-wrap: wrap; }
   .file-list__btns { width: 100%; justify-content: flex-end; }
 }
+/* ---- END: on a phone, the buttons go under the file's name ---- */
+/* ---- END: A list of chosen files ---- */
 
-/* ---- A plan: the files a tool is about to make -------------------------- */
+/* ---- START: A plan: the files a tool is about to make ---- */
 .plan-list {
   margin: var(--s4) 0 0;
   padding-left: var(--s5);
@@ -477,8 +496,9 @@ table.data tbody tr:hover td { background: var(--surface); }
 }
 .plan-list:empty { display: none; }
 .plan-list li { margin: 0 0 var(--s1); }
+/* ---- END: A plan: the files a tool is about to make ---- */
 
-/* ---- A small picture of a PDF's first page ------------------------------ */
+/* ---- START: A small picture of a PDF's first page ---- */
 /* The page is drawn on white whatever the theme: it is paper. */
 .pdf-preview {
   display: block;
@@ -490,8 +510,9 @@ table.data tbody tr:hover td { background: var(--surface); }
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
 }
+/* ---- END: A small picture of a PDF's first page ---- */
 
-/* ---- The advertisement below the tool ----------------------------------
+/* ---- START: The advertisement below the tool ----
    Nothing shows - no label, no gap - until Google has filled the slot, and
    a slot Google leaves unfilled disappears. */
 .ad-slot { margin: 0; }
@@ -507,3 +528,4 @@ table.data tbody tr:hover td { background: var(--surface); }
 }
 .ad-slot:has(ins[data-ad-status="filled"]) .ad-slot__label { display: block; }
 .ad-slot ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
+/* ---- END: The advertisement below the tool ---- */

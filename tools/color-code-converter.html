@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Color Code Converter — HEX, RGB and HSL Online</title>
   <meta name="description" content="Convert a colour between HEX, RGB and HSL, see it on screen, and check whether white or black text is readable on it. Everything runs in your browser.">
   <link rel="canonical" href="https://108toolbox.in/tools/color-code-converter.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,52 +154,68 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
         <span>Color Code Converter</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Color Code Converter</h1>
         <p>Paste a colour in any form &mdash; HEX, RGB, HSL or a CSS name &mdash;
            and get the other formats, a live swatch, and the contrast figures that
            decide whether text on it can be read.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the input panel ---- -->
         <div class="panel">
+          <!-- ---- START: the "Your colour" box ---- -->
           <div class="field">
             <label for="input">Your colour</label>
             <input type="text" id="input" value="#3b82f6"
                    placeholder="#3b82f6, rgb(59 130 246), hsl(217 91% 60%), rebeccapurple">
           </div>
+          <!-- ---- END: the "Your colour" box ---- -->
 
+          <!-- ---- START: the colour swatch, with white and black text on it ---- -->
           <div id="swatch" style="height:150px;border-radius:var(--r-md);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:var(--s5)">
             <span style="color:#fff;font-weight:600">White text</span>
             <span style="color:#000;font-weight:600">Black text</span>
           </div>
+          <!-- ---- END: the colour swatch, with white and black text on it ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite" style="margin-top:var(--s4)"></p>
+          <!-- ---- END: the message line ---- -->
 
+          <!-- ---- START: the buttons: Copy HEX, Copy RGB, Copy HSL ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--ghost" type="button" id="copyHex">Copy HEX</button>
             <button class="btn btn--ghost" type="button" id="copyRgb">Copy RGB</button>
             <button class="btn btn--ghost" type="button" id="copyHsl">Copy HSL</button>
           </div>
+          <!-- ---- END: the buttons: Copy HEX, Copy RGB, Copy HSL ---- -->
         </div>
+        <!-- ---- END: the input panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Every format" panel ---- -->
         <div class="panel">
           <span class="panel__label">Every format</span>
 
+          <!-- ---- START: the table: Format, Value ---- -->
           <div class="table-wrap">
             <table class="data">
               <thead>
@@ -197,20 +224,26 @@
               <tbody id="rows"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Format, Value ---- -->
 
+          <!-- ---- START: the figures: Against white, Against black, Luminance, under the heading "Readability" ---- -->
           <span class="panel__label" style="margin-top:var(--s5)">Readability</span>
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="cWhite">0</span><span class="stat__label">Against white</span></div>
             <div class="stat"><span class="stat__num" id="cBlack">0</span><span class="stat__label">Against black</span></div>
             <div class="stat"><span class="stat__num" id="cLum">0</span><span class="stat__label">Luminance</span></div>
           </div>
+          <!-- ---- END: the figures: Against white, Against black, Luminance, under the heading "Readability" ---- -->
 
+          <!-- ---- START: the hint "WCAG AA asks for 4.5:1 for normal..." ---- -->
           <p class="hint" style="margin-top:var(--s4)">WCAG AA asks for 4.5:1 for
              normal text and 3:1 for large text, so a figure below 3 means that
              text cannot be read comfortably by a lot of people.</p>
+          <!-- ---- END: the hint "WCAG AA asks for 4.5:1 for normal..." ---- -->
         </div>
+        <!-- ---- END: the "Every format" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -239,8 +272,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Type or paste a colour in any form you have it: a hex code, an
@@ -250,7 +284,9 @@
           <li>Look at the two contrast figures before you put text on that
               colour.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Why HSL is worth learning" section ---- -->
         <h2>Why HSL is worth learning</h2>
         <p>HEX and RGB say the same thing in different alphabets: how much red,
            green and blue to mix. They are exact and completely unhelpful when you
@@ -265,14 +301,18 @@
         <p>That is why a whole palette is easy in HSL: keep the hue, change the
            lightness, and you have a matching set of shades. Do the same in hex
            and you are guessing.</p>
+        <!-- ---- END: the "Why HSL is worth learning" section ---- -->
 
+        <!-- ---- START: the "About the contrast numbers" section ---- -->
         <h2>About the contrast numbers</h2>
         <p>The two figures are WCAG contrast ratios, the same measure accessibility
            audits use. They run from 1:1, meaning invisible, to 21:1 for black on
            white. They are not a matter of taste: a ratio below 4.5 means a real
            number of people, including anyone reading on a phone in sunlight,
            will struggle with normal-sized text on that background.</p>
+        <!-- ---- END: the "About the contrast numbers" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Which colour format should I use in my CSS?</h3>
@@ -298,14 +338,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -356,23 +401,28 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "color-code-converter";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements and what the page remembers ---- */
     var input = document.getElementById("input");
     var msg   = document.getElementById("msg");
     var rows  = document.getElementById("rows");
     var swatch = document.getElementById("swatch");
     var current = null;
+    /* ---- END: setting up: the page elements and what the page remembers ---- */
 
     /* ---- START: reading whatever the visitor typed ---- */
     /* The browser already owns the complete list of colour syntaxes - every
@@ -540,7 +590,9 @@
     }
     /* ---- END: drawing the answer ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     input.addEventListener("input", run);
+    /* ---- END: wiring: what each control does ---- */
 
     /* ---- START: copying one format to the clipboard ---- */
     function copier(which) {
@@ -550,12 +602,17 @@
       };
     }
     /* ---- END: copying one format to the clipboard ---- */
+    /* ---- START: wiring: what each control does ---- */
     document.getElementById("copyHex").addEventListener("click", copier("hex"));
     document.getElementById("copyRgb").addEventListener("click", copier("rgb"));
     document.getElementById("copyHsl").addEventListener("click", copier("hsl"));
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     run();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

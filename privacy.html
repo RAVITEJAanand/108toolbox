@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <!-- This one line is what makes the site mobile-friendly. Never remove it. -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO: the three tags Google actually shows ===== -->
+  <!-- The three tags Google actually shows: the title, the description and the canonical address. -->
   <title>Privacy Policy — 108 ToolBox</title>
   <meta name="description" content="108 ToolBox does not upload your files or store your text. Here is exactly what happens to your data, in plain language.">
   <link rel="canonical" href="https://108toolbox.in/privacy.html">
@@ -17,15 +18,21 @@
 
   <!-- Emoji favicon: no image file to download -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead: nothing can be sent anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
   <meta name="referrer" content="no-referrer">
+  <!-- ---- END: the security policy ---- -->
 
-  <link rel="stylesheet" href="css/style.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="css/style.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -39,9 +46,10 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="index.html">
@@ -79,20 +87,27 @@
       <a href="about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container prose">
+      <!-- ---- START: the page heading and introduction ---- -->
       <h1>Privacy Policy</h1>
       <p><strong>Short version: your text and your files never leave your
       device. We do not ask who you are, and we could not tell you what you did
       here even if you asked us. The site carries advertising from Google, which
       uses its own cookies; section 7 says what that means and how to turn
       personalised advertising off.</strong></p>
+      <!-- ---- END: the page heading and introduction ---- -->
 
+      <!-- ---- START: the "1. Who this is about" section ---- -->
       <h2>1. Who this is about</h2>
       <p>This policy covers 108 ToolBox at
       <a href="https://108toolbox.in">108toolbox.in</a> and every tool on it.</p>
+      <!-- ---- END: the "1. Who this is about" section ---- -->
 
+      <!-- ---- START: the "2. What happens to what you type or upload" section ---- -->
       <h2>2. What happens to what you type or upload</h2>
       <p>Nothing leaves your browser. Each tool is JavaScript running on your own
       machine. When you compress an image here, your own computer reads it,
@@ -104,7 +119,9 @@
 
       <p>This is not a promise we are asking you to take on trust. Open the tools
       page, disconnect from the internet, and the tools keep working.</p>
+      <!-- ---- END: the "2. What happens to what you type or upload" section ---- -->
 
+      <!-- ---- START: the "3. Personal information we collect" section ---- -->
       <h2>3. Personal information we collect</h2>
       <p><strong>None.</strong> We do not ask for, and have no way to receive,
       your name, your email address, your phone number, your address, your date
@@ -112,13 +129,17 @@
 
       <p>There are no accounts on this site. You cannot create one, so there is
       nothing about you for us to hold, lose or be asked to hand over.</p>
+      <!-- ---- END: the "3. Personal information we collect" section ---- -->
 
+      <!-- ---- START: the "4. If you email us" section ---- -->
       <h2>4. If you email us</h2>
       <p>If you write to us at
       <a href="mailto:konduriplaystudio@gmail.com">konduriplaystudio@gmail.com</a>, we will have
       your email address and whatever you put in your message. We use it only to
       reply to you. We do not add you to any mailing list.</p>
+      <!-- ---- END: the "4. If you email us" section ---- -->
 
+      <!-- ---- START: the "5. What is stored on your own device" section ---- -->
       <h2>5. What is stored on your own device</h2>
       <p>One thing, and only if you change it: your choice of light or dark
       theme. It is saved in your browser&rsquo;s local storage under the name
@@ -126,7 +147,9 @@
 
       <p>It is not a cookie, it is never sent anywhere, and it says nothing about
       you. Clearing your browser data removes it.</p>
+      <!-- ---- END: the "5. What is stored on your own device" section ---- -->
 
+      <!-- ---- START: the "6. Cookies" section ---- -->
       <h2>6. Cookies</h2>
       <p>This website sets <strong>no cookies of its own</strong>. The
       advertising on it does: Google, which supplies the advertisements, sets
@@ -136,7 +159,9 @@
       Economic Area, the United Kingdom and Switzerland &mdash; you are asked
       for it before those cookies are set, and you can change your choice at
       any time.</p>
+      <!-- ---- END: the "6. Cookies" section ---- -->
 
+      <!-- ---- START: the "7. Advertising" section ---- -->
       <h2>7. Advertising</h2>
       <p>Advertisements on this site are supplied by <strong>Google
       AdSense</strong>, to help cover the cost of running it.</p>
@@ -156,7 +181,9 @@
       <p>One thing advertising does not change: the tools never send your text
       or your files anywhere. They are processed by the tools&rsquo; own code
       on your device, exactly as before.</p>
+      <!-- ---- END: the "7. Advertising" section ---- -->
 
+      <!-- ---- START: the "8. Analytics" section ---- -->
       <h2>8. Analytics</h2>
       <p>We do not use Google Analytics or any other analytics service, and
       nothing about your visit is recorded by us. The advertising described in
@@ -166,7 +193,9 @@
       <p>If we ever add page-view analytics, we will update this page first, and
       we will use a privacy-friendly service that sets no cookies and cannot
       identify you as a person.</p>
+      <!-- ---- END: the "8. Analytics" section ---- -->
 
+      <!-- ---- START: the "9. Our hosting provider" section ---- -->
       <h2>9. Our hosting provider</h2>
       <p>This site is hosted on GitHub Pages. Like almost every web host,
       GitHub&rsquo;s servers keep standard technical logs of requests, which can
@@ -175,18 +204,24 @@
 
       <p>We do not have access to those logs and we cannot read them. GitHub
       handles that data under its own privacy statement.</p>
+      <!-- ---- END: the "9. Our hosting provider" section ---- -->
 
+      <!-- ---- START: the "10. We do not sell your data" section ---- -->
       <h2>10. We do not sell your data</h2>
       <p>We do not sell, rent or trade personal data, for any price. This is an
       easy commitment for us to keep, because we do not hold any. The
       advertising provider collects its own information through its cookies,
       under its own policy, as section 7 explains; you can limit it there.</p>
+      <!-- ---- END: the "10. We do not sell your data" section ---- -->
 
+      <!-- ---- START: the "11. Children" section ---- -->
       <h2>11. Children</h2>
       <p>This site is safe for anyone to use and collects no personal data from
       any visitor, whatever their age. We do not knowingly collect information
       from children, because we do not collect information from anybody.</p>
+      <!-- ---- END: the "11. Children" section ---- -->
 
+      <!-- ---- START: the "12. Your rights" section ---- -->
       <h2>12. Your rights</h2>
       <p>Under Indian data protection law, including the Digital Personal Data
       Protection Act, 2023, you have rights over personal data that an
@@ -196,30 +231,38 @@
       <p>We hold no personal data about you, so there is nothing for us to show,
       correct or delete. If you have emailed us and would like that email
       deleted, ask and we will delete it.</p>
+      <!-- ---- END: the "12. Your rights" section ---- -->
 
+      <!-- ---- START: the "13. Changes to this policy" section ---- -->
       <h2>13. Changes to this policy</h2>
       <p>If this policy changes, the updated version will appear on this page and
       the date below will change. Any change that affects your privacy &mdash;
       advertising or analytics in particular &mdash; will be published here
       before it takes effect.</p>
+      <!-- ---- END: the "13. Changes to this policy" section ---- -->
 
+      <!-- ---- START: the "14. Contact" section ---- -->
       <h2>14. Contact</h2>
       <p>Questions about privacy can go to
       <a href="mailto:konduriplaystudio@gmail.com">konduriplaystudio@gmail.com</a>, or through
       the <a href="contact.html">contact page</a>.</p>
 
       <p><small>Last updated: 2 October 2026</small></p>
+      <!-- ---- END: the "14. Contact" section ---- -->
 
+      <!-- ---- START: the "Related pages" section ---- -->
       <h2>Related pages</h2>
       <ul>
         <li><a href="terms.html">Terms &amp; Conditions</a></li>
         <li><a href="disclaimer.html">Disclaimer</a></li>
         <li><a href="copyright.html">Copyright Notice</a></li>
       </ul>
+      <!-- ---- END: the "Related pages" section ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -270,8 +313,11 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="js/tools-data.js?v=42"></script>
-  <script src="js/main.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="js/tools-data.js?v=43"></script>
+  <script src="js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 </body>
 </html>

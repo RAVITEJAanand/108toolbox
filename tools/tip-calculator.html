@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Tip Calculator — Split the Bill and Work Out the Tip</title>
   <meta name="description" content="Work out the tip and split any bill between friends. Choose a percentage, round the total, and see exactly what each person owes. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/tip-calculator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,34 +131,43 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
         <span>Tip Calculator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Tip Calculator</h1>
         <p>The tip, the total, and what each person owes when you split it.
            Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "The bill" panel ---- -->
         <div class="panel">
           <span class="panel__label">The bill</span>
 
+          <!-- ---- START: the "Bill amount" box ---- -->
           <div class="field">
             <label for="bill">Bill amount</label>
             <input type="number" id="bill" value="1200" min="0" step="1">
           </div>
+          <!-- ---- END: the "Bill amount" box ---- -->
 
+          <!-- ---- START: the "Tip: 10%" slider ---- -->
           <div class="field">
             <label for="tip">Tip: <span id="tipVal">10</span>%</label>
             <input type="range" id="tip" min="0" max="30" value="10" step="1">
@@ -159,52 +178,71 @@
               <button class="btn btn--ghost" type="button" data-tip="20">20%</button>
             </div>
           </div>
+          <!-- ---- END: the "Tip: 10%" slider ---- -->
 
+          <!-- ---- START: the "Split between: 1" slider ---- -->
           <div class="field">
             <label for="people">Split between: <span id="peopleVal">1</span></label>
             <input type="range" id="people" min="1" max="20" value="1" step="1">
           </div>
+          <!-- ---- END: the "Split between: 1" slider ---- -->
 
+          <!-- ---- START: the "Tip on the amount before tax" tick box ---- -->
           <div class="check">
             <input type="checkbox" id="optNoTax">
             <label for="optNoTax">Tip on the amount before tax</label>
           </div>
+          <!-- ---- END: the "Tip on the amount before tax" tick box ---- -->
 
+          <!-- ---- START: the "Tax included in the bill" box ---- -->
           <div class="field" id="taxWrap" hidden style="margin-top:var(--s3)">
             <label for="tax">Tax included in the bill</label>
             <input type="number" id="tax" value="0" min="0" step="1">
             <p class="hint">The tip is taken from the bill minus this amount.</p>
           </div>
+          <!-- ---- END: the "Tax included in the bill" box ---- -->
 
+          <!-- ---- START: the "Round the total up to a whole number" tick box ---- -->
           <div class="check">
             <input type="checkbox" id="optRound">
             <label for="optRound">Round the total up to a whole number</label>
           </div>
+          <!-- ---- END: the "Round the total up to a whole number" tick box ---- -->
 
+          <!-- ---- START: the hint "In India 5–10% is normal at a..." ---- -->
           <p class="hint" style="margin-top:var(--s4)">In India 5&ndash;10% is
              normal at a restaurant, and a service charge is never compulsory.
              There is more on that below.</p>
+          <!-- ---- END: the hint "In India 5–10% is normal at a..." ---- -->
         </div>
+        <!-- ---- END: the "The bill" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "What to pay" panel ---- -->
         <div class="panel">
           <span class="panel__label">What to pay</span>
 
+          <!-- ---- START: the main answer ---- -->
           <div class="result">
             <span class="result__num" id="total">&mdash;</span>
             <span class="result__label" id="formula">bill plus tip</span>
           </div>
+          <!-- ---- END: the main answer ---- -->
 
+          <!-- ---- START: the figures: Tip, Each person, Tip each ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="tipAmount">&mdash;</span><span class="stat__label">Tip</span></div>
             <div class="stat"><span class="stat__num" id="perPerson">&mdash;</span><span class="stat__label">Each person</span></div>
             <div class="stat"><span class="stat__num" id="tipEach">&mdash;</span><span class="stat__label">Tip each</span></div>
           </div>
+          <!-- ---- END: the figures: Tip, Each person, Tip each ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "What to pay" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -233,8 +271,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Enter the bill amount.</li>
@@ -244,7 +283,9 @@
           <li>Everything updates as you go. No currency symbol is shown, because
               the arithmetic is the same everywhere.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "How much to tip in India" section ---- -->
         <h2>How much to tip in India</h2>
         <p>Roughly <strong>5 to 10 percent</strong> at a sit-down restaurant is
           normal, appreciated, and plenty. Rounding up a small bill is perfectly
@@ -255,7 +296,9 @@
           twenty percent is the working assumption there because tipped staff are
           often paid a lower base wage that the tip is expected to make up. That
           arrangement does not exist in India, so the percentage does not transfer.</p>
+        <!-- ---- END: the "How much to tip in India" section ---- -->
 
+        <!-- ---- START: the "Service charge is not a tax, and not compulsory" section ---- -->
         <h2>Service charge is not a tax, and not compulsory</h2>
         <p>This is worth knowing before you add anything on top. A
           <strong>service charge</strong> printed on an Indian restaurant bill is
@@ -271,14 +314,18 @@
           would rather not tip on top of the tax, tick <strong>Tip on the amount
           before tax</strong>, enter the tax figure from your bill, and the tip is
           calculated from the food and drink alone.</p>
+        <!-- ---- END: the "Service charge is not a tax, and not compulsory" section ---- -->
 
+        <!-- ---- START: the "Splitting without the awkward paise" section ---- -->
         <h2>Splitting without the awkward paise</h2>
         <p>Divide 1,200 between seven people and you get 171.43 each, which nobody
           is going to hand over. Tick <strong>Round the total up</strong> and the
           bill is raised to the next whole number before it is divided, so the
           shares come out clean and the restaurant keeps the difference as a
           slightly larger tip.</p>
+        <!-- ---- END: the "Splitting without the awkward paise" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How much should I tip in India?</h3>
@@ -296,14 +343,19 @@
           <h3>Is anything I type sent anywhere?</h3>
           <p>No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved &mdash; close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -354,18 +406,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "tip-calculator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool has its own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements and fixed values ---- */
     var bill    = document.getElementById("bill");
     var tip     = document.getElementById("tip");
     var people  = document.getElementById("people");
@@ -385,6 +441,7 @@
 
     var TIMES = String.fromCharCode(0x00D7);
     var PLUS  = "+";
+    /* ---- END: setting up: the page elements and fixed values ---- */
 
     /* ---- START: reading the fields and printing money ---- */
     function num(el) {
@@ -451,6 +508,7 @@
     }
     /* ---- END: the tip, the total and the split, and drawing them ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     [bill, tip, people, tax].forEach(function (el) {
       el.addEventListener("input", run);
     });
@@ -467,9 +525,13 @@
           run();
         });
       });
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     run();   /* run once so the panel is correct on load */
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

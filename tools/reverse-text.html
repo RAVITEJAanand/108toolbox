@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Reverse Text Online — Flip Words, Lines or Letters</title>
   <meta name="description" content="Reverse text instantly: flip the whole string, reverse each line, or put words and lines in backwards order. Emoji-safe, and nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/reverse-text.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,31 +131,40 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
         <span>Reverse Text</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Reverse Text</h1>
         <p>Flip text backwards — the whole thing, each line on its own, or just the
            order of the words. Emoji and accented letters stay in one piece.
            Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "Your text" panel ---- -->
         <div class="panel">
           <label class="panel__label" for="input">Your text</label>
+          <!-- ---- START: the "Your text" text box ---- -->
           <textarea id="input" placeholder="Paste or type your text here&hellip;"></textarea>
+          <!-- ---- END: the "Your text" text box ---- -->
 
+          <!-- ---- START: the "Reverse" choice ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="mode">Reverse</label>
             <select id="mode">
@@ -157,31 +176,42 @@
             </select>
             <p class="hint" id="modeHint"></p>
           </div>
+          <!-- ---- END: the "Reverse" choice ---- -->
 
+          <!-- ---- START: the "Clear" button ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
           </div>
+          <!-- ---- END: the "Clear" button ---- -->
         </div>
+        <!-- ---- END: the "Your text" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Reversed" panel ---- -->
         <div class="panel">
           <span class="panel__label">Reversed</span>
 
+          <!-- ---- START: the figures: Characters, Words, Lines ---- -->
           <div class="stats stats--3" aria-live="polite">
             <div class="stat"><span class="stat__num" id="cChars">0</span><span class="stat__label">Characters</span></div>
             <div class="stat"><span class="stat__num" id="cWords">0</span><span class="stat__label">Words</span></div>
             <div class="stat"><span class="stat__num" id="cLines">0</span><span class="stat__label">Lines</span></div>
           </div>
+          <!-- ---- END: the figures: Characters, Words, Lines ---- -->
 
+          <!-- ---- START: the output ---- -->
           <pre class="out" id="output" style="margin-top:var(--s4)"></pre>
+          <!-- ---- END: the output ---- -->
 
+          <!-- ---- START: the buttons: Copy result, Download .txt ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
             <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
           </div>
+          <!-- ---- END: the buttons: Copy result, Download .txt ---- -->
         </div>
+        <!-- ---- END: the "Reversed" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -210,8 +240,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Paste your text into the box on the left.</li>
@@ -221,7 +252,9 @@
           <li>The result appears as you type — there is no button to press.</li>
           <li>Press <strong>Copy result</strong>, or download it as a <code>.txt</code> file.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Five kinds of reverse, and when each one is right" section ---- -->
         <h2>Five kinds of reverse, and when each one is right</h2>
         <p>"Reverse text" means five different things depending on who is asking.
           <strong>The whole text</strong> flips every character from last to first, so
@@ -238,7 +271,9 @@
           <strong>Line order</strong> touches nothing inside the lines at all — it
           simply turns a list upside down, which is the fastest way to flip a log
           file or a chat export so the newest entry sits at the top.</p>
+        <!-- ---- END: the "Five kinds of reverse, and when each one is right" section ---- -->
 
+        <!-- ---- START: the "Why emoji survive here" section ---- -->
         <h2>Why emoji survive here</h2>
         <p>JavaScript stores text as UTF-16 code units, and anything past the basic
           set — emoji, many Indic and East Asian characters, some maths symbols — is
@@ -253,7 +288,9 @@
           can park the accent on its neighbour. Ordinary accented text — French,
           Spanish, German, Vietnamese as normally typed — is unaffected, because
           those letters are single characters already.</p>
+        <!-- ---- END: the "Why emoji survive here" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Why do emoji break in other reverse text tools?</h3>
@@ -271,14 +308,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. The reversing happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -329,18 +371,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "reverse-text";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool has its own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements and fixed values ---- */
     var input  = document.getElementById("input");
     var output = document.getElementById("output");
     var mode   = document.getElementById("mode");
@@ -361,6 +407,7 @@
       "word-all":   "the whole text becomes one backwards run of words",
       "line-order": "the last line comes first, nothing inside a line changes"
     };
+    /* ---- END: setting up: the page elements and fixed values ---- */
 
     /* ---- START: cutting text into the characters a reader sees ----
        Array.from cuts by code point, which keeps a single emoji whole but
@@ -430,6 +477,7 @@
     }
     /* ---- END: drawing the result ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     input.addEventListener("input", run);
     mode.addEventListener("change", run);
 
@@ -447,9 +495,13 @@
       if (!output.textContent) { showToast("Nothing to download"); return; }
       downloadText(output.textContent, "reversed.txt");
     });
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     run();   /* run once so the hint and the counters are right on load */
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

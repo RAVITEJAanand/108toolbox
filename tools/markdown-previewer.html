@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Markdown Previewer — Live Preview and HTML Output</title>
   <meta name="description" content="Write Markdown and see it rendered as you type, with tables, task lists and code. Copy the HTML or download it. Nothing is uploaded and raw HTML is never run.">
   <link rel="canonical" href="https://108toolbox.in/tools/markdown-previewer.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -130,9 +140,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -167,16 +178,21 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
         <span>Markdown Previewer</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Markdown Previewer</h1>
         <p>Write Markdown on the left and read the result on the right, or switch to
@@ -184,13 +200,15 @@
            tables and task lists, and it runs in your browser, so nothing is
            uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "Markdown" panel ---- -->
         <div class="panel">
           <label class="panel__label" for="input">Markdown</label>
+          <!-- ---- START: the "Markdown" text box ---- -->
           <textarea id="input" class="mono" rows="18" spellcheck="false"># Markdown preview
 
 Write on the left, read on the right. **Bold**, *italic*, ~~struck~~ and `code` all work.
@@ -219,15 +237,20 @@ const total = items.reduce((sum, item) =&gt; sum + item.price, 0);
 ```
 
 Read the [about page](https://108toolbox.in/about.html), or see ![a picture](https://108toolbox.in/x.png "pictures from the web are not loaded here").</textarea>
+          <!-- ---- END: the "Markdown" text box ---- -->
 
+          <!-- ---- START: the buttons: Load sample, Clear ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--ghost"  type="button" id="sampleBtn">Load sample</button>
             <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
           </div>
+          <!-- ---- END: the buttons: Load sample, Clear ---- -->
         </div>
+        <!-- ---- END: the "Markdown" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the output panel ---- -->
         <div class="panel">
+          <!-- ---- START: the "Show" choice ---- -->
           <div class="field">
             <label for="view">Show</label>
             <select id="view">
@@ -235,26 +258,40 @@ Read the [about page](https://108toolbox.in/about.html), or see ![a picture](htt
               <option value="html">The HTML</option>
             </select>
           </div>
+          <!-- ---- END: the "Show" choice ---- -->
 
+          <!-- ---- START: the preview ---- -->
           <div class="md-preview" id="preview"></div>
+          <!-- ---- END: the preview ---- -->
+          <!-- ---- START: the output ---- -->
           <pre class="out mono" id="source" hidden></pre>
+          <!-- ---- END: the output ---- -->
 
+          <!-- ---- START: the figures: Words, Headings, Links ---- -->
           <div class="stats stats--3" style="margin-top:var(--s4)">
             <div class="stat"><span class="stat__num" id="sWords">&mdash;</span><span class="stat__label">Words</span></div>
             <div class="stat"><span class="stat__num" id="sHeadings">&mdash;</span><span class="stat__label">Headings</span></div>
             <div class="stat"><span class="stat__num" id="sLinks">&mdash;</span><span class="stat__label">Links</span></div>
           </div>
+          <!-- ---- END: the figures: Words, Headings, Links ---- -->
 
+          <!-- ---- START: the buttons: Copy HTML, Download .html ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--primary" type="button" id="copyBtn">Copy HTML</button>
             <button class="btn btn--ghost"   type="button" id="dlBtn">Download .html</button>
           </div>
+          <!-- ---- END: the buttons: Copy HTML, Download .html ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
+          <!-- ---- START: the message line ---- -->
           <p class="msg" style="margin-top:var(--s2)">This follows the CommonMark standard with GitHub-style tables, task lists and strikethrough. Other Markdown renderers differ in small ways, so check the result where you publish it.</p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the output panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -283,8 +320,9 @@ Read the [about page](https://108toolbox.in/about.html), or see ![a picture](htt
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "What it understands" section ---- -->
         <h2>What it understands</h2>
         <p>Headings, paragraphs, <strong>bold</strong>, <em>italic</em> and
            <del>strikethrough</del>, bulleted and numbered lists (nested up to
@@ -294,7 +332,9 @@ Read the [about page](https://108toolbox.in/about.html), or see ![a picture](htt
            backslash escapes. It follows the CommonMark standard, the same one
            GitHub, GitLab and most editors are built on, so a README written
            here reads the same in those places.</p>
+        <!-- ---- END: the "What it understands" section ---- -->
 
+        <!-- ---- START: the "Why raw HTML shows up as text" section ---- -->
         <h2>Why raw HTML shows up as text</h2>
         <p>If your Markdown contains tags such as <code>&lt;div&gt;</code> or
            <code>&lt;script&gt;</code>, this page shows them as text instead of
@@ -304,7 +344,9 @@ Read the [about page](https://108toolbox.in/about.html), or see ![a picture](htt
            Markdown behaves exactly as you expect. The preview is built from
            elements the page creates itself, never from a string of HTML, so
            there is nothing to inject into.</p>
+        <!-- ---- END: the "Why raw HTML shows up as text" section ---- -->
 
+        <!-- ---- START: the "Links and images in the preview" section ---- -->
         <h2>Links and images in the preview</h2>
         <p>Web, mail and telephone links work and open in a new tab. A link to
            another page of your own site, or with an unusual scheme, is shown as
@@ -315,7 +357,9 @@ Read the [about page](https://108toolbox.in/about.html), or see ![a picture](htt
            document. Images embedded in the text itself as
            <code>data:image</code> are shown. In the HTML view every address and
            every image is exactly as you wrote it.</p>
+        <!-- ---- END: the "Links and images in the preview" section ---- -->
 
+        <!-- ---- START: the "Check it where you publish it" section ---- -->
         <h2>Check it where you publish it</h2>
         <p>Markdown has one standard and many extensions, and each site adds its
            own: footnotes, emoji shortcodes, maths, diagrams, automatic links for
@@ -323,7 +367,9 @@ Read the [about page](https://108toolbox.in/about.html), or see ![a picture](htt
            uses them will look plainer here than where it is published. What it
            does render is checked against two widely used implementations of the
            standard.</p>
+        <!-- ---- END: the "Check it where you publish it" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Which kind of Markdown is this?</h3>
@@ -361,14 +407,19 @@ Read the [about page](https://108toolbox.in/about.html), or see ![a picture](htt
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -419,18 +470,22 @@ Read the [about page](https://108toolbox.in/about.html), or see ![a picture](htt
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "markdown-previewer";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var input     = document.getElementById("input");
     var preview   = document.getElementById("preview");
     var sourceBox = document.getElementById("source");
@@ -442,6 +497,7 @@ Read the [about page](https://108toolbox.in/about.html), or see ![a picture](htt
     var SAMPLE = ["# Markdown preview", "", "Write on the left, read on the right. **Bold**, *italic*, ~~struck~~ and `code` all work.", "", "## A list", "", "- Buy milk", "- [x] Write the post", "- [ ] Publish it", "  1. Check the links", "  2. Proofread", "", "> A quote can span", "> several lines.", "", "## A table", "", "| Tool | Free | Uploads |", "|:-----|:----:|--------:|", "| This one | yes | none |", "", "## Code", "", "```js", "const total = items.reduce((sum, item) => sum + item.price, 0);", "```", "", "Read the [about page](https://108toolbox.in/about.html), or see ![a picture](https://108toolbox.in/x.png \"pictures from the web are not loaded here\")."].join("\n");
 
     var lastHtml = "";
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: the tree every stage works on ----
        A document is a tree of nodes. The block parser builds the outer shape
@@ -2470,9 +2526,12 @@ Read the [about page](https://108toolbox.in/about.html), or see ![a picture](htt
     });
     /* ---- END: wiring ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     showView();
     run();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

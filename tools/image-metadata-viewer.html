@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Image Metadata Viewer — EXIF and Hidden GPS</title>
   <meta name="description" content="See what a photo secretly records: camera, settings, date and GPS location. Then save a clean copy with all of it removed. Read in your browser, never uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/image-metadata-viewer.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,55 +154,75 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
         <span>Image Metadata Viewer</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Image Metadata Viewer</h1>
         <p>A photograph usually carries more than a picture: the camera, the date,
            sometimes exactly where you were standing. See it here, then save a
            copy with all of it removed.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the input panel ---- -->
         <div class="panel">
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#128269;</span>
             <p><strong>Click to choose</strong> or drag a photo here</p>
             <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; read here, never uploaded</p>
             <input type="file" id="file" accept="image/*">
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
 
+          <!-- ---- START: the preview ---- -->
           <div class="preview" id="preview" style="margin-top:var(--s4)"></div>
+          <!-- ---- END: the preview ---- -->
 
+          <!-- ---- START: the figures: Format, File size, Pixels ---- -->
           <div class="stats stats--3" style="margin-top:var(--s3)">
             <div class="stat"><span class="stat__num" id="sFormat">&mdash;</span><span class="stat__label">Format</span></div>
             <div class="stat"><span class="stat__num" id="sSize">&mdash;</span><span class="stat__label">File size</span></div>
             <div class="stat"><span class="stat__num" id="sDims">&mdash;</span><span class="stat__label">Pixels</span></div>
           </div>
+          <!-- ---- END: the figures: Format, File size, Pixels ---- -->
 
+          <!-- ---- START: the buttons: Save a copy with no..., Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="cleanBtn" disabled>Save a copy with no metadata</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: Save a copy with no..., Reset ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the input panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the output panel ---- -->
         <div class="panel">
+          <!-- ---- START: the message line ---- -->
           <div id="alert" class="msg" hidden></div>
+          <!-- ---- END: the message line ---- -->
 
+          <!-- ---- START: the table: Detail, Value, under the heading "What the file records" ---- -->
           <span class="panel__label">What the file records</span>
           <div class="table-wrap">
             <table class="data">
@@ -199,9 +230,11 @@
               <tbody id="rows"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Detail, Value, under the heading "What the file records" ---- -->
         </div>
+        <!-- ---- END: the output panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -230,8 +263,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "What is hiding in a photograph" section ---- -->
         <h2>What is hiding in a photograph</h2>
         <p>Almost every photo from a phone or camera carries a block of
            information called EXIF, written by the device without asking you.
@@ -241,7 +275,9 @@
         <p>None of it is visible in the picture, and none of it is secret to
            anyone who opens the file. This page opens the file and reads it out,
            so you can see what you would be handing over.</p>
+        <!-- ---- END: the "What is hiding in a photograph" section ---- -->
 
+        <!-- ---- START: the "The location is the one to care about" section ---- -->
         <h2>The location is the one to care about</h2>
         <p>A photo taken at home and sent to a stranger can carry your home
            address to within a few metres. So can one taken at a child's school,
@@ -253,7 +289,9 @@
            link, or uploaded to a small forum usually arrives with everything
            intact. If a photo is going anywhere you do not control, check it
            here first.</p>
+        <!-- ---- END: the "The location is the one to care about" section ---- -->
 
+        <!-- ---- START: the "Other details that identify" section ---- -->
         <h2>Other details that identify</h2>
         <p>The camera's serial number is often stored too, which can tie photos
            taken on the same device together, or link a photo to the person who
@@ -261,13 +299,17 @@
            no time zone written down, so they may not match when you think you
            took it. And a copyright or artist field is often filled in by
            editing software, sometimes with a name you did not choose.</p>
+        <!-- ---- END: the "Other details that identify" section ---- -->
 
+        <!-- ---- START: the "Why the size can look swapped" section ---- -->
         <h2>Why the size can look swapped</h2>
         <p>Phones often save a photograph sideways and add a tag saying which
            way to turn it. Browsers apply the tag, so the pixel size shown at
            the top is the size the picture <em>appears</em>. When the two
            differ, the table adds the size it is actually stored at.</p>
+        <!-- ---- END: the "Why the size can look swapped" section ---- -->
 
+        <!-- ---- START: the "Removing it" section ---- -->
         <h2>Removing it</h2>
         <p>The clean copy is drawn afresh from the picture's pixels, and drawing
            never carries the hidden block across. Nothing is edited in place and
@@ -279,14 +321,18 @@
            coordinates on a mapping site would tell that site exactly where the
            photo was taken. The numbers are shown so you can decide what to do
            with them.</p>
+        <!-- ---- END: the "Removing it" section ---- -->
 
+        <!-- ---- START: the "What this page cannot read" section ---- -->
         <h2>What this page cannot read</h2>
         <p>It reads JPEG, PNG and WebP. Phone formats such as HEIC are not
            supported by browsers, and camera raw files are not either. It shows
            the standard fields but not the manufacturer's private notes, which
            every maker encodes differently &mdash; it will tell you when those
            are present.</p>
+        <!-- ---- END: the "What this page cannot read" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Does the photo get uploaded?</h3>
@@ -312,14 +358,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -370,18 +421,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "image-metadata-viewer";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fileIn = document.getElementById("file");
     var drop   = document.getElementById("drop");
     var rowsEl = document.getElementById("rows");
@@ -394,6 +449,7 @@
 
     var MAX_BYTES = 100 * 1024 * 1024;
     var current = null;          /* { file, name, type, img } */
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
@@ -908,5 +964,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

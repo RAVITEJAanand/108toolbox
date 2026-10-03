@@ -73,7 +73,7 @@ Every page links its assets like this:
 
 GitHub Pages sends `Cache-Control: max-age=600`. Without a new version stamp a
 returning visitor keeps the old stylesheet and swears nothing changed.
-Find-and-replace `?v=42` → `?v=43` across all 118 pages (currently `?v=42`,
+Find-and-replace `?v=43` → `?v=44` across all 118 pages (currently `?v=43`,
 572 occurrences), the template included.
 
 **This is checked now — it failed three times on memory alone.** The worst was
@@ -400,10 +400,16 @@ This is about *other websites*, not about honest disclosure. `privacy.html`
 naming GitHub Pages as the host stays — it is a legal requirement and it is a
 supplier, not a rival. Same for a library credited in a code comment.
 
-### 9. Mark where every function and feature starts and ends
+### 9. Mark where every block starts and ends — in every file
 
 The owner asked for this so a bug can be found and fixed without reading the
-whole file. In any `<script data-tool>`, and in the Python scripts:
+whole file, and on 3 Oct 2026 asked again, wider: **every function, feature,
+tab and tool, in the HTML too, down to a row of buttons.** Reading the marker
+names down a file tells you which block to open. That only works if it is
+true of **every** block — one unmarked block and you are back to reading the
+whole file.
+
+The same pair in each language:
 
 ```js
 /* ---- START: recovering the base from a GST-inclusive total ---- */
@@ -413,24 +419,65 @@ function removeGst(total, rate) {
 /* ---- END: recovering the base from a GST-inclusive total ---- */
 ```
 
+```html
+<!-- ---- START: the "Amount in rupees" box ---- -->
+<div class="field">
+  <label for="amount">Amount in rupees</label>
+  <input type="number" id="amount" value="1000">
+</div>
+<!-- ---- END: the "Amount in rupees" box ---- -->
+```
+
+```css
+/* ---- START: 8. the buttons ---- */  …rules…  /* ---- END: 8. the buttons ---- */
+```
+
+```python
+# ---- START: 4k. Advertising: where it is, and where it must never be ----
+# ---- END: 4k. Advertising: where it is, and where it must never be ----
+```
+
 Name the **job**, not the function — "recovering the base from a
 GST-inclusive total" is findable six months later; "removeGst helper" is not.
+In the HTML, name a block by **what the visitor sees** — its label in quotes
+(`the "GST rate" choice`, `the buttons: Copy, Download, Clear`,
+`the figures: Base amount, GST, Invoice total`) — so the words on the screen
+find the code. An END may repeat its START's label or shorten it. Pairs nest
+(a panel's pair holds its fields' pairs); they never cross. A START may carry
+an explanation on the lines after it, inside the same comment.
 
-**This is checked now.** The owner's reason for asking: when a bug is reported
-or a change is wanted, reading the marker names down a file tells you which
-block to open, without reading the code. That only works if it is true of
-**every** block — one unmarked function and you are back to reading the whole
-file.
+**What must be inside a pair** (`check.py` 4h, with 4i for crossing):
+
+- **JavaScript** — every top-level statement of each tool's own script and of
+  `js/*.js`: the element lookups at the top, every function, the wiring at the
+  bottom, the first run. The lines that only open or close a page's
+  `(function () { ... })();` wrapper are exempt.
+- **CSS** — every rule in `css/*.css`. Sections are numbered pairs; a part
+  inside a section with its own heading gets a nested pair.
+- **Python** — every top-level statement of the scripts in this folder and
+  `.github/` (imports and the opening docstring are exempt). Each tool's test
+  body in `test_tools.py` has a pair of its own, `the test for <slug>`.
+- **HTML** — every element in `<head>` and `<body>`; every block of the page
+  content; every section of the text below a tool (one pair per `<h2>`); and
+  in the tool, **every panel, and every block inside a panel in a pair of its
+  own** — a field, a row of buttons, a row of figures, an output, a message
+  line. A heading part-way down a panel shares its block's pair. A pair must
+  open and close among the children of one element.
 
 It was not true. When it was first measured, **4 of 56 pages complied and 197
-functions sat outside any pair**; 26 pages had no markers at all. They were
-marked in six batches and `check.py` check 4h now fails on an unmarked
-function, an unclosed START or an END with no START. Nested helpers are
-exempt — a function inside another function is already inside its parent's
-block, and `timestamp-converter` legitimately declares `fail()` twice in two
-scopes.
-Wrap a whole feature the same way when several functions serve one job, and
-nest the inner ones. `test_tools.py` shows the pattern at both levels.
+functions sat outside any pair**; they were marked in six batches. On 3 Oct
+2026 the rest followed: 3,585 pairs in the HTML of 118 pages, about 250 in
+the JavaScript, 47 in the CSS and about 140 in the Python — each batch
+checked to have changed no element, attribute, word, rule or statement (the
+page's tree, the stylesheet's rules and Python's syntax tree compared before
+and after). `check.py` was then given thirteen planted mistakes — a field
+with no pair, two fields in one pair, crossed pairs, a START closed in
+another element, unmarked wiring, a stylesheet section, a Python function, a
+tool's test — and failed on every one.
+
+Nested helpers are exempt — a function inside another function is already
+inside its parent's block, and `timestamp-converter` legitimately declares
+`fail()` twice in two scopes.
 
 ### 11. Anything going into `innerHTML` that the visitor wrote gets escaped
 
@@ -466,7 +513,8 @@ visitor has to be told so where they read the answer.** Not buried in the FAQ,
 not only on `disclaimer.html` — directly under the tool.
 
 ```html
-<!--TOOL:END-->
+<!-- ---- END: the tool itself ---- -->
+<!-- ---- START: the check-the-result notice ---- -->
 <aside class="tool-warn">…Check the result before you rely on it…</aside>
 ```
 

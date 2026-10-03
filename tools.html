@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <!-- This one line is what makes the site mobile-friendly. Never remove it. -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO: the three tags Google actually shows ===== -->
+  <!-- The three tags Google actually shows: the title, the description and the canonical address. -->
   <title>All Tools — 108 ToolBox</title>
   <meta name="description" content="Browse every free tool on 108 ToolBox. Filter by text, image, calculator or developer, or search by name. All of them run inside your own browser.">
   <link rel="canonical" href="https://108toolbox.in/tools.html">
@@ -17,15 +18,21 @@
 
   <!-- Emoji favicon: no image file to download -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead: nothing can be sent anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
   <meta name="referrer" content="no-referrer">
+  <!-- ---- END: the security policy ---- -->
 
-  <link rel="stylesheet" href="css/style.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="css/style.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -39,9 +46,10 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="index.html">
@@ -79,13 +87,20 @@
       <a href="about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
+      <!-- ---- START: the page heading ---- -->
       <h1>All tools</h1>
+      <!-- ---- END: the page heading ---- -->
+      <!-- ---- START: the line "108 tools live today. Search or filter..." ---- -->
       <p style="color:var(--text-soft);margin-bottom:var(--s5)">
         <span data-tool-count="live">108</span> tools live today. Search or filter to find what you need.</p>
+      <!-- ---- END: the line "108 tools live today. Search or filter..." ---- -->
 
+      <!-- ---- START: the search box ---- -->
       <!-- Search: filters the grid live, no page reload -->
       <div class="search" style="margin:0 0 var(--s5)">
         <svg class="search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -96,15 +111,21 @@
         <label class="sr-only" for="toolSearch">Search tools</label>
         <input id="toolSearch" type="text" placeholder="Search a tool&hellip;" autocomplete="off">
       </div>
+      <!-- ---- END: the search box ---- -->
 
+      <!-- ---- START: the category chips (drawn by main.js) ---- -->
       <!-- Chips are built by main.js from the CATEGORIES list -->
       <div class="chips" id="chips"></div>
+      <!-- ---- END: the category chips (drawn by main.js) ---- -->
 
+      <!-- ---- START: the grid of tools (drawn by main.js) ---- -->
       <div class="grid" id="allGrid"></div>
+      <!-- ---- END: the grid of tools (drawn by main.js) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -155,8 +176,11 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="js/tools-data.js?v=42"></script>
-  <script src="js/main.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="js/tools-data.js?v=43"></script>
+  <script src="js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 </body>
 </html>

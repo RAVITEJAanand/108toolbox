@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Username Generator — Names That Read Well</title>
   <meta name="description" content="Generate username ideas from real word pairs, with or without numbers. Shows how many combinations exist, and is honest about what it cannot check.">
   <link rel="canonical" href="https://108toolbox.in/tools/username-generator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,28 +154,35 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=random">Random</a><span>&rsaquo;</span>
         <span>Username Generator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Username Generator</h1>
         <p>Username ideas built from real words, so they can be said aloud and
            typed from memory. Pick a shape, set a length, and take the ones you
            like.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the input panel ---- -->
         <div class="panel">
+          <!-- ---- START: the "Shape" choice ---- -->
           <div class="field">
             <label for="shape">Shape</label>
             <select id="shape">
@@ -173,7 +191,9 @@
               <option value="noun">One thing only &mdash; lantern</option>
             </select>
           </div>
+          <!-- ---- END: the "Shape" choice ---- -->
 
+          <!-- ---- START: the "Digits on the end" choice ---- -->
           <div class="field">
             <label for="digits">Digits on the end</label>
             <select id="digits">
@@ -184,7 +204,9 @@
               <option value="4">4</option>
             </select>
           </div>
+          <!-- ---- END: the "Digits on the end" choice ---- -->
 
+          <!-- ---- START: the "Join the words with" choice ---- -->
           <div class="field">
             <label for="sep">Join the words with</label>
             <select id="sep">
@@ -194,7 +216,9 @@
               <option value=".">Full stop .</option>
             </select>
           </div>
+          <!-- ---- END: the "Join the words with" choice ---- -->
 
+          <!-- ---- START: the "Letters" choice ---- -->
           <div class="field">
             <label for="letters">Letters</label>
             <select id="letters">
@@ -202,39 +226,54 @@
               <option value="caps">Each Word Capitalised</option>
             </select>
           </div>
+          <!-- ---- END: the "Letters" choice ---- -->
 
+          <!-- ---- START: the "Longest allowed" box ---- -->
           <div class="field">
             <label for="maxLen">Longest allowed</label>
             <input type="number" id="maxLen" min="6" max="30" step="1" value="20">
           </div>
+          <!-- ---- END: the "Longest allowed" box ---- -->
 
+          <!-- ---- START: the "How many ideas" box ---- -->
           <div class="field">
             <label for="howMany">How many ideas</label>
             <input type="number" id="howMany" min="1" max="200" step="1" value="12">
           </div>
+          <!-- ---- END: the "How many ideas" box ---- -->
 
+          <!-- ---- START: the buttons: Generate, Copy, Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="genBtn">Generate</button>
             <button class="btn btn--ghost"   type="button" id="copyBtn">Copy</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: Generate, Copy, Reset ---- -->
         </div>
+        <!-- ---- END: the input panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Ideas" panel ---- -->
         <div class="panel">
           <span class="panel__label">Ideas</span>
+          <!-- ---- START: the output ---- -->
           <pre class="out mono" id="output" aria-live="polite"></pre>
+          <!-- ---- END: the output ---- -->
 
+          <!-- ---- START: the figures: Ideas shown, Possible names, Longest shown ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sMade">&mdash;</span><span class="stat__label">Ideas shown</span></div>
             <div class="stat"><span class="stat__num" id="sPool">&mdash;</span><span class="stat__label">Possible names</span></div>
             <div class="stat"><span class="stat__num" id="sLongest">&mdash;</span><span class="stat__label">Longest shown</span></div>
           </div>
+          <!-- ---- END: the figures: Ideas shown, Possible names, Longest shown ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "Ideas" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -263,8 +302,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Pick a shape. Two words read better than one and are far less
@@ -274,7 +314,9 @@
           <li>Set the longest length you can use. Plenty of sites cap
               usernames at fifteen characters.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "What this page cannot do" section ---- -->
         <h2>What this page cannot do</h2>
         <p>It cannot tell you whether a name is free. Checking would mean asking
            every site you might join, one at a time, from your browser &mdash;
@@ -287,7 +329,9 @@
            pool is still the right thing to want: a two-word name out of
            thousands of combinations is far likelier to be free than
            <code>anil123</code>.</p>
+        <!-- ---- END: the "What this page cannot do" section ---- -->
 
+        <!-- ---- START: the "Which digits not to use" section ---- -->
         <h2>Which digits not to use</h2>
         <p>Your birth year is the worst choice, and it is the most common one.
            It hands your age to everyone who reads your name, and it is among
@@ -297,7 +341,9 @@
         <p>If you want digits, let them be meaningless. Two random ones are
            enough to get past &ldquo;already taken&rdquo; without saying
            anything about you.</p>
+        <!-- ---- END: the "Which digits not to use" section ---- -->
 
+        <!-- ---- START: the "A username is not a password" section ---- -->
         <h2>A username is not a password</h2>
         <p>It is public, permanent and hard to change. Most sites let you
            change a password in seconds and a username never, or once.</p>
@@ -309,7 +355,9 @@
            is the last thing you want, and then the answer is a different name
            per account, which is a decision to make on purpose rather than by
            habit.</p>
+        <!-- ---- END: the "A username is not a password" section ---- -->
 
+        <!-- ---- START: the "Why words rather than random letters" section ---- -->
         <h2>Why words rather than random letters</h2>
         <p>Because you will have to read it out over a phone, type it on a
            television remote, and recognise it in a list a year from now.
@@ -317,7 +365,9 @@
            <code>xk7f2qd</code> survives none of them. Random letters are the
            right answer for a password, where nobody should ever have to say it
            aloud.</p>
+        <!-- ---- END: the "Why words rather than random letters" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Can you check whether the username is available?</h3>
@@ -343,14 +393,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -401,18 +456,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "username-generator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var shape   = document.getElementById("shape");
     var digits  = document.getElementById("digits");
     var sep     = document.getElementById("sep");
@@ -424,6 +483,7 @@
     var DASH    = String.fromCharCode(0x2014);
 
     var lastText = "";
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: the word lists ----
        Sixty-four of each, which is a deliberate size rather than an accident.
@@ -657,8 +717,11 @@
     });
     /* ---- END: wiring ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     generate();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

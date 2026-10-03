@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>BMI Calculator — Body Mass Index, Metric or Imperial</title>
   <meta name="description" content="Work out your BMI from height and weight in metric or imperial units. Shows your healthy weight range and the Asian-Indian cutoffs. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/bmi-calculator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,29 +131,36 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
         <span>BMI Calculator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>BMI Calculator</h1>
         <p>Your Body Mass Index from your height and weight, with the healthy
            weight range that goes with it. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "Your measurements" panel ---- -->
         <div class="panel">
           <span class="panel__label">Your measurements</span>
 
+          <!-- ---- START: the "Units" choice ---- -->
           <div class="field">
             <label for="units">Units</label>
             <select id="units">
@@ -151,7 +168,9 @@
               <option value="imperial">Imperial &mdash; feet, inches and pounds</option>
             </select>
           </div>
+          <!-- ---- END: the "Units" choice ---- -->
 
+          <!-- ---- START: the boxes: Height in centimetres, Weight in kilograms ---- -->
           <!-- Metric inputs -->
           <div id="metricWrap">
             <div class="field">
@@ -163,7 +182,9 @@
               <input type="number" id="kg" value="65" min="10" max="400" step="0.1">
             </div>
           </div>
+          <!-- ---- END: the boxes: Height in centimetres, Weight in kilograms ---- -->
 
+          <!-- ---- START: the boxes: Height, inch, Weight in pounds ---- -->
           <!-- Imperial inputs -->
           <div id="imperialWrap" hidden>
             <div class="field">
@@ -180,30 +201,43 @@
               <input type="number" id="lb" value="143" min="20" max="900" step="0.5">
             </div>
           </div>
+          <!-- ---- END: the boxes: Height, inch, Weight in pounds ---- -->
 
+          <!-- ---- START: the "Use Asian-Indian cutoffs" tick box ---- -->
           <div class="check">
             <input type="checkbox" id="optAsian">
             <label for="optAsian">Use Asian-Indian cutoffs</label>
           </div>
+          <!-- ---- END: the "Use Asian-Indian cutoffs" tick box ---- -->
+          <!-- ---- START: the hint "Indian guidelines treat 23 as the overweight..." ---- -->
           <p class="hint">Indian guidelines treat 23 as the overweight threshold
              rather than 25. There is more on this below.</p>
+          <!-- ---- END: the hint "Indian guidelines treat 23 as the overweight..." ---- -->
 
+          <!-- ---- START: the hint "This is a screening number, not medical..." ---- -->
           <p class="hint" style="margin-top:var(--s4)">This is a screening number,
              not medical advice, and it cannot tell muscle from fat. Talk to a
              doctor before acting on it.</p>
+          <!-- ---- END: the hint "This is a screening number, not medical..." ---- -->
         </div>
+        <!-- ---- END: the "Your measurements" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Your result" panel ---- -->
         <div class="panel">
           <span class="panel__label">Your result</span>
 
+          <!-- ---- START: the main answer ---- -->
           <div class="result">
             <span class="result__num" id="bmi">&mdash;</span>
             <span class="result__label" id="formula">enter your height and weight</span>
           </div>
+          <!-- ---- END: the main answer ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="category" style="text-align:center;font-size:1.125rem"></p>
+          <!-- ---- END: the message line ---- -->
 
+          <!-- ---- START: the BMI scale, with a marker where you stand ---- -->
           <!-- Where this BMI sits on the scale -->
           <div style="margin-top:var(--s5)">
             <div style="position:relative;height:14px;border-radius:var(--r-pill);overflow:hidden;display:flex">
@@ -222,14 +256,18 @@
               &nbsp;<span style="color:var(--danger)">&#9632;</span> obese
             </p>
           </div>
+          <!-- ---- END: the BMI scale, with a marker where you stand ---- -->
 
+          <!-- ---- START: the figures: Healthy weight for your height, Distance from that range ---- -->
           <div class="stats" style="margin-top:var(--s5)">
             <div class="stat"><span class="stat__num" id="healthyRange">&mdash;</span><span class="stat__label">Healthy weight for your height</span></div>
             <div class="stat"><span class="stat__num" id="toChange">&mdash;</span><span class="stat__label">Distance from that range</span></div>
           </div>
+          <!-- ---- END: the figures: Healthy weight for your height, Distance from that range ---- -->
         </div>
+        <!-- ---- END: the "Your result" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -258,8 +296,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Choose metric or imperial units.</li>
@@ -267,7 +306,9 @@
           <li>The BMI, the category and your healthy weight range appear as you
               type. There is no button to press.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "What BMI actually measures" section ---- -->
         <h2>What BMI actually measures</h2>
         <p>Body Mass Index is your weight divided by the square of your height.
           That is the whole formula. It was designed in the 1830s to describe
@@ -280,7 +321,9 @@
           healthy band while carrying too much fat. It is a screening number, and
           the right response to a surprising one is a conversation with a doctor,
           not a diet.</p>
+        <!-- ---- END: the "What BMI actually measures" section ---- -->
 
+        <!-- ---- START: the "The standard ranges" section ---- -->
         <h2>The standard ranges</h2>
         <ul>
           <li><strong>Below 18.5</strong> &mdash; underweight</li>
@@ -288,7 +331,9 @@
           <li><strong>25.0 to 29.9</strong> &mdash; overweight</li>
           <li><strong>30.0 and above</strong> &mdash; obese</li>
         </ul>
+        <!-- ---- END: the "The standard ranges" section ---- -->
 
+        <!-- ---- START: the "Why India uses different numbers" section ---- -->
         <h2>Why India uses different numbers</h2>
         <p>Those ranges came from studies of European populations, and they do not
           transfer cleanly. Research across South Asia found that the health risks
@@ -305,7 +350,9 @@
 
         <p>If you are unsure which set applies to you, that is exactly the kind of
           question to put to a doctor rather than to a website.</p>
+        <!-- ---- END: the "Why India uses different numbers" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Why does this calculator have separate Asian-Indian cutoffs?</h3>
@@ -323,14 +370,19 @@
           <h3>Is my information sent anywhere?</h3>
           <p>No. Your height and weight are used by JavaScript inside your own browser and are never transmitted or stored. Nothing is uploaded and nothing is saved &mdash; close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -381,18 +433,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "bmi-calculator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool has its own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements and fixed values ---- */
     var units    = document.getElementById("units");
     var metricWrap   = document.getElementById("metricWrap");
     var imperialWrap = document.getElementById("imperialWrap");
@@ -428,6 +484,7 @@
        actually see without squashing the healthy band into nothing. */
     var SCALE_MIN = 15;
     var SCALE_MAX = 40;
+    /* ---- END: setting up: the page elements and fixed values ---- */
 
     /* ---- START: where the healthy range sits on the scale ---- */
     function limits() {
@@ -556,15 +613,20 @@
     }
     /* ---- END: drawing the answer ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     [cm, kg, ft, inch, lb].forEach(function (el) {
       el.addEventListener("input", run);
     });
     [units, optAsian].forEach(function (el) {
       el.addEventListener("change", run);
     });
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     run();   /* run once so the panel is correct on load */
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

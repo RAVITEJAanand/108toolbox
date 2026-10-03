@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>EMI Calculator — Loan Monthly Payment &amp; Interest Calculator</title>
   <meta name="description" content="Free EMI and loan calculator. Enter amount, interest rate and tenure to see your monthly instalment, total interest and full repayment schedule.">
   <link rel="canonical" href="https://108toolbox.in/tools/emi-calculator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,8 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -88,9 +97,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -128,65 +138,88 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <!-- Breadcrumb: helps visitors AND shows as a path in Google results -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
         <span>EMI / Loan Calculator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>EMI / Loan Calculator</h1>
         <p>Your monthly instalment, the total interest you will pay, and a year-by-year repayment schedule.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
+      <!-- ---- START: the panels "Loan details" and "Your repayment" ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "Loan details" panel ---- -->
         <div class="panel">
           <span class="panel__label">Loan details</span>
 
+          <!-- ---- START: the "Loan amount" box ---- -->
           <div class="field">
             <label for="amount">Loan amount</label>
             <input type="number" id="amount" value="1000000" min="1" step="1000">
           </div>
+          <!-- ---- END: the "Loan amount" box ---- -->
 
+          <!-- ---- START: the "Annual interest rate: 8.5%" slider ---- -->
           <div class="field">
             <label for="rate">Annual interest rate: <span id="rateVal">8.5</span>%</label>
             <input type="range" id="rate" min="1" max="30" value="8.5" step="0.1">
           </div>
+          <!-- ---- END: the "Annual interest rate: 8.5%" slider ---- -->
 
+          <!-- ---- START: the "Tenure: 20 years" slider ---- -->
           <div class="field">
             <label for="years">Tenure: <span id="yearsVal">20</span> years</label>
             <input type="range" id="years" min="1" max="30" value="20" step="1">
           </div>
+          <!-- ---- END: the "Tenure: 20 years" slider ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg"></p>
+          <!-- ---- END: the message line ---- -->
+          <!-- ---- START: the hint "This is a maths tool, not financial..." ---- -->
           <p class="hint" style="margin-top:var(--s4)">This is a maths tool, not financial
              advice. Your lender may add processing fees, insurance or taxes that are not
              included here.</p>
+          <!-- ---- END: the hint "This is a maths tool, not financial..." ---- -->
         </div>
+        <!-- ---- END: the "Loan details" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Your repayment" panel ---- -->
         <div class="panel">
           <span class="panel__label">Your repayment</span>
 
+          <!-- ---- START: the main answer ---- -->
           <div class="result">
             <span class="result__num" id="emi">&mdash;</span>
             <span class="result__label">per month</span>
           </div>
+          <!-- ---- END: the main answer ---- -->
 
+          <!-- ---- START: the figures: Principal, Total interest, Total payable ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="principal">&mdash;</span><span class="stat__label">Principal</span></div>
             <div class="stat"><span class="stat__num" id="interest">&mdash;</span><span class="stat__label">Total interest</span></div>
             <div class="stat"><span class="stat__num" id="total">&mdash;</span><span class="stat__label">Total payable</span></div>
           </div>
+          <!-- ---- END: the figures: Principal, Total interest, Total payable ---- -->
 
+          <!-- ---- START: the bar of principal against interest ---- -->
           <!-- A simple bar showing how much of the total is interest -->
           <div style="margin-top:var(--s4)">
             <div style="height:12px;border-radius:var(--r-pill);overflow:hidden;background:var(--primary-soft);display:flex">
@@ -196,12 +229,16 @@
             <p class="hint"><span style="color:var(--primary)">&#9632;</span> principal
                &nbsp;<span style="color:var(--danger)">&#9632;</span> interest</p>
           </div>
+          <!-- ---- END: the bar of principal against interest ---- -->
         </div>
+        <!-- ---- END: the "Your repayment" panel ---- -->
       </div>
+      <!-- ---- END: the panels "Loan details" and "Your repayment" ---- -->
 
-      <!-- ---------- SCHEDULE ---------- -->
+      <!-- ---- START: the "Year-by-year schedule" panel - schedule ---- -->
       <div class="panel" style="margin-bottom:var(--s7)">
         <span class="panel__label">Year-by-year schedule</span>
+        <!-- ---- START: the table: Year, Principal paid, Interest paid, Balance left ---- -->
         <div class="table-wrap" style="max-height:360px;overflow:auto">
           <table class="data" id="schedule">
             <thead>
@@ -210,8 +247,10 @@
             <tbody></tbody>
           </table>
         </div>
+        <!-- ---- END: the table: Year, Principal paid, Interest paid, Balance left ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the "Year-by-year schedule" panel - schedule ---- -->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -240,15 +279,18 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Enter the amount you want to borrow.</li>
           <li>Drag the interest rate and tenure sliders to match your loan offer.</li>
           <li>Read your monthly instalment at the top, and scroll the schedule to see how the balance falls each year.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "The formula, written out" section ---- -->
         <h2>The formula, written out</h2>
         <p>An EMI is not the loan divided by the number of months. It is worked out
           so that every payment is identical, while the split between interest and
@@ -260,7 +302,9 @@
           of monthly instalments, and <code>r</code> is the <em>monthly</em> rate
           &mdash; the annual rate divided by 12 and then by 100. An 8.5 percent loan
           has a monthly rate of about 0.0071, not 8.5.</p>
+        <!-- ---- END: the "The formula, written out" section ---- -->
 
+        <!-- ---- START: the "Which lever actually changes what you pay" section ---- -->
         <h2>Which lever actually changes what you pay</h2>
         <p>Three things set your EMI, and they do not pull with equal force.</p>
 
@@ -278,7 +322,9 @@
           Money paid early goes almost entirely against principal, and removes every
           future interest payment that principal would have generated. One extra
           instalment a year can cut years off a long loan.</p>
+        <!-- ---- END: the "Which lever actually changes what you pay" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>What does EMI actually stand for?</h3>
@@ -296,14 +342,19 @@
           <h3>Is this the exact figure my bank will charge?</h3>
           <p>The EMI maths is standard and will match. The total will differ if your lender adds processing fees, insurance, or uses a slightly different day-count convention. This is a calculator, not financial advice — check the figures with your lender before committing.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -354,23 +405,29 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "emi-calculator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <!-- ===== This tool's own logic. The only part that differs per tool. =====
        Wrapped in (function(){ ... })() so its variables cannot clash with
        anything else on the page. -->
   <script data-tool>
   (function () {
     "use strict";
+  /* ---- START: the page elements this script reads and writes ---- */
   var amountIn = document.getElementById("amount");
   var rateIn   = document.getElementById("rate");
   var yearsIn  = document.getElementById("years");
   var msg      = document.getElementById("msg");
+  /* ---- END: the page elements this script reads and writes ---- */
 
   /* ---- START: speaking to the visitor ---- */
   function setMessage(text, kind) {
@@ -474,11 +531,16 @@
   }
   /* ---- END: the year-by-year repayment schedule ---- */
 
+  /* ---- START: wiring: what each control does ---- */
   [amountIn, rateIn, yearsIn].forEach(function (el) {
     el.addEventListener("input", calculate);
   });
+  /* ---- END: wiring: what each control does ---- */
+  /* ---- START: the first run, when the page opens ---- */
   calculate();
+  /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

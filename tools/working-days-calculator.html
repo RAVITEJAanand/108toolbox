@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Working Days Calculator — Your Weekend, Your Holidays</title>
   <meta name="description" content="Count the working days between two dates, with the weekend you actually have and the holidays you actually get. Both ends of the range are included.">
   <link rel="canonical" href="https://108toolbox.in/tools/working-days-calculator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,37 +154,48 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=date">Date & Time</a><span>&rsaquo;</span>
         <span>Working Days Calculator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Working Days Calculator</h1>
         <p>Count the working days between two dates &mdash; with <em>your</em>
            weekend, not an assumed one, and the holidays your office actually
            closes for.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the input panel ---- -->
         <div class="panel">
+          <!-- ---- START: the "From" date ---- -->
           <div class="field">
             <label for="from">From</label>
             <input type="date" id="from">
           </div>
+          <!-- ---- END: the "From" date ---- -->
+          <!-- ---- START: the "To (this day counts too)" date ---- -->
           <div class="field">
             <label for="to">To (this day counts too)</label>
             <input type="date" id="to">
           </div>
+          <!-- ---- END: the "To (this day counts too)" date ---- -->
 
+          <!-- ---- START: the tick boxes: Monday, Tuesday, Wednesday, Thursday and 3 more ---- -->
           <div class="field">
             <label>Which days are your weekend</label>
             <label class="check"><input type="checkbox" id="d1"> Monday</label>
@@ -184,40 +206,55 @@
             <label class="check"><input type="checkbox" id="d6" checked> Saturday</label>
             <label class="check"><input type="checkbox" id="d0" checked> Sunday</label>
           </div>
+          <!-- ---- END: the tick boxes: Monday, Tuesday, Wednesday, Thursday and 3 more ---- -->
 
+          <!-- ---- START: the "Holidays, one date a line (2026-01-26)" text box ---- -->
           <div class="field">
             <label for="holidays">Holidays, one date a line (2026-01-26)</label>
             <textarea id="holidays" class="mono" spellcheck="false" style="min-height:110px"></textarea>
           </div>
+          <!-- ---- END: the "Holidays, one date a line (2026-01-26)" text box ---- -->
 
+          <!-- ---- START: the buttons: Copy the summary, Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--ghost"  type="button" id="copyBtn">Copy the summary</button>
             <button class="btn btn--danger" type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: Copy the summary, Reset ---- -->
         </div>
+        <!-- ---- END: the input panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the output panel ---- -->
         <div class="panel">
+          <!-- ---- START: the main answer ---- -->
           <div class="result">
             <span class="result__num" id="bigWorking">&mdash;</span>
             <span class="result__label">Working days</span>
           </div>
+          <!-- ---- END: the main answer ---- -->
 
+          <!-- ---- START: the figures: Days in all, Weekend days, Holidays used ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sTotal">&mdash;</span><span class="stat__label">Days in all</span></div>
             <div class="stat"><span class="stat__num" id="sWeekend">&mdash;</span><span class="stat__label">Weekend days</span></div>
             <div class="stat"><span class="stat__num" id="sHolidays">&mdash;</span><span class="stat__label">Holidays used</span></div>
           </div>
+          <!-- ---- END: the figures: Days in all, Weekend days, Holidays used ---- -->
 
+          <!-- ---- START: the figures: Working weeks, At 8 hours a day ---- -->
           <div class="stats">
             <div class="stat"><span class="stat__num" id="sWeeks">&mdash;</span><span class="stat__label">Working weeks</span></div>
             <div class="stat"><span class="stat__num" id="sHours">&mdash;</span><span class="stat__label">At 8 hours a day</span></div>
           </div>
+          <!-- ---- END: the figures: Working weeks, At 8 hours a day ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the output panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -246,13 +283,16 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "Both ends are included" section ---- -->
         <h2>Both ends are included</h2>
         <p>Monday to Friday of the same week is five working days here, not
            four. That is what people mean when they ask, and it is the
            commonest disagreement between two tools that both look right.</p>
+        <!-- ---- END: the "Both ends are included" section ---- -->
 
+        <!-- ---- START: the "Your weekend is not everybody's weekend" section ---- -->
         <h2>Your weekend is not everybody's weekend</h2>
         <p>Saturday and Sunday are ticked because that is the most common
            arrangement, not because it is the only one. Much of the Middle East
@@ -263,7 +303,9 @@
         <p>So the days are yours to choose. Untick them all and you are
            counting every calendar day minus the holidays, which is also a
            legitimate question.</p>
+        <!-- ---- END: the "Your weekend is not everybody's weekend" section ---- -->
 
+        <!-- ---- START: the "Holidays have to come from you" section ---- -->
         <h2>Holidays have to come from you</h2>
         <p>There is no list this page could ship that would be right. India
            alone has national holidays, different state holidays, holidays that
@@ -275,13 +317,17 @@
            that lands on your weekend is not counted twice, which is the other
            thing tools quietly get wrong: the day was already not a working
            day.</p>
+        <!-- ---- END: the "Holidays have to come from you" section ---- -->
 
+        <!-- ---- START: the "What the numbers below are for" section ---- -->
         <h2>What the numbers below are for</h2>
         <p>Working weeks is the count divided by five, which is how people
            talk about project time. The hours figure assumes an eight-hour day
            and is there for invoicing and estimating &mdash; it is arithmetic,
            not advice, and your own day may well be seven and a half.</p>
+        <!-- ---- END: the "What the numbers below are for" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Does the end date count?</h3>
@@ -307,14 +353,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -365,18 +416,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "working-days-calculator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fromEl = document.getElementById("from");
     var toEl   = document.getElementById("to");
     var holidaysEl = document.getElementById("holidays");
@@ -388,6 +443,7 @@
                      "Friday", "Saturday"];
     var MAX_DAYS = 40000;          /* a little over a century */
     var summary = "";
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
@@ -551,9 +607,12 @@
     }
     /* ---- END: wiring ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     setToday();
     count();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

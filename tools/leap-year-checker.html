@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Leap Year Checker &mdash; Is Any Year a Leap Year?</title>
   <meta name="description" content="Check whether any year is a leap year and see which of the three rules decided it, with February's length and the next leap years. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/leap-year-checker.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,62 +131,83 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=date">Date & Time</a><span>&rsaquo;</span>
         <span>Leap Year Checker</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Leap Year Checker</h1>
         <p>Type a year and find out whether it has a 29 February &mdash; and, more usefully, which rule decided it. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
+      <!-- ---- START: the panels "Check a year" and "The years either side" ---- -->
       <div class="workspace workspace--wide">
 
-        <!-- ---------- the check ---------- -->
+        <!-- ---- START: the "Check a year" panel - the check ---- -->
         <div class="panel">
           <span class="panel__label">Check a year</span>
 
+          <!-- ---- START: the "Year" box ---- -->
           <div class="field">
             <label for="year">Year</label>
             <input type="number" id="year" value="2026" step="1">
           </div>
+          <!-- ---- END: the "Year" box ---- -->
 
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result">
             <span class="result__num" id="headline">Not a leap year</span>
             <span class="result__label" id="reading"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
 
+          <!-- ---- START: the figures: Days in February, Days in the year, Next leap year ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="febDays">28</span><span class="stat__label">Days in February</span></div>
             <div class="stat"><span class="stat__num" id="yearDays">365</span><span class="stat__label">Days in the year</span></div>
             <div class="stat"><span class="stat__num" id="nextLeap">2028</span><span class="stat__label">Next leap year</span></div>
           </div>
+          <!-- ---- END: the figures: Days in February, Days in the year, Next leap year ---- -->
 
+          <!-- ---- START: the note the script fills in (#why) ---- -->
           <p class="hint" id="why"></p>
+          <!-- ---- END: the note the script fills in (#why) ---- -->
 
+          <!-- ---- START: the error message ---- -->
           <!-- Plain wrapper: .msg carries its own display, which would beat
                the browser rule for the hidden attribute. -->
           <div id="errWrap" hidden style="margin-top:var(--s3)">
             <p class="msg msg--bad" id="err"></p>
           </div>
+          <!-- ---- END: the error message ---- -->
 
+          <!-- ---- START: the buttons: This year, Previous leap year, Next leap year ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--ghost" type="button" id="thisYearBtn">This year</button>
             <button class="btn btn--ghost" type="button" id="prevBtn">Previous leap year</button>
             <button class="btn btn--ghost" type="button" id="nextBtn">Next leap year</button>
           </div>
+          <!-- ---- END: the buttons: This year, Previous leap year, Next leap year ---- -->
         </div>
+        <!-- ---- END: the "Check a year" panel - the check ---- -->
 
-        <!-- ---------- the years around it ---------- -->
+        <!-- ---- START: the "The years either side" panel - the years around it ---- -->
         <div class="panel">
           <span class="panel__label">The years either side</span>
+          <!-- ---- START: the table: Year, Leap?, Because ---- -->
           <div class="table-wrap">
             <table class="data">
               <thead>
@@ -185,12 +216,18 @@
               <tbody id="rows"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Year, Leap?, Because ---- -->
         </div>
+        <!-- ---- END: the "The years either side" panel - the years around it ---- -->
       </div>
+      <!-- ---- END: the panels "Check a year" and "The years either side" ---- -->
 
+      <!-- ---- START: the panels "The century years, where people get caught out" ---- -->
       <div class="workspace" style="margin-top:var(--s5)">
+        <!-- ---- START: the "The century years, where people get caught out" panel ---- -->
         <div class="panel">
           <span class="panel__label">The century years, where people get caught out</span>
+          <!-- ---- START: the table: Year, Divides by 4, Divides by 100, Divides by 400 and 1 more ---- -->
           <div class="table-wrap">
             <table class="data">
               <thead>
@@ -199,11 +236,16 @@
               <tbody id="centuries"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Year, Divides by 4, Divides by 100, Divides by 400 and 1 more ---- -->
+          <!-- ---- START: the hint "Three of these eight are leap years...." ---- -->
           <p class="hint">Three of these eight are leap years. A check that only
           tests for division by four gets five of them wrong.</p>
+          <!-- ---- END: the hint "Three of these eight are leap years...." ---- -->
         </div>
+        <!-- ---- END: the "The century years, where people get caught out" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the panels "The century years, where people get caught out" ---- -->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -232,8 +274,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Type any year.</li>
@@ -242,7 +285,9 @@
           <li>The tables show the years either side and the century years,
               which are where the rule stops being obvious.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "The rule, in the order it is applied" section ---- -->
         <h2>The rule, in the order it is applied</h2>
         <ol>
           <li><strong>Does it divide by 4?</strong> If not, it is an ordinary
@@ -255,7 +300,9 @@
         <p>So 2024 is a leap year at step two. 1900 fails at step three and is
         not. 2000 passes step three and is. That last pair is the whole reason
         the rule exists in the form it does.</p>
+        <!-- ---- END: the "The rule, in the order it is applied" section ---- -->
 
+        <!-- ---- START: the "Why a leap day is needed at all" section ---- -->
         <h2>Why a leap day is needed at all</h2>
         <p>A year is not a whole number of days. The Earth takes about
         <strong>365.24219</strong> days to get back round the Sun, so a
@@ -268,7 +315,9 @@
         truth. That is close enough to hold the date of the equinox steady for
         thousands of years, which is exactly what the Gregorian reform of 1582
         was for.</p>
+        <!-- ---- END: the "Why a leap day is needed at all" section ---- -->
 
+        <!-- ---- START: the "The years this page is honest about" section ---- -->
         <h2>The years this page is honest about</h2>
         <p>This checker applies the modern rule to every year you give it,
         including years long before the rule existed. That is a deliberate and
@@ -281,7 +330,9 @@
         colonies only changed in 1752, and skipped eleven days to catch up. For
         a year before your country's changeover, treat the answer here as the
         modern arithmetic rather than a historical fact.</p>
+        <!-- ---- END: the "The years this page is honest about" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Why was 1900 not a leap year when 2000 was?</h3>
@@ -313,15 +364,20 @@
           Nothing is uploaded and nothing is saved - close the tab and it is
           gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -372,16 +428,21 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "leap-year-checker";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: fixed values used below ---- */
     /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
     var EM_DASH = String.fromCharCode(0x2014);
     var TICK    = String.fromCharCode(0x2713);
@@ -389,6 +450,7 @@
 
     var MIN_YEAR = -9999;
     var MAX_YEAR = 9999;
+    /* ---- END: fixed values used below ---- */
 
     /* ---- START: reaching the page ---- */
     function el(id) { return document.getElementById(id); }
@@ -562,5 +624,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

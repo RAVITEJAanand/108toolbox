@@ -15,8 +15,10 @@
      Do not edit main.js, style.css or the navbar to add a tool. If you think
      you need to, you have gone off the path.
      ========================================================================== -->
+/* ---- START: setting up ---- */
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -36,7 +38,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -44,21 +48,28 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
   <script>
+/* ---- END: setting up ---- */
     (function () {
       try {
         var saved = localStorage.getItem("theme");
@@ -68,7 +79,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        TODO: the questions here must match the FAQ section in the page body
        word for word. If they drift apart, Google ignores them. -->
@@ -96,9 +109,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -133,10 +147,13 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <!-- Breadcrumb: helps visitors AND shows as a path in Google results.
            TODO: change the category link and the final label. -->
       <nav class="crumbs" aria-label="Breadcrumb">
@@ -144,16 +161,27 @@
         <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
         <span>TODO Tool Name</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <!-- Exactly ONE h1 per page. check.py enforces this. -->
       <header class="tool-head">
         <h1>TODO Tool Name</h1>
         <p>TODO one plain sentence. Say what to do and what comes out. End with
            the privacy promise — it is the reason people pick this site.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
       <!-- ==================================================================
-           TOOL:START — everything between the markers is yours.
+           THE TOOL ITSELF — everything between "START: the tool itself"
+           and "END: the tool itself" is yours.
+
+           Rule 9: mark every block. Each panel, and inside a panel every
+           field, button row, row of figures, output and message line, sits
+           in a START/END pair of its own, named for what the visitor sees
+           (the "Amount in rupees" box; the buttons: Copy, Clear).
+           check.py fails a block that is not marked. The panels below show
+           the pattern.
 
            Available building blocks (see css/tool.css):
              .workspace .workspace--split   two equal panels
@@ -170,32 +198,42 @@
 
            Put the tool ABOVE the fold. Never put explanation text above it.
            ================================================================== -->
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "Your text" panel ---- -->
         <div class="panel">
           <label class="panel__label" for="input">Your text</label>
+          <!-- ---- START: the "Your text" text box ---- -->
           <textarea id="input" placeholder="Paste your text here&hellip;"></textarea>
+          <!-- ---- END: the "Your text" text box ---- -->
 
+          <!-- ---- START: the buttons: TODO Do it, Clear ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--primary" type="button" id="runBtn">TODO Do it</button>
             <button class="btn btn--danger"  type="button" id="clearBtn">Clear</button>
           </div>
+          <!-- ---- END: the buttons: TODO Do it, Clear ---- -->
         </div>
+        <!-- ---- END: the "Your text" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Result" panel ---- -->
         <div class="panel">
           <span class="panel__label">Result</span>
+          <!-- ---- START: the output ---- -->
           <pre class="out" id="output" aria-live="polite"></pre>
+          <!-- ---- END: the output ---- -->
 
+          <!-- ---- START: the buttons: Copy result, Download .txt ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--ghost" type="button" id="copyBtn">Copy result</button>
             <button class="btn btn--ghost" type="button" id="dlBtn">Download .txt</button>
           </div>
+          <!-- ---- END: the buttons: Copy result, Download .txt ---- -->
         </div>
+        <!-- ---- END: the "Result" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -224,17 +262,21 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <!-- ===== Text below the tool. This is what Google actually ranks. =====
            300-600 words, written by you. Four real questions in the FAQ.
            Keep it in sync with the JSON-LD in the <head>. -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>TODO step one.</li>
           <li>TODO step two.</li>
           <li>TODO step three.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>TODO question one?</h3>
@@ -244,14 +286,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -302,14 +349,18 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order. TODO: set CURRENT_TOOL to your slug —
        it is what draws the "Related tools" strip above. -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "TODO-slug";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <!-- ===== This tool's own logic. The only part that differs per tool. =====
        Wrapped in (function(){ ... })() so its variables cannot clash with
        anything else on the page.
@@ -357,5 +408,6 @@
     run();   /* run once so the page is correct on load */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

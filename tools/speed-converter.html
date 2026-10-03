@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Speed Converter &mdash; km/h, mph, m/s, Knots and Pace</title>
   <meta name="description" content="Convert km/h, mph, m/s, knots and feet per second, and read the same speed as a running pace in minutes per kilometre and per mile. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/speed-converter.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,33 +131,42 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
         <span>Speed Converter</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Speed Converter</h1>
         <p>Kilometres per hour, miles per hour, metres per second, knots and more &mdash; and the same speed written as a running pace. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--wide">
 
-        <!-- ---------- the conversion ---------- -->
+        <!-- ---- START: the "Convert" panel - the conversion ---- -->
         <div class="panel">
           <span class="panel__label">Convert</span>
 
+          <!-- ---- START: the "Speed" box ---- -->
           <div class="field">
             <label for="value">Speed</label>
             <input type="number" id="value" value="100" step="any">
           </div>
+          <!-- ---- END: the "Speed" box ---- -->
 
+          <!-- ---- START: the "This speed is in" choice ---- -->
           <div class="field">
             <label for="from">This speed is in</label>
             <select id="from">
@@ -159,30 +178,41 @@
               <option value="mach">Mach (at sea level)</option>
             </select>
           </div>
+          <!-- ---- END: the "This speed is in" choice ---- -->
 
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result">
             <span class="result__num" id="headline">62.14 mph</span>
             <span class="result__label" id="reading"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
 
+          <!-- ---- START: the figures: Kilometres per hour, Miles per hour, Metres per second ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="asKmh">100 km/h</span><span class="stat__label">Kilometres per hour</span></div>
             <div class="stat"><span class="stat__num" id="asMph">62.14 mph</span><span class="stat__label">Miles per hour</span></div>
             <div class="stat"><span class="stat__num" id="asMs">27.78 m/s</span><span class="stat__label">Metres per second</span></div>
           </div>
+          <!-- ---- END: the figures: Kilometres per hour, Miles per hour, Metres per second ---- -->
 
+          <!-- ---- START: the note the script fills in (#note) ---- -->
           <p class="hint" id="note"></p>
+          <!-- ---- END: the note the script fills in (#note) ---- -->
 
+          <!-- ---- START: the error message ---- -->
           <!-- Plain wrapper: .msg carries its own display, which would beat
                the browser rule for the hidden attribute. -->
           <div id="errWrap" hidden style="margin-top:var(--s3)">
             <p class="msg msg--bad" id="err"></p>
           </div>
+          <!-- ---- END: the error message ---- -->
         </div>
+        <!-- ---- END: the "Convert" panel - the conversion ---- -->
 
-        <!-- ---------- every unit, and the pace ---------- -->
+        <!-- ---- START: the "Every unit at once" panel - every unit, and the pace ---- -->
         <div class="panel">
           <span class="panel__label">Every unit at once</span>
+          <!-- ---- START: the table: Unit, Speed ---- -->
           <div class="table-wrap">
             <table class="data">
               <thead>
@@ -191,16 +221,22 @@
               <tbody id="rows"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Unit, Speed ---- -->
 
+          <!-- ---- START: the figures: Per kilometre, Per mile, under the heading "As a running pace" ---- -->
           <span class="panel__label" style="margin-top:var(--s5)">As a running pace</span>
           <div class="stats stats--2">
             <div class="stat"><span class="stat__num" id="paceKm">0:36</span><span class="stat__label">Per kilometre</span></div>
             <div class="stat"><span class="stat__num" id="paceMile">0:58</span><span class="stat__label">Per mile</span></div>
           </div>
+          <!-- ---- END: the figures: Per kilometre, Per mile, under the heading "As a running pace" ---- -->
+          <!-- ---- START: the note the script fills in (#paceNote) ---- -->
           <p class="hint" id="paceNote"></p>
+          <!-- ---- END: the note the script fills in (#paceNote) ---- -->
         </div>
+        <!-- ---- END: the "Every unit at once" panel - every unit, and the pace ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -229,8 +265,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Type the speed and pick the unit it is already in.</li>
@@ -238,7 +275,9 @@
           <li>The pace tiles read the same speed the way a runner does, in
               minutes and seconds per kilometre and per mile.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "The conversions worth knowing by heart" section ---- -->
         <h2>The conversions worth knowing by heart</h2>
         <p><strong>km/h to mph:</strong> multiply by 5 and divide by 8. The real
         factor is 0.6214 and this shortcut gives 0.625, which is close enough
@@ -251,7 +290,9 @@
         <p><strong>knots to km/h:</strong> multiply by 1.852, exactly. A
         nautical mile was defined as 1852 metres, so the conversion is a
         definition rather than a measurement.</p>
+        <!-- ---- END: the "The conversions worth knowing by heart" section ---- -->
 
+        <!-- ---- START: the "Speed and pace are the same thing upside down" section ---- -->
         <h2>Speed and pace are the same thing upside down</h2>
         <p>A speed says how far you go in a fixed time. A pace says how long you
         take over a fixed distance. Runners think in pace because a race is a
@@ -264,7 +305,9 @@
         <p>At zero there is no pace at all. Standing still does not take a very
         long time to cover a kilometre; it never covers one. The tiles say so
         rather than printing an enormous number.</p>
+        <!-- ---- END: the "Speed and pace are the same thing upside down" section ---- -->
 
+        <!-- ---- START: the "A note on Mach" section ---- -->
         <h2>A note on Mach</h2>
         <p>Mach 1 is the speed of sound, and the speed of sound is not a fixed
         number. It depends almost entirely on air temperature, falling as the
@@ -273,7 +316,9 @@
         <p>High up where airliners fly it is nearer 295 m/s, so the same Mach
         number is a slower true speed. Treat the Mach line here as a sea-level
         reference, not as a reading for an aircraft at altitude.</p>
+        <!-- ---- END: the "A note on Mach" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How do I convert km/h to mph in my head?</h3>
@@ -303,15 +348,20 @@
           Nothing is uploaded and nothing is saved - close the tab and it is
           gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -362,19 +412,25 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "speed-converter";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: fixed values used below ---- */
     /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
     var EM_DASH = String.fromCharCode(0x2014);
     var MINUS   = String.fromCharCode(0x2212);
+    /* ---- END: fixed values used below ---- */
 
     /* ---- START: reaching the page ---- */
     function el(id) { return document.getElementById(id); }
@@ -554,5 +610,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

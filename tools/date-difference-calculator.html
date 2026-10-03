@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Date Difference Calculator — Days Between Two Dates</title>
   <meta name="description" content="Count the days, weeks and months between two dates, with or without the end day, and see how many of them are working days. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/date-difference-calculator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,75 +131,99 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=date">Date &amp; Time</a><span>&rsaquo;</span>
         <span>Date Difference Calculator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Date Difference Calculator</h1>
         <p>How long between two dates &mdash; in days, in weeks, in calendar
            months, and in working days. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--wide">
 
-        <!-- ---------- the two dates ---------- -->
+        <!-- ---- START: the "The two dates" panel - the two dates ---- -->
         <div class="panel">
           <span class="panel__label">The two dates</span>
 
+          <!-- ---- START: the "From" date ---- -->
           <div class="field">
             <label for="start">From</label>
             <input type="date" id="start">
           </div>
+          <!-- ---- END: the "From" date ---- -->
 
+          <!-- ---- START: the "To" date ---- -->
           <div class="field">
             <label for="end">To</label>
             <input type="date" id="end">
           </div>
+          <!-- ---- END: the "To" date ---- -->
 
+          <!-- ---- START: the "Count both the first and the last day" tick box ---- -->
           <label class="check">
             <input type="checkbox" id="inclusive">
             <span>Count both the first and the last day</span>
           </label>
+          <!-- ---- END: the "Count both the first and the last day" tick box ---- -->
 
+          <!-- ---- START: the error message ---- -->
           <!-- Plain wrapper: .msg carries its own display, which would beat
                the browser rule for the hidden attribute. -->
           <div id="errWrap" hidden style="margin-top:var(--s3)">
             <p class="msg msg--bad" id="err"></p>
           </div>
+          <!-- ---- END: the error message ---- -->
 
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result" style="margin-top:var(--s4)">
             <span class="result__num" id="days">30 days</span>
             <span class="result__label" id="breakdown"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
 
+          <!-- ---- START: the figures: Weeks and days, Working days, Weekend days ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="weeks">4w 2d</span><span class="stat__label">Weeks and days</span></div>
             <div class="stat"><span class="stat__num" id="working">22</span><span class="stat__label">Working days</span></div>
             <div class="stat"><span class="stat__num" id="weekend">8</span><span class="stat__label">Weekend days</span></div>
           </div>
+          <!-- ---- END: the figures: Weeks and days, Working days, Weekend days ---- -->
         </div>
+        <!-- ---- END: the "The two dates" panel - the two dates ---- -->
 
-        <!-- ---------- the same gap, other ways ---------- -->
+        <!-- ---- START: the "The same gap, other ways" panel - the same gap, other ways ---- -->
         <div class="panel">
           <span class="panel__label">The same gap, other ways</span>
+          <!-- ---- START: the table: In, Comes to ---- -->
           <div class="table-wrap">
             <table class="data">
               <thead><tr><th>In</th><th>Comes to</th></tr></thead>
               <tbody id="rows"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: In, Comes to ---- -->
+          <!-- ---- START: the note the script fills in (#note) ---- -->
           <p class="hint" id="note"></p>
+          <!-- ---- END: the note the script fills in (#note) ---- -->
         </div>
+        <!-- ---- END: the "The same gap, other ways" panel - the same gap, other ways ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -218,8 +252,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Pick the two dates. The order does not matter &mdash; it works
@@ -230,7 +265,9 @@
           <li>Read the breakdown under the big number for the calendar answer
               in years, months and days.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Why one gap has more than one right answer" section ---- -->
         <h2>Why one gap has more than one right answer</h2>
         <p>Ask how long from 1 January to 2 January and there are two honest
         replies. One day passed, and two days were involved. Neither is wrong;
@@ -239,7 +276,9 @@
         <p>That single tick box is the difference, and it is the reason two
         people using two calculators get answers one apart and both think the
         other is broken.</p>
+        <!-- ---- END: the "Why one gap has more than one right answer" section ---- -->
 
+        <!-- ---- START: the "Months are counted by the calendar" section ---- -->
         <h2>Months are counted by the calendar</h2>
         <p>A calendar month is not thirty days. From 31 January to 28 February
         is one month here, and so is 1 January to 1 February, even though one
@@ -248,14 +287,18 @@
         <p>The total days figure and the years-months-days figure will
         therefore not agree if you try to convert one into the other by
         dividing. Both are correct; they are simply different units.</p>
+        <!-- ---- END: the "Months are counted by the calendar" section ---- -->
 
+        <!-- ---- START: the "Working days" section ---- -->
         <h2>Working days</h2>
         <p>The working day count treats Monday to Friday as working and
         excludes Saturdays and Sundays. <strong>It does not know about public
         holidays</strong>, because they differ by state, by year and by
         employer, and a number that silently guessed them would be worse than
         no number. Take your own holiday list off the figure.</p>
+        <!-- ---- END: the "Working days" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Does the count include the end date?</h3>
@@ -285,14 +328,19 @@
           Nothing is uploaded and nothing is saved - close the tab and it is
           gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -343,18 +391,24 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "date-difference-calculator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: fixed values used below ---- */
     var DAY = 86400000;
     var EM_DASH = String.fromCharCode(0x2014);
+    /* ---- END: fixed values used below ---- */
 
     /* ---- START: reaching the page ---- */
     function el(id) { return document.getElementById(id); }
@@ -545,5 +599,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

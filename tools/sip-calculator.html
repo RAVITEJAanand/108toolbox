@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>SIP Calculator — Mutual Fund Returns with Step-Up</title>
   <meta name="description" content="See what a monthly SIP grows to, with an annual step-up option and a year by year table separating what you put in from what it earned. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/sip-calculator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,69 +131,91 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
         <span>SIP Calculator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>SIP Calculator</h1>
         <p>What a monthly investment could grow to, with the amount you put in
            kept separate from what it earned. Includes an annual step-up.
            Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--wide">
 
-        <!-- ---------- the plan ---------- -->
+        <!-- ---- START: the "The plan" panel - the plan ---- -->
         <div class="panel">
           <span class="panel__label">The plan</span>
 
+          <!-- ---- START: the "Monthly investment in rupees" box ---- -->
           <div class="field">
             <label for="monthly">Monthly investment in rupees</label>
             <input type="number" id="monthly" value="5000" min="0" step="500">
           </div>
+          <!-- ---- END: the "Monthly investment in rupees" box ---- -->
 
+          <!-- ---- START: the "Expected return, percent per year" box ---- -->
           <div class="field">
             <label for="rate">Expected return, percent per year</label>
             <input type="number" id="rate" value="12" min="0" max="100" step="0.5">
           </div>
+          <!-- ---- END: the "Expected return, percent per year" box ---- -->
 
+          <!-- ---- START: the "Number of years" box ---- -->
           <div class="field">
             <label for="years">Number of years</label>
             <input type="number" id="years" value="10" min="1" max="50" step="1">
           </div>
+          <!-- ---- END: the "Number of years" box ---- -->
 
+          <!-- ---- START: the "Annual step-up, percent" box ---- -->
           <div class="field">
             <label for="stepup">Annual step-up, percent</label>
             <input type="number" id="stepup" value="0" min="0" max="100" step="1">
             <p class="hint">Raise the monthly amount by this much every year.
             Leave it at zero for an ordinary SIP.</p>
           </div>
+          <!-- ---- END: the "Annual step-up, percent" box ---- -->
 
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result">
             <span class="result__num" id="maturity">&#8377;11,61,695</span>
             <span class="result__label" id="formula"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
 
+          <!-- ---- START: the figures: You invest, Estimated returns, Value of what you put... ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="invested">&#8377;6,00,000</span><span class="stat__label">You invest</span></div>
             <div class="stat"><span class="stat__num" id="returns">&#8377;5,61,695</span><span class="stat__label">Estimated returns</span></div>
             <div class="stat"><span class="stat__num" id="multiple">1.94&times;</span><span class="stat__label">Value of what you put in</span></div>
           </div>
+          <!-- ---- END: the figures: You invest, Estimated returns, Value of what you put... ---- -->
 
+          <!-- ---- START: the note the script fills in (#note) ---- -->
           <p class="hint" id="note"></p>
+          <!-- ---- END: the note the script fills in (#note) ---- -->
         </div>
+        <!-- ---- END: the "The plan" panel - the plan ---- -->
 
-        <!-- ---------- year by year ---------- -->
+        <!-- ---- START: the "Year by year" panel - year by year ---- -->
         <div class="panel">
           <span class="panel__label">Year by year</span>
+          <!-- ---- START: the table: Year, Invested so far, Value ---- -->
           <div class="table-wrap">
             <table class="data">
               <thead>
@@ -192,12 +224,16 @@
               <tbody id="rows"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Year, Invested so far, Value ---- -->
+          <!-- ---- START: the hint "The gap between the two columns is..." ---- -->
           <p class="hint">The gap between the two columns is the whole point.
           It barely opens for the first few years and then widens quickly,
           which is why stopping a SIP early costs far more than it looks.</p>
+          <!-- ---- END: the hint "The gap between the two columns is..." ---- -->
         </div>
+        <!-- ---- END: the "Year by year" panel - year by year ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -226,8 +262,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Enter what you can invest every month, and be honest &mdash; an
@@ -238,7 +275,9 @@
           <li>Set the number of years, then try the step-up box if your income
               rises each year.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "The formula" section ---- -->
         <h2>The formula</h2>
         <p>A SIP is an annuity paid at the start of each month, so the maturity
         value is <strong>M = P &times; (1 + i) &times; [((1 + i)<sup>n</sup>
@@ -249,7 +288,9 @@
         there because an instalment paid on the first of the month earns for
         that whole month, not from the end of it. Leaving it out understates
         the answer by roughly one month of growth.</p>
+        <!-- ---- END: the "The formula" section ---- -->
 
+        <!-- ---- START: the "Why a step-up changes so much" section ---- -->
         <h2>Why a step-up changes so much</h2>
         <p>Five thousand a month at 12% for ten years comes to about
         <strong>11.6 lakh</strong>, of which 6 lakh is your own money. Raise
@@ -261,7 +302,9 @@
         is that the extra amounts still get years of compounding behind them.
         The earlier years matter most, which is the same reason starting at 25
         beats starting at 30 by more than five years of instalments.</p>
+        <!-- ---- END: the "Why a step-up changes so much" section ---- -->
 
+        <!-- ---- START: the "What this page cannot tell you" section ---- -->
         <h2>What this page cannot tell you</h2>
         <p>It assumes <strong>the same return every single month</strong>. No
         market does that. Real returns arrive in a jagged line, and the order
@@ -273,7 +316,9 @@
         sell. Your actual figure will be lower than the one above. Treat this
         as arithmetic on an assumption you chose, not as a forecast, and speak
         to a registered adviser before committing real money.</p>
+        <!-- ---- END: the "What this page cannot tell you" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>What is the SIP formula?</h3>
@@ -306,14 +351,19 @@
           Nothing is uploaded and nothing is saved - close the tab and it is
           gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -364,21 +414,27 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "sip-calculator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: fixed values used below ---- */
     /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
     var RUPEE = String.fromCharCode(0x20B9);
     var TIMES = String.fromCharCode(0x00D7);
 
     var MAX_YEARS = 50;
+    /* ---- END: fixed values used below ---- */
 
     /* ---- START: reaching the page, reading its numbers and printing money ---- */
     function el(id) { return document.getElementById(id); }
@@ -522,5 +578,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

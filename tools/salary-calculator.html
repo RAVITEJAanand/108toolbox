@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Salary Calculator — CTC to In-Hand Take-Home, India</title>
   <meta name="description" content="Work out your monthly in-hand salary from your annual CTC. Splits basic, HRA, PF, gratuity and professional tax, and shows the full yearly breakup.">
   <link rel="canonical" href="https://108toolbox.in/tools/salary-calculator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,8 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -88,9 +97,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -125,41 +135,52 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
         <span>Salary Calculator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Salary Calculator</h1>
         <p>Turn an annual CTC into the number that actually reaches your bank
            account each month, with every component shown. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- WHAT THE OFFER SAYS ---------- -->
+        <!-- ---- START: the "Your package" panel - what the offer says ---- -->
         <div class="panel">
           <span class="panel__label">Your package</span>
 
+          <!-- ---- START: the "Annual CTC in rupees" box ---- -->
           <div class="field">
             <label for="ctc">Annual CTC in rupees</label>
             <input type="number" id="ctc" value="1200000" min="0" step="1000">
           </div>
+          <!-- ---- END: the "Annual CTC in rupees" box ---- -->
 
+          <!-- ---- START: the "Basic salary, as a percent of CTC" box ---- -->
           <div class="field">
             <label for="basicPct">Basic salary, as a percent of CTC</label>
             <input type="number" id="basicPct" value="40" min="1" max="100" step="1">
             <p class="hint">Most Indian employers use 40&ndash;50%. Your offer
                letter or payslip will say.</p>
           </div>
+          <!-- ---- END: the "Basic salary, as a percent of CTC" box ---- -->
 
+          <!-- ---- START: the "Where you work" choice ---- -->
           <div class="field">
             <label for="city">Where you work</label>
             <select id="city">
@@ -167,7 +188,9 @@
               <option value="nonmetro">Non-metro &mdash; HRA is 40% of basic</option>
             </select>
           </div>
+          <!-- ---- END: the "Where you work" choice ---- -->
 
+          <!-- ---- START: the "Provident fund" choice ---- -->
           <div class="field">
             <label for="pfMode">Provident fund</label>
             <select id="pfMode">
@@ -176,44 +199,59 @@
               <option value="none">No PF</option>
             </select>
           </div>
+          <!-- ---- END: the "Provident fund" choice ---- -->
 
+          <!-- ---- START: the "CTC includes gratuity (4.81% of basic)" tick box ---- -->
           <div class="check">
             <input type="checkbox" id="hasGratuity" checked>
             <label for="hasGratuity">CTC includes gratuity (4.81% of basic)</label>
           </div>
+          <!-- ---- END: the "CTC includes gratuity (4.81% of basic)" tick box ---- -->
 
+          <!-- ---- START: the "Professional tax, per month" box ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="ptax">Professional tax, per month</label>
             <input type="number" id="ptax" value="200" min="0" step="10">
             <p class="hint">A state tax. &#8377;200 in most states,
                &#8377;0 in a few &mdash; check your payslip.</p>
           </div>
+          <!-- ---- END: the "Professional tax, per month" box ---- -->
 
+          <!-- ---- START: the "Income tax (TDS), per month" box ---- -->
           <div class="field">
             <label for="tds">Income tax (TDS), per month</label>
             <input type="number" id="tds" value="0" min="0" step="100">
             <p class="hint">Take this from your payslip or Form 16. This tool does
                not guess it &mdash; see the question below on why.</p>
           </div>
+          <!-- ---- END: the "Income tax (TDS), per month" box ---- -->
         </div>
+        <!-- ---- END: the "Your package" panel - what the offer says ---- -->
 
-        <!-- ---------- WHAT YOU ACTUALLY GET ---------- -->
+        <!-- ---- START: the "What reaches your account" panel - what you actually get ---- -->
         <div class="panel">
           <span class="panel__label">What reaches your account</span>
 
+          <!-- ---- START: the main answer ---- -->
           <div class="result">
             <span class="result__num" id="inHand">&#8377;0</span>
             <span class="result__label">In hand, every month</span>
           </div>
+          <!-- ---- END: the main answer ---- -->
 
+          <!-- ---- START: the figures: Gross a month, Deducted, In hand a year ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="grossMonth">&#8377;0</span><span class="stat__label">Gross a month</span></div>
             <div class="stat"><span class="stat__num" id="cutMonth">&#8377;0</span><span class="stat__label">Deducted</span></div>
             <div class="stat"><span class="stat__num" id="inHandYear">&#8377;0</span><span class="stat__label">In hand a year</span></div>
           </div>
+          <!-- ---- END: the figures: Gross a month, Deducted, In hand a year ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
 
+          <!-- ---- START: the table: Component, Per year, Per month, under the heading "The full year, line by line" ---- -->
           <span class="panel__label" style="margin-top:var(--s5)">The full year, line by line</span>
           <div class="table-wrap">
             <table class="data">
@@ -223,9 +261,11 @@
               <tbody id="rows"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Component, Per year, Per month, under the heading "The full year, line by line" ---- -->
         </div>
+        <!-- ---- END: the "What reaches your account" panel - what you actually get ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -254,8 +294,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Type the annual CTC from your offer letter or appraisal.</li>
@@ -267,7 +308,9 @@
           <li>The numbers update as you type, and the table shows where every
               rupee of the package goes.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Why CTC and take-home are so far apart" section ---- -->
         <h2>Why CTC and take-home are so far apart</h2>
         <p>CTC means <em>cost to company</em> — everything your employer spends on
           you in a year. Your take-home is what survives after the parts that
@@ -292,7 +335,9 @@
           necessarily bad — it is forced retirement saving with a good interest
           rate — but it does explain why two people on identical CTCs can take
           home noticeably different amounts.</p>
+        <!-- ---- END: the "Why CTC and take-home are so far apart" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Why is my in-hand salary so much lower than my CTC?</h3>
@@ -310,14 +355,19 @@
           <h3>Is my salary information sent anywhere?</h3>
           <p>No. Every figure stays in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -368,14 +418,17 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "salary-calculator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
@@ -517,5 +570,6 @@
     /* ---- END: running the whole page ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

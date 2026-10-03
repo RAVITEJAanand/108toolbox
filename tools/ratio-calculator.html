@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Ratio Calculator — Simplify, Solve and Split by Ratio</title>
   <meta name="description" content="Simplify a ratio, solve A to B equals C to what, and divide any amount in a given ratio. Three ratio calculators on one page. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/ratio-calculator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,47 +131,61 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
         <span>Ratio Calculator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Ratio Calculator</h1>
         <p>Simplify a ratio, find the missing number in a proportion, or split an
            amount between any number of shares. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace">
 
-        <!-- ---------- A: simplify ---------- -->
+        <!-- ---- START: the "Simplify a ratio" panel - A: simplify ---- -->
         <div class="panel">
           <span class="panel__label">Simplify a ratio</span>
+          <!-- ---- START: the boxes: a1, a2 ---- -->
           <div class="btn-row" style="align-items:center;gap:var(--s2)">
             <input type="number" id="a1" value="1920" step="any" style="max-width:130px">
             <span>:</span>
             <input type="number" id="a2" value="1080" step="any" style="max-width:130px">
           </div>
+          <!-- ---- END: the boxes: a1, a2 ---- -->
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result" style="margin-top:var(--s4)">
             <span class="result__num" id="aOut">16 : 9</span>
             <span class="result__label" id="aFormula"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
+          <!-- ---- START: the figures: As a decimal, First as a share, Divided by ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="aDecimal">1.78</span><span class="stat__label">As a decimal</span></div>
             <div class="stat"><span class="stat__num" id="aPercent">64%</span><span class="stat__label">First as a share</span></div>
             <div class="stat"><span class="stat__num" id="aHcf">120</span><span class="stat__label">Divided by</span></div>
           </div>
+          <!-- ---- END: the figures: As a decimal, First as a share, Divided by ---- -->
         </div>
+        <!-- ---- END: the "Simplify a ratio" panel - A: simplify ---- -->
 
-        <!-- ---------- B: solve the proportion ---------- -->
+        <!-- ---- START: the "Find the missing number" panel - B: solve the proportion ---- -->
         <div class="panel">
           <span class="panel__label">Find the missing number</span>
+          <!-- ---- START: the boxes: b1, b2, b3 ---- -->
           <div class="btn-row" style="align-items:center;gap:var(--s2)">
             <input type="number" id="b1" value="3" step="any" style="max-width:100px">
             <span>:</span>
@@ -171,21 +195,30 @@
             <span>:</span>
             <span class="result__num" id="bOut" style="font-size:1.75rem">20</span>
           </div>
+          <!-- ---- END: the boxes: b1, b2, b3 ---- -->
+          <!-- ---- START: the note the script fills in (#bFormula) ---- -->
           <p class="hint" id="bFormula" style="margin-top:var(--s3)"></p>
+          <!-- ---- END: the note the script fills in (#bFormula) ---- -->
         </div>
+        <!-- ---- END: the "Find the missing number" panel - B: solve the proportion ---- -->
 
-        <!-- ---------- C: split an amount ---------- -->
+        <!-- ---- START: the "Split an amount in a ratio" panel - C: split an amount ---- -->
         <div class="panel">
           <span class="panel__label">Split an amount in a ratio</span>
+          <!-- ---- START: the boxes: c1, c2 ---- -->
           <div class="btn-row" style="align-items:center;gap:var(--s2)">
             <span>Divide</span>
             <input type="number" id="c1" value="5000" step="any" style="max-width:140px">
             <span>in the ratio</span>
             <input type="text" id="c2" value="2:3" style="max-width:160px">
           </div>
+          <!-- ---- END: the boxes: c1, c2 ---- -->
+          <!-- ---- START: the hint "Use any number of parts, separated by..." ---- -->
           <p class="hint">Use any number of parts, separated by colons &mdash;
              for example <code>2:3</code> or <code>1:1:2</code>.</p>
+          <!-- ---- END: the hint "Use any number of parts, separated by..." ---- -->
 
+          <!-- ---- START: the table: Share, Parts, Amount, Percent ---- -->
           <div class="table-wrap" style="margin-top:var(--s4)">
             <table class="data">
               <thead>
@@ -194,10 +227,14 @@
               <tbody id="splitRows"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Share, Parts, Amount, Percent ---- -->
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="cMsg"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "Split an amount in a ratio" panel - C: split an amount ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -226,8 +263,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>The <strong>first</strong> box reduces a ratio to its simplest form.
@@ -237,7 +275,9 @@
           <li>The <strong>third</strong> divides money, land or ingredients between
               any number of shares.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "What simplifying really does" section ---- -->
         <h2>What simplifying really does</h2>
         <p>A ratio compares two quantities, and the same relationship can be
           written many ways. <code>1920:1080</code>, <code>1280:720</code> and
@@ -248,7 +288,9 @@
         <p>To get there you divide both sides by their highest common factor. For
           1920 and 1080 that factor is 120, which is why the answer is 16:9. This
           page shows you the factor it used, so the arithmetic is not a mystery.</p>
+        <!-- ---- END: the "What simplifying really does" section ---- -->
 
+        <!-- ---- START: the "Solving a proportion" section ---- -->
         <h2>Solving a proportion</h2>
         <p>The second calculator answers questions of the form &ldquo;3 is to 4 as
           15 is to what?&rdquo; You cross-multiply: multiply 4 by 15, divide by 3,
@@ -258,7 +300,9 @@
           life. A recipe for four people scaled to seven, a map scale converted to
           real distance, a photograph resized without stretching &mdash; all the
           same sum.</p>
+        <!-- ---- END: the "Solving a proportion" section ---- -->
 
+        <!-- ---- START: the "Splitting an amount" section ---- -->
         <h2>Splitting an amount</h2>
         <p>To divide 5,000 in the ratio 2:3, add the parts to get 5, divide 5,000
           by 5 to find that one part is worth 1,000, then multiply out: 2,000 and
@@ -270,7 +314,9 @@
           amounts are rounded to two decimal places and the tool tells you when the
           rounded shares no longer add back to the original total &mdash; which
           matters when the thing being split is money.</p>
+        <!-- ---- END: the "Splitting an amount" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How do I simplify a ratio?</h3>
@@ -288,14 +334,19 @@
           <h3>Is anything I type sent anywhere?</h3>
           <p>No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved &mdash; close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -346,21 +397,26 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "ratio-calculator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool has its own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: fixed values used below ---- */
     var EM_DASH = String.fromCharCode(0x2014);
     var TIMES   = String.fromCharCode(0x00D7);
     var DIVIDE  = String.fromCharCode(0x00F7);
+    /* ---- END: fixed values used below ---- */
 
     /* ---- START: reaching the page and reading its numbers ---- */
     function el(id) { return document.getElementById(id); }
@@ -526,12 +582,17 @@
     function run() { runA(); runB(); runC(); }
     /* ---- END: drawing all three answers ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     ["a1","a2","b1","b2","b3","c1","c2"].forEach(function (id) {
       el(id).addEventListener("input", run);
     });
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     run();   /* run once so the page is correct on load */
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

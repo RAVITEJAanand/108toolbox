@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Unit Price Comparison — Which Pack Is Cheaper</title>
   <meta name="description" content="Compare up to four packs by price per gram, millilitre or piece, and see which is really cheaper. Bigger packs are not always the better value.">
   <link rel="canonical" href="https://108toolbox.in/tools/unit-price-comparison.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,30 +154,37 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
         <span>Unit Price Comparison</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Unit Price Comparison</h1>
         <p>Put four packs side by side and see the price per gram &mdash; the
            only comparison that is actually fair. The big one is cheaper
            surprisingly often, and not always.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "The packs" panel ---- -->
         <div class="panel">
           <span class="panel__label">The packs</span>
 
+          <!-- ---- START: the boxes: Pack 1 — price and..., Size, u1 ---- -->
           <div class="field">
             <label for="p1">Pack 1 &mdash; price and size</label>
             <div class="btn-row">
@@ -179,7 +197,9 @@
               </select>
             </div>
           </div>
+          <!-- ---- END: the boxes: Pack 1 — price and..., Size, u1 ---- -->
 
+          <!-- ---- START: the boxes: Pack 2, Size, u2 ---- -->
           <div class="field">
             <label for="p2">Pack 2</label>
             <div class="btn-row">
@@ -192,7 +212,9 @@
               </select>
             </div>
           </div>
+          <!-- ---- END: the boxes: Pack 2, Size, u2 ---- -->
 
+          <!-- ---- START: the boxes: Pack 3 (leave blank if..., Size, u3 ---- -->
           <div class="field">
             <label for="p3">Pack 3 (leave blank if unused)</label>
             <div class="btn-row">
@@ -205,7 +227,9 @@
               </select>
             </div>
           </div>
+          <!-- ---- END: the boxes: Pack 3 (leave blank if..., Size, u3 ---- -->
 
+          <!-- ---- START: the boxes: Pack 4, Size, u4 ---- -->
           <div class="field">
             <label for="p4">Pack 4</label>
             <div class="btn-row">
@@ -218,32 +242,45 @@
               </select>
             </div>
           </div>
+          <!-- ---- END: the boxes: Pack 4, Size, u4 ---- -->
 
+          <!-- ---- START: the buttons: Copy the comparison, Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--ghost"  type="button" id="copyBtn">Copy the comparison</button>
             <button class="btn btn--danger" type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: Copy the comparison, Reset ---- -->
         </div>
+        <!-- ---- END: the "The packs" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the output panel ---- -->
         <div class="panel">
+          <!-- ---- START: the main answer ---- -->
           <div class="result">
             <span class="result__num" id="bigBest">&mdash;</span>
             <span class="result__label" id="bigLabel">Best value</span>
           </div>
+          <!-- ---- END: the main answer ---- -->
 
+          <!-- ---- START: the figures: Cheaper by, Packs compared, Compared per ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sSaving">&mdash;</span><span class="stat__label">Cheaper by</span></div>
             <div class="stat"><span class="stat__num" id="sPacks">&mdash;</span><span class="stat__label">Packs compared</span></div>
             <div class="stat"><span class="stat__num" id="sUnit">&mdash;</span><span class="stat__label">Compared per</span></div>
           </div>
+          <!-- ---- END: the figures: Cheaper by, Packs compared, Compared per ---- -->
 
+          <!-- ---- START: the output ---- -->
           <pre class="out mono" id="output" style="min-height:130px" aria-live="polite"></pre>
+          <!-- ---- END: the output ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the output panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -272,8 +309,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "Why the shelf label is not enough" section ---- -->
         <h2>Why the shelf label is not enough</h2>
         <p>Shops price packs so that comparing them in your head is hard. 500g
            for 45, one kilo for 82, two and a half kilos for 199 &mdash; the
@@ -282,7 +320,9 @@
         <p>Do it here and the answer is often not the one the packaging
            suggests. In the example above the middle pack wins, and the largest
            one is the worst buy of the three.</p>
+        <!-- ---- END: the "Why the shelf label is not enough" section ---- -->
 
+        <!-- ---- START: the "Bigger is cheaper — except when it is not" section ---- -->
         <h2>Bigger is cheaper &mdash; except when it is not</h2>
         <p>The family pack being better value is a habit of thought, not a law.
            Shops know about the habit and price accordingly, and the large size
@@ -294,7 +334,9 @@
            only cheaper if you use all of it. Two kilos of something that goes
            stale in a fortnight, bought by a household of two, is the most
            expensive option on the shelf no matter what the maths says.</p>
+        <!-- ---- END: the "Bigger is cheaper — except when it is not" section ---- -->
 
+        <!-- ---- START: the "Mixed units are refused, on purpose" section ---- -->
         <h2>Mixed units are refused, on purpose</h2>
         <p>Grams and kilos are compared happily, and so are millilitres and
            litres, because they are the same measure written differently. Weight
@@ -305,13 +347,17 @@
            If you are comparing a liquid sold by weight in one pack and by
            volume in another, you need its density, and that is a different
            question.</p>
+        <!-- ---- END: the "Mixed units are refused, on purpose" section ---- -->
 
+        <!-- ---- START: the "The number to remember" section ---- -->
         <h2>The number to remember</h2>
         <p>Not the winner &mdash; the <em>gap</em>. Twelve per cent on a weekly
            shop is real money over a year; two per cent is inside the noise of
            where you happen to shop that week and not worth walking to another
            aisle for.</p>
+        <!-- ---- END: the "The number to remember" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Can I compare grams with millilitres?</h3>
@@ -337,14 +383,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -395,18 +446,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "unit-price-comparison";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var msg    = document.getElementById("msg");
     var output = document.getElementById("output");
     var DASH   = String.fromCharCode(0x2014);
@@ -422,6 +477,7 @@
     };
 
     var summary = "";
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
@@ -580,8 +636,11 @@
     });
     /* ---- END: wiring ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     compare();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

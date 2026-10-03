@@ -11,10 +11,12 @@
    should still work untouched when there are 108 tools.
    ========================================================================== */
 
-/* Where are we? Tool pages sit one folder deep, so links need "../".
+/* ---- START: where this page sits: the root folder, or tools/ ----
+   Tool pages sit one folder deep, so links need "../".
    Every other page is at the root. */
 const AT_ROOT = !window.location.pathname.includes("/tools/");
 const BASE = AT_ROOT ? "" : "../";
+/* ---- END: where this page sits ---- */
 
 /* ---- START: one A-Z order for every grid on the site ---- */
 /* check.py keeps tools-data.js itself in this order, so the file you read and
@@ -33,11 +35,9 @@ TOOLS.sort(function (a, b) {
 });
 /* ---- END: one A-Z order for every grid on the site ---- */
 
-/* --------------------------------------------------------------------------
-   Build the HTML for one card.
+/* ---- START: one tool card, as HTML ----
    The whole card is a single <a> so the entire rectangle is clickable
-   and reachable with the Tab key.
-   -------------------------------------------------------------------------- */
+   and reachable with the Tab key. */
 function cardHTML(tool) {
   return (
     /* data-cat is what gives the card its category colour. style.css maps
@@ -52,10 +52,9 @@ function cardHTML(tool) {
     '</a>'
   );
 }
+/* ---- END: one tool card, as HTML ---- */
 
-/* --------------------------------------------------------------------------
-   Paint a list of tools into a container element.
-   -------------------------------------------------------------------------- */
+/* ---- START: painting a list of tools into a grid ---- */
 function renderGrid(containerId, list) {
   const box = document.getElementById(containerId);
   if (!box) return;                     // page does not have this grid — fine
@@ -66,12 +65,11 @@ function renderGrid(containerId, list) {
   }
   box.innerHTML = list.map(cardHTML).join("");
 }
+/* ---- END: painting a list of tools into a grid ---- */
 
-/* --------------------------------------------------------------------------
-   Does this tool match what the visitor typed?
+/* ---- START: does this tool match what the visitor typed? ----
    We check the name, the description, the category and the keywords, so
-   someone typing "how old am i" still finds the Age Calculator.
-   -------------------------------------------------------------------------- */
+   someone typing "how old am i" still finds the Age Calculator. */
 function matches(tool, query) {
   if (!query) return true;
   const haystack = [
@@ -82,11 +80,10 @@ function matches(tool, query) {
   ].join(" ").toLowerCase();
   return haystack.indexOf(query) !== -1;
 }
+/* ---- END: does this tool match what the visitor typed? ---- */
 
-/* --------------------------------------------------------------------------
-   Wire up the search box + the category chips together.
-   Both filters apply at the same time.
-   -------------------------------------------------------------------------- */
+/* ---- START: the search box and the category chips, together ----
+   Both filters apply at the same time. */
 function wireSearch(inputId, chipsId, gridId) {
   const input = document.getElementById(inputId);
   const chips = document.getElementById(chipsId);
@@ -137,9 +134,9 @@ function wireSearch(inputId, chipsId, gridId) {
 
   apply();   // first paint
 }
+/* ---- END: the search box and the category chips ---- */
 
-/* --------------------------------------------------------------------------
-   Light / dark theme toggle
+/* ---- START: the light / dark theme toggle ----
 
    Three possible states:
      - no choice saved  -> follow the operating system (the CSS does this)
@@ -148,8 +145,9 @@ function wireSearch(inputId, chipsId, gridId) {
 
    The choice is written to localStorage, so it is remembered on the next
    visit. It lives only in that browser, which is exactly right for a per-
-   person preference.
-   -------------------------------------------------------------------------- */
+   person preference. */
+
+/* ---- START: which theme is showing now ---- */
 function currentTheme() {
   /* An explicit choice wins; otherwise ask the operating system. */
   var stamped = document.documentElement.getAttribute("data-theme");
@@ -157,7 +155,9 @@ function currentTheme() {
   return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark" : "light";
 }
+/* ---- END: which theme is showing now ---- */
 
+/* ---- START: switching theme, and remembering the choice ---- */
 function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   try { localStorage.setItem("theme", theme); }
@@ -169,7 +169,9 @@ function applyTheme(theme) {
       theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
   }
 }
+/* ---- END: switching theme, and remembering the choice ---- */
 
+/* ---- START: the theme button in the navigation bar ---- */
 function wireThemeToggle() {
   var button = document.querySelector(".theme-toggle");
   if (!button) return;
@@ -182,10 +184,10 @@ function wireThemeToggle() {
     applyTheme(currentTheme() === "dark" ? "light" : "dark");
   });
 }
+/* ---- END: the theme button in the navigation bar ---- */
+/* ---- END: the light / dark theme toggle ---- */
 
-/* --------------------------------------------------------------------------
-   Mobile menu toggle
-   -------------------------------------------------------------------------- */
+/* ---- START: the phone menu button ---- */
 function wireBurger() {
   const burger = document.querySelector(".nav__burger");
   const panel = document.querySelector(".nav__mobile");
@@ -196,11 +198,10 @@ function wireBurger() {
     burger.setAttribute("aria-expanded", open ? "true" : "false");
   });
 }
+/* ---- END: the phone menu button ---- */
 
-/* --------------------------------------------------------------------------
-   "Related tools" strip at the bottom of a tool page.
-   Shows up to 3 other tools from the same category.
-   -------------------------------------------------------------------------- */
+/* ---- START: the "Related tools" strip at the bottom of a tool page ----
+   Shows up to 3 other tools from the same category. */
 function renderRelated(containerId, currentSlug) {
   const me = TOOLS.find(function (t) { return t.slug === currentSlug; });
   if (!me) return;
@@ -230,9 +231,9 @@ function renderRelated(containerId, currentSlug) {
   }
   renderGrid(containerId, list.slice(0, 3));
 }
+/* ---- END: the "Related tools" strip ---- */
 
-/* --------------------------------------------------------------------------
-   Tool counts
+/* ---- START: the tool counts, filled in from the registry ----
 
    "15 tools live" used to be typed by hand into three separate pages, and it
    went stale every single time a batch shipped - twice it was wrong on the
@@ -242,8 +243,7 @@ function renderRelated(containerId, currentSlug) {
 
    Any element carrying data-tool-count is filled in automatically:
      data-tool-count="live"       how many tools exist right now
-     data-tool-count="remaining"  how many of the 108 are still to come
-   -------------------------------------------------------------------------- */
+     data-tool-count="remaining"  how many of the 108 are still to come */
 const TOOL_TARGET = 108;
 
 function renderCounts() {
@@ -255,10 +255,9 @@ function renderCounts() {
       : TOOLS.length;
   });
 }
+/* ---- END: the tool counts ---- */
 
-/* --------------------------------------------------------------------------
-   Go
-   -------------------------------------------------------------------------- */
+/* ---- START: starting everything once the page has loaded ---- */
 document.addEventListener("DOMContentLoaded", function () {
   wireThemeToggle();
   wireBurger();
@@ -298,3 +297,4 @@ document.addEventListener("DOMContentLoaded", function () {
     renderRelated("relatedGrid", window.CURRENT_TOOL);
   }
 });
+/* ---- END: starting everything once the page has loaded ---- */

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Photo Watermark — Text, Tiled or Placed</title>
   <meta name="description" content="Add a text watermark to a photo, in one corner or tiled across it, with size, colour, opacity and angle under your control. Made in your browser, never uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/photo-watermark.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,40 +154,51 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
         <span>Photo Watermark</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Photo Watermark</h1>
         <p>Put your name or a note on a photo, in a corner or repeated across
            the whole picture. Everything happens on your machine, so the
            original never leaves it.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the input panel ---- -->
         <div class="panel">
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#128247;</span>
             <p><strong>Click to choose</strong> or drag an image here</p>
             <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; nothing is uploaded</p>
             <input type="file" id="file" accept="image/*">
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
 
+          <!-- ---- START: the "Watermark text" box ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="text">Watermark text</label>
             <input type="text" id="text" value="&copy; Your Name" maxlength="80">
           </div>
+          <!-- ---- END: the "Watermark text" box ---- -->
 
+          <!-- ---- START: the "Layout" choice ---- -->
           <div class="field">
             <label for="mode">Layout</label>
             <select id="mode">
@@ -184,7 +206,9 @@
               <option value="tile">Repeated across the whole picture</option>
             </select>
           </div>
+          <!-- ---- END: the "Layout" choice ---- -->
 
+          <!-- ---- START: the "Where" choice ---- -->
           <div class="field" id="posField">
             <label for="pos">Where</label>
             <select id="pos">
@@ -199,27 +223,41 @@
               <option value="se" selected>Bottom right</option>
             </select>
           </div>
+          <!-- ---- END: the "Where" choice ---- -->
 
+          <!-- ---- START: the "Size — 5% of the width" slider ---- -->
           <div class="field">
             <label for="size">Size &mdash; <span id="sizeOut">5</span>% of the width</label>
             <input type="range" id="size" min="2" max="40" step="1" value="5">
           </div>
+          <!-- ---- END: the "Size — 5% of the width" slider ---- -->
+          <!-- ---- START: the "Opacity — 55%" slider ---- -->
           <div class="field">
             <label for="opacity">Opacity &mdash; <span id="opacityOut">55</span>%</label>
             <input type="range" id="opacity" min="5" max="100" step="5" value="55">
           </div>
+          <!-- ---- END: the "Opacity — 55%" slider ---- -->
+          <!-- ---- START: the "Angle — 0°" slider ---- -->
           <div class="field">
             <label for="angle">Angle &mdash; <span id="angleOut">0</span>&deg;</label>
             <input type="range" id="angle" min="-90" max="90" step="5" value="0">
           </div>
+          <!-- ---- END: the "Angle — 0°" slider ---- -->
+          <!-- ---- START: the "Colour" colour picker ---- -->
           <div class="field">
             <label for="color">Colour</label>
             <input type="color" id="color" value="#ffffff" style="height:44px;padding:4px">
           </div>
+          <!-- ---- END: the "Colour" colour picker ---- -->
 
+          <!-- ---- START: the "Bold" tick box ---- -->
           <label class="check"><input type="checkbox" id="bold" checked> Bold</label>
+          <!-- ---- END: the "Bold" tick box ---- -->
+          <!-- ---- START: the "Soft shadow, so it reads on light and..." tick box ---- -->
           <label class="check"><input type="checkbox" id="shadow" checked> Soft shadow, so it reads on light and dark</label>
+          <!-- ---- END: the "Soft shadow, so it reads on light and..." tick box ---- -->
 
+          <!-- ---- START: the "Save as" choice ---- -->
           <div class="field" style="margin-top:var(--s3)">
             <label for="fmt">Save as</label>
             <select id="fmt">
@@ -227,28 +265,39 @@
               <option value="image/jpeg">JPG &mdash; smaller</option>
             </select>
           </div>
+          <!-- ---- END: the "Save as" choice ---- -->
 
+          <!-- ---- START: the buttons: Download, Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="dlBtn" disabled>Download</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: Download, Reset ---- -->
         </div>
+        <!-- ---- END: the input panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Preview" panel ---- -->
         <div class="panel">
           <span class="panel__label">Preview</span>
+          <!-- ---- START: the preview ---- -->
           <div class="preview"><canvas id="stage" width="10" height="10" style="max-width:100%;height:auto;display:block"></canvas></div>
+          <!-- ---- END: the preview ---- -->
 
+          <!-- ---- START: the figures: Picture size, Letter height, Marks drawn ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sSize">&mdash;</span><span class="stat__label">Picture size</span></div>
             <div class="stat"><span class="stat__num" id="sFont">&mdash;</span><span class="stat__label">Letter height</span></div>
             <div class="stat"><span class="stat__num" id="sMarks">&mdash;</span><span class="stat__label">Marks drawn</span></div>
           </div>
+          <!-- ---- END: the figures: Picture size, Letter height, Marks drawn ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "Preview" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -277,8 +326,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Choose a photo and type the words you want on it.</li>
@@ -286,7 +336,9 @@
               angle until it is visible without ruining the picture.</li>
           <li>Download it. The preview is exactly what you get.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "What a watermark can and cannot do" section ---- -->
         <h2>What a watermark can and cannot do</h2>
         <p>Be realistic about it. A watermark stops the casual copy &mdash;
            someone who would otherwise repost your photo with no credit &mdash;
@@ -298,7 +350,9 @@
            stealing, tile it: a mark repeated across the whole image cannot be
            cropped away, and removing it needs real editing skill. The cost is
            that it is unpleasant to look at, which is rather the point.</p>
+        <!-- ---- END: the "What a watermark can and cannot do" section ---- -->
 
+        <!-- ---- START: the "Legibility is the actual problem" section ---- -->
         <h2>Legibility is the actual problem</h2>
         <p>White text vanishes on a bright sky and black text vanishes in
            shadow. The soft shadow option puts a faint dark halo behind every
@@ -308,20 +362,26 @@
         <p>Size is set as a percentage of the picture's width rather than in
            pixels, so the same setting looks the same on a phone snapshot and
            on a 40-megapixel original.</p>
+        <!-- ---- END: the "Legibility is the actual problem" section ---- -->
 
+        <!-- ---- START: the "The metadata is not carried across" section ---- -->
         <h2>The metadata is not carried across</h2>
         <p>The watermarked copy is drawn fresh, so the hidden details of the
            original &mdash; camera, date, location &mdash; do not come with it.
            That is usually welcome before posting a photograph publicly. But it
            also means that a copyright note stored in the original's metadata
            is gone, so the visible mark is doing all the work.</p>
+        <!-- ---- END: the "The metadata is not carried across" section ---- -->
 
+        <!-- ---- START: the "PNG or JPG" section ---- -->
         <h2>PNG or JPG</h2>
         <p>PNG keeps every pixel exactly and makes a bigger file. JPG is
            smaller and loses a little detail with every save, which shows
            soonest around the edges of text. Use PNG for anything you might
            edit again.</p>
+        <!-- ---- END: the "PNG or JPG" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Can someone remove the watermark?</h3>
@@ -347,14 +407,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -405,18 +470,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "photo-watermark";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fileIn = document.getElementById("file");
     var drop   = document.getElementById("drop");
     var stage  = document.getElementById("stage");
@@ -428,10 +497,15 @@
 
     var ids = ["text", "mode", "pos", "size", "opacity", "angle", "color", "bold", "shadow", "fmt"];
     var el = {};
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
+    /* ---- START: the first run, when the page opens ---- */
     ids.forEach(function (id) { el[id] = document.getElementById(id); });
+    /* ---- END: the first run, when the page opens ---- */
 
+    /* ---- START: what the page remembers between actions ---- */
     var img = null;
     var name = "photo";
+    /* ---- END: what the page remembers between actions ---- */
 
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
@@ -645,5 +719,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Binary, Decimal and Hex Converter — All Four Bases</title>
   <meta name="description" content="Convert between binary, octal, decimal and hex, with exact arithmetic on numbers far past where most converters start rounding. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/binary-decimal-hex-converter.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,29 +131,36 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
         <span>Binary, Decimal and Hex</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Binary, Decimal and Hex Converter</h1>
         <p>One number, all four bases, worked out exactly however long it gets.
            Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace">
 
-        <!-- ---------- input ---------- -->
+        <!-- ---- START: the "The number" panel ---- -->
         <div class="panel">
           <span class="panel__label">The number</span>
 
+          <!-- ---- START: the "It is written in" choice ---- -->
           <div class="field">
             <label for="base">It is written in</label>
             <select id="base">
@@ -153,57 +170,84 @@
               <option value="16">Hexadecimal &mdash; base 16</option>
             </select>
           </div>
+          <!-- ---- END: the "It is written in" choice ---- -->
 
+          <!-- ---- START: the "Value" box ---- -->
           <div class="field">
             <label for="value">Value</label>
             <input type="text" id="value" value="255" spellcheck="false" autocomplete="off">
             <p class="hint" id="allowed"></p>
           </div>
+          <!-- ---- END: the "Value" box ---- -->
 
+          <!-- ---- START: the error message ---- -->
           <!-- Plain wrapper: .msg carries its own display, which would beat
                the browser rule for the hidden attribute. -->
           <div id="errWrap" hidden style="margin-top:var(--s3)">
             <p class="msg msg--bad" id="err"></p>
           </div>
+          <!-- ---- END: the error message ---- -->
 
+          <!-- ---- START: the figures: Bits, Bytes, Smallest that holds it ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="bits">8</span><span class="stat__label">Bits</span></div>
             <div class="stat"><span class="stat__num" id="bytes">1</span><span class="stat__label">Bytes</span></div>
             <div class="stat"><span class="stat__num" id="fits">uint8</span><span class="stat__label">Smallest that holds it</span></div>
           </div>
+          <!-- ---- END: the figures: Bits, Bytes, Smallest that holds it ---- -->
 
+          <!-- ---- START: the output, under the heading "Binary, in bytes" ---- -->
           <span class="panel__label" style="margin-top:var(--s4)">Binary, in bytes</span>
           <pre class="out mono" id="grouped" aria-live="polite"></pre>
+          <!-- ---- END: the output, under the heading "Binary, in bytes" ---- -->
         </div>
+        <!-- ---- END: the "The number" panel ---- -->
 
-        <!-- ---------- output ---------- -->
+        <!-- ---- START: the "Binary" panel ---- -->
         <div class="panel">
           <span class="panel__label">Binary</span>
+          <!-- ---- START: the output (#binOut) ---- -->
           <pre class="out mono" id="binOut" aria-live="polite"></pre>
+          <!-- ---- END: the output (#binOut) ---- -->
+          <!-- ---- START: the "Copy" button ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--ghost" type="button" id="copyBin">Copy</button>
           </div>
+          <!-- ---- END: the "Copy" button ---- -->
 
+          <!-- ---- START: the output (#octOut), under the heading "Octal" ---- -->
           <span class="panel__label" style="margin-top:var(--s4)">Octal</span>
           <pre class="out mono" id="octOut" aria-live="polite"></pre>
+          <!-- ---- END: the output (#octOut), under the heading "Octal" ---- -->
+          <!-- ---- START: the "Copy" button ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--ghost" type="button" id="copyOct">Copy</button>
           </div>
+          <!-- ---- END: the "Copy" button ---- -->
 
+          <!-- ---- START: the output (#decOut), under the heading "Decimal" ---- -->
           <span class="panel__label" style="margin-top:var(--s4)">Decimal</span>
           <pre class="out mono" id="decOut" aria-live="polite"></pre>
+          <!-- ---- END: the output (#decOut), under the heading "Decimal" ---- -->
+          <!-- ---- START: the "Copy" button ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--ghost" type="button" id="copyDec">Copy</button>
           </div>
+          <!-- ---- END: the "Copy" button ---- -->
 
+          <!-- ---- START: the output (#hexOut), under the heading "Hexadecimal" ---- -->
           <span class="panel__label" style="margin-top:var(--s4)">Hexadecimal</span>
           <pre class="out mono" id="hexOut" aria-live="polite"></pre>
+          <!-- ---- END: the output (#hexOut), under the heading "Hexadecimal" ---- -->
+          <!-- ---- START: the "Copy" button ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--ghost" type="button" id="copyHex">Copy</button>
           </div>
+          <!-- ---- END: the "Copy" button ---- -->
         </div>
+        <!-- ---- END: the "Binary" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -232,8 +276,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Say which base the number you have is written in.</li>
@@ -242,7 +287,9 @@
           <li>All four bases update together. The grouped binary on the left
               shows it padded into whole bytes.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Reading binary without a converter" section ---- -->
         <h2>Reading binary without a converter</h2>
         <p>Write the place values from the right &mdash; 1, 2, 4, 8, 16, 32,
         64, 128 &mdash; and add the ones sitting under a 1. So
@@ -252,7 +299,9 @@
         then read them from the bottom up. 11 halves to 5 remainder 1, then 2
         remainder 1, then 1 remainder 0, then 0 remainder 1 &mdash; bottom to
         top, 1011.</p>
+        <!-- ---- END: the "Reading binary without a converter" section ---- -->
 
+        <!-- ---- START: the "Why hexadecimal exists" section ---- -->
         <h2>Why hexadecimal exists</h2>
         <p>One hex digit is exactly four binary digits, so a byte is exactly
         two hex characters and nothing ever straddles a boundary. That single
@@ -263,7 +312,9 @@
         so A to F carry ten to fifteen. Case does not matter when you type it
         here; the answer comes back in upper case because that is the usual
         convention.</p>
+        <!-- ---- END: the "Why hexadecimal exists" section ---- -->
 
+        <!-- ---- START: the "Large numbers, and where most converters break" section ---- -->
         <h2>Large numbers, and where most converters break</h2>
         <p>An ordinary JavaScript number cannot hold a whole number above
         9,007,199,254,740,991 exactly. Past that it starts rounding, and the
@@ -274,14 +325,18 @@
         two-hundred-digit number converts exactly. If you work with hashes,
         large IDs or cryptographic values, that is the difference between a
         right answer and a plausible one.</p>
+        <!-- ---- END: the "Large numbers, and where most converters break" section ---- -->
 
+        <!-- ---- START: the "A note on negative numbers" section ---- -->
         <h2>A note on negative numbers</h2>
         <p>A negative number is shown with a minus sign in front of its
         magnitude, which is the mathematical way to write it. It is
         <strong>not</strong> two&rsquo;s complement. Two&rsquo;s complement
         only means something once you fix a width &mdash; 8-bit, 32-bit, 64-bit
         &mdash; and that is a choice this page has no way to make for you.</p>
+        <!-- ---- END: the "A note on negative numbers" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How do I convert binary to decimal by hand?</h3>
@@ -313,14 +368,19 @@
           Nothing is uploaded and nothing is saved - close the tab and it is
           gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -371,18 +431,24 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "binary-decimal-hex-converter";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: fixed values used below ---- */
     var EM_DASH = String.fromCharCode(0x2014);
     var MINUS = String.fromCharCode(0x2212);
+    /* ---- END: fixed values used below ---- */
 
     /* ---- START: what each base is allowed to contain ----
        Checked before BigInt sees the string, because BigInt throws a
@@ -522,5 +588,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

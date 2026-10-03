@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Find and Replace Text Online — Bulk Replace, Free</title>
   <meta name="description" content="Find and replace text online in bulk. Match case, whole words only or a regular expression, and see how many replacements were made. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/find-and-replace.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,63 +131,91 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
         <span>Find and Replace</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Find and Replace Text</h1>
         <p>Swap one word for another everywhere at once, across thousands of lines.
            Match case, whole words only, or use a regular expression — nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "Your text" panel ---- -->
         <div class="panel">
           <label class="panel__label" for="input">Your text</label>
+          <!-- ---- START: the "Your text" text box ---- -->
           <textarea id="input" placeholder="Paste your text here&hellip;"></textarea>
+          <!-- ---- END: the "Your text" text box ---- -->
 
+          <!-- ---- START: the "Find" box ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="findBox">Find</label>
             <input type="text" id="findBox" placeholder="What to look for" autocomplete="off" spellcheck="false">
           </div>
+          <!-- ---- END: the "Find" box ---- -->
 
+          <!-- ---- START: the "Replace with" box ---- -->
           <div class="field">
             <label for="replaceBox">Replace with</label>
             <input type="text" id="replaceBox" placeholder="Leave empty to delete the matches" autocomplete="off" spellcheck="false">
           </div>
+          <!-- ---- END: the "Replace with" box ---- -->
 
+          <!-- ---- START: the "Match case" tick box ---- -->
           <div class="check"><input type="checkbox" id="optCase"><label for="optCase">Match case</label></div>
+          <!-- ---- END: the "Match case" tick box ---- -->
+          <!-- ---- START: the "Whole words only" tick box ---- -->
           <div class="check"><input type="checkbox" id="optWord"><label for="optWord">Whole words only</label></div>
+          <!-- ---- END: the "Whole words only" tick box ---- -->
+          <!-- ---- START: the "Use a regular expression" tick box ---- -->
           <div class="check"><input type="checkbox" id="optRegex"><label for="optRegex">Use a regular expression</label></div>
+          <!-- ---- END: the "Use a regular expression" tick box ---- -->
 
+          <!-- ---- START: the "Clear" button ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
           </div>
+          <!-- ---- END: the "Clear" button ---- -->
         </div>
+        <!-- ---- END: the "Your text" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Result" panel ---- -->
         <div class="panel">
           <span class="panel__label">Result</span>
+          <!-- ---- START: the output ---- -->
           <pre class="out" id="output"></pre>
+          <!-- ---- END: the output ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="status" aria-live="polite">Type something to find.</p>
+          <!-- ---- END: the message line ---- -->
 
+          <!-- ---- START: the buttons: Copy result, Download .txt ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
             <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
           </div>
+          <!-- ---- END: the buttons: Copy result, Download .txt ---- -->
         </div>
+        <!-- ---- END: the "Result" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -206,8 +244,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Paste your text into the box on the left.</li>
@@ -215,7 +254,9 @@
           <li>Every match is swapped as you type, and the line under the result tells you how many were changed.</li>
           <li>Press <strong>Copy result</strong> when it looks right.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "The three options, in plain language" section ---- -->
         <h2>The three options, in plain language</h2>
         <p><strong>Match case</strong> is off by default, so searching for
           <code>london</code> also finds <code>London</code> and <code>LONDON</code>.
@@ -235,7 +276,9 @@
           finding <code>(\w+)@(\w+)</code> and replacing with <code>$2</code> keeps
           only the part after the @ sign. If the pattern is not valid, the tool
           tells you instead of silently doing nothing.</p>
+        <!-- ---- END: the "The three options, in plain language" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How do I replace a line break?</h3>
@@ -253,14 +296,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. The replacing happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -311,18 +359,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "find-and-replace";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: the page elements this script reads and writes ---- */
     var input   = document.getElementById("input");
     var output  = document.getElementById("output");
     var status  = document.getElementById("status");
@@ -331,6 +383,7 @@
     var optCase  = document.getElementById("optCase");
     var optWord  = document.getElementById("optWord");
     var optRegex = document.getElementById("optRegex");
+    /* ---- END: the page elements this script reads and writes ---- */
 
     /* ---- START: making plain text match itself literally ---- */
     /* Turn plain text into a pattern that matches itself literally.
@@ -423,6 +476,7 @@
     }
     /* ---- END: doing the replacement and drawing the result ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     input.addEventListener("input", run);
     findBox.addEventListener("input", run);
     replaceBox.addEventListener("input", run);
@@ -445,9 +499,13 @@
       if (!output.textContent) { showToast("Nothing to download"); return; }
       downloadText(output.textContent, "replaced.txt");
     });
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     run();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

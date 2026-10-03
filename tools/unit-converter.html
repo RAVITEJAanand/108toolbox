@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Unit Converter — Length, Weight and Volume in One</title>
   <meta name="description" content="Convert length, weight and volume between metric and imperial units, and see the same measurement in every unit at once. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/unit-converter.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,29 +131,36 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
         <span>Unit Converter</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Unit Converter</h1>
         <p>Length, weight and volume, metric and imperial, with the same
            measurement shown in every unit at once. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--wide">
 
-        <!-- ---------- the conversion ---------- -->
+        <!-- ---- START: the "Convert" panel - the conversion ---- -->
         <div class="panel">
           <span class="panel__label">Convert</span>
 
+          <!-- ---- START: the "What are you measuring" choice ---- -->
           <div class="field">
             <label for="kind">What are you measuring</label>
             <select id="kind">
@@ -152,33 +169,46 @@
               <option value="volume">Volume</option>
             </select>
           </div>
+          <!-- ---- END: the "What are you measuring" choice ---- -->
 
+          <!-- ---- START: the "Amount" box ---- -->
           <div class="field">
             <label for="amount">Amount</label>
             <input type="number" id="amount" value="1" step="any">
           </div>
+          <!-- ---- END: the "Amount" box ---- -->
 
+          <!-- ---- START: the "From" choice ---- -->
           <div class="field">
             <label for="from">From</label>
             <select id="from"></select>
           </div>
+          <!-- ---- END: the "From" choice ---- -->
 
+          <!-- ---- START: the "To" choice ---- -->
           <div class="field">
             <label for="to">To</label>
             <select id="to"></select>
           </div>
+          <!-- ---- END: the "To" choice ---- -->
 
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result">
             <span class="result__num" id="out">100</span>
             <span class="result__label" id="formula"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
 
+          <!-- ---- START: the note the script fills in (#note) ---- -->
           <p class="hint" id="note"></p>
+          <!-- ---- END: the note the script fills in (#note) ---- -->
         </div>
+        <!-- ---- END: the "Convert" panel - the conversion ---- -->
 
-        <!-- ---------- every unit at once ---------- -->
+        <!-- ---- START: the "The same measurement in every unit" panel - every unit at once ---- -->
         <div class="panel">
           <span class="panel__label">The same measurement in every unit</span>
+          <!-- ---- START: the table: Unit, Value ---- -->
           <div class="table-wrap">
             <table class="data">
               <thead>
@@ -187,9 +217,11 @@
               <tbody id="rows"></tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Unit, Value ---- -->
         </div>
+        <!-- ---- END: the "The same measurement in every unit" panel - every unit at once ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -218,8 +250,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Pick length, weight or volume. The unit lists change with it.</li>
@@ -227,7 +260,9 @@
           <li>The table on the right shows the same measurement in every unit
               of that kind, which saves converting twice.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Most of these conversions are exact" section ---- -->
         <h2>Most of these conversions are exact</h2>
         <p>They are not measurements, they are definitions agreed in 1959, so
         there is no rounding error hiding anywhere:</p>
@@ -246,7 +281,9 @@
         </div>
         <p>Any figure this page shows to several decimals is therefore the
         genuine value, not an approximation that got away from someone.</p>
+        <!-- ---- END: the "Most of these conversions are exact" section ---- -->
 
+        <!-- ---- START: the "US and imperial are different systems" section ---- -->
         <h2>US and imperial are different systems</h2>
         <p>They share names and not much else. A <strong>US gallon is 3.785
         litres</strong> while an <strong>imperial gallon is 4.546</strong>,
@@ -254,7 +291,9 @@
         A recipe or a fuel figure that just says gallon is ambiguous until you
         know where it was written, so both are listed separately here rather
         than quietly picking one.</p>
+        <!-- ---- END: the "US and imperial are different systems" section ---- -->
 
+        <!-- ---- START: the "Cooking measures are the worst of it" section ---- -->
         <h2>Cooking measures are the worst of it</h2>
         <p>A <strong>US cup is 236.6 ml</strong> and a <strong>metric cup,
         used across India and Australia, is a round 250 ml</strong>. That is a
@@ -263,7 +302,9 @@
         <p>Where a recipe gives a weight as well as a volume, use the weight.
         A cup of flour can vary by twenty percent depending on whether it was
         scooped or spooned, and no converter can fix that.</p>
+        <!-- ---- END: the "Cooking measures are the worst of it" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How many centimetres are in an inch?</h3>
@@ -294,14 +335,19 @@
           Nothing is uploaded and nothing is saved - close the tab and it is
           gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -352,12 +398,16 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "unit-converter";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
@@ -527,5 +577,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

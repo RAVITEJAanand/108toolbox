@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Image Color Picker — HEX, RGB and a Palette</title>
   <meta name="description" content="Click anywhere on a photo to read its exact colour as HEX, RGB and HSL, or pull out its dominant palette. It runs in your browser and the image is not uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/image-color-picker.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,39 +154,50 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
         <span>Image Color Picker</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Image Color Picker</h1>
         <p>Choose an image, click a pixel, get the colour. It can average a small
            patch instead of one pixel &mdash; which matters more than it sounds
            on a photograph.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the input panel ---- -->
         <div class="panel">
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#127912;</span>
             <p><strong>Click to choose</strong> or drag an image here</p>
             <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; nothing is uploaded</p>
             <input type="file" id="file" accept="image/*">
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
 
+          <!-- ---- START: the preview ---- -->
           <div class="preview" style="margin-top:var(--s4);cursor:crosshair">
             <canvas id="stage" width="10" height="10" style="max-width:100%;height:auto;display:block"></canvas>
           </div>
+          <!-- ---- END: the preview ---- -->
 
+          <!-- ---- START: the "Sample" choice ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="area">Sample</label>
             <select id="area">
@@ -185,34 +207,49 @@
               <option value="9">9 &times; 9 patch</option>
             </select>
           </div>
+          <!-- ---- END: the "Sample" choice ---- -->
 
+          <!-- ---- START: the buttons: Copy HEX, Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--ghost"  type="button" id="copyBtn">Copy HEX</button>
             <button class="btn btn--danger" type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: Copy HEX, Reset ---- -->
         </div>
+        <!-- ---- END: the input panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Picked colour" panel ---- -->
         <div class="panel">
           <span class="panel__label">Picked colour</span>
+          <!-- ---- START: the colour swatch, with white and black text on it ---- -->
           <div id="swatch" style="height:78px;border-radius:var(--r-md);border:1px solid var(--border);background:transparent"></div>
+          <!-- ---- END: the colour swatch, with white and black text on it ---- -->
 
+          <!-- ---- START: the figures: HEX, RGB, HSL ---- -->
           <div class="stats stats--3" style="margin-top:var(--s3)">
             <div class="stat"><span class="stat__num mono" id="sHex">&mdash;</span><span class="stat__label">HEX</span></div>
             <div class="stat"><span class="stat__num mono" id="sRgb">&mdash;</span><span class="stat__label">RGB</span></div>
             <div class="stat"><span class="stat__num mono" id="sHsl">&mdash;</span><span class="stat__label">HSL</span></div>
           </div>
+          <!-- ---- END: the figures: HEX, RGB, HSL ---- -->
 
+          <!-- ---- START: the colours picked so far, as swatches, under the heading "Dominant colours" ---- -->
           <span class="panel__label" style="margin-top:var(--s3)">Dominant colours</span>
           <div id="palette" style="display:flex;flex-wrap:wrap;gap:var(--s2);min-height:52px"></div>
+          <!-- ---- END: the colours picked so far, as swatches, under the heading "Dominant colours" ---- -->
 
+          <!-- ---- START: the output, under the heading "Picked so far" ---- -->
           <span class="panel__label" style="margin-top:var(--s3)">Picked so far</span>
           <pre class="out mono" id="picked" style="min-height:90px"></pre>
+          <!-- ---- END: the output, under the heading "Picked so far" ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "Picked colour" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -241,8 +278,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Choose an image, or drag one onto the box.</li>
@@ -251,7 +289,9 @@
           <li>Or use the dominant colours &mdash; the handful that make up most
               of the picture &mdash; and click one to copy it.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Why one pixel is often the wrong answer" section ---- -->
         <h2>Why one pixel is often the wrong answer</h2>
         <p>On a screenshot or a logo, a pixel is a colour and one pixel is
            exactly what you want. On a photograph it is not. Photographs, and
@@ -263,7 +303,9 @@
            averages the neighbours and lands on the colour your eye actually
            saw. Use one pixel for flat artwork and a patch for anything that
            came out of a camera.</p>
+        <!-- ---- END: the "Why one pixel is often the wrong answer" section ---- -->
 
+        <!-- ---- START: the "What “the colour” means here" section ---- -->
         <h2>What &ldquo;the colour&rdquo; means here</h2>
         <p>The value is the colour stored in the file, read after your browser
            decoded it. It is not a measurement of what your screen is showing:
@@ -273,7 +315,9 @@
            colour. For matching paint or print, use a physical swatch. For
            matching a button to a logo on a web page, the stored value is
            exactly what you want.</p>
+        <!-- ---- END: the "What “the colour” means here" section ---- -->
 
+        <!-- ---- START: the "How the dominant colours are found" section ---- -->
         <h2>How the dominant colours are found</h2>
         <p>Every colour in the image is dropped into a coarse bucket &mdash;
            sixteen levels per channel &mdash; and the buckets are ranked by how
@@ -284,13 +328,17 @@
         <p>It is a quick and honest summary, not a designer's judgement. A small
            bright accent that matters to the picture may not make the list,
            because the list is decided by area, not by importance.</p>
+        <!-- ---- END: the "How the dominant colours are found" section ---- -->
 
+        <!-- ---- START: the "Transparent pixels" section ---- -->
         <h2>Transparent pixels</h2>
         <p>A PNG can have pixels that are partly or wholly see-through. Click
            one and the page says so: a fully transparent pixel has no meaningful
            colour at all, and whatever number is stored there is simply what
            the file happened to hold.</p>
+        <!-- ---- END: the "Transparent pixels" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Is the image uploaded?</h3>
@@ -316,14 +364,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -374,18 +427,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "image-color-picker";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fileIn = document.getElementById("file");
     var drop   = document.getElementById("drop");
     var stage  = document.getElementById("stage");
@@ -401,6 +458,7 @@
     var isJpeg = false;
     var history = [];
     var lastHex = "";
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
@@ -650,5 +708,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

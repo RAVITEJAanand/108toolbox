@@ -30,6 +30,7 @@ import threading
 import urllib.parse
 import html as htmllib
 
+# ---- START: where Chrome is, how it starts with no ads, and how many pages run at once ----
 SITE = pathlib.Path(__file__).parent
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 
@@ -45,6 +46,7 @@ NO_ADS_FLAG = ("--host-resolver-rules="
 
 # Four at a time. Chrome is heavy and the machine still has to be usable.
 WORKERS = 4
+# ---- END: where Chrome is, how it starts with no ads, and how many pages run at once ----
 
 
 # ===== START: the in-page harness ==========================================
@@ -54,6 +56,7 @@ WORKERS = 4
 HARNESS = r"""
 <script>
 (function () {
+  /* ---- START: what the harness keeps: the results, and a heartbeat that paces the clock ---- */
   var results = [];
   var done = false;
   /* Headless Chrome runs on a virtual clock that jumps to the next timer whenever
@@ -76,6 +79,7 @@ HARNESS = r"""
     for (var i = 0; i < 100000; i++) { x = (x + i) % 9973; }
     window.__heartbeat = x;
   }, 1);
+  /* ---- END: what the harness keeps ---- */
 
   /* ---- START: recording a result ---- */
   function record(pass, line) {
@@ -229,12 +233,14 @@ HARNESS = r"""
   });
   /* ---- END: finishing ---- */
 
+  /* ---- START: running the tool's own test body ---- */
   try {
     __TESTS__
   } catch (e) {
     record(false, "threw: " + (e && e.message ? e.message : e));
     finish();
   }
+  /* ---- END: running the tool's own test body ---- */
 })();
 </script>
 """
@@ -281,6 +287,7 @@ COMMON = r"""
 # when it is done; the generator appends finish() to any body that does not.
 T = {}
 
+# ---- START: the test for add-line-numbers ----
 T["add-line-numbers"] = r"""
     set("input", "a\nb\nc");
     check("basic numbering", out(), "1. a\n2. b\n3. c");
@@ -339,7 +346,9 @@ T["add-line-numbers"] = r"""
     check("last number shows a dash", txt("cLast"), String.fromCharCode(0x2014));
     finish();
 """
+# ---- END: the test for add-line-numbers ----
 
+# ---- START: the test for age-calculator ----
 T["age-calculator"] = r"""
     set("dob", "2000-01-01");
     set("asOf", "2026-01-01");
@@ -353,7 +362,9 @@ T["age-calculator"] = r"""
     ok("leap day birthday does not crash", txt("mainAge").length > 0, txt("mainAge"));
     finish();
 """
+# ---- END: the test for age-calculator ----
 
+# ---- START: the test for average-calculator ----
 T["average-calculator"] = r"""
     set("input", "12, 7, 19, 3, 7, 22, 15");
     check("mean", txt("mean"), "12.14");
@@ -442,7 +453,9 @@ T["average-calculator"] = r"""
     check("mode still works", txt("mode"), "1");
     finish();
 """
+# ---- END: the test for average-calculator ----
 
+# ---- START: the test for bmi-calculator ----
 T["bmi-calculator"] = r"""
     set("cm", "170"); set("kg", "65");
     check("metric BMI", txt("bmi"), "22.5");
@@ -482,7 +495,9 @@ T["bmi-calculator"] = r"""
     check("empty input shows a dash", txt("bmi"), String.fromCharCode(0x2014));
     finish();
 """
+# ---- END: the test for bmi-calculator ----
 
+# ---- START: the test for case-converter ----
 T["case-converter"] = r"""
     set("input", "hello world example");
     document.querySelector("[data-mode='upper']").click();
@@ -514,7 +529,9 @@ T["case-converter"] = r"""
     check("snake, kebab and dots all come apart", mode("camel"), "userFirstNameValue");
     finish();
 """
+# ---- END: the test for case-converter ----
 
+# ---- START: the test for character-frequency-counter ----
 T["character-frequency-counter"] = r"""
     function rows() {
       return Array.prototype.map.call(
@@ -606,7 +623,9 @@ T["character-frequency-counter"] = r"""
     tick("optPunct", false); set("mode", "chars");
     finish();
 """
+# ---- END: the test for character-frequency-counter ----
 
+# ---- START: the test for compound-interest-calculator ----
 T["compound-interest-calculator"] = r"""
   near("100000 at 8% for 10y yearly", txt("finalOut"), 215892.50, 0.5);
   near("interest earned", txt("earned"), 115892.50, 0.5);
@@ -668,7 +687,9 @@ T["compound-interest-calculator"] = r"""
     near("and back", txt("finalOut"), 215892.5, 0.01);
     finish();
 """
+# ---- END: the test for compound-interest-calculator ----
 
+# ---- START: the test for discount-calculator ----
 T["discount-calculator"] = r"""
     set("a1", "2000"); set("a2", "25");
     check("sale price", txt("aOut"), "1,500");
@@ -728,7 +749,9 @@ T["discount-calculator"] = r"""
     check("and back", txt("cOut"), "800");
     finish();
 """
+# ---- END: the test for discount-calculator ----
 
+# ---- START: the test for emi-calculator ----
 T["emi-calculator"] = r"""
     set("amount", "1000000"); set("rate", "8.5"); set("years", "20");
     ok("an EMI is produced", txt("emi").replace(/[^0-9]/g, "").length >= 4, txt("emi"));
@@ -754,7 +777,9 @@ T["emi-calculator"] = r"""
     ok("and a real loan works again", txt("emi") !== DASH, txt("emi"));
     finish();
 """
+# ---- END: the test for emi-calculator ----
 
+# ---- START: the test for find-and-replace ----
 T["find-and-replace"] = r"""
     set("input", "the cat sat on the mat");
     set("findBox", "cat"); set("replaceBox", "dog");
@@ -813,7 +838,9 @@ T["find-and-replace"] = r"""
     tick("optRegex", false); tick("optWord", false);
     finish();
 """
+# ---- END: the test for find-and-replace ----
 
+# ---- START: the test for fraction-calculator ----
 T["fraction-calculator"] = r"""
   eq("3/4 + 1/6", txt("ansFrac"), "11/12");
   eq("mixed form", txt("mixed"), "11/12");
@@ -899,7 +926,9 @@ T["fraction-calculator"] = r"""
     eq("and back to the example", txt("sAns"), "3/7");
     finish();
 """
+# ---- END: the test for fraction-calculator ----
 
+# ---- START: the test for gst-calculator ----
 T["gst-calculator"] = r"""
   near("default total 1180", txt("total"), 1180);
   near("default base 1000", txt("base"), 1000);
@@ -963,7 +992,9 @@ T["gst-calculator"] = r"""
     set("rate", "18");
     finish();
 """
+# ---- END: the test for gst-calculator ----
 
+# ---- START: the test for image-compressor ----
 T["image-compressor"] = r"""
     makeImage("file", 200, 200, function (file) {
       /* Decode and re-encode are both asynchronous - wait for the real
@@ -1031,7 +1062,9 @@ T["image-compressor"] = r"""
         });
     });
 """
+# ---- END: the test for image-compressor ----
 
+# ---- START: the test for image-converter ----
 T["image-converter"] = r"""
     makeImage("file", 160, 120, function (file) {
       waitFor("dimensions appear",
@@ -1061,7 +1094,9 @@ T["image-converter"] = r"""
         });
     });
 """
+# ---- END: the test for image-converter ----
 
+# ---- START: the test for json-formatter ----
 T["json-formatter"] = r"""
     set("input", '{"b":1,"a":[1,2]}');
     click("beautifyBtn");
@@ -1180,7 +1215,9 @@ T["json-formatter"] = r"""
     has("and is still readable", txt("msg"), "<img src=x onerror=zq>");
     finish();
 """
+# ---- END: the test for json-formatter ----
 
+# ---- START: the test for lorem-ipsum-generator ----
 T["lorem-ipsum-generator"] = r"""
     set("unit", "words"); set("count", "10");
     click("genBtn");
@@ -1196,7 +1233,9 @@ T["lorem-ipsum-generator"] = r"""
        return s.trim() !== ""; }).length === 4);
     finish();
 """
+# ---- END: the test for lorem-ipsum-generator ----
 
+# ---- START: the test for margin-markup-calculator ----
 T["margin-markup-calculator"] = r"""
   near("cost 100 at 40% margin", txt("aOut"), 166.67, 0.01);
   near("profit per unit", txt("aProfit"), 66.67, 0.01);
@@ -1237,7 +1276,9 @@ T["margin-markup-calculator"] = r"""
     set("c1", "100"); set("c2", "150");
     finish();
 """
+# ---- END: the test for margin-markup-calculator ----
 
+# ---- START: the test for password-generator ----
 T["password-generator"] = r"""
     set("length", "16"); set("howMany", "3");
     click("genBtn");
@@ -1268,7 +1309,9 @@ T["password-generator"] = r"""
     ["optUpper", "optDigit", "optSymbol"].forEach(function (id) { tick(id, true); });
     finish();
 """
+# ---- END: the test for password-generator ----
 
+# ---- START: the test for percentage-calculator ----
 T["percentage-calculator"] = r"""
     set("a1", "15"); set("a2", "200");
     check("15% of 200", txt("aOut"), "30");
@@ -1280,7 +1323,9 @@ T["percentage-calculator"] = r"""
     ok("250 to 200 is a fall", txt("cOut").indexOf("20") > -1, txt("cOut"));
     finish();
 """
+# ---- END: the test for percentage-calculator ----
 
+# ---- START: the test for ratio-calculator ----
 T["ratio-calculator"] = r"""
     set("a1", "1920"); set("a2", "1080");
     check("simplify to 16:9", txt("aOut"), "16 : 9");
@@ -1328,7 +1373,9 @@ T["ratio-calculator"] = r"""
     check("recovers", rows().length, 2);
     finish();
 """
+# ---- END: the test for ratio-calculator ----
 
+# ---- START: the test for remove-duplicate-lines ----
 T["remove-duplicate-lines"] = r"""
     set("input", "a\nb\na\nc\nb");
     check("duplicates removed", txt("output"), "a\nb\nc");
@@ -1344,7 +1391,9 @@ T["remove-duplicate-lines"] = r"""
     check("empty is empty", txt("output"), "");
     finish();
 """
+# ---- END: the test for remove-duplicate-lines ----
 
+# ---- START: the test for remove-line-breaks ----
 T["remove-line-breaks"] = r"""
     set("input", "line one\nline two\nline three");
     ok("breaks removed", txt("output").indexOf("\n") === -1, txt("output"));
@@ -1352,7 +1401,9 @@ T["remove-line-breaks"] = r"""
     check("lines in", txt("cIn"), "3");
     finish();
 """
+# ---- END: the test for remove-line-breaks ----
 
+# ---- START: the test for reverse-text ----
 T["reverse-text"] = r"""
     set("input", "Hello world");
     check("whole text reversed", out(), "dlrow olleH");
@@ -1405,7 +1456,9 @@ T["reverse-text"] = r"""
     eq("four characters", txt("cChars"), "4");
     finish();
 """
+# ---- END: the test for reverse-text ----
 
+# ---- START: the test for simple-interest-calculator ----
 T["simple-interest-calculator"] = r"""
   near("50000 at 8% for 3y", txt("interest"), 12000);
   near("total repayable", txt("tOut"), 62000);
@@ -1436,7 +1489,9 @@ T["simple-interest-calculator"] = r"""
   near("empty period does not crash", txt("interest"), 0);
     finish();
 """
+# ---- END: the test for simple-interest-calculator ----
 
+# ---- START: the test for slug-generator ----
 T["slug-generator"] = r"""
     set("input", "10 Best Caf" + String.fromCharCode(0xE9) + "s in Hyderabad (2026 Guide)");
     check("accents and punctuation", out(), "10-best-cafes-in-hyderabad-2026-guide");
@@ -1510,7 +1565,9 @@ T["slug-generator"] = r"""
     eq("a slug called constructor is not a duplicate", txt("msg"), "");
     finish();
 """
+# ---- END: the test for slug-generator ----
 
+# ---- START: the test for sort-text-lines ----
 T["sort-text-lines"] = r"""
     set("input", "banana\napple\ncherry");
     check("A to Z", txt("output"), "apple\nbanana\ncherry");
@@ -1535,7 +1592,9 @@ T["sort-text-lines"] = r"""
     set("order", "az");
     finish();
 """
+# ---- END: the test for sort-text-lines ----
 
+# ---- START: the test for text-repeater ----
 T["text-repeater"] = r"""
     set("input", "ab");
     set("copies", "3");
@@ -1602,7 +1661,9 @@ T["text-repeater"] = r"""
     eq("and three is three", txt("output"), "hi\nhi\nhi");
     finish();
 """
+# ---- END: the test for text-repeater ----
 
+# ---- START: the test for tip-calculator ----
 T["tip-calculator"] = r"""
     set("bill", "1200"); set("tip", "10"); set("people", "1");
     check("total with tip", txt("total"), "1,320");
@@ -1644,7 +1705,9 @@ T["tip-calculator"] = r"""
     check("and recalculates", txt("total"), "1,480.80");
     finish();
 """
+# ---- END: the test for tip-calculator ----
 
+# ---- START: the test for whitespace-remover ----
 T["whitespace-remover"] = r"""
     set("input", "hello    world");
     check("runs collapsed", txt("output"), "hello world");
@@ -1663,7 +1726,9 @@ T["whitespace-remover"] = r"""
     check("zero-width space removed", txt("output"), "zz");
     finish();
 """
+# ---- END: the test for whitespace-remover ----
 
+# ---- START: the test for word-counter ----
 T["word-counter"] = r"""
     set("input", "Hello world. This is a test.");
     check("words", txt("cWords"), "6");
@@ -1685,7 +1750,9 @@ T["word-counter"] = r"""
     has("a Telugu word can be the most used", txt("density"), TE + " " + String.fromCharCode(0x00D7) + "2");
     finish();
 """
+# ---- END: the test for word-counter ----
 
+# ---- START: the test for area-converter ----
 T["area-converter"] = r"""
     near("1 acre in square feet", txt("out"), 43560);
     near("1 acre in square metres", txt("sqm"), 4046.86, 0.01);
@@ -1724,7 +1791,9 @@ T["area-converter"] = r"""
     near("an empty box does not crash it", txt("out"), 0);
     finish();
 """
+# ---- END: the test for area-converter ----
 
+# ---- START: the test for number-to-words ----
 T["number-to-words"] = r"""
     eq("indian words", txt("words"),
        "twelve lakh thirty-four thousand five hundred sixty-seven point five zero");
@@ -1776,7 +1845,9 @@ T["number-to-words"] = r"""
     shown("an empty box is refused", "errWrap");
     finish();
 """
+# ---- END: the test for number-to-words ----
 
+# ---- START: the test for temperature-converter ----
 T["temperature-converter"] = r"""
     near("37 C is 98.6 F", txt("headline"), 98.6);
     near("celsius tile", txt("oc"), 37);
@@ -1819,7 +1890,9 @@ T["temperature-converter"] = r"""
     near("an empty box does not crash it", txt("oc"), 0);
     finish();
 """
+# ---- END: the test for temperature-converter ----
 
+# ---- START: the test for date-difference-calculator ----
 T["date-difference-calculator"] = r"""
     set("start", "2026-01-01"); set("end", "2026-12-31");
     eq("364 days between", txt("days"), "364 days");
@@ -1889,7 +1962,9 @@ T["date-difference-calculator"] = r"""
     shown("a missing date is refused", "errWrap");
     finish();
 """
+# ---- END: the test for date-difference-calculator ----
 
+# ---- START: the test for add-subtract-days ----
 T["add-subtract-days"] = r"""
     set("start", "2026-01-31"); set("amount", "1"); set("unit", "months");
     eq("31 January plus a month clamps", txt("result"), "28 February 2026");
@@ -1965,7 +2040,9 @@ T["add-subtract-days"] = r"""
     eq("and lands where 100,000 working days lead", txt("isoOut"), "2410-01-22");
     finish();
 """
+# ---- END: the test for add-subtract-days ----
 
+# ---- START: the test for sip-calculator ----
 T["sip-calculator"] = r"""
     near("5000 a month, 12%, 10 years", txt("maturity"), 1161695, 2);
     near("what you put in", txt("invested"), 600000);
@@ -2024,7 +2101,9 @@ T["sip-calculator"] = r"""
     near("and back to the example", txt("maturity"), 1161695, 2);
     finish();
 """
+# ---- END: the test for sip-calculator ----
 
+# ---- START: the test for unit-converter ----
 T["unit-converter"] = r"""
     near("1 metre is 100 cm", txt("out"), 100);
     eq("nine length units", rows().length, 9);
@@ -2068,7 +2147,9 @@ T["unit-converter"] = r"""
     set("amount", "1");
     finish();
 """
+# ---- END: the test for unit-converter ----
 
+# ---- START: the test for binary-decimal-hex-converter ----
 T["binary-decimal-hex-converter"] = r"""
     eq("255 in binary", txt("binOut"), "11111111");
     eq("255 in octal", txt("octOut"), "377");
@@ -2112,7 +2193,9 @@ T["binary-decimal-hex-converter"] = r"""
     shown("an empty box is refused", "errWrap");
     finish();
 """
+# ---- END: the test for binary-decimal-hex-converter ----
 
+# ---- START: the test for timestamp-converter ----
 T["timestamp-converter"] = r"""
     has("1700000000 is Nov 2023", txt("utcOut"), "14 Nov 2023");
     has("at 22:13:20 UTC", txt("utcOut"), "22:13:20");
@@ -2164,7 +2247,9 @@ T["timestamp-converter"] = r"""
     set("stamp", "1700000000");
     finish();
 """
+# ---- END: the test for timestamp-converter ----
 
+# ---- START: the test for days-until-countdown ----
 T["days-until-countdown"] = r"""
     /* Built from the same clock the page reads, so the assertion stays true
        whatever day the suite is run on. */
@@ -2217,7 +2302,9 @@ T["days-until-countdown"] = r"""
         finish();
       }, 3000);
 """
+# ---- END: the test for days-until-countdown ----
 
+# ---- START: the test for roman-numeral-converter ----
 T["roman-numeral-converter"] = r"""
     set("input", "1994");
     eq("1994 is MCMXCIV", txt("asRoman"), "MCMXCIV");
@@ -2301,7 +2388,9 @@ T["roman-numeral-converter"] = r"""
        String(new Date().getFullYear()));
     finish();
 """
+# ---- END: the test for roman-numeral-converter ----
 
+# ---- START: the test for data-storage-converter ----
 T["data-storage-converter"] = r"""
     set("from", "tb");
     set("value", "1");
@@ -2368,7 +2457,9 @@ T["data-storage-converter"] = r"""
     set("from", "tb");
     finish();
 """
+# ---- END: the test for data-storage-converter ----
 
+# ---- START: the test for speed-converter ----
 T["speed-converter"] = r"""
     set("from", "kmh");
     set("value", "100");
@@ -2422,7 +2513,9 @@ T["speed-converter"] = r"""
     shown("an empty box is refused", "errWrap");
     finish();
 """
+# ---- END: the test for speed-converter ----
 
+# ---- START: the test for leap-year-checker ----
 T["leap-year-checker"] = r"""
     set("year", "2024");
     has("2024 is a leap year", txt("headline"), "2024 is a leap year");
@@ -2487,7 +2580,9 @@ T["leap-year-checker"] = r"""
     /* ---- END: six hundred years against the rule ---- */
     finish();
 """
+# ---- END: the test for leap-year-checker ----
 
+# ---- START: the test for week-number-calculator ----
 T["week-number-calculator"] = r"""
     /* Known-correct ISO week numbers, including every awkward case: a year
        starting mid-week, 31 December landing in the next year's week 1, and
@@ -2547,7 +2642,9 @@ T["week-number-calculator"] = r"""
     shown("an empty date is refused", "errWrap");
     finish();
 """
+# ---- END: the test for week-number-calculator ----
 
+# ---- START: the test for salary-calculator ----
 T["salary-calculator"] = r"""
   /* Default package: 12,00,000 CTC, basic 40%, metro, 12% PF, gratuity on,
      200 professional tax, no TDS. Worked by hand:
@@ -2637,7 +2734,9 @@ T["salary-calculator"] = r"""
   near("an empty CTC does not crash", txt("inHand"), -200, 1);
     finish();
 """
+# ---- END: the test for salary-calculator ----
 
+# ---- START: the test for fuel-cost-calculator ----
 T["fuel-cost-calculator"] = r"""
   /* Default journey: 20 km each way, return trip, 18 km/l, 105 a litre.
      40 km / 18 = 2.2222 litres, x 105 = 233.33 for the trip. */
@@ -2705,7 +2804,9 @@ T["fuel-cost-calculator"] = r"""
     near("and back", txt("tripCost"), 233, 1);
     finish();
 """
+# ---- END: the test for fuel-cost-calculator ----
 
+# ---- START: the test for text-to-morse ----
 T["text-to-morse"] = r"""
   /* The page loads with SOS in the box: ... --- ... */
   eq("SOS on load", out(), "... --- ...");
@@ -2769,7 +2870,9 @@ T["text-to-morse"] = r"""
   eq("clear empties the output", out(), "");
     finish();
 """
+# ---- END: the test for text-to-morse ----
 
+# ---- START: the test for nato-phonetic-converter ----
 T["nato-phonetic-converter"] = r"""
   var DASH = " " + String.fromCharCode(0x2014) + " ";
 
@@ -2833,7 +2936,9 @@ T["nato-phonetic-converter"] = r"""
   near("and zeroes the counts", txt("cLetters"), 0);
     finish();
 """
+# ---- END: the test for nato-phonetic-converter ----
 
+# ---- START: the test for cooking-measurement-converter ----
 T["cooking-measurement-converter"] = r"""
   /* Loads as 1 Indian cup (200 ml) of plain flour, density 0.52.
      200 ml x 0.52 = 104 g. */
@@ -2895,7 +3000,9 @@ T["cooking-measurement-converter"] = r"""
   has("and the normal note returns", txt("msg"), "approximate");
     finish();
 """
+# ---- END: the test for cooking-measurement-converter ----
 
+# ---- START: the test for shoe-size-converter ----
 T["shoe-size-converter"] = r"""
   /* Loads as men's India/UK 8, which is US 9, EU 42, 26.5 cm. */
   has("UK 8 is US 9", txt("mainOut"), "US 9");
@@ -2951,7 +3058,9 @@ T["shoe-size-converter"] = r"""
   eq("and the tiles reset", txt("oUk"), String.fromCharCode(0x2014));
     finish();
 """
+# ---- END: the test for shoe-size-converter ----
 
+# ---- START: the test for base64-encoder-decoder ----
 T["base64-encoder-decoder"] = r"""
   eq("108 ToolBox encodes to MTA4IFRvb2xCb3g=", out(), "MTA4IFRvb2xCb3g=");
   eq("characters in", txt("cIn"), "11");
@@ -3034,7 +3143,9 @@ T["base64-encoder-decoder"] = r"""
   eq("an empty box prints nothing", out(), "");
     finish();
 """
+# ---- END: the test for base64-encoder-decoder ----
 
+# ---- START: the test for url-encoder-decoder ----
 T["url-encoder-decoder"] = r"""
   eq("the default value is encoded for a query string", out(),
      "lunch%20box%20%26%20drinks%20%E2%80%94%2050%25%20off");
@@ -3088,7 +3199,9 @@ T["url-encoder-decoder"] = r"""
   eq("an empty box prints nothing", out(), "");
     finish();
 """
+# ---- END: the test for url-encoder-decoder ----
 
+# ---- START: the test for uuid-generator ----
 T["uuid-generator"] = r"""
   var RE = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
   var list = out().split("\n");
@@ -3148,7 +3261,9 @@ T["uuid-generator"] = r"""
   eq("and zeroes the count", txt("cCount"), "0");
     finish();
 """
+# ---- END: the test for uuid-generator ----
 
+# ---- START: the test for color-code-converter ----
 T["color-code-converter"] = r"""
   eq("three formats listed", rows().length, 3);
   has("the hex row", cell(0, 1), "#3b82f6");
@@ -3214,7 +3329,9 @@ T["color-code-converter"] = r"""
     set("input", "#3b82f6");
     finish();
 """
+# ---- END: the test for color-code-converter ----
 
+# ---- START: the test for html-encoder-decoder ----
 T["html-encoder-decoder"] = r"""
   eq("the default markup is escaped", out(),
      "&lt;a href=&quot;?a=1&amp;b=2&quot;&gt;Tom &amp; Jerry&#39;s &quot;big&quot; day&lt;/a&gt;");
@@ -3282,7 +3399,9 @@ T["html-encoder-decoder"] = r"""
   eq("an empty box prints nothing", out(), "");
     finish();
 """
+# ---- END: the test for html-encoder-decoder ----
 
+# ---- START: the test for image-resizer ----
 T["image-resizer"] = r"""
   var X = " " + String.fromCharCode(0x00D7) + " ";
   var DASH = String.fromCharCode(0x2014);
@@ -3364,7 +3483,9 @@ T["image-resizer"] = r"""
       });
   });
 """
+# ---- END: the test for image-resizer ----
 
+# ---- START: the test for image-rotator ----
 T["image-rotator"] = r"""
   var X = " " + String.fromCharCode(0x00D7) + " ";
 
@@ -3413,7 +3534,9 @@ T["image-rotator"] = r"""
       });
   });
 """
+# ---- END: the test for image-rotator ----
 
+# ---- START: the test for image-to-base64 ----
 T["image-to-base64"] = r"""
   var DASH = String.fromCharCode(0x2014);
 
@@ -3452,7 +3575,9 @@ T["image-to-base64"] = r"""
       });
   });
 """
+# ---- END: the test for image-to-base64 ----
 
+# ---- START: the test for svg-to-png ----
 T["svg-to-png"] = r"""
   var X = " " + String.fromCharCode(0x00D7) + " ";
 
@@ -3538,7 +3663,9 @@ T["svg-to-png"] = r"""
         });
     });
 """
+# ---- END: the test for svg-to-png ----
 
+# ---- START: the test for image-placeholder-generator ----
 T["image-placeholder-generator"] = r"""
   var X = " " + String.fromCharCode(0x00D7) + " ";
 
@@ -3632,7 +3759,9 @@ T["image-placeholder-generator"] = r"""
         });
     });
 """
+# ---- END: the test for image-placeholder-generator ----
 
+# ---- START: the test for random-number-generator ----
 T["random-number-generator"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
   function lines() {
@@ -3713,7 +3842,9 @@ T["random-number-generator"] = r"""
   eq("and clears the tiles", txt("sCount"), String.fromCharCode(0x2014));
   finish();
 """
+# ---- END: the test for random-number-generator ----
 
+# ---- START: the test for coin-flip ----
 T["coin-flip"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
 
@@ -3762,7 +3893,9 @@ T["coin-flip"] = r"""
   eq("and the box is put away", document.getElementById("output").hidden, true);
   finish();
 """
+# ---- END: the test for coin-flip ----
 
+# ---- START: the test for dice-roller ----
 T["dice-roller"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
   function dice() {
@@ -3861,7 +3994,9 @@ T["dice-roller"] = r"""
     eq("and Copy has nothing old to hand over", copied, null);
     finish();
 """
+# ---- END: the test for dice-roller ----
 
+# ---- START: the test for random-list-shuffler ----
 T["random-list-shuffler"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
   function lines() {
@@ -3924,7 +4059,9 @@ T["random-list-shuffler"] = r"""
   eq("and the output is cleared", txt("output"), "");
   finish();
 """
+# ---- END: the test for random-list-shuffler ----
 
+# ---- START: the test for random-picker ----
 T["random-picker"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
   function names() {
@@ -4005,7 +4142,9 @@ T["random-picker"] = r"""
     has("half a winner is refused, not rounded", txt("msg"), "whole number of winners");
     finish();
 """
+# ---- END: the test for random-picker ----
 
+# ---- START: the test for username-generator ----
 T["username-generator"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
   function ideas() {
@@ -4091,7 +4230,9 @@ T["username-generator"] = r"""
     eq("and twelve works again", txt("output").split("\n").length, 12);
     finish();
 """
+# ---- END: the test for username-generator ----
 
+# ---- START: the test for hash-generator ----
 T["hash-generator"] = r"""
   /* Published test vectors, computed with Python's hashlib, not with this
      page - a hash tool agreeing with itself proves nothing. */
@@ -4155,7 +4296,9 @@ T["hash-generator"] = r"""
     });
   });
 """
+# ---- END: the test for hash-generator ----
 
+# ---- START: the test for jwt-decoder ----
 T["jwt-decoder"] = r"""
   function b64(obj) {
     var bytes = new TextEncoder().encode(JSON.stringify(obj));
@@ -4211,7 +4354,9 @@ T["jwt-decoder"] = r"""
   has("clearing asks for a token", txt("msg"), "Paste a token");
   finish();
 """
+# ---- END: the test for jwt-decoder ----
 
+# ---- START: the test for regex-tester ----
 T["regex-tester"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
   function marks(sel) { return document.querySelectorAll("#highlight " + sel).length; }
@@ -4269,7 +4414,9 @@ T["regex-tester"] = r"""
   has("reset asks for a pattern", txt("msg"), "Type a pattern");
   finish();
 """
+# ---- END: the test for regex-tester ----
 
+# ---- START: the test for json-to-csv ----
 T["json-to-csv"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
   function lines() { return txt("output").split("\r\n"); }
@@ -4335,7 +4482,9 @@ T["json-to-csv"] = r"""
   has("and the page says the first was not used", txt("msg"), 'The key "a" appears twice in one object');
   finish();
 """
+# ---- END: the test for json-to-csv ----
 
+# ---- START: the test for csv-to-json ----
 T["csv-to-json"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
   function parsed() { return JSON.parse(txt("output")); }
@@ -4388,7 +4537,9 @@ T["csv-to-json"] = r"""
     eq("one row is a row", txt("msg").indexOf("1 row,"), 0);
     finish();
 """
+# ---- END: the test for csv-to-json ----
 
+# ---- START: the test for cron-expression-parser ----
 T["cron-expression-parser"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
   function runLines() {
@@ -4445,7 +4596,9 @@ T["cron-expression-parser"] = r"""
   has("reset returns to the example", txt("words"), "At 05:30");
   finish();
 """
+# ---- END: the test for cron-expression-parser ----
 
+# ---- START: the test for html-minifier ----
 T["html-minifier"] = r"""
   function out() { return txt("output"); }
 
@@ -4491,7 +4644,9 @@ T["html-minifier"] = r"""
       finish();
     });
 """
+# ---- END: the test for html-minifier ----
 
+# ---- START: the test for css-minifier ----
 T["css-minifier"] = r"""
   function out() { return txt("output"); }
 
@@ -4538,7 +4693,9 @@ T["css-minifier"] = r"""
       finish();
     });
 """
+# ---- END: the test for css-minifier ----
 
+# ---- START: the test for sql-formatter ----
 T["sql-formatter"] = r"""
   function out() { return txt("output"); }
   function lines() { return out().split("\n"); }
@@ -4620,7 +4777,9 @@ T["sql-formatter"] = r"""
   eq("formatting twice is the same as once", out(), once);
   finish();
 """
+# ---- END: the test for sql-formatter ----
 
+# ---- START: the test for readability-score ----
 T["readability-score"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
 
@@ -4683,7 +4842,9 @@ T["readability-score"] = r"""
   has("while short English is still asked for ten words", txt("msg"), "at least ten words");
   finish();
 """
+# ---- END: the test for readability-score ----
 
+# ---- START: the test for text-diff-checker ----
 T["text-diff-checker"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
   function marks(sel) { return document.querySelectorAll("#output " + sel).length; }
@@ -4739,7 +4900,9 @@ T["text-diff-checker"] = r"""
   has("clearing asks for both versions", txt("msg"), "Paste a version");
   finish();
 """
+# ---- END: the test for text-diff-checker ----
 
+# ---- START: the test for text-to-speech ----
 T["text-to-speech"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
 
@@ -4798,7 +4961,9 @@ T["text-to-speech"] = r"""
     }
     finish();
 """
+# ---- END: the test for text-to-speech ----
 
+# ---- START: the test for working-days-calculator ----
 T["working-days-calculator"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
 
@@ -4857,7 +5022,9 @@ T["working-days-calculator"] = r"""
     ok("and the right way round counts again", txt("bigWorking") !== DASH, txt("bigWorking"));
     finish();
 """
+# ---- END: the test for working-days-calculator ----
 
+# ---- START: the test for stopwatch-timer ----
 T["stopwatch-timer"] = r"""
   eq("it opens stopped at zero", txt("display"), "00:00.00");
   eq("and says so", txt("sState"), "ready");
@@ -4917,7 +5084,9 @@ T["stopwatch-timer"] = r"""
         }, 4000);
     }, 4000);
 """
+# ---- END: the test for stopwatch-timer ----
 
+# ---- START: the test for time-zone-converter ----
 T["time-zone-converter"] = r"""
   /* A fixed date, so daylight saving is a fact rather than a variable. */
   set("zone", "Asia/Kolkata");
@@ -4984,7 +5153,9 @@ T["time-zone-converter"] = r"""
   ok("using now fills in today", val("date").length === 10, val("date"));
   finish();
 """
+# ---- END: the test for time-zone-converter ----
 
+# ---- START: the test for unit-price-comparison ----
 T["unit-price-comparison"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
 
@@ -5054,7 +5225,9 @@ T["unit-price-comparison"] = r"""
   has("reset empties everything", txt("msg"), "at least two packs");
   finish();
 """
+# ---- END: the test for unit-price-comparison ----
 
+# ---- START: the test for scientific-calculator ----
 T["scientific-calculator"] = r"""
   /* sin(30) in degrees is 0.5, plus sqrt(16) times 2 which is 8. */
   eq("the opening sum", txt("answer"), "8.5");
@@ -5154,7 +5327,9 @@ T["scientific-calculator"] = r"""
   eq("C empties the box", val("expr"), "");
   finish();
 """
+# ---- END: the test for scientific-calculator ----
 
+# ---- START: the test for calorie-calculator ----
 T["calorie-calculator"] = r"""
   function num(id) { return Number(txt(id).replace(/[^0-9.-]/g, "")); }
 
@@ -5210,7 +5385,9 @@ T["calorie-calculator"] = r"""
     set("age", "30");
     finish();
 """
+# ---- END: the test for calorie-calculator ----
 
+# ---- START: the test for image-color-picker ----
 T["image-color-picker"] = r"""
   var TIMES = String.fromCharCode(0x00D7);
   var DASH = String.fromCharCode(0x2014);
@@ -5300,7 +5477,9 @@ T["image-color-picker"] = r"""
       });
   });
 """
+# ---- END: the test for image-color-picker ----
 
+# ---- START: the test for image-cropper ----
 T["image-cropper"] = r"""
   var TIMES = String.fromCharCode(0x00D7);
   var DASH = String.fromCharCode(0x2014);
@@ -5463,7 +5642,9 @@ T["image-cropper"] = r"""
       });
   });
 """
+# ---- END: the test for image-cropper ----
 
+# ---- START: the test for favicon-generator ----
 T["favicon-generator"] = r"""
   var TIMES = String.fromCharCode(0x00D7);
   var DASH = String.fromCharCode(0x2014);
@@ -5637,7 +5818,9 @@ T["favicon-generator"] = r"""
       });
   });
 """
+# ---- END: the test for favicon-generator ----
 
+# ---- START: the test for photo-watermark ----
 T["photo-watermark"] = r"""
   var TIMES = String.fromCharCode(0x00D7);
   var DASH = String.fromCharCode(0x2014);
@@ -5817,7 +6000,9 @@ T["photo-watermark"] = r"""
       });
   });
 """
+# ---- END: the test for photo-watermark ----
 
+# ---- START: the test for meme-generator ----
 T["meme-generator"] = r"""
   var TIMES = String.fromCharCode(0x00D7);
   var DASH = String.fromCharCode(0x2014);
@@ -5973,7 +6158,9 @@ T["meme-generator"] = r"""
       });
   });
 """
+# ---- END: the test for meme-generator ----
 
+# ---- START: the test for image-splitter ----
 T["image-splitter"] = r"""
   var TIMES = String.fromCharCode(0x00D7);
   var DASH = String.fromCharCode(0x2014);
@@ -6127,7 +6314,9 @@ T["image-splitter"] = r"""
       });
   });
 """
+# ---- END: the test for image-splitter ----
 
+# ---- START: the test for image-metadata-viewer ----
 T["image-metadata-viewer"] = r"""
   var TIMES = String.fromCharCode(0x00D7);
   var DASH = String.fromCharCode(0x2014);
@@ -6456,7 +6645,9 @@ function samplePhoto(be, overrides) {
       });
   });
 """
+# ---- END: the test for image-metadata-viewer ----
 
+# ---- START: the test for barcode-generator ----
 T["barcode-generator"] = r"""
   var DASH = String.fromCharCode(0x2014);
   var TIMES = String.fromCharCode(0x00D7);
@@ -7002,7 +7193,9 @@ T["barcode-generator"] = r"""
     });
   });
 """
+# ---- END: the test for barcode-generator ----
 
+# ---- START: the test for qr-code-generator ----
 T["qr-code-generator"] = r"""
   var DASH = String.fromCharCode(0x2014);
   var TIMES = String.fromCharCode(0x00D7);
@@ -7446,7 +7639,9 @@ T["qr-code-generator"] = r"""
     });
   });
 """
+# ---- END: the test for qr-code-generator ----
 
+# ---- START: the test for js-minifier ----
 T["js-minifier"] = r"""
   var DASH = String.fromCharCode(0x2014);
   var CASES = [{"label": "ASI: statements without semicolons", "source": "var a = 1\nvar b = 2\nfoo(a, b)\n", "out": "var a=1\nvar b=2\nfoo(a,b)"}, {"label": "return then a new line returns nothing", "source": "function f() {\n  return\n  42\n}\n", "out": "function f(){return\n42}"}, {"label": "return with the value on the same line", "source": "function f() {\n  return   42\n}\n", "out": "function f(){return 42}"}, {"label": "prefix ++ on the next line", "source": "var a = b\n++c\n", "out": "var a=b\n++c"}, {"label": "postfix ++ then a statement", "source": "a++\nb\n", "out": "a++\nb"}, {"label": "a call split across lines", "source": "var x = y\n(z)\n", "out": "var x=y(z)"}, {"label": "IIFE after a function expression", "source": "var f = function () {}\n(function () {})()\n", "out": "var f=function(){}(function(){})()"}, {"label": "IIFE after a declaration", "source": "function f() {}\n(function () {})()\n", "out": "function f(){}(function(){})()"}, {"label": "index access on the next line", "source": "x\n[1, 2].forEach(g)\n", "out": "x[1,2].forEach(g)"}, {"label": "method chain with leading dots", "source": "foo\n  .bar()\n  .baz\n  ?.qux\n", "out": "foo.bar().baz?.qux"}, {"label": "operators at the start of a line", "source": "var t = a\n  + b\n  - c\n  && d\n  || e\nvar u = (g\n  ?? h)\n", "out": "var t=a+b-c&&d||e\nvar u=(g??h)"}, {"label": "else, catch and finally after a bare statement", "source": "if (a) f()\nelse g()\ntry { x() }\ncatch (e) { y() }\nfinally { z() }\nif (a) { f() }\nelse { g() }\n", "out": "if(a)f()\nelse g()\ntry{x()}\ncatch(e){y()}\nfinally{z()}\nif(a){f()}\nelse{g()}"}, {"label": "do while after a bare statement", "source": "do x()\nwhile (y)\ndo { x() }\nwhile (y)\n", "out": "do x()\nwhile(y)\ndo{x()}\nwhile(y)"}, {"label": "ternary across lines", "source": "var v = a ?\n  b :\n  c\n", "out": "var v=a?b:c"}, {"label": "division, not a regex", "source": "a = b / c / d\n", "out": "a=b/c/d"}, {"label": "division after a call", "source": "x = f(y) / 2 / 3\n", "out": "x=f(y)/2/3"}, {"label": "division after a parenthesis", "source": "x = (a + b) / c / d\n", "out": "x=(a+b)/c/d"}, {"label": "division after a bracket", "source": "x = a[0] / 2 / 3\n", "out": "x=a[0]/2/3"}, {"label": "division after postfix ++", "source": "x = a++ / 2 / 3\n", "out": "x=a++/2/3"}, {"label": "division on the next line", "source": "x = b\n/ c\n/ d\n", "out": "x=b/c/d"}, {"label": "a regex with spaces inside", "source": "x = /a  b/g.test(s)\n", "out": "x=/a  b/g.test(s)"}, {"label": "a regex containing a slash in a class", "source": "var r = /[/]\\//.source\n", "out": "var r=/[/]\\//.source"}, {"label": "a regex containing a brace and quotes", "source": "var r = /}\"'`/g\n", "out": "var r=/}\"'`/g"}, {"label": "regex after return", "source": "function f(s) { return /a b/.test(s) }\n", "out": "function f(s){return/a b/.test(s)}"}, {"label": "regex after typeof", "source": "var t = typeof /a b/\n", "out": "var t=typeof/a b/"}, {"label": "regex after a control header", "source": "if (x) /a , b/.test(y)\nwhile (x) /a , b/.test(y)\nfor (;;) /a , b/.test(y)\nwith (o) /a , b/.test(y)\n", "out": "if(x)/a , b/.test(y)\nwhile(x)/a , b/.test(y)\nfor(;;)/a , b/.test(y)\nwith(o)/a , b/.test(y)"}, {"label": "regex after a block", "source": "function f() {}\n/a b/.test(s)\nif (a) {}\n/c d/.test(s)\n", "out": "function f(){}\n/a b/.test(s)\nif(a){}\n/c d/.test(s)"}, {"label": "regex in a case", "source": "switch (x) { case /a b/.test(s): y() }\n", "out": "switch(x){case/a b/.test(s):y()}"}, {"label": "regex after =>", "source": "var f = s => /a b/.test(s)\n", "out": "var f=s=>/a b/.test(s)"}, {"label": "regex as an argument", "source": "s.replace(/  /g, ' ').split(/ , /)\n", "out": "s.replace(/  /g,' ').split(/ , /)"}, {"label": "a regex followed by a word", "source": "x = /a/ in o\ny = /b/g instanceof RegExp\n", "out": "x=/a/ in o\ny=/b/g instanceof RegExp"}, {"label": "template: escaped backtick, dollar and backslash", "source": "var s = `a\\`b \\${c} \\\\ d ${ e }`\n", "out": "var s=`a\\`b \\${c} \\\\ d ${ e }`"}, {"label": "uppercase and signed exponents", "source": "var n = [1E3, 1E+3, 2e-2, 3.5E-1]\n", "out": "var n=[1E3,1E+3,2e-2,3.5E-1]"}, {"label": "a unicode escape in a name and a braced one", "source": "var \\u0061b = 1, \\u{62}c = 2\n", "out": "var \\u0061b=1,\\u{62}c=2"}, {"label": "an escaped name before a keyword", "source": "var \\u{62} = {}\nx = \\u{62} in o\ny = \\u{62} instanceof Object\n", "out": "var \\u{62}={}\nx=\\u{62} in o\ny=\\u{62} instanceof Object"}, {"label": "a number ending in a dot before a keyword", "source": "x = 5. in o\ny = 5. instanceof Number\nz = 1 in o\n", "out": "x=5. in o\ny=5. instanceof Number\nz=1 in o"}, {"label": "keyword-named property then division", "source": "x = o.return / 2 / 3\ny = o.typeof / 2 / 3\nz = o.in / 2 / 3\n", "out": "x=o.return/2/3\ny=o.typeof/2/3\nz=o.in/2/3"}, {"label": "a division then a regex", "source": "x = a / /b c/.source.length\n", "out": "x=a/ /b c/.source.length"}, {"label": "the /= operator and a regex starting with =", "source": "a /= 2\nb = /=/.test(c)\n", "out": "a/=2\nb=/=/.test(c)"}, {"label": "a comment after a division", "source": "x = 1 / 2 / 3 // trailing / comment\n", "out": "x=1/2/3"}, {"label": "template: plain", "source": "var s = `a  b`\n", "out": "var s=`a  b`"}, {"label": "template: expression", "source": "var s = `total: ${ a + b }`\n", "out": "var s=`total: ${ a + b }`"}, {"label": "template: nested", "source": "var s = `a ${ `b ${ c } d` } e`\n", "out": "var s=`a ${ `b ${ c } d` } e`"}, {"label": "template: brace and backtick in a string inside", "source": "var s = `x ${ '}' + \"`\" + '\\'' } y`\n", "out": "var s=`x ${ '}' + \"`\" + '\\'' } y`"}, {"label": "template: regex with a brace inside", "source": "var s = `x ${ /}/.test(t) } y`\n", "out": "var s=`x ${ /}/.test(t) } y`"}, {"label": "template: object literal inside", "source": "var s = `x ${ { a: 1 }.a } y`\n", "out": "var s=`x ${ { a: 1 }.a } y`"}, {"label": "template: tagged", "source": "var s = tag`a ${ b } c`\nvar t = tag\n`x`\n", "out": "var s=tag`a ${ b } c`\nvar t=tag`x`"}, {"label": "template: line breaks kept", "source": "var s = `line one\n  line two\n`\n", "out": "var s=`line one\n  line two\n`"}, {"label": "string containing comment markers", "source": "var s = 'a // b /* c */ d'\nvar t = \"e // f\"\n", "out": "var s='a // b /* c */ d'\nvar t=\"e // f\""}, {"label": "string with escapes and a continuation", "source": "var s = 'it\\'s \\\\ done' + \"say \\\"hi\\\"\" + 'line \\\nnext'\n", "out": "var s='it\\'s \\\\ done'+\"say \\\"hi\\\"\"+'line \\\nnext'"}, {"label": "string with a script tag", "source": "var s = '<\/script>'\n", "out": "var s='<\/script>'"}, {"label": "a unicode line separator inside a string", "source": "var s = 'a\u2028b'\n", "out": "var s='a\u2028b'"}, {"label": "numbers", "source": "var n = [1, 1.5, .5, 5., 0.5e-3, 1_000, 0xFF, 0b101, 0o17, 10n, 0xFFn, 1e3]\n", "out": "var n=[1,1.5,.5,5.,0.5e-3,1_000,0xFF,0b101,0o17,10n,0xFFn,1e3]"}, {"label": "a dot after a whole number", "source": "var a = 1..toString()\nvar b = 1 .toString()\nvar c = 0.5.toFixed(1)\nvar d = 1.5.toFixed(1)\n", "out": "var a=1..toString()\nvar b=1 .toString()\nvar c=0.5.toFixed(1)\nvar d=1.5.toFixed(1)"}, {"label": "a conditional with a fraction", "source": "var a = x?.5:1\nvar b = x ? .5 : 1\nvar c = x?.y\n", "out": "var a=x? .5:1\nvar b=x? .5:1\nvar c=x?.y"}, {"label": "operators that would fuse", "source": "a = b + +c\na = b - -c\na = b + ++c\na = b - --c\na = b++ + c\na = b-- - c\na = b++ + ++c\na = b - - - c\n", "out": "a=b+ +c\na=b- -c\na=b+ ++c\na=b- --c\na=b+++c\na=b---c\na=b+++ ++c\na=b- - -c"}, {"label": "keywords next to names", "source": "var t = typeof x, u = void 0, v = a in b, w = a instanceof B\nnew Foo\ndelete a.b\n", "out": "var t=typeof x,u=void 0,v=a in b,w=a instanceof B\nnew Foo\ndelete a.b"}, {"label": "else and do", "source": "if (a) b(); else if (c) d(); else e()\ndo x(); while (y)\n", "out": "if(a)b();else if(c)d();else e()\ndo x();while(y)"}, {"label": "loops", "source": "for (var k in o) f(k)\nfor (const v of xs) g(v)\nfor (var i = 0, j = 9; i < j; i++, j--) h()\n", "out": "for(var k in o)f(k)\nfor(const v of xs)g(v)\nfor(var i=0,j=9;i<j;i++,j--)h()"}, {"label": "a comment acting as a line break", "source": "var a = b /*\n*/ ++c\n", "out": "var a=b\n++c"}, {"label": "a comment on the same line as return", "source": "function f() { return /* x */ 1 }\n", "out": "function f(){return 1}"}, {"label": "a comment at the end with no newline", "source": "foo() // done", "out": "foo()"}, {"label": "line comment inside an expression", "source": "var a = 1 + // two\n  2\n", "out": "var a=1+2"}, {"label": "classes", "source": "class A extends B {\n  static x = 1\n  #p = 2\n  get v() { return this.#p }\n  set v(n) { this.#p = n }\n  static async *gen() { yield 1 }\n  [k]() {}\n  static { init() }\n}\n", "out": "class A extends B{static x=1\n#p=2\nget v(){return this.#p}\nset v(n){this.#p=n}\nstatic async*gen(){yield 1}[k](){}\nstatic{init()}}"}, {"label": "a field named get, then a computed method", "source": "class A {\n  get\n  x() {}\n}\n", "out": "class A{get\nx(){}}"}, {"label": "async and await", "source": "async function f() { await g(); for await (const x of y) {} }\nvar h = async () => await k()\nvar i = async x => x\n", "out": "async function f(){await g();for await(const x of y){}}\nvar h=async()=>await k()\nvar i=async x=>x"}, {"label": "generators", "source": "function* g() { yield\n 1; yield* other(); const x = yield y }\n", "out": "function*g(){yield\n1;yield*other();const x=yield y}"}, {"label": "arrow functions", "source": "var f = (a, b) =>\n  a + b\nvar g = x => ({ x })\nvar h = () => {}\n", "out": "var f=(a,b)=>a+b\nvar g=x=>({x})\nvar h=()=>{}"}, {"label": "labels", "source": "outer: for (;;) { for (;;) { break outer } }\nlbl: { break lbl }\n", "out": "outer:for(;;){for(;;){break outer}}\nlbl:{break lbl}"}, {"label": "break and continue on their own lines", "source": "for (;;) { break\n  foo() }\nfor (;;) { continue\n  bar() }\n", "out": "for(;;){break\nfoo()}\nfor(;;){continue\nbar()}"}, {"label": "destructuring and spread", "source": "var { a, b: [c, ...d], ...e } = f\nvar g = [...h, ...i]\nfunction j(k = 1, ...l) {}\n", "out": "var{a,b:[c,...d],...e}=f\nvar g=[...h,...i]\nfunction j(k=1,...l){}"}, {"label": "nullish and exponent", "source": "a ??= b\nc ||= d\ne &&= f\nvar g = h ** 2 ** 3\n", "out": "a??=b\nc||=d\ne&&=f\nvar g=h**2**3"}, {"label": "optional catch binding", "source": "try { a() } catch { b() } finally { c() }\n", "out": "try{a()}catch{b()}finally{c()}"}, {"label": "unicode names", "source": "var \u00e9 = 1, \u0c24 = 2, \\u0061bc = 3\n", "out": "var \u00e9=1,\u0c24=2,\\u0061bc=3"}, {"label": "object literals", "source": "var o = {\n  a: 1,\n  'b-c': 2,\n  3: 4,\n  get g() { return 1 },\n  set g(v) {},\n  [k]: 5,\n  async m() {},\n  *n() {}\n}\n", "out": "var o={a:1,'b-c':2,3:4,get g(){return 1},set g(v){},[k]:5,async m(){},*n(){}}"}, {"label": "a directive", "source": "'use strict'\nfoo()\n", "out": "'use strict'\nfoo()"}, {"label": "a shebang", "source": "#!/usr/bin/env  node  -r  x\nfoo()\n", "out": "#!/usr/bin/env  node  -r  x\nfoo()"}, {"label": "getters and setters as names", "source": "var get = 1, set = 2\nget\n(x)\n", "out": "var get=1,set=2\nget\n(x)"}, {"label": "the identifier of", "source": "var of = 1\nof\n++x\n", "out": "var of=1\nof\n++x"}, {"label": "comma and sequence", "source": "a = (b, c)\nfor (;;) d(), e()\n", "out": "a=(b,c)\nfor(;;)d(),e()"}, {"label": "object at the start of a line", "source": "x = {\n  a: 1\n}\nfoo()\n", "out": "x={a:1}\nfoo()"}, {"label": "empty statements", "source": ";;; if (a) ; else ;\n", "out": ";;;if(a);else;"}, {"label": "in operator inside for", "source": "for (var i = (a in b); i < 1; i++) {}\n", "out": "for(var i=(a in b);i<1;i++){}"}, {"label": "the void and comma operators", "source": "void 0, void (0)\n", "out": "void 0,void(0)"}, {"label": "long chains", "source": "a.b.c\n  .d(e)\n  [f]\n  (g)\n", "out": "a.b.c.d(e)[f](g)"}, {"label": "new with and without arguments", "source": "new Foo\nnew Foo(1)\nnew (foo())()\nnew new X()()\n", "out": "new Foo\nnew Foo(1)\nnew(foo())()\nnew new X()()"}, {"label": "getter on a number", "source": "0..a\n1.0.a\n", "out": "0..a\n1.0.a"}, {"label": "an HTML-ish comparison", "source": "if (a < !b) {}\nif (a<!c) {}\n", "out": "if(a< !b){}\nif(a< !c){}"}, {"label": "decrement then greater", "source": "if (a-- > b) {}\n", "out": "if(a-->b){}"}, {"label": "big real-looking snippet", "source": "(function (root, factory) {\n  if (typeof define === 'function' && define.amd) define([], factory)\n  else root.lib = factory()\n}(this, function () {\n  'use strict'\n  var x = 1 /* one */\n  function y() { return x / 2 }\n  return { y: y }\n}))\n", "out": "(function(root,factory){if(typeof define==='function'&&define.amd)define([],factory)\nelse root.lib=factory()}(this,function(){'use strict'\nvar x=1\nfunction y(){return x/2}\nreturn{y:y}}))"}];
@@ -7593,7 +7788,9 @@ T["js-minifier"] = r"""
       });
   });
 """
+# ---- END: the test for js-minifier ----
 
+# ---- START: the test for markdown-previewer ----
 T["markdown-previewer"] = r"""
   var DASH = String.fromCharCode(0x2014);
   var GOLDENS = [["\tfoo\tbaz\t\tbim","\u003cpre>\u003ccode>foo\tbaz\t\tbim\n\u003c/code>\u003c/pre>\n"],["  \tfoo\tbaz\t\tbim","\u003cpre>\u003ccode>foo\tbaz\t\tbim\n\u003c/code>\u003c/pre>\n"],["    a\ta\n    \u1f50\ta","\u003cpre>\u003ccode>a\ta\n\u1f50\ta\n\u003c/code>\u003c/pre>\n"],["  - foo\n\n\tbar","\u003cul>\n\u003cli>\n\u003cp>foo\u003c/p>\n\u003cp>bar\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["- foo\n\n\t\tbar","\u003cul>\n\u003cli>\n\u003cp>foo\u003c/p>\n\u003cpre>\u003ccode>  bar\n\u003c/code>\u003c/pre>\n\u003c/li>\n\u003c/ul>\n"],[">\t\tfoo","\u003cblockquote>\n\u003cpre>\u003ccode>  foo\n\u003c/code>\u003c/pre>\n\u003c/blockquote>\n"],["-\t\tfoo","\u003cul>\n\u003cli>\n\u003cpre>\u003ccode>  foo\n\u003c/code>\u003c/pre>\n\u003c/li>\n\u003c/ul>\n"],["    foo\n\tbar","\u003cpre>\u003ccode>foo\nbar\n\u003c/code>\u003c/pre>\n"],[" - foo\n   - bar\n\t - baz","\u003cul>\n\u003cli>foo\n\u003cul>\n\u003cli>bar\n\u003cul>\n\u003cli>baz\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ul>\n"],["#\tFoo","\u003ch1>Foo\u003c/h1>\n"],["*\t*\t*\t","\u003chr>\n"],["- `one\n- two`","\u003cul>\n\u003cli>`one\u003c/li>\n\u003cli>two`\u003c/li>\n\u003c/ul>\n"],["***\n---\n___","\u003chr>\n\u003chr>\n\u003chr>\n"],["+++","\u003cp>+++\u003c/p>\n"],["===","\u003cp>===\u003c/p>\n"],["--\n**\n__","\u003cp>--\n**\n__\u003c/p>\n"],[" ***\n  ***\n   ***","\u003chr>\n\u003chr>\n\u003chr>\n"],["    ***","\u003cpre>\u003ccode>***\n\u003c/code>\u003c/pre>\n"],["Foo\n    ***","\u003cp>Foo\n***\u003c/p>\n"],["_____________________________________","\u003chr>\n"],[" - - -","\u003chr>\n"],[" **  * ** * ** * **","\u003chr>\n"],["-     -      -      -","\u003chr>\n"],["- - - -    ","\u003chr>\n"],["_ _ _ _ a\n\na------\n\n---a---","\u003cp>_ _ _ _ a\u003c/p>\n\u003cp>a------\u003c/p>\n\u003cp>---a---\u003c/p>\n"],[" *-*","\u003cp>\u003cem>-\u003c/em>\u003c/p>\n"],["- foo\n***\n- bar","\u003cul>\n\u003cli>foo\u003c/li>\n\u003c/ul>\n\u003chr>\n\u003cul>\n\u003cli>bar\u003c/li>\n\u003c/ul>\n"],["Foo\n***\nbar","\u003cp>Foo\u003c/p>\n\u003chr>\n\u003cp>bar\u003c/p>\n"],["Foo\n---\nbar","\u003ch2>Foo\u003c/h2>\n\u003cp>bar\u003c/p>\n"],["* Foo\n* * *\n* Bar","\u003cul>\n\u003cli>Foo\u003c/li>\n\u003c/ul>\n\u003chr>\n\u003cul>\n\u003cli>Bar\u003c/li>\n\u003c/ul>\n"],["- Foo\n- * * *","\u003cul>\n\u003cli>Foo\u003c/li>\n\u003cli>\n\u003chr>\n\u003c/li>\n\u003c/ul>\n"],["# foo\n## foo\n### foo\n#### foo\n##### foo\n###### foo","\u003ch1>foo\u003c/h1>\n\u003ch2>foo\u003c/h2>\n\u003ch3>foo\u003c/h3>\n\u003ch4>foo\u003c/h4>\n\u003ch5>foo\u003c/h5>\n\u003ch6>foo\u003c/h6>\n"],["####### foo","\u003cp>####### foo\u003c/p>\n"],["#5 bolt\n\n#hashtag","\u003cp>#5 bolt\u003c/p>\n\u003cp>#hashtag\u003c/p>\n"],["\\## foo","\u003cp>## foo\u003c/p>\n"],["# foo *bar* \\*baz\\*","\u003ch1>foo \u003cem>bar\u003c/em> *baz*\u003c/h1>\n"],["#                  foo                     ","\u003ch1>foo\u003c/h1>\n"],[" ### foo\n  ## foo\n   # foo","\u003ch3>foo\u003c/h3>\n\u003ch2>foo\u003c/h2>\n\u003ch1>foo\u003c/h1>\n"],["    # foo","\u003cpre>\u003ccode># foo\n\u003c/code>\u003c/pre>\n"],["foo\n    # bar","\u003cp>foo\n# bar\u003c/p>\n"],["## foo ##\n  ###   bar    ###","\u003ch2>foo\u003c/h2>\n\u003ch3>bar\u003c/h3>\n"],["# foo ##################################\n##### foo ##","\u003ch1>foo\u003c/h1>\n\u003ch5>foo\u003c/h5>\n"],["### foo ###     ","\u003ch3>foo\u003c/h3>\n"],["### foo ### b","\u003ch3>foo ### b\u003c/h3>\n"],["# foo#","\u003ch1>foo#\u003c/h1>\n"],["### foo \\###\n## foo #\\##\n# foo \\#","\u003ch3>foo ###\u003c/h3>\n\u003ch2>foo ###\u003c/h2>\n\u003ch1>foo #\u003c/h1>\n"],["****\n## foo\n****","\u003chr>\n\u003ch2>foo\u003c/h2>\n\u003chr>\n"],["Foo bar\n# baz\nBar foo","\u003cp>Foo bar\u003c/p>\n\u003ch1>baz\u003c/h1>\n\u003cp>Bar foo\u003c/p>\n"],["## \n#\n### ###","\u003ch2>\u003c/h2>\n\u003ch1>\u003c/h1>\n\u003ch3>\u003c/h3>\n"],["Foo *bar*\n=========\n\nFoo *bar*\n---------","\u003ch1>Foo \u003cem>bar\u003c/em>\u003c/h1>\n\u003ch2>Foo \u003cem>bar\u003c/em>\u003c/h2>\n"],["Foo *bar\nbaz*\n====","\u003ch1>Foo \u003cem>bar\nbaz\u003c/em>\u003c/h1>\n"],["  Foo *bar\nbaz*\t\n====","\u003ch1>Foo \u003cem>bar\nbaz\u003c/em>\u003c/h1>\n"],["Foo\n-------------------------\n\nFoo\n=","\u003ch2>Foo\u003c/h2>\n\u003ch1>Foo\u003c/h1>\n"],["   Foo\n---\n\n  Foo\n-----\n\n  Foo\n  ===","\u003ch2>Foo\u003c/h2>\n\u003ch2>Foo\u003c/h2>\n\u003ch1>Foo\u003c/h1>\n"],["    Foo\n    ---\n\n    Foo\n---","\u003cpre>\u003ccode>Foo\n---\n\nFoo\n\u003c/code>\u003c/pre>\n\u003chr>\n"],["Foo\n   ----      ","\u003ch2>Foo\u003c/h2>\n"],["Foo\n    ---","\u003cp>Foo\n---\u003c/p>\n"],["Foo\n= =\n\nFoo\n--- -","\u003cp>Foo\n= =\u003c/p>\n\u003cp>Foo\u003c/p>\n\u003chr>\n"],["Foo  \n-----","\u003ch2>Foo\u003c/h2>\n"],["Foo\\\n----","\u003ch2>Foo\\\u003c/h2>\n"],["> Foo\n---","\u003cblockquote>\n\u003cp>Foo\u003c/p>\n\u003c/blockquote>\n\u003chr>\n"],["> foo\nbar\n===","\u003cblockquote>\n\u003cp>foo\nbar\n===\u003c/p>\n\u003c/blockquote>\n"],["- Foo\n---","\u003cul>\n\u003cli>Foo\u003c/li>\n\u003c/ul>\n\u003chr>\n"],["Foo\nBar\n---","\u003ch2>Foo\nBar\u003c/h2>\n"],["---\nFoo\n---\nBar\n---\nBaz","\u003chr>\n\u003ch2>Foo\u003c/h2>\n\u003ch2>Bar\u003c/h2>\n\u003cp>Baz\u003c/p>\n"],["\n====","\u003cp>====\u003c/p>\n"],["---\n---","\u003chr>\n\u003chr>\n"],["- foo\n-----","\u003cul>\n\u003cli>foo\u003c/li>\n\u003c/ul>\n\u003chr>\n"],["    foo\n---","\u003cpre>\u003ccode>foo\n\u003c/code>\u003c/pre>\n\u003chr>\n"],["> foo\n-----","\u003cblockquote>\n\u003cp>foo\u003c/p>\n\u003c/blockquote>\n\u003chr>\n"],["\\> foo\n------","\u003ch2>&gt; foo\u003c/h2>\n"],["Foo\n\nbar\n---\nbaz","\u003cp>Foo\u003c/p>\n\u003ch2>bar\u003c/h2>\n\u003cp>baz\u003c/p>\n"],["Foo\nbar\n\n---\n\nbaz","\u003cp>Foo\nbar\u003c/p>\n\u003chr>\n\u003cp>baz\u003c/p>\n"],["Foo\nbar\n* * *\nbaz","\u003cp>Foo\nbar\u003c/p>\n\u003chr>\n\u003cp>baz\u003c/p>\n"],["Foo\nbar\n\\---\nbaz","\u003cp>Foo\nbar\n---\nbaz\u003c/p>\n"],["    a simple\n      indented code block","\u003cpre>\u003ccode>a simple\n  indented code block\n\u003c/code>\u003c/pre>\n"],["  - foo\n\n    bar","\u003cul>\n\u003cli>\n\u003cp>foo\u003c/p>\n\u003cp>bar\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["1.  foo\n\n    - bar","\u003col>\n\u003cli>\n\u003cp>foo\u003c/p>\n\u003cul>\n\u003cli>bar\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ol>\n"],["    \u003ca/>\n    *hi*\n\n    - one","\u003cpre>\u003ccode>&lt;a/&gt;\n*hi*\n\n- one\n\u003c/code>\u003c/pre>\n"],["    chunk1\n\n    chunk2\n  \n \n \n    chunk3","\u003cpre>\u003ccode>chunk1\n\nchunk2\n\n\n\nchunk3\n\u003c/code>\u003c/pre>\n"],["    chunk1\n      \n      chunk2","\u003cpre>\u003ccode>chunk1\n  \n  chunk2\n\u003c/code>\u003c/pre>\n"],["Foo\n    bar","\u003cp>Foo\nbar\u003c/p>\n"],["    foo\nbar","\u003cpre>\u003ccode>foo\n\u003c/code>\u003c/pre>\n\u003cp>bar\u003c/p>\n"],["# Heading\n    foo\nHeading\n------\n    foo\n----","\u003ch1>Heading\u003c/h1>\n\u003cpre>\u003ccode>foo\n\u003c/code>\u003c/pre>\n\u003ch2>Heading\u003c/h2>\n\u003cpre>\u003ccode>foo\n\u003c/code>\u003c/pre>\n\u003chr>\n"],["        foo\n    bar","\u003cpre>\u003ccode>    foo\nbar\n\u003c/code>\u003c/pre>\n"],["\n    \n    foo\n    ","\u003cpre>\u003ccode>foo\n\u003c/code>\u003c/pre>\n"],["    foo  ","\u003cpre>\u003ccode>foo  \n\u003c/code>\u003c/pre>\n"],["```\n\u003c\n >\n```","\u003cpre>\u003ccode>&lt;\n &gt;\n\u003c/code>\u003c/pre>\n"],["~~~\n\u003c\n >\n~~~","\u003cpre>\u003ccode>&lt;\n &gt;\n\u003c/code>\u003c/pre>\n"],["``\nfoo\n``","\u003cp>\u003ccode>foo\u003c/code>\u003c/p>\n"],["```\naaa\n~~~\n```","\u003cpre>\u003ccode>aaa\n~~~\n\u003c/code>\u003c/pre>\n"],["~~~\naaa\n```\n~~~","\u003cpre>\u003ccode>aaa\n```\n\u003c/code>\u003c/pre>\n"],["````\naaa\n```\n``````","\u003cpre>\u003ccode>aaa\n```\n\u003c/code>\u003c/pre>\n"],["~~~~\naaa\n~~~\n~~~~","\u003cpre>\u003ccode>aaa\n~~~\n\u003c/code>\u003c/pre>\n"],["```","\u003cpre>\u003ccode>\u003c/code>\u003c/pre>\n"],["`````\n\n```\naaa","\u003cpre>\u003ccode>\n```\naaa\u003c/code>\u003c/pre>\n"],["> ```\n> aaa\n\nbbb","\u003cblockquote>\n\u003cpre>\u003ccode>aaa\n\u003c/code>\u003c/pre>\n\u003c/blockquote>\n\u003cp>bbb\u003c/p>\n"],["```\n\n  \n```","\u003cpre>\u003ccode>\n  \n\u003c/code>\u003c/pre>\n"],["```\n```","\u003cpre>\u003ccode>\u003c/code>\u003c/pre>\n"],[" ```\n aaa\naaa\n```","\u003cpre>\u003ccode>aaa\naaa\n\u003c/code>\u003c/pre>\n"],["  ```\naaa\n  aaa\naaa\n  ```","\u003cpre>\u003ccode>aaa\naaa\naaa\n\u003c/code>\u003c/pre>\n"],["   ```\n   aaa\n    aaa\n  aaa\n   ```","\u003cpre>\u003ccode>aaa\n aaa\naaa\n\u003c/code>\u003c/pre>\n"],["    ```\n    aaa\n    ```","\u003cpre>\u003ccode>```\naaa\n```\n\u003c/code>\u003c/pre>\n"],["```\naaa\n  ```","\u003cpre>\u003ccode>aaa\n\u003c/code>\u003c/pre>\n"],["   ```\naaa\n  ```","\u003cpre>\u003ccode>aaa\n\u003c/code>\u003c/pre>\n"],["```\naaa\n    ```","\u003cpre>\u003ccode>aaa\n    ```\u003c/code>\u003c/pre>\n"],["``` ```\naaa","\u003cp>\u003ccode> \u003c/code>\naaa\u003c/p>\n"],["~~~~~~\naaa\n~~~ ~~","\u003cpre>\u003ccode>aaa\n~~~ ~~\u003c/code>\u003c/pre>\n"],["foo\n```\nbar\n```\nbaz","\u003cp>foo\u003c/p>\n\u003cpre>\u003ccode>bar\n\u003c/code>\u003c/pre>\n\u003cp>baz\u003c/p>\n"],["foo\n---\n~~~\nbar\n~~~\n# baz","\u003ch2>foo\u003c/h2>\n\u003cpre>\u003ccode>bar\n\u003c/code>\u003c/pre>\n\u003ch1>baz\u003c/h1>\n"],["```ruby\ndef foo(x)\n  return 3\nend\n```","\u003cpre>\u003ccode class=\"language-ruby\">def foo(x)\n  return 3\nend\n\u003c/code>\u003c/pre>\n"],["~~~~    ruby startline=3 $%@#$\ndef foo(x)\n  return 3\nend\n~~~~~~~","\u003cpre>\u003ccode class=\"language-ruby\">def foo(x)\n  return 3\nend\n\u003c/code>\u003c/pre>\n"],["````;\n````","\u003cpre>\u003ccode class=\"language-;\">\u003c/code>\u003c/pre>\n"],["``` aa ```\nfoo","\u003cp>\u003ccode>aa\u003c/code>\nfoo\u003c/p>\n"],["~~~ aa ``` ~~~\nfoo\n~~~","\u003cpre>\u003ccode class=\"language-aa\">foo\n\u003c/code>\u003c/pre>\n"],["```\n``` aaa\n```","\u003cpre>\u003ccode>``` aaa\n\u003c/code>\u003c/pre>\n"],["aaa\n\nbbb","\u003cp>aaa\u003c/p>\n\u003cp>bbb\u003c/p>\n"],["aaa\nbbb\n\nccc\nddd","\u003cp>aaa\nbbb\u003c/p>\n\u003cp>ccc\nddd\u003c/p>\n"],["aaa\n\n\nbbb","\u003cp>aaa\u003c/p>\n\u003cp>bbb\u003c/p>\n"],["  aaa\n bbb","\u003cp>aaa\nbbb\u003c/p>\n"],["aaa\n             bbb\n                                       ccc","\u003cp>aaa\nbbb\nccc\u003c/p>\n"],["   aaa\nbbb","\u003cp>aaa\nbbb\u003c/p>\n"],["    aaa\nbbb","\u003cpre>\u003ccode>aaa\n\u003c/code>\u003c/pre>\n\u003cp>bbb\u003c/p>\n"],["aaa     \nbbb     ","\u003cp>aaa\u003cbr>\nbbb\u003c/p>\n"],["  \n\naaa\n  \n\n# aaa\n\n  ","\u003cp>aaa\u003c/p>\n\u003ch1>aaa\u003c/h1>\n"],["> # Foo\n> bar\n> baz","\u003cblockquote>\n\u003ch1>Foo\u003c/h1>\n\u003cp>bar\nbaz\u003c/p>\n\u003c/blockquote>\n"],["># Foo\n>bar\n> baz","\u003cblockquote>\n\u003ch1>Foo\u003c/h1>\n\u003cp>bar\nbaz\u003c/p>\n\u003c/blockquote>\n"],["   > # Foo\n   > bar\n > baz","\u003cblockquote>\n\u003ch1>Foo\u003c/h1>\n\u003cp>bar\nbaz\u003c/p>\n\u003c/blockquote>\n"],["    > # Foo\n    > bar\n    > baz","\u003cpre>\u003ccode>&gt; # Foo\n&gt; bar\n&gt; baz\n\u003c/code>\u003c/pre>\n"],["> # Foo\n> bar\nbaz","\u003cblockquote>\n\u003ch1>Foo\u003c/h1>\n\u003cp>bar\nbaz\u003c/p>\n\u003c/blockquote>\n"],["> bar\nbaz\n> foo","\u003cblockquote>\n\u003cp>bar\nbaz\nfoo\u003c/p>\n\u003c/blockquote>\n"],["> foo\n---","\u003cblockquote>\n\u003cp>foo\u003c/p>\n\u003c/blockquote>\n\u003chr>\n"],["> - foo\n- bar","\u003cblockquote>\n\u003cul>\n\u003cli>foo\u003c/li>\n\u003c/ul>\n\u003c/blockquote>\n\u003cul>\n\u003cli>bar\u003c/li>\n\u003c/ul>\n"],[">     foo\n    bar","\u003cblockquote>\n\u003cpre>\u003ccode>foo\n\u003c/code>\u003c/pre>\n\u003c/blockquote>\n\u003cpre>\u003ccode>bar\n\u003c/code>\u003c/pre>\n"],["> ```\nfoo\n```","\u003cblockquote>\n\u003cpre>\u003ccode>\u003c/code>\u003c/pre>\n\u003c/blockquote>\n\u003cp>foo\u003c/p>\n\u003cpre>\u003ccode>\u003c/code>\u003c/pre>\n"],["> foo\n    - bar","\u003cblockquote>\n\u003cp>foo\n- bar\u003c/p>\n\u003c/blockquote>\n"],[">","\u003cblockquote>\n\u003c/blockquote>\n"],[">\n>  \n> ","\u003cblockquote>\n\u003c/blockquote>\n"],[">\n> foo\n>  ","\u003cblockquote>\n\u003cp>foo\u003c/p>\n\u003c/blockquote>\n"],["> foo\n\n> bar","\u003cblockquote>\n\u003cp>foo\u003c/p>\n\u003c/blockquote>\n\u003cblockquote>\n\u003cp>bar\u003c/p>\n\u003c/blockquote>\n"],["> foo\n> bar","\u003cblockquote>\n\u003cp>foo\nbar\u003c/p>\n\u003c/blockquote>\n"],["> foo\n>\n> bar","\u003cblockquote>\n\u003cp>foo\u003c/p>\n\u003cp>bar\u003c/p>\n\u003c/blockquote>\n"],["foo\n> bar","\u003cp>foo\u003c/p>\n\u003cblockquote>\n\u003cp>bar\u003c/p>\n\u003c/blockquote>\n"],["> aaa\n***\n> bbb","\u003cblockquote>\n\u003cp>aaa\u003c/p>\n\u003c/blockquote>\n\u003chr>\n\u003cblockquote>\n\u003cp>bbb\u003c/p>\n\u003c/blockquote>\n"],["> bar\nbaz","\u003cblockquote>\n\u003cp>bar\nbaz\u003c/p>\n\u003c/blockquote>\n"],["> bar\n\nbaz","\u003cblockquote>\n\u003cp>bar\u003c/p>\n\u003c/blockquote>\n\u003cp>baz\u003c/p>\n"],["> bar\n>\nbaz","\u003cblockquote>\n\u003cp>bar\u003c/p>\n\u003c/blockquote>\n\u003cp>baz\u003c/p>\n"],["> > > foo\nbar","\u003cblockquote>\n\u003cblockquote>\n\u003cblockquote>\n\u003cp>foo\nbar\u003c/p>\n\u003c/blockquote>\n\u003c/blockquote>\n\u003c/blockquote>\n"],[">>> foo\n> bar\n>>baz","\u003cblockquote>\n\u003cblockquote>\n\u003cblockquote>\n\u003cp>foo\nbar\nbaz\u003c/p>\n\u003c/blockquote>\n\u003c/blockquote>\n\u003c/blockquote>\n"],[">     code\n\n>    not code","\u003cblockquote>\n\u003cpre>\u003ccode>code\n\u003c/code>\u003c/pre>\n\u003c/blockquote>\n\u003cblockquote>\n\u003cp>not code\u003c/p>\n\u003c/blockquote>\n"],["A paragraph\nwith two lines.\n\n    indented code\n\n> A block quote.","\u003cp>A paragraph\nwith two lines.\u003c/p>\n\u003cpre>\u003ccode>indented code\n\u003c/code>\u003c/pre>\n\u003cblockquote>\n\u003cp>A block quote.\u003c/p>\n\u003c/blockquote>\n"],["1.  A paragraph\n    with two lines.\n\n        indented code\n\n    > A block quote.","\u003col>\n\u003cli>\n\u003cp>A paragraph\nwith two lines.\u003c/p>\n\u003cpre>\u003ccode>indented code\n\u003c/code>\u003c/pre>\n\u003cblockquote>\n\u003cp>A block quote.\u003c/p>\n\u003c/blockquote>\n\u003c/li>\n\u003c/ol>\n"],["- one\n\n two","\u003cul>\n\u003cli>one\u003c/li>\n\u003c/ul>\n\u003cp>two\u003c/p>\n"],["- one\n\n  two","\u003cul>\n\u003cli>\n\u003cp>one\u003c/p>\n\u003cp>two\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],[" -    one\n\n     two","\u003cul>\n\u003cli>one\u003c/li>\n\u003c/ul>\n\u003cpre>\u003ccode> two\n\u003c/code>\u003c/pre>\n"],[" -    one\n\n      two","\u003cul>\n\u003cli>\n\u003cp>one\u003c/p>\n\u003cp>two\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["   > > 1.  one\n>>\n>>     two","\u003cblockquote>\n\u003cblockquote>\n\u003col>\n\u003cli>\n\u003cp>one\u003c/p>\n\u003cp>two\u003c/p>\n\u003c/li>\n\u003c/ol>\n\u003c/blockquote>\n\u003c/blockquote>\n"],[">>- one\n>>\n  >  > two","\u003cblockquote>\n\u003cblockquote>\n\u003cul>\n\u003cli>one\u003c/li>\n\u003c/ul>\n\u003cp>two\u003c/p>\n\u003c/blockquote>\n\u003c/blockquote>\n"],["-one\n\n2.two","\u003cp>-one\u003c/p>\n\u003cp>2.two\u003c/p>\n"],["- foo\n\n\n  bar","\u003cul>\n\u003cli>\n\u003cp>foo\u003c/p>\n\u003cp>bar\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["1.  foo\n\n    ```\n    bar\n    ```\n\n    baz\n\n    > bam","\u003col>\n\u003cli>\n\u003cp>foo\u003c/p>\n\u003cpre>\u003ccode>bar\n\u003c/code>\u003c/pre>\n\u003cp>baz\u003c/p>\n\u003cblockquote>\n\u003cp>bam\u003c/p>\n\u003c/blockquote>\n\u003c/li>\n\u003c/ol>\n"],["- Foo\n\n      bar\n\n\n      baz","\u003cul>\n\u003cli>\n\u003cp>Foo\u003c/p>\n\u003cpre>\u003ccode>bar\n\n\nbaz\n\u003c/code>\u003c/pre>\n\u003c/li>\n\u003c/ul>\n"],["123456789. ok","\u003col start=\"123456789\">\n\u003cli>ok\u003c/li>\n\u003c/ol>\n"],["1234567890. not ok","\u003cp>1234567890. not ok\u003c/p>\n"],["0. ok","\u003col start=\"0\">\n\u003cli>ok\u003c/li>\n\u003c/ol>\n"],["003. ok","\u003col start=\"3\">\n\u003cli>ok\u003c/li>\n\u003c/ol>\n"],["-1. not ok","\u003cp>-1. not ok\u003c/p>\n"],["- foo\n\n      bar","\u003cul>\n\u003cli>\n\u003cp>foo\u003c/p>\n\u003cpre>\u003ccode>bar\n\u003c/code>\u003c/pre>\n\u003c/li>\n\u003c/ul>\n"],["  10.  foo\n\n           bar","\u003col start=\"10\">\n\u003cli>\n\u003cp>foo\u003c/p>\n\u003cpre>\u003ccode>bar\n\u003c/code>\u003c/pre>\n\u003c/li>\n\u003c/ol>\n"],["    indented code\n\nparagraph\n\n    more code","\u003cpre>\u003ccode>indented code\n\u003c/code>\u003c/pre>\n\u003cp>paragraph\u003c/p>\n\u003cpre>\u003ccode>more code\n\u003c/code>\u003c/pre>\n"],["1.     indented code\n\n   paragraph\n\n       more code","\u003col>\n\u003cli>\n\u003cpre>\u003ccode>indented code\n\u003c/code>\u003c/pre>\n\u003cp>paragraph\u003c/p>\n\u003cpre>\u003ccode>more code\n\u003c/code>\u003c/pre>\n\u003c/li>\n\u003c/ol>\n"],["1.      indented code\n\n   paragraph\n\n       more code","\u003col>\n\u003cli>\n\u003cpre>\u003ccode> indented code\n\u003c/code>\u003c/pre>\n\u003cp>paragraph\u003c/p>\n\u003cpre>\u003ccode>more code\n\u003c/code>\u003c/pre>\n\u003c/li>\n\u003c/ol>\n"],["   foo\n\nbar","\u003cp>foo\u003c/p>\n\u003cp>bar\u003c/p>\n"],["-    foo\n\n  bar","\u003cul>\n\u003cli>foo\u003c/li>\n\u003c/ul>\n\u003cp>bar\u003c/p>\n"],["-  foo\n\n   bar","\u003cul>\n\u003cli>\n\u003cp>foo\u003c/p>\n\u003cp>bar\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["-\n  foo\n-\n  ```\n  bar\n  ```\n-\n      baz","\u003cul>\n\u003cli>foo\u003c/li>\n\u003cli>\n\u003cpre>\u003ccode>bar\n\u003c/code>\u003c/pre>\n\u003c/li>\n\u003cli>\n\u003cpre>\u003ccode>baz\n\u003c/code>\u003c/pre>\n\u003c/li>\n\u003c/ul>\n"],["-   \n  foo","\u003cul>\n\u003cli>foo\u003c/li>\n\u003c/ul>\n"],["-\n\n  foo","\u003cul>\n\u003cli>\u003c/li>\n\u003c/ul>\n\u003cp>foo\u003c/p>\n"],["- foo\n-\n- bar","\u003cul>\n\u003cli>foo\u003c/li>\n\u003cli>\u003c/li>\n\u003cli>bar\u003c/li>\n\u003c/ul>\n"],["- foo\n-   \n- bar","\u003cul>\n\u003cli>foo\u003c/li>\n\u003cli>\u003c/li>\n\u003cli>bar\u003c/li>\n\u003c/ul>\n"],["1. foo\n2.\n3. bar","\u003col>\n\u003cli>foo\u003c/li>\n\u003cli>\u003c/li>\n\u003cli>bar\u003c/li>\n\u003c/ol>\n"],["*","\u003cul>\n\u003cli>\u003c/li>\n\u003c/ul>\n"],["foo\n*\n\nfoo\n1.","\u003cp>foo\n*\u003c/p>\n\u003cp>foo\n1.\u003c/p>\n"],[" 1.  A paragraph\n     with two lines.\n\n         indented code\n\n     > A block quote.","\u003col>\n\u003cli>\n\u003cp>A paragraph\nwith two lines.\u003c/p>\n\u003cpre>\u003ccode>indented code\n\u003c/code>\u003c/pre>\n\u003cblockquote>\n\u003cp>A block quote.\u003c/p>\n\u003c/blockquote>\n\u003c/li>\n\u003c/ol>\n"],["  1.  A paragraph\n      with two lines.\n\n          indented code\n\n      > A block quote.","\u003col>\n\u003cli>\n\u003cp>A paragraph\nwith two lines.\u003c/p>\n\u003cpre>\u003ccode>indented code\n\u003c/code>\u003c/pre>\n\u003cblockquote>\n\u003cp>A block quote.\u003c/p>\n\u003c/blockquote>\n\u003c/li>\n\u003c/ol>\n"],["   1.  A paragraph\n       with two lines.\n\n           indented code\n\n       > A block quote.","\u003col>\n\u003cli>\n\u003cp>A paragraph\nwith two lines.\u003c/p>\n\u003cpre>\u003ccode>indented code\n\u003c/code>\u003c/pre>\n\u003cblockquote>\n\u003cp>A block quote.\u003c/p>\n\u003c/blockquote>\n\u003c/li>\n\u003c/ol>\n"],["    1.  A paragraph\n        with two lines.\n\n            indented code\n\n        > A block quote.","\u003cpre>\u003ccode>1.  A paragraph\n    with two lines.\n\n        indented code\n\n    &gt; A block quote.\n\u003c/code>\u003c/pre>\n"],["  1.  A paragraph\nwith two lines.\n\n          indented code\n\n      > A block quote.","\u003col>\n\u003cli>\n\u003cp>A paragraph\nwith two lines.\u003c/p>\n\u003cpre>\u003ccode>indented code\n\u003c/code>\u003c/pre>\n\u003cblockquote>\n\u003cp>A block quote.\u003c/p>\n\u003c/blockquote>\n\u003c/li>\n\u003c/ol>\n"],["  1.  A paragraph\n    with two lines.","\u003col>\n\u003cli>A paragraph\nwith two lines.\u003c/li>\n\u003c/ol>\n"],["> 1. > Blockquote\ncontinued here.","\u003cblockquote>\n\u003col>\n\u003cli>\n\u003cblockquote>\n\u003cp>Blockquote\ncontinued here.\u003c/p>\n\u003c/blockquote>\n\u003c/li>\n\u003c/ol>\n\u003c/blockquote>\n"],["> 1. > Blockquote\n> continued here.","\u003cblockquote>\n\u003col>\n\u003cli>\n\u003cblockquote>\n\u003cp>Blockquote\ncontinued here.\u003c/p>\n\u003c/blockquote>\n\u003c/li>\n\u003c/ol>\n\u003c/blockquote>\n"],["- foo\n  - bar\n    - baz\n      - boo","\u003cul>\n\u003cli>foo\n\u003cul>\n\u003cli>bar\n\u003cul>\n\u003cli>baz\n\u003cul>\n\u003cli>boo\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ul>\n"],["- foo\n - bar\n  - baz\n   - boo","\u003cul>\n\u003cli>foo\u003c/li>\n\u003cli>bar\u003c/li>\n\u003cli>baz\u003c/li>\n\u003cli>boo\u003c/li>\n\u003c/ul>\n"],["10) foo\n    - bar","\u003col start=\"10\">\n\u003cli>foo\n\u003cul>\n\u003cli>bar\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ol>\n"],["10) foo\n   - bar","\u003col start=\"10\">\n\u003cli>foo\u003c/li>\n\u003c/ol>\n\u003cul>\n\u003cli>bar\u003c/li>\n\u003c/ul>\n"],["- - foo","\u003cul>\n\u003cli>\n\u003cul>\n\u003cli>foo\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ul>\n"],["1. - 2. foo","\u003col>\n\u003cli>\n\u003cul>\n\u003cli>\n\u003col start=\"2\">\n\u003cli>foo\u003c/li>\n\u003c/ol>\n\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ol>\n"],["- # Foo\n- Bar\n  ---\n  baz","\u003cul>\n\u003cli>\n\u003ch1>Foo\u003c/h1>\n\u003c/li>\n\u003cli>\n\u003ch2>Bar\u003c/h2>\nbaz\u003c/li>\n\u003c/ul>\n"],["- foo\n- bar\n+ baz","\u003cul>\n\u003cli>foo\u003c/li>\n\u003cli>bar\u003c/li>\n\u003c/ul>\n\u003cul>\n\u003cli>baz\u003c/li>\n\u003c/ul>\n"],["1. foo\n2. bar\n3) baz","\u003col>\n\u003cli>foo\u003c/li>\n\u003cli>bar\u003c/li>\n\u003c/ol>\n\u003col start=\"3\">\n\u003cli>baz\u003c/li>\n\u003c/ol>\n"],["Foo\n- bar\n- baz","\u003cp>Foo\u003c/p>\n\u003cul>\n\u003cli>bar\u003c/li>\n\u003cli>baz\u003c/li>\n\u003c/ul>\n"],["The number of windows in my house is\n14.  The number of doors is 6.","\u003cp>The number of windows in my house is\n14.  The number of doors is 6.\u003c/p>\n"],["The number of windows in my house is\n1.  The number of doors is 6.","\u003cp>The number of windows in my house is\u003c/p>\n\u003col>\n\u003cli>The number of doors is 6.\u003c/li>\n\u003c/ol>\n"],["- foo\n\n- bar\n\n\n- baz","\u003cul>\n\u003cli>\n\u003cp>foo\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>bar\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>baz\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["- foo\n  - bar\n    - baz\n\n\n      bim","\u003cul>\n\u003cli>foo\n\u003cul>\n\u003cli>bar\n\u003cul>\n\u003cli>\n\u003cp>baz\u003c/p>\n\u003cp>bim\u003c/p>\n\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ul>\n"],["- a\n - b\n  - c\n   - d\n  - e\n - f\n- g","\u003cul>\n\u003cli>a\u003c/li>\n\u003cli>b\u003c/li>\n\u003cli>c\u003c/li>\n\u003cli>d\u003c/li>\n\u003cli>e\u003c/li>\n\u003cli>f\u003c/li>\n\u003cli>g\u003c/li>\n\u003c/ul>\n"],["1. a\n\n  2. b\n\n   3. c","\u003col>\n\u003cli>\n\u003cp>a\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>b\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>c\u003c/p>\n\u003c/li>\n\u003c/ol>\n"],["- a\n - b\n  - c\n   - d\n    - e","\u003cul>\n\u003cli>a\u003c/li>\n\u003cli>b\u003c/li>\n\u003cli>c\u003c/li>\n\u003cli>d\n- e\u003c/li>\n\u003c/ul>\n"],["1. a\n\n  2. b\n\n    3. c","\u003col>\n\u003cli>\n\u003cp>a\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>b\u003c/p>\n\u003c/li>\n\u003c/ol>\n\u003cpre>\u003ccode>3. c\n\u003c/code>\u003c/pre>\n"],["- a\n- b\n\n- c","\u003cul>\n\u003cli>\n\u003cp>a\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>b\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>c\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["* a\n*\n\n* c","\u003cul>\n\u003cli>\n\u003cp>a\u003c/p>\n\u003c/li>\n\u003cli>\u003c/li>\n\u003cli>\n\u003cp>c\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["- a\n- b\n\n  c\n- d","\u003cul>\n\u003cli>\n\u003cp>a\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>b\u003c/p>\n\u003cp>c\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>d\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["- a\n- b\n\n  [ref]: /url\n- d","\u003cul>\n\u003cli>\n\u003cp>a\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>b\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>d\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["- a\n- ```\n  b\n\n\n  ```\n- c","\u003cul>\n\u003cli>a\u003c/li>\n\u003cli>\n\u003cpre>\u003ccode>b\n\n\n\u003c/code>\u003c/pre>\n\u003c/li>\n\u003cli>c\u003c/li>\n\u003c/ul>\n"],["- a\n  - b\n\n    c\n- d","\u003cul>\n\u003cli>a\n\u003cul>\n\u003cli>\n\u003cp>b\u003c/p>\n\u003cp>c\u003c/p>\n\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003cli>d\u003c/li>\n\u003c/ul>\n"],["* a\n  > b\n  >\n* c","\u003cul>\n\u003cli>a\n\u003cblockquote>\n\u003cp>b\u003c/p>\n\u003c/blockquote>\n\u003c/li>\n\u003cli>c\u003c/li>\n\u003c/ul>\n"],["- a\n  > b\n  ```\n  c\n  ```\n- d","\u003cul>\n\u003cli>a\n\u003cblockquote>\n\u003cp>b\u003c/p>\n\u003c/blockquote>\n\u003cpre>\u003ccode>c\n\u003c/code>\u003c/pre>\n\u003c/li>\n\u003cli>d\u003c/li>\n\u003c/ul>\n"],["- a","\u003cul>\n\u003cli>a\u003c/li>\n\u003c/ul>\n"],["- a\n  - b","\u003cul>\n\u003cli>a\n\u003cul>\n\u003cli>b\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ul>\n"],["1. ```\n   foo\n   ```\n\n   bar","\u003col>\n\u003cli>\n\u003cpre>\u003ccode>foo\n\u003c/code>\u003c/pre>\n\u003cp>bar\u003c/p>\n\u003c/li>\n\u003c/ol>\n"],["* foo\n  * bar\n\n  baz","\u003cul>\n\u003cli>\n\u003cp>foo\u003c/p>\n\u003cul>\n\u003cli>bar\u003c/li>\n\u003c/ul>\n\u003cp>baz\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["- a\n  - b\n  - c\n\n- d\n  - e\n  - f","\u003cul>\n\u003cli>\n\u003cp>a\u003c/p>\n\u003cul>\n\u003cli>b\u003c/li>\n\u003cli>c\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003cli>\n\u003cp>d\u003c/p>\n\u003cul>\n\u003cli>e\u003c/li>\n\u003cli>f\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ul>\n"],["\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\\u003c\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~","\u003cp>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~\u003c/p>\n"],["\\\t\\A\\a\\ \\3\\\u03c6\\\u00ab","\u003cp>\\\t\\A\\a\\ \\3\\\u03c6\\\u00ab\u003c/p>\n"],["\\*not emphasized*\n\\\u003cbr/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\. not a list\n\\* not a list\n\\# not a heading\n\\[foo]: /url \"not a reference\"\n\\&ouml; not a character entity","\u003cp>*not emphasized*\n&lt;br/&gt; not a tag\n[not a link](/foo)\n`not code`\n1. not a list\n* not a list\n# not a heading\n[foo]: /url &quot;not a reference&quot;\n&amp;ouml; not a character entity\u003c/p>\n"],["\\\\*emphasis*","\u003cp>\\\u003cem>emphasis\u003c/em>\u003c/p>\n"],["foo\\\nbar","\u003cp>foo\u003cbr>\nbar\u003c/p>\n"],["`` \\[\\` ``","\u003cp>\u003ccode>\\[\\`\u003c/code>\u003c/p>\n"],["    \\[\\]","\u003cpre>\u003ccode>\\[\\]\n\u003c/code>\u003c/pre>\n"],["~~~\n\\[\\]\n~~~","\u003cpre>\u003ccode>\\[\\]\n\u003c/code>\u003c/pre>\n"],["\u003chttp://example.com?find=\\*>","\u003cp>\u003ca href=\"http://example.com?find=%5C*\">http://example.com?find=\\*\u003c/a>\u003c/p>\n"],["[foo](/bar\\* \"ti\\*tle\")","\u003cp>\u003ca href=\"/bar*\" title=\"ti*tle\">foo\u003c/a>\u003c/p>\n"],["[foo]\n\n[foo]: /bar\\* \"ti\\*tle\"","\u003cp>\u003ca href=\"/bar*\" title=\"ti*tle\">foo\u003c/a>\u003c/p>\n"],["``` foo\\+bar\nfoo\n```","\u003cpre>\u003ccode class=\"language-foo+bar\">foo\n\u003c/code>\u003c/pre>\n"],["&nbsp; &amp; &copy; &AElig; &frac34;","\u003cp>\u00a0 &amp; \u00a9 \u00c6 \u00be\u003c/p>\n"],["&#35; &#1234; &#992; &#0;","\u003cp># \u04d2 \u03e0 \ufffd\u003c/p>\n"],["&#X22; &#XD06; &#xcab;","\u003cp>&quot; \u0d06 \u0cab\u003c/p>\n"],["&nbsp &x; &#; &#x;\n&#87654321;\n&#abcdef0;\n&ThisIsNotDefined; &hi?;","\u003cp>&amp;nbsp &amp;x; &amp;#; &amp;#x;\n&amp;#87654321;\n&amp;#abcdef0;\n&amp;ThisIsNotDefined; &amp;hi?;\u003c/p>\n"],["&copy","\u003cp>&amp;copy\u003c/p>\n"],["&MadeUpEntity;","\u003cp>&amp;MadeUpEntity;\u003c/p>\n"],["[foo](/f&ouml;&ouml; \"f&ouml;&ouml;\")","\u003cp>\u003ca href=\"/f%C3%B6%C3%B6\" title=\"f\u00f6\u00f6\">foo\u003c/a>\u003c/p>\n"],["[foo]\n\n[foo]: /f&ouml;&ouml; \"f&ouml;&ouml;\"","\u003cp>\u003ca href=\"/f%C3%B6%C3%B6\" title=\"f\u00f6\u00f6\">foo\u003c/a>\u003c/p>\n"],["``` f&ouml;&ouml;\nfoo\n```","\u003cpre>\u003ccode class=\"language-f\u00f6\u00f6\">foo\n\u003c/code>\u003c/pre>\n"],["`f&ouml;&ouml;`","\u003cp>\u003ccode>f&amp;ouml;&amp;ouml;\u003c/code>\u003c/p>\n"],["    f&ouml;f&ouml;","\u003cpre>\u003ccode>f&amp;ouml;f&amp;ouml;\n\u003c/code>\u003c/pre>\n"],["&#42;foo&#42;\n*foo*","\u003cp>*foo*\n\u003cem>foo\u003c/em>\u003c/p>\n"],["&#42; foo\n\n* foo","\u003cp>* foo\u003c/p>\n\u003cul>\n\u003cli>foo\u003c/li>\n\u003c/ul>\n"],["foo&#10;&#10;bar","\u003cp>foo\n\nbar\u003c/p>\n"],["&#9; foo","\u003cp>\t foo\u003c/p>\n"],["&quot;hi&quot; &lt;b&gt; &apos;","\u003cp>&quot;hi&quot; &lt;b&gt; '\u003c/p>\n"],["`foo`","\u003cp>\u003ccode>foo\u003c/code>\u003c/p>\n"],["`` foo ` bar ``","\u003cp>\u003ccode>foo ` bar\u003c/code>\u003c/p>\n"],["` `` `","\u003cp>\u003ccode>``\u003c/code>\u003c/p>\n"],["`  ``  `","\u003cp>\u003ccode> `` \u003c/code>\u003c/p>\n"],["` a`","\u003cp>\u003ccode> a\u003c/code>\u003c/p>\n"],["` b `","\u003cp>\u003ccode>b\u003c/code>\u003c/p>\n"],["` `\n`  `","\u003cp>\u003ccode> \u003c/code>\n\u003ccode>  \u003c/code>\u003c/p>\n"],["``\nfoo\nbar  \nbaz\n``","\u003cp>\u003ccode>foo bar   baz\u003c/code>\u003c/p>\n"],["``\nfoo \n``","\u003cp>\u003ccode>foo \u003c/code>\u003c/p>\n"],["`foo   bar \nbaz`","\u003cp>\u003ccode>foo   bar  baz\u003c/code>\u003c/p>\n"],["`foo\\`bar`","\u003cp>\u003ccode>foo\\\u003c/code>bar`\u003c/p>\n"],["``foo`bar``","\u003cp>\u003ccode>foo`bar\u003c/code>\u003c/p>\n"],["` foo `` bar `","\u003cp>\u003ccode>foo `` bar\u003c/code>\u003c/p>\n"],["*foo`*`","\u003cp>*foo\u003ccode>*\u003c/code>\u003c/p>\n"],["[not a `link](/foo`)","\u003cp>[not a \u003ccode>link](/foo\u003c/code>)\u003c/p>\n"],["`\u003ca href=\"`\">`","\u003cp>\u003ccode>&lt;a href=&quot;\u003c/code>&quot;&gt;`\u003c/p>\n"],["`\u003chttp://foo.bar.`baz>`","\u003cp>\u003ccode>&lt;http://foo.bar.\u003c/code>baz&gt;`\u003c/p>\n"],["```foo``","\u003cp>```foo``\u003c/p>\n"],["`foo","\u003cp>`foo\u003c/p>\n"],["`foo``bar``","\u003cp>`foo\u003ccode>bar\u003c/code>\u003c/p>\n"],["*foo bar*","\u003cp>\u003cem>foo bar\u003c/em>\u003c/p>\n"],["a * foo bar*","\u003cp>a * foo bar*\u003c/p>\n"],["a*\"foo\"*","\u003cp>a*&quot;foo&quot;*\u003c/p>\n"],["* a *","\u003cul>\n\u003cli>a *\u003c/li>\n\u003c/ul>\n"],["foo*bar*","\u003cp>foo\u003cem>bar\u003c/em>\u003c/p>\n"],["5*6*78","\u003cp>5\u003cem>6\u003c/em>78\u003c/p>\n"],["_foo bar_","\u003cp>\u003cem>foo bar\u003c/em>\u003c/p>\n"],["_ foo bar_","\u003cp>_ foo bar_\u003c/p>\n"],["a_\"foo\"_","\u003cp>a_&quot;foo&quot;_\u003c/p>\n"],["foo_bar_","\u003cp>foo_bar_\u003c/p>\n"],["5_6_78","\u003cp>5_6_78\u003c/p>\n"],["\u043f\u0440\u0438\u0441\u0442\u0430\u043d\u044f\u043c_\u0441\u0442\u0440\u0435\u043c\u044f\u0442\u0441\u044f_","\u003cp>\u043f\u0440\u0438\u0441\u0442\u0430\u043d\u044f\u043c_\u0441\u0442\u0440\u0435\u043c\u044f\u0442\u0441\u044f_\u003c/p>\n"],["aa_\"bb\"_cc","\u003cp>aa_&quot;bb&quot;_cc\u003c/p>\n"],["foo-_(bar)_","\u003cp>foo-\u003cem>(bar)\u003c/em>\u003c/p>\n"],["_foo*","\u003cp>_foo*\u003c/p>\n"],["*foo bar *","\u003cp>*foo bar *\u003c/p>\n"],["*foo bar\n*","\u003cp>*foo bar\n*\u003c/p>\n"],["*(*foo)","\u003cp>*(*foo)\u003c/p>\n"],["*(*foo*)*","\u003cp>\u003cem>(\u003cem>foo\u003c/em>)\u003c/em>\u003c/p>\n"],["*foo*bar","\u003cp>\u003cem>foo\u003c/em>bar\u003c/p>\n"],["_foo bar _","\u003cp>_foo bar _\u003c/p>\n"],["_(_foo)","\u003cp>_(_foo)\u003c/p>\n"],["_(_foo_)_","\u003cp>\u003cem>(\u003cem>foo\u003c/em>)\u003c/em>\u003c/p>\n"],["_foo_bar","\u003cp>_foo_bar\u003c/p>\n"],["_\u043f\u0440\u0438\u0441\u0442\u0430\u043d\u044f\u043c_\u0441\u0442\u0440\u0435\u043c\u044f\u0442\u0441\u044f","\u003cp>_\u043f\u0440\u0438\u0441\u0442\u0430\u043d\u044f\u043c_\u0441\u0442\u0440\u0435\u043c\u044f\u0442\u0441\u044f\u003c/p>\n"],["_foo_bar_baz_","\u003cp>\u003cem>foo_bar_baz\u003c/em>\u003c/p>\n"],["_(bar)_.","\u003cp>\u003cem>(bar)\u003c/em>.\u003c/p>\n"],["**foo bar**","\u003cp>\u003cstrong>foo bar\u003c/strong>\u003c/p>\n"],["** foo bar**","\u003cp>** foo bar**\u003c/p>\n"],["a**\"foo\"**","\u003cp>a**&quot;foo&quot;**\u003c/p>\n"],["foo**bar**","\u003cp>foo\u003cstrong>bar\u003c/strong>\u003c/p>\n"],["__foo bar__","\u003cp>\u003cstrong>foo bar\u003c/strong>\u003c/p>\n"],["__ foo bar__","\u003cp>__ foo bar__\u003c/p>\n"],["__\nfoo bar__","\u003cp>__\nfoo bar__\u003c/p>\n"],["a__\"foo\"__","\u003cp>a__&quot;foo&quot;__\u003c/p>\n"],["foo__bar__","\u003cp>foo__bar__\u003c/p>\n"],["5__6__78","\u003cp>5__6__78\u003c/p>\n"],["__foo, __bar__, baz__","\u003cp>\u003cstrong>foo, \u003cstrong>bar\u003c/strong>, baz\u003c/strong>\u003c/p>\n"],["foo-__(bar)__","\u003cp>foo-\u003cstrong>(bar)\u003c/strong>\u003c/p>\n"],["**foo bar **","\u003cp>**foo bar **\u003c/p>\n"],["**(**foo)","\u003cp>**(**foo)\u003c/p>\n"],["*(**foo**)*","\u003cp>\u003cem>(\u003cstrong>foo\u003c/strong>)\u003c/em>\u003c/p>\n"],["**Gomphocarpus (*Gomphocarpus physocarpus*, syn.\n*Asclepias physocarpa*)**","\u003cp>\u003cstrong>Gomphocarpus (\u003cem>Gomphocarpus physocarpus\u003c/em>, syn.\n\u003cem>Asclepias physocarpa\u003c/em>)\u003c/strong>\u003c/p>\n"],["**foo \"*bar*\" foo**","\u003cp>\u003cstrong>foo &quot;\u003cem>bar\u003c/em>&quot; foo\u003c/strong>\u003c/p>\n"],["**foo**bar","\u003cp>\u003cstrong>foo\u003c/strong>bar\u003c/p>\n"],["__foo bar __","\u003cp>__foo bar __\u003c/p>\n"],["__(__foo)","\u003cp>__(__foo)\u003c/p>\n"],["_(__foo__)_","\u003cp>\u003cem>(\u003cstrong>foo\u003c/strong>)\u003c/em>\u003c/p>\n"],["__foo__bar","\u003cp>__foo__bar\u003c/p>\n"],["__foo__bar__baz__","\u003cp>\u003cstrong>foo__bar__baz\u003c/strong>\u003c/p>\n"],["__(bar)__.","\u003cp>\u003cstrong>(bar)\u003c/strong>.\u003c/p>\n"],["*foo [bar](/url)*","\u003cp>\u003cem>foo \u003ca href=\"/url\">bar\u003c/a>\u003c/em>\u003c/p>\n"],["*foo\nbar*","\u003cp>\u003cem>foo\nbar\u003c/em>\u003c/p>\n"],["_foo __bar__ baz_","\u003cp>\u003cem>foo \u003cstrong>bar\u003c/strong> baz\u003c/em>\u003c/p>\n"],["_foo _bar_ baz_","\u003cp>\u003cem>foo \u003cem>bar\u003c/em> baz\u003c/em>\u003c/p>\n"],["__foo_ bar_","\u003cp>\u003cem>\u003cem>foo\u003c/em> bar\u003c/em>\u003c/p>\n"],["*foo *bar**","\u003cp>\u003cem>foo \u003cem>bar\u003c/em>\u003c/em>\u003c/p>\n"],["*foo **bar** baz*","\u003cp>\u003cem>foo \u003cstrong>bar\u003c/strong> baz\u003c/em>\u003c/p>\n"],["*foo**bar**baz*","\u003cp>\u003cem>foo\u003cstrong>bar\u003c/strong>baz\u003c/em>\u003c/p>\n"],["*foo**bar*","\u003cp>\u003cem>foo**bar\u003c/em>\u003c/p>\n"],["***foo** bar*","\u003cp>\u003cem>\u003cstrong>foo\u003c/strong> bar\u003c/em>\u003c/p>\n"],["*foo **bar***","\u003cp>\u003cem>foo \u003cstrong>bar\u003c/strong>\u003c/em>\u003c/p>\n"],["*foo**bar***","\u003cp>\u003cem>foo\u003cstrong>bar\u003c/strong>\u003c/em>\u003c/p>\n"],["foo***bar***baz","\u003cp>foo\u003cem>\u003cstrong>bar\u003c/strong>\u003c/em>baz\u003c/p>\n"],["foo******bar*********baz","\u003cp>foo\u003cstrong>\u003cstrong>\u003cstrong>bar\u003c/strong>\u003c/strong>\u003c/strong>***baz\u003c/p>\n"],["*foo **bar *baz* bim** bop*","\u003cp>\u003cem>foo \u003cstrong>bar \u003cem>baz\u003c/em> bim\u003c/strong> bop\u003c/em>\u003c/p>\n"],["*foo [*bar*](/url)*","\u003cp>\u003cem>foo \u003ca href=\"/url\">\u003cem>bar\u003c/em>\u003c/a>\u003c/em>\u003c/p>\n"],["** is not an empty emphasis","\u003cp>** is not an empty emphasis\u003c/p>\n"],["**** is not an empty strong emphasis","\u003cp>**** is not an empty strong emphasis\u003c/p>\n"],["**foo [bar](/url)**","\u003cp>\u003cstrong>foo \u003ca href=\"/url\">bar\u003c/a>\u003c/strong>\u003c/p>\n"],["**foo\nbar**","\u003cp>\u003cstrong>foo\nbar\u003c/strong>\u003c/p>\n"],["__foo _bar_ baz__","\u003cp>\u003cstrong>foo \u003cem>bar\u003c/em> baz\u003c/strong>\u003c/p>\n"],["__foo __bar__ baz__","\u003cp>\u003cstrong>foo \u003cstrong>bar\u003c/strong> baz\u003c/strong>\u003c/p>\n"],["____foo__ bar__","\u003cp>\u003cstrong>\u003cstrong>foo\u003c/strong> bar\u003c/strong>\u003c/p>\n"],["**foo **bar****","\u003cp>\u003cstrong>foo \u003cstrong>bar\u003c/strong>\u003c/strong>\u003c/p>\n"],["**foo *bar* baz**","\u003cp>\u003cstrong>foo \u003cem>bar\u003c/em> baz\u003c/strong>\u003c/p>\n"],["**foo*bar*baz**","\u003cp>\u003cstrong>foo\u003cem>bar\u003c/em>baz\u003c/strong>\u003c/p>\n"],["***foo* bar**","\u003cp>\u003cstrong>\u003cem>foo\u003c/em> bar\u003c/strong>\u003c/p>\n"],["**foo *bar***","\u003cp>\u003cstrong>foo \u003cem>bar\u003c/em>\u003c/strong>\u003c/p>\n"],["**foo *bar **baz**\nbim* bop**","\u003cp>\u003cstrong>foo \u003cem>bar \u003cstrong>baz\u003c/strong>\nbim\u003c/em> bop\u003c/strong>\u003c/p>\n"],["**foo [*bar*](/url)**","\u003cp>\u003cstrong>foo \u003ca href=\"/url\">\u003cem>bar\u003c/em>\u003c/a>\u003c/strong>\u003c/p>\n"],["__ is not an empty emphasis","\u003cp>__ is not an empty emphasis\u003c/p>\n"],["____ is not an empty strong emphasis","\u003cp>____ is not an empty strong emphasis\u003c/p>\n"],["foo ***","\u003cp>foo ***\u003c/p>\n"],["foo *\\**","\u003cp>foo \u003cem>*\u003c/em>\u003c/p>\n"],["foo *_*","\u003cp>foo \u003cem>_\u003c/em>\u003c/p>\n"],["foo *****","\u003cp>foo *****\u003c/p>\n"],["foo **\\***","\u003cp>foo \u003cstrong>*\u003c/strong>\u003c/p>\n"],["foo **_**","\u003cp>foo \u003cstrong>_\u003c/strong>\u003c/p>\n"],["**foo*","\u003cp>*\u003cem>foo\u003c/em>\u003c/p>\n"],["*foo**","\u003cp>\u003cem>foo\u003c/em>*\u003c/p>\n"],["***foo**","\u003cp>*\u003cstrong>foo\u003c/strong>\u003c/p>\n"],["****foo*","\u003cp>***\u003cem>foo\u003c/em>\u003c/p>\n"],["**foo***","\u003cp>\u003cstrong>foo\u003c/strong>*\u003c/p>\n"],["*foo****","\u003cp>\u003cem>foo\u003c/em>***\u003c/p>\n"],["foo ___","\u003cp>foo ___\u003c/p>\n"],["foo _\\__","\u003cp>foo \u003cem>_\u003c/em>\u003c/p>\n"],["foo _*_","\u003cp>foo \u003cem>*\u003c/em>\u003c/p>\n"],["foo _____","\u003cp>foo _____\u003c/p>\n"],["foo __\\___","\u003cp>foo \u003cstrong>_\u003c/strong>\u003c/p>\n"],["foo __*__","\u003cp>foo \u003cstrong>*\u003c/strong>\u003c/p>\n"],["__foo_","\u003cp>_\u003cem>foo\u003c/em>\u003c/p>\n"],["_foo__","\u003cp>\u003cem>foo\u003c/em>_\u003c/p>\n"],["___foo__","\u003cp>_\u003cstrong>foo\u003c/strong>\u003c/p>\n"],["____foo_","\u003cp>___\u003cem>foo\u003c/em>\u003c/p>\n"],["__foo___","\u003cp>\u003cstrong>foo\u003c/strong>_\u003c/p>\n"],["_foo____","\u003cp>\u003cem>foo\u003c/em>___\u003c/p>\n"],["**foo**","\u003cp>\u003cstrong>foo\u003c/strong>\u003c/p>\n"],["*_foo_*","\u003cp>\u003cem>\u003cem>foo\u003c/em>\u003c/em>\u003c/p>\n"],["__foo__","\u003cp>\u003cstrong>foo\u003c/strong>\u003c/p>\n"],["_*foo*_","\u003cp>\u003cem>\u003cem>foo\u003c/em>\u003c/em>\u003c/p>\n"],["****foo****","\u003cp>\u003cstrong>\u003cstrong>foo\u003c/strong>\u003c/strong>\u003c/p>\n"],["____foo____","\u003cp>\u003cstrong>\u003cstrong>foo\u003c/strong>\u003c/strong>\u003c/p>\n"],["******foo******","\u003cp>\u003cstrong>\u003cstrong>\u003cstrong>foo\u003c/strong>\u003c/strong>\u003c/strong>\u003c/p>\n"],["***foo***","\u003cp>\u003cem>\u003cstrong>foo\u003c/strong>\u003c/em>\u003c/p>\n"],["_____foo_____","\u003cp>\u003cem>\u003cstrong>\u003cstrong>foo\u003c/strong>\u003c/strong>\u003c/em>\u003c/p>\n"],["*foo _bar* baz_","\u003cp>\u003cem>foo _bar\u003c/em> baz_\u003c/p>\n"],["*foo __bar *baz bim__ bam*","\u003cp>\u003cem>foo \u003cstrong>bar *baz bim\u003c/strong> bam\u003c/em>\u003c/p>\n"],["**foo **bar baz**","\u003cp>**foo \u003cstrong>bar baz\u003c/strong>\u003c/p>\n"],["*foo *bar baz*","\u003cp>*foo \u003cem>bar baz\u003c/em>\u003c/p>\n"],["*[bar*](/url)","\u003cp>*\u003ca href=\"/url\">bar*\u003c/a>\u003c/p>\n"],["_foo [bar_](/url)","\u003cp>_foo \u003ca href=\"/url\">bar_\u003c/a>\u003c/p>\n"],["*a `*`*","\u003cp>\u003cem>a \u003ccode>*\u003c/code>\u003c/em>\u003c/p>\n"],["_a `_`_","\u003cp>\u003cem>a \u003ccode>_\u003c/code>\u003c/em>\u003c/p>\n"],["**a\u003chttp://foo.bar/?q=**>","\u003cp>**a\u003ca href=\"http://foo.bar/?q=**\">http://foo.bar/?q=**\u003c/a>\u003c/p>\n"],["__a\u003chttp://foo.bar/?q=__>","\u003cp>__a\u003ca href=\"http://foo.bar/?q=__\">http://foo.bar/?q=__\u003c/a>\u003c/p>\n"],["[link](/uri \"title\")","\u003cp>\u003ca href=\"/uri\" title=\"title\">link\u003c/a>\u003c/p>\n"],["[link](/uri)","\u003cp>\u003ca href=\"/uri\">link\u003c/a>\u003c/p>\n"],["[link]()","\u003cp>\u003ca href=\"\">link\u003c/a>\u003c/p>\n"],["[link](\u003c>)","\u003cp>\u003ca href=\"\">link\u003c/a>\u003c/p>\n"],["[link](/my uri)","\u003cp>[link](/my uri)\u003c/p>\n"],["[link](\u003c/my uri>)","\u003cp>\u003ca href=\"/my%20uri\">link\u003c/a>\u003c/p>\n"],["[link](foo\nbar)","\u003cp>[link](foo\nbar)\u003c/p>\n"],["[link](\u003cfoo\nbar>)","\u003cp>[link](&lt;foo\nbar&gt;)\u003c/p>\n"],["[a](\u003cb)c>)","\u003cp>\u003ca href=\"b)c\">a\u003c/a>\u003c/p>\n"],["[link](\u003cfoo\\>)","\u003cp>[link](&lt;foo&gt;)\u003c/p>\n"],["[a](\u003cb)c\n[a](\u003cb)c>\n[a](\u003cb>c)","\u003cp>[a](&lt;b)c\n[a](&lt;b)c&gt;\n[a](&lt;b&gt;c)\u003c/p>\n"],["[link](\\(foo\\))","\u003cp>\u003ca href=\"(foo)\">link\u003c/a>\u003c/p>\n"],["[link](foo(and(bar)))","\u003cp>\u003ca href=\"foo(and(bar))\">link\u003c/a>\u003c/p>\n"],["[link](foo\\(and\\(bar\\))","\u003cp>\u003ca href=\"foo(and(bar)\">link\u003c/a>\u003c/p>\n"],["[link](\u003cfoo(and(bar)>)","\u003cp>\u003ca href=\"foo(and(bar)\">link\u003c/a>\u003c/p>\n"],["[link](foo\\)\\:)","\u003cp>\u003ca href=\"foo):\">link\u003c/a>\u003c/p>\n"],["[link](#fragment)\n\n[link](http://example.com#fragment)\n\n[link](http://example.com?foo=3#frag)","\u003cp>\u003ca href=\"#fragment\">link\u003c/a>\u003c/p>\n\u003cp>\u003ca href=\"http://example.com#fragment\">link\u003c/a>\u003c/p>\n\u003cp>\u003ca href=\"http://example.com?foo=3#frag\">link\u003c/a>\u003c/p>\n"],["[link](foo\\bar)","\u003cp>\u003ca href=\"foo%5Cbar\">link\u003c/a>\u003c/p>\n"],["[link](foo%20b&auml;)","\u003cp>\u003ca href=\"foo%20b%C3%A4\">link\u003c/a>\u003c/p>\n"],["[link](\"title\")","\u003cp>\u003ca href=\"%22title%22\">link\u003c/a>\u003c/p>\n"],["[link](/url \"title\")\n[link](/url 'title')\n[link](/url (title))","\u003cp>\u003ca href=\"/url\" title=\"title\">link\u003c/a>\n\u003ca href=\"/url\" title=\"title\">link\u003c/a>\n\u003ca href=\"/url\" title=\"title\">link\u003c/a>\u003c/p>\n"],["[link](/url \"title \\\"&quot;\")","\u003cp>\u003ca href=\"/url\" title=\"title &quot;&quot;\">link\u003c/a>\u003c/p>\n"],["[link](/url \"title \"and\" title\")","\u003cp>[link](/url &quot;title &quot;and&quot; title&quot;)\u003c/p>\n"],["[link](/url 'title \"and\" title')","\u003cp>\u003ca href=\"/url\" title=\"title &quot;and&quot; title\">link\u003c/a>\u003c/p>\n"],["[link](   /uri\n  \"title\"  )","\u003cp>\u003ca href=\"/uri\" title=\"title\">link\u003c/a>\u003c/p>\n"],["[link] (/uri)","\u003cp>[link] (/uri)\u003c/p>\n"],["[link [foo [bar]]](/uri)","\u003cp>\u003ca href=\"/uri\">link [foo [bar]]\u003c/a>\u003c/p>\n"],["[link] bar](/uri)","\u003cp>[link] bar](/uri)\u003c/p>\n"],["[link [bar](/uri)","\u003cp>[link \u003ca href=\"/uri\">bar\u003c/a>\u003c/p>\n"],["[link \\[bar](/uri)","\u003cp>\u003ca href=\"/uri\">link [bar\u003c/a>\u003c/p>\n"],["[link *foo **bar** `#`*](/uri)","\u003cp>\u003ca href=\"/uri\">link \u003cem>foo \u003cstrong>bar\u003c/strong> \u003ccode>#\u003c/code>\u003c/em>\u003c/a>\u003c/p>\n"],["[![moon](moon.jpg)](/uri)","\u003cp>\u003ca href=\"/uri\">\u003cimg src=\"moon.jpg\" alt=\"moon\">\u003c/a>\u003c/p>\n"],["[foo [bar](/uri)](/uri)","\u003cp>[foo \u003ca href=\"/uri\">bar\u003c/a>](/uri)\u003c/p>\n"],["[foo *[bar [baz](/uri)](/uri)*](/uri)","\u003cp>[foo \u003cem>[bar \u003ca href=\"/uri\">baz\u003c/a>](/uri)\u003c/em>](/uri)\u003c/p>\n"],["![[[foo](uri1)](uri2)](uri3)","\u003cp>\u003cimg src=\"uri3\" alt=\"[foo](uri2)\">\u003c/p>\n"],["*[foo*](/uri)","\u003cp>*\u003ca href=\"/uri\">foo*\u003c/a>\u003c/p>\n"],["[foo *bar](baz*)","\u003cp>\u003ca href=\"baz*\">foo *bar\u003c/a>\u003c/p>\n"],["*foo [bar* baz]","\u003cp>\u003cem>foo [bar\u003c/em> baz]\u003c/p>\n"],["[foo`](/uri)`","\u003cp>[foo\u003ccode>](/uri)\u003c/code>\u003c/p>\n"],["[foo][bar]\n\n[bar]: /url \"title\"","\u003cp>\u003ca href=\"/url\" title=\"title\">foo\u003c/a>\u003c/p>\n"],["[link [foo [bar]]][ref]\n\n[ref]: /uri","\u003cp>\u003ca href=\"/uri\">link [foo [bar]]\u003c/a>\u003c/p>\n"],["[link \\[bar][ref]\n\n[ref]: /uri","\u003cp>\u003ca href=\"/uri\">link [bar\u003c/a>\u003c/p>\n"],["[link *foo **bar** `#`*][ref]\n\n[ref]: /uri","\u003cp>\u003ca href=\"/uri\">link \u003cem>foo \u003cstrong>bar\u003c/strong> \u003ccode>#\u003c/code>\u003c/em>\u003c/a>\u003c/p>\n"],["[![moon](moon.jpg)][ref]\n\n[ref]: /uri","\u003cp>\u003ca href=\"/uri\">\u003cimg src=\"moon.jpg\" alt=\"moon\">\u003c/a>\u003c/p>\n"],["[foo [bar](/uri)][ref]\n\n[ref]: /uri","\u003cp>[foo \u003ca href=\"/uri\">bar\u003c/a>]\u003ca href=\"/uri\">ref\u003c/a>\u003c/p>\n"],["[foo *bar [baz][ref]*][ref]\n\n[ref]: /uri","\u003cp>[foo \u003cem>bar \u003ca href=\"/uri\">baz\u003c/a>\u003c/em>]\u003ca href=\"/uri\">ref\u003c/a>\u003c/p>\n"],["*[foo*][ref]\n\n[ref]: /uri","\u003cp>*\u003ca href=\"/uri\">foo*\u003c/a>\u003c/p>\n"],["[foo *bar][ref]\n\n[ref]: /uri","\u003cp>\u003ca href=\"/uri\">foo *bar\u003c/a>\u003c/p>\n"],["[foo`][ref]`\n\n[ref]: /uri","\u003cp>[foo\u003ccode>][ref]\u003c/code>\u003c/p>\n"],["[foo][BaR]\n\n[bar]: /url \"title\"","\u003cp>\u003ca href=\"/url\" title=\"title\">foo\u003c/a>\u003c/p>\n"],["[\u0422\u043e\u043b\u043f\u043e\u0439][\u0422\u043e\u043b\u043f\u043e\u0439] is a Russian word.\n\n[\u0422\u041e\u041b\u041f\u041e\u0419]: /url","\u003cp>\u003ca href=\"/url\">\u0422\u043e\u043b\u043f\u043e\u0439\u003c/a> is a Russian word.\u003c/p>\n"],["[Foo\n  bar]: /url\n\n[Baz][Foo bar]","\u003cp>\u003ca href=\"/url\">Baz\u003c/a>\u003c/p>\n"],["[foo] [bar]\n\n[bar]: /url \"title\"","\u003cp>[foo] \u003ca href=\"/url\" title=\"title\">bar\u003c/a>\u003c/p>\n"],["[foo]\n[bar]\n\n[bar]: /url \"title\"","\u003cp>[foo]\n\u003ca href=\"/url\" title=\"title\">bar\u003c/a>\u003c/p>\n"],["[foo]: /url1\n\n[foo]: /url2\n\n[bar][foo]","\u003cp>\u003ca href=\"/url1\">bar\u003c/a>\u003c/p>\n"],["[bar][foo\\!]\n\n[foo!]: /url","\u003cp>[bar][foo!]\u003c/p>\n"],["[foo][ref[]\n\n[ref[]: /uri","\u003cp>[foo][ref[]\u003c/p>\n\u003cp>[ref[]: /uri\u003c/p>\n"],["[foo][ref[bar]]\n\n[ref[bar]]: /uri","\u003cp>[foo][ref[bar]]\u003c/p>\n\u003cp>[ref[bar]]: /uri\u003c/p>\n"],["[[[foo]]]\n\n[[[foo]]]: /url","\u003cp>[[[foo]]]\u003c/p>\n\u003cp>[[[foo]]]: /url\u003c/p>\n"],["[foo][ref\\[]\n\n[ref\\[]: /uri","\u003cp>\u003ca href=\"/uri\">foo\u003c/a>\u003c/p>\n"],["[bar\\\\]: /uri\n\n[bar\\\\]","\u003cp>\u003ca href=\"/uri\">bar\\\u003c/a>\u003c/p>\n"],["[]\n\n[]: /uri","\u003cp>[]\u003c/p>\n\u003cp>[]: /uri\u003c/p>\n"],["[\n ]\n\n[\n ]: /uri","\u003cp>[\n]\u003c/p>\n\u003cp>[\n]: /uri\u003c/p>\n"],["[foo][]\n\n[foo]: /url \"title\"","\u003cp>\u003ca href=\"/url\" title=\"title\">foo\u003c/a>\u003c/p>\n"],["[*foo* bar][]\n\n[*foo* bar]: /url \"title\"","\u003cp>\u003ca href=\"/url\" title=\"title\">\u003cem>foo\u003c/em> bar\u003c/a>\u003c/p>\n"],["[Foo][]\n\n[foo]: /url \"title\"","\u003cp>\u003ca href=\"/url\" title=\"title\">Foo\u003c/a>\u003c/p>\n"],["[foo] \n[]\n\n[foo]: /url \"title\"","\u003cp>\u003ca href=\"/url\" title=\"title\">foo\u003c/a>\n[]\u003c/p>\n"],["[foo]\n\n[foo]: /url \"title\"","\u003cp>\u003ca href=\"/url\" title=\"title\">foo\u003c/a>\u003c/p>\n"],["[*foo* bar]\n\n[*foo* bar]: /url \"title\"","\u003cp>\u003ca href=\"/url\" title=\"title\">\u003cem>foo\u003c/em> bar\u003c/a>\u003c/p>\n"],["[[*foo* bar]]\n\n[*foo* bar]: /url \"title\"","\u003cp>[\u003ca href=\"/url\" title=\"title\">\u003cem>foo\u003c/em> bar\u003c/a>]\u003c/p>\n"],["[[bar [foo]\n\n[foo]: /url","\u003cp>[[bar \u003ca href=\"/url\">foo\u003c/a>\u003c/p>\n"],["[Foo]\n\n[foo]: /url \"title\"","\u003cp>\u003ca href=\"/url\" title=\"title\">Foo\u003c/a>\u003c/p>\n"],["[foo] bar\n\n[foo]: /url","\u003cp>\u003ca href=\"/url\">foo\u003c/a> bar\u003c/p>\n"],["\\[foo]\n\n[foo]: /url \"title\"","\u003cp>[foo]\u003c/p>\n"],["[foo*]: /url\n\n*[foo*]","\u003cp>*\u003ca href=\"/url\">foo*\u003c/a>\u003c/p>\n"],["[foo][bar]\n\n[foo]: /url1\n[bar]: /url2","\u003cp>\u003ca href=\"/url2\">foo\u003c/a>\u003c/p>\n"],["[foo][]\n\n[foo]: /url1","\u003cp>\u003ca href=\"/url1\">foo\u003c/a>\u003c/p>\n"],["[foo]()\n\n[foo]: /url1","\u003cp>\u003ca href=\"\">foo\u003c/a>\u003c/p>\n"],["[foo](not a link)\n\n[foo]: /url1","\u003cp>\u003ca href=\"/url1\">foo\u003c/a>(not a link)\u003c/p>\n"],["[foo][bar][baz]\n\n[baz]: /url","\u003cp>[foo]\u003ca href=\"/url\">bar\u003c/a>\u003c/p>\n"],["[foo][bar][baz]\n\n[baz]: /url1\n[bar]: /url2","\u003cp>\u003ca href=\"/url2\">foo\u003c/a>\u003ca href=\"/url1\">baz\u003c/a>\u003c/p>\n"],["[foo][bar][baz]\n\n[baz]: /url1\n[foo]: /url2","\u003cp>[foo]\u003ca href=\"/url1\">bar\u003c/a>\u003c/p>\n"],["[a]: /url \"title\"\n\n[a]","\u003cp>\u003ca href=\"/url\" title=\"title\">a\u003c/a>\u003c/p>\n"],["[a]: \u003c>\n\n[a]","\u003cp>\u003ca href=\"\">a\u003c/a>\u003c/p>\n"],["[a]:\n/url\n\n[a]","\u003cp>\u003ca href=\"/url\">a\u003c/a>\u003c/p>\n"],["[a]: /url 'title\n\nwith blank line'\n\n[a]","\u003cp>[a]: /url 'title\u003c/p>\n\u003cp>with blank line'\u003c/p>\n\u003cp>[a]\u003c/p>\n"],["[a]:\n\n[a]","\u003cp>[a]:\u003c/p>\n\u003cp>[a]\u003c/p>\n"],["[foo]: /url\\bar\\*baz \"foo\\\"bar\\baz\"\n\n[foo]","\u003cp>\u003ca href=\"/url%5Cbar*baz\" title=\"foo&quot;bar\\baz\">foo\u003c/a>\u003c/p>\n"],["[foo]\n\n[foo]: url","\u003cp>\u003ca href=\"url\">foo\u003c/a>\u003c/p>\n"],["[foo]\n\n[foo]: first\n[foo]: second","\u003cp>\u003ca href=\"first\">foo\u003c/a>\u003c/p>\n"],["[FOO]: /url\n\n[Foo]","\u003cp>\u003ca href=\"/url\">Foo\u003c/a>\u003c/p>\n"],["[\u0391\u0393\u039f]: /\u03c6\u03bf\u03c5\n\n[\u03b1\u03b3\u03bf]","\u003cp>\u003ca href=\"/%CF%86%CE%BF%CF%85\">\u03b1\u03b3\u03bf\u003c/a>\u003c/p>\n"],["[foo]: /url",""],["[\nfoo\n]: /url\nbar","\u003cp>bar\u003c/p>\n"],["[foo]: /url \"title\" ok","\u003cp>[foo]: /url &quot;title&quot; ok\u003c/p>\n"],["[foo]: /url\n\"title\" ok","\u003cp>&quot;title&quot; ok\u003c/p>\n"],["    [foo]: /url \"title\"\n\n[foo]","\u003cpre>\u003ccode>[foo]: /url &quot;title&quot;\n\u003c/code>\u003c/pre>\n\u003cp>[foo]\u003c/p>\n"],["```\n[foo]: /url\n```\n\n[foo]","\u003cpre>\u003ccode>[foo]: /url\n\u003c/code>\u003c/pre>\n\u003cp>[foo]\u003c/p>\n"],["Foo\n[bar]: /baz\n\n[bar]","\u003cp>Foo\n[bar]: /baz\u003c/p>\n\u003cp>[bar]\u003c/p>\n"],["# [Foo]\n[foo]: /url\n> bar","\u003ch1>\u003ca href=\"/url\">Foo\u003c/a>\u003c/h1>\n\u003cblockquote>\n\u003cp>bar\u003c/p>\n\u003c/blockquote>\n"],["[foo]: /url\nbar\n===\n[foo]","\u003ch1>bar\u003c/h1>\n\u003cp>\u003ca href=\"/url\">foo\u003c/a>\u003c/p>\n"],["[foo]: /url\n===\n[foo]","\u003cp>===\n\u003ca href=\"/url\">foo\u003c/a>\u003c/p>\n"],["[foo]: /foo-url \"foo\"\n[bar]: /bar-url\n  \"bar\"\n[baz]: /baz-url\n\n[foo],\n[bar],\n[baz]","\u003cp>\u003ca href=\"/foo-url\" title=\"foo\">foo\u003c/a>,\n\u003ca href=\"/bar-url\" title=\"bar\">bar\u003c/a>,\n\u003ca href=\"/baz-url\">baz\u003c/a>\u003c/p>\n"],["[foo]\n\n> [foo]: /url","\u003cp>\u003ca href=\"/url\">foo\u003c/a>\u003c/p>\n\u003cblockquote>\n\u003c/blockquote>\n"],["![foo](/url \"title\")","\u003cp>\u003cimg src=\"/url\" alt=\"foo\" title=\"title\">\u003c/p>\n"],["![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"","\u003cp>\u003cimg src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\">\u003c/p>\n"],["![foo ![bar](/url)](/url2)","\u003cp>\u003cimg src=\"/url2\" alt=\"foo bar\">\u003c/p>\n"],["![foo [bar](/url)](/url2)","\u003cp>\u003cimg src=\"/url2\" alt=\"foo bar\">\u003c/p>\n"],["![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"","\u003cp>\u003cimg src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\">\u003c/p>\n"],["![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"","\u003cp>\u003cimg src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\">\u003c/p>\n"],["![foo](train.jpg)","\u003cp>\u003cimg src=\"train.jpg\" alt=\"foo\">\u003c/p>\n"],["My ![foo bar](/path/to/train.jpg  \"title\"   )","\u003cp>My \u003cimg src=\"/path/to/train.jpg\" alt=\"foo bar\" title=\"title\">\u003c/p>\n"],["![foo](\u003curl>)","\u003cp>\u003cimg src=\"url\" alt=\"foo\">\u003c/p>\n"],["![](/url)","\u003cp>\u003cimg src=\"/url\" alt=\"\">\u003c/p>\n"],["![foo][bar]\n\n[bar]: /url","\u003cp>\u003cimg src=\"/url\" alt=\"foo\">\u003c/p>\n"],["![foo][bar]\n\n[BAR]: /url","\u003cp>\u003cimg src=\"/url\" alt=\"foo\">\u003c/p>\n"],["![foo][]\n\n[foo]: /url \"title\"","\u003cp>\u003cimg src=\"/url\" alt=\"foo\" title=\"title\">\u003c/p>\n"],["![*foo* bar][]\n\n[*foo* bar]: /url \"title\"","\u003cp>\u003cimg src=\"/url\" alt=\"foo bar\" title=\"title\">\u003c/p>\n"],["![Foo][]\n\n[foo]: /url \"title\"","\u003cp>\u003cimg src=\"/url\" alt=\"Foo\" title=\"title\">\u003c/p>\n"],["![foo] \n[]\n\n[foo]: /url \"title\"","\u003cp>\u003cimg src=\"/url\" alt=\"foo\" title=\"title\">\n[]\u003c/p>\n"],["![foo]\n\n[foo]: /url \"title\"","\u003cp>\u003cimg src=\"/url\" alt=\"foo\" title=\"title\">\u003c/p>\n"],["![*foo* bar]\n\n[*foo* bar]: /url \"title\"","\u003cp>\u003cimg src=\"/url\" alt=\"foo bar\" title=\"title\">\u003c/p>\n"],["![[foo]]\n\n[[foo]]: /url \"title\"","\u003cp>![[foo]]\u003c/p>\n\u003cp>[[foo]]: /url &quot;title&quot;\u003c/p>\n"],["![Foo]\n\n[foo]: /url \"title\"","\u003cp>\u003cimg src=\"/url\" alt=\"Foo\" title=\"title\">\u003c/p>\n"],["!\\[foo]\n\n[foo]: /url \"title\"","\u003cp>![foo]\u003c/p>\n"],["\\![foo]\n\n[foo]: /url \"title\"","\u003cp>!\u003ca href=\"/url\" title=\"title\">foo\u003c/a>\u003c/p>\n"],["\u003chttp://foo.bar.baz>","\u003cp>\u003ca href=\"http://foo.bar.baz\">http://foo.bar.baz\u003c/a>\u003c/p>\n"],["\u003chttp://foo.bar.baz/test?q=hello&id=22&boolean>","\u003cp>\u003ca href=\"http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean\">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean\u003c/a>\u003c/p>\n"],["\u003circ://foo.bar:2233/baz>","\u003cp>\u003ca href=\"irc://foo.bar:2233/baz\">irc://foo.bar:2233/baz\u003c/a>\u003c/p>\n"],["\u003cMAILTO:FOO@BAR.BAZ>","\u003cp>\u003ca href=\"MAILTO:FOO@BAR.BAZ\">MAILTO:FOO@BAR.BAZ\u003c/a>\u003c/p>\n"],["\u003ca+b+c:d>","\u003cp>\u003ca href=\"a+b+c:d\">a+b+c:d\u003c/a>\u003c/p>\n"],["\u003cmade-up-scheme://foo,bar>","\u003cp>\u003ca href=\"made-up-scheme://foo,bar\">made-up-scheme://foo,bar\u003c/a>\u003c/p>\n"],["\u003chttp://../>","\u003cp>\u003ca href=\"http://../\">http://../\u003c/a>\u003c/p>\n"],["\u003clocalhost:5001/foo>","\u003cp>\u003ca href=\"localhost:5001/foo\">localhost:5001/foo\u003c/a>\u003c/p>\n"],["\u003chttp://foo.bar/baz bim>","\u003cp>&lt;http://foo.bar/baz bim&gt;\u003c/p>\n"],["\u003chttp://example.com/\\[\\>","\u003cp>\u003ca href=\"http://example.com/%5C%5B%5C\">http://example.com/\\[\\\u003c/a>\u003c/p>\n"],["\u003cfoo@bar.example.com>","\u003cp>\u003ca href=\"mailto:foo@bar.example.com\">foo@bar.example.com\u003c/a>\u003c/p>\n"],["\u003cfoo+special@Bar.baz-bar0.com>","\u003cp>\u003ca href=\"mailto:foo+special@Bar.baz-bar0.com\">foo+special@Bar.baz-bar0.com\u003c/a>\u003c/p>\n"],["\u003cfoo\\+@bar.example.com>","\u003cp>&lt;foo+@bar.example.com&gt;\u003c/p>\n"],["\u003c>","\u003cp>&lt;&gt;\u003c/p>\n"],["\u003c http://foo.bar >","\u003cp>&lt; http://foo.bar &gt;\u003c/p>\n"],["\u003cm:abc>","\u003cp>&lt;m:abc&gt;\u003c/p>\n"],["\u003cfoo.bar.baz>","\u003cp>&lt;foo.bar.baz&gt;\u003c/p>\n"],["http://example.com","\u003cp>http://example.com\u003c/p>\n"],["foo@bar.example.com","\u003cp>foo@bar.example.com\u003c/p>\n"],["foo  \nbaz","\u003cp>foo\u003cbr>\nbaz\u003c/p>\n"],["foo\\\nbaz","\u003cp>foo\u003cbr>\nbaz\u003c/p>\n"],["foo       \nbaz","\u003cp>foo\u003cbr>\nbaz\u003c/p>\n"],["foo  \n     bar","\u003cp>foo\u003cbr>\nbar\u003c/p>\n"],["foo\\\n     bar","\u003cp>foo\u003cbr>\nbar\u003c/p>\n"],["*foo  \nbar*","\u003cp>\u003cem>foo\u003cbr>\nbar\u003c/em>\u003c/p>\n"],["*foo\\\nbar*","\u003cp>\u003cem>foo\u003cbr>\nbar\u003c/em>\u003c/p>\n"],["`code  \nspan`","\u003cp>\u003ccode>code   span\u003c/code>\u003c/p>\n"],["`code\\\nspan`","\u003cp>\u003ccode>code\\ span\u003c/code>\u003c/p>\n"],["foo\\","\u003cp>foo\\\u003c/p>\n"],["foo  ","\u003cp>foo\u003c/p>\n"],["### foo\\","\u003ch3>foo\\\u003c/h3>\n"],["### foo  ","\u003ch3>foo\u003c/h3>\n"],["foo\nbaz","\u003cp>foo\nbaz\u003c/p>\n"],["foo \n baz","\u003cp>foo\nbaz\u003c/p>\n"],["hello $.;'there","\u003cp>hello $.;'there\u003c/p>\n"],["Foo \u03c7\u03c1\u1fc6\u03bd","\u003cp>Foo \u03c7\u03c1\u1fc6\u03bd\u003c/p>\n"],["Multiple     spaces","\u003cp>Multiple     spaces\u003c/p>\n"],["[x](javascript:alert(1))","\u003cp>[x](javascript:alert(1))\u003c/p>\n"],["[x](JavaScript:alert(1))","\u003cp>[x](JavaScript:alert(1))\u003c/p>\n"],["[x](  javascript:alert(1))","\u003cp>[x](  javascript:alert(1))\u003c/p>\n"],["[x](java&#115;cript:alert(1))","\u003cp>[x](javascript:alert(1))\u003c/p>\n"],["[x](&#106;avascript:alert(1))","\u003cp>[x](javascript:alert(1))\u003c/p>\n"],["[x](vbscript:msgbox(1))","\u003cp>[x](vbscript:msgbox(1))\u003c/p>\n"],["[x](data:text/html,\u003cscript>alert(1)\u003c/script>)","\u003cp>[x](data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;)\u003c/p>\n"],["![x](data:image/png;base64,AAAA)","\u003cp>\u003cimg src=\"data:image/png;base64,AAAA\" alt=\"x\">\u003c/p>\n"],["![x](data:text/html;base64,AAAA)","\u003cp>![x](data:text/html;base64,AAAA)\u003c/p>\n"],["[x](file:///etc/passwd)","\u003cp>[x](file:///etc/passwd)\u003c/p>\n"],["\u003cjavascript:alert(1)>","\u003cp>&lt;javascript:alert(1)&gt;\u003c/p>\n"],["[x]\n\n[x]: javascript:alert(1)","\u003cp>[x]\u003c/p>\n\u003cp>[x]: javascript:alert(1)\u003c/p>\n"],["[x](java\tscript:alert(1))","\u003cp>[x](java\tscript:alert(1))\u003c/p>\n"],["[x](\u003cjava\tscript:alert(1)>)","\u003cp>\u003ca href=\"java%09script:alert(1)\">x\u003c/a>\u003c/p>\n"],["[x](https://example.org/a b)","\u003cp>[x](https://example.org/a b)\u003c/p>\n"],["[x](https://example.org/\u00e9\u4e2d)","\u003cp>\u003ca href=\"https://example.org/%C3%A9%E4%B8%AD\">x\u003c/a>\u003c/p>\n"],["[x](https://example.org/a%20b%zz)","\u003cp>\u003ca href=\"https://example.org/a%20b%25zz\">x\u003c/a>\u003c/p>\n"],["[x](mailto:a@b.co)","\u003cp>\u003ca href=\"mailto:a@b.co\">x\u003c/a>\u003c/p>\n"],["[x](tel:+911234567890)","\u003cp>\u003ca href=\"tel:+911234567890\">x\u003c/a>\u003c/p>\n"],["[x](#top)","\u003cp>\u003ca href=\"#top\">x\u003c/a>\u003c/p>\n"],["[x](?q=1)","\u003cp>\u003ca href=\"?q=1\">x\u003c/a>\u003c/p>\n"],["[x](./a/../b)","\u003cp>\u003ca href=\"./a/../b\">x\u003c/a>\u003c/p>\n"],["| a | b |\n|---|---|\n| 1 | 2 |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["a | b\n--|--\n1 | 2","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a | b |\n|:--|--:|\n| 1 | 2 |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth style=\"text-align:left\">a\u003c/th>\n\u003cth style=\"text-align:right\">b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd style=\"text-align:left\">1\u003c/td>\n\u003ctd style=\"text-align:right\">2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a | b | c |\n|:-:|---|--:|\n| 1 | 2 | 3 |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth style=\"text-align:center\">a\u003c/th>\n\u003cth>b\u003c/th>\n\u003cth style=\"text-align:right\">c\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd style=\"text-align:center\">1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003ctd style=\"text-align:right\">3\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a |\n|---|\n| 1 |\n| 2 |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003c/tr>\n\u003ctr>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a | b |\n|---|---|","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003c/table>\n"],["| a | b |\n|---|---|\n| 1 |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a | b |\n|---|---|\n| 1 | 2 | 3 |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a | b |\n|---|---|\n| x \\| y | 2 |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>x | y\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| *a* | `b` |\n|---|---|\n| **1** | [l](/u) |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>\u003cem>a\u003c/em>\u003c/th>\n\u003cth>\u003ccode>b\u003c/code>\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>\u003cstrong>1\u003c/strong>\u003c/td>\n\u003ctd>\u003ca href=\"/u\">l\u003c/a>\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["text before\n| a | b |\n|---|---|\n| 1 | 2 |","\u003cp>text before\u003c/p>\n\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a | b |\n|---|---|\n| 1 | 2 |\ntext after","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003ctr>\n\u003ctd>text after\u003c/td>\n\u003ctd>\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a | b |\n|---|---|\n| 1 | 2 |\n\ntext after","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n\u003cp>text after\u003c/p>\n"],["| a | b |\n|---|---|\n| 1 | 2 |\n# heading","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n\u003ch1>heading\u003c/h1>\n"],["| a | b |\n|---|---|\n| 1 | 2 |\n> quote","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n\u003cblockquote>\n\u003cp>quote\u003c/p>\n\u003c/blockquote>\n"],["| a | b |\n|---|---|\n| 1 | 2 |\n- item","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n\u003cul>\n\u003cli>item\u003c/li>\n\u003c/ul>\n"],["| a | b |\n|---|---|\n| 1 | 2 |\n```\ncode\n```","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n\u003cpre>\u003ccode>code\n\u003c/code>\u003c/pre>\n"],["| a | b\n|---|---\n| 1 | 2","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["|a|b|\n|-|-|\n|1|2|","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a | b |\n| - | - |\n| 1 | 2 |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a | b |\n|--|--|\n||2|","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a | b |\n|---|--|\n| 1 | 2 |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["| a | b |\n|---|---|\n\n| c | d |\n|---|---|\n| 3 | 4 |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003c/table>\n\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>c\u003c/th>\n\u003cth>d\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>3\u003c/td>\n\u003ctd>4\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["> | a | b |\n> |---|---|\n> | 1 | 2 |","\u003cblockquote>\n\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n\u003c/blockquote>\n"],["- | a | b |\n  |---|---|\n  | 1 | 2 |","\u003cul>\n\u003cli>\n\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>1\u003c/td>\n\u003ctd>2\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n\u003c/li>\n\u003c/ul>\n"],["| a | b |\n|---|---|\n    | 1 | 2 |","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003c/table>\n\u003cpre>\u003ccode>| 1 | 2 |\n\u003c/code>\u003c/pre>\n"],["Not a table | a\n---","\u003ch2>Not a table | a\u003c/h2>\n"],["a | b\n---|---","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003c/table>\n"],["| a | b |\n|--- ---|---|\n| 1 | 2 |","\u003cp>| a | b |\n|--- ---|---|\n| 1 | 2 |\u003c/p>\n"],["| a | b |\n|---|---|---|\n| 1 | 2 |","\u003cp>| a | b |\n|---|---|---|\n| 1 | 2 |\u003c/p>\n"],["| a |\n| b |\n|---|","\u003cp>| a |\u003c/p>\n\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003c/table>\n"],["one\ntwo | a\n---|---\nx | y","\u003cp>one\u003c/p>\n\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>two\u003c/th>\n\u003cth>a\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>x\u003c/td>\n\u003ctd>y\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["|a|b|\n|---|---|\n|&amp;|&#65;|","\u003ctable>\n\u003cthead>\n\u003ctr>\n\u003cth>a\u003c/th>\n\u003cth>b\u003c/th>\n\u003c/tr>\n\u003c/thead>\n\u003ctbody>\n\u003ctr>\n\u003ctd>&amp;\u003c/td>\n\u003ctd>A\u003c/td>\n\u003c/tr>\n\u003c/tbody>\n\u003c/table>\n"],["~~foo~~","\u003cp>\u003cdel>foo\u003c/del>\u003c/p>\n"],["~~foo~~bar","\u003cp>\u003cdel>foo\u003c/del>bar\u003c/p>\n"],["a ~~b~~ c","\u003cp>a \u003cdel>b\u003c/del> c\u003c/p>\n"],["~~a *b* c~~","\u003cp>\u003cdel>a \u003cem>b\u003c/em> c\u003c/del>\u003c/p>\n"],["~~ a ~~","\u003cp>~~ a ~~\u003c/p>\n"],["~~a~~~","\u003cp>\u003cdel>a\u003c/del>~\u003c/p>\n"],["*~~a~~*","\u003cp>\u003cem>\u003cdel>a\u003c/del>\u003c/em>\u003c/p>\n"],["~~*a*~~","\u003cp>\u003cdel>\u003cem>a\u003c/em>\u003c/del>\u003c/p>\n"],["~~a~~ ~~b~~","\u003cp>\u003cdel>a\u003c/del> \u003cdel>b\u003c/del>\u003c/p>\n"],["~~a ~~b~~ c~~","\u003cp>\u003cdel>a \u003cdel>b\u003c/del> c\u003c/del>\u003c/p>\n"],["text ~~with `code` inside~~","\u003cp>text \u003cdel>with \u003ccode>code\u003c/code> inside\u003c/del>\u003c/p>\n"],["~~[link](/x)~~","\u003cp>\u003cdel>\u003ca href=\"/x\">link\u003c/a>\u003c/del>\u003c/p>\n"],["~~a\nb~~","\u003cp>\u003cdel>a\nb\u003c/del>\u003c/p>\n"],["# Title\n\nSome *intro* text with a [link](https://example.org) and `code`.\n\n## List\n\n- one\n- two\n  - nested\n- three\n\n1. first\n2. second\n\n> quote\n> continues\n\n```js\nconst a = 1;\n```\n\n---\n\nEnd.","\u003ch1>Title\u003c/h1>\n\u003cp>Some \u003cem>intro\u003c/em> text with a \u003ca href=\"https://example.org\">link\u003c/a> and \u003ccode>code\u003c/code>.\u003c/p>\n\u003ch2>List\u003c/h2>\n\u003cul>\n\u003cli>one\u003c/li>\n\u003cli>two\n\u003cul>\n\u003cli>nested\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003cli>three\u003c/li>\n\u003c/ul>\n\u003col>\n\u003cli>first\u003c/li>\n\u003cli>second\u003c/li>\n\u003c/ol>\n\u003cblockquote>\n\u003cp>quote\ncontinues\u003c/p>\n\u003c/blockquote>\n\u003cpre>\u003ccode class=\"language-js\">const a = 1;\n\u003c/code>\u003c/pre>\n\u003chr>\n\u003cp>End.\u003c/p>\n"],["Setext\n======\n\nParagraph one\nstill one.\n\n    indented code\n\n* a\n\n* b\n\n[ref]: /somewhere \"Title\"\n\nSee [ref] and ![img](a.png \"t\").","\u003ch1>Setext\u003c/h1>\n\u003cp>Paragraph one\nstill one.\u003c/p>\n\u003cpre>\u003ccode>indented code\n\u003c/code>\u003c/pre>\n\u003cul>\n\u003cli>\n\u003cp>a\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>b\u003c/p>\n\u003c/li>\n\u003c/ul>\n\u003cp>See \u003ca href=\"/somewhere\" title=\"Title\">ref\u003c/a> and \u003cimg src=\"a.png\" alt=\"img\" title=\"t\">.\u003c/p>\n"],["1. one\n\n   para\n\n2. two\n   - nested a\n   - nested b\n\n   > quote in item\n\n3. three","\u003col>\n\u003cli>\n\u003cp>one\u003c/p>\n\u003cp>para\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>two\u003c/p>\n\u003cul>\n\u003cli>nested a\u003c/li>\n\u003cli>nested b\u003c/li>\n\u003c/ul>\n\u003cblockquote>\n\u003cp>quote in item\u003c/p>\n\u003c/blockquote>\n\u003c/li>\n\u003cli>\n\u003cp>three\u003c/p>\n\u003c/li>\n\u003c/ol>\n"],["- [ ] a\n- [x] b\n- [X] c","\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled> a\u003c/li>\n\u003cli>\u003cinput type=\"checkbox\" disabled checked> b\u003c/li>\n\u003cli>\u003cinput type=\"checkbox\" disabled checked> c\u003c/li>\n\u003c/ul>\n"],["- [ ] one","\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled> one\u003c/li>\n\u003c/ul>\n"],["* [x] done","\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled checked> done\u003c/li>\n\u003c/ul>\n"],["+ [ ] plus","\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled> plus\u003c/li>\n\u003c/ul>\n"],["1. [ ] first\n2. [x] second","\u003col>\n\u003cli>\u003cinput type=\"checkbox\" disabled> first\u003c/li>\n\u003cli>\u003cinput type=\"checkbox\" disabled checked> second\u003c/li>\n\u003c/ol>\n"],["- [ ] a\n  - [x] nested\n  - [ ] nested two","\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled> a\n\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled checked> nested\u003c/li>\n\u003cli>\u003cinput type=\"checkbox\" disabled> nested two\u003c/li>\n\u003c/ul>\n\u003c/li>\n\u003c/ul>\n"],["- [ ] *emphasis*","\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled> \u003cem>emphasis\u003c/em>\u003c/li>\n\u003c/ul>\n"],["- [x] [link](/u)","\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled checked> \u003ca href=\"/u\">link\u003c/a>\u003c/li>\n\u003c/ul>\n"],["- [ ] `code`","\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled> \u003ccode>code\u003c/code>\u003c/li>\n\u003c/ul>\n"],["- a\n- [ ] b\n- c","\u003cul>\n\u003cli>a\u003c/li>\n\u003cli>\u003cinput type=\"checkbox\" disabled> b\u003c/li>\n\u003cli>c\u003c/li>\n\u003c/ul>\n"],["- [ ] a\n\n- [x] b","\u003cul>\n\u003cli>\n\u003cp>\u003cinput type=\"checkbox\" disabled> a\u003c/p>\n\u003c/li>\n\u003cli>\n\u003cp>\u003cinput type=\"checkbox\" disabled checked> b\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["- [ ]\n- [x]","\u003cul>\n\u003cli>[ ]\u003c/li>\n\u003cli>[x]\u003c/li>\n\u003c/ul>\n"],["- [x]no space","\u003cul>\n\u003cli>[x]no space\u003c/li>\n\u003c/ul>\n"],["- [] not a task","\u003cul>\n\u003cli>[] not a task\u003c/li>\n\u003c/ul>\n"],["- [ x] not a task","\u003cul>\n\u003cli>[ x] not a task\u003c/li>\n\u003c/ul>\n"],["- [xx] not a task","\u003cul>\n\u003cli>[xx] not a task\u003c/li>\n\u003c/ul>\n"],["-   [ ] wide","\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled> wide\u003c/li>\n\u003c/ul>\n"],["- [ ] a\n  continued line","\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled> a\ncontinued line\u003c/li>\n\u003c/ul>\n"],["- [ ] a\n\n  second paragraph","\u003cul>\n\u003cli>\n\u003cp>\u003cinput type=\"checkbox\" disabled> a\u003c/p>\n\u003cp>second paragraph\u003c/p>\n\u003c/li>\n\u003c/ul>\n"],["> - [ ] in quote","\u003cblockquote>\n\u003cul>\n\u003cli>\u003cinput type=\"checkbox\" disabled> in quote\u003c/li>\n\u003c/ul>\n\u003c/blockquote>\n"],["- > [ ] not first","\u003cul>\n\u003cli>\n\u003cblockquote>\n\u003cp>[ ] not first\u003c/p>\n\u003c/blockquote>\n\u003c/li>\n\u003c/ul>\n"],["x ~~~a~~b~~","\u003cp>x ~\u003cdel>a\u003c/del>b~~\u003c/p>\n"],["x ~~~a~~ b~~","\u003cp>x ~\u003cdel>a\u003c/del> b~~\u003c/p>\n"],["x ~~~a~~~ b~~","\u003cp>x ~\u003cdel>a\u003c/del>~ b~~\u003c/p>\n"],["x ~~a~~~ b~~ c","\u003cp>x \u003cdel>a\u003c/del>~ b~~ c\u003c/p>\n"],["x ~~~a~~b~~c~~","\u003cp>x ~\u003cdel>a\u003c/del>b\u003cdel>c\u003c/del>\u003c/p>\n"],["x ~~~~a~~~~b~~","\u003cp>x \u003cdel>\u003cdel>a\u003c/del>\u003c/del>b~~\u003c/p>\n"],["~one~ and ~~two~~","\u003cp>~one~ and \u003cdel>two\u003c/del>\u003c/p>\n"],["~~one~~ and ~two~","\u003cp>\u003cdel>one\u003c/del> and ~two~\u003c/p>\n"],["costs ~5 to ~10","\u003cp>costs ~5 to ~10\u003c/p>\n"],["a ~~b~ c","\u003cp>a ~~b~ c\u003c/p>\n"],["[x](\u003c javascript:x>)","\u003cp>[x](&lt; javascript:x&gt;)\u003c/p>\n"],["[x](\u003cjava\tscript:x>)","\u003cp>\u003ca href=\"java%09script:x\">x\u003c/a>\u003c/p>\n"],["[x](&#106;avascript:x)","\u003cp>[x](javascript:x)\u003c/p>\n"]];
@@ -8049,7 +8246,9 @@ T["markdown-previewer"] = r"""
     });
   });
 """
+# ---- END: the test for markdown-previewer ----
 
+# ---- START: the test for image-to-pdf ----
 T["image-to-pdf"] = r"""
   var DASH = String.fromCharCode(0x2014);
   var TIMES = String.fromCharCode(0xD7);
@@ -8683,7 +8882,9 @@ T["image-to-pdf"] = r"""
     finish();
   });
 """
+# ---- END: the test for image-to-pdf ----
 
+# ---- START: the test for merge-pdf ----
 T["merge-pdf"] = r"""
   var DASH = String.fromCharCode(0x2014);
   var list = document.getElementById("list");
@@ -8996,7 +9197,9 @@ T["merge-pdf"] = r"""
     finish();
   });
 """
+# ---- END: the test for merge-pdf ----
 
+# ---- START: the test for split-pdf ----
 T["split-pdf"] = r"""
   var DASH = String.fromCharCode(0x2014);
   var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
@@ -9286,7 +9489,9 @@ T["split-pdf"] = r"""
     finish();
   });
 """
+# ---- END: the test for split-pdf ----
 
+# ---- START: the test for remove-pdf-pages ----
 T["remove-pdf-pages"] = r"""
   var DASH = String.fromCharCode(0x2014);
   var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
@@ -9539,7 +9744,9 @@ T["remove-pdf-pages"] = r"""
     finish();
   });
 """
+# ---- END: the test for remove-pdf-pages ----
 
+# ---- START: the test for rotate-pdf ----
 T["rotate-pdf"] = r"""
   var DASH = String.fromCharCode(0x2014);
   var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
@@ -9784,7 +9991,9 @@ T["rotate-pdf"] = r"""
     finish();
   });
 """
+# ---- END: the test for rotate-pdf ----
 
+# ---- START: the test for add-pdf-page-numbers ----
 T["add-pdf-page-numbers"] = r"""
   var DASH = String.fromCharCode(0x2014);
   var LQ = String.fromCharCode(0x201C), RQ = String.fromCharCode(0x201D);
@@ -10070,7 +10279,9 @@ T["add-pdf-page-numbers"] = r"""
     finish();
   });
 """
+# ---- END: the test for add-pdf-page-numbers ----
 
+# ---- START: the test for pdf-metadata-editor ----
 T["pdf-metadata-editor"] = r"""
   var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
   window.__saved = [];
@@ -10456,7 +10667,9 @@ T["pdf-metadata-editor"] = r"""
     finish();
   });
 """
+# ---- END: the test for pdf-metadata-editor ----
 
+# ---- START: the test for protect-pdf ----
 T["protect-pdf"] = r"""
   var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
   window.__saved = [];
@@ -10925,7 +11138,9 @@ T["protect-pdf"] = r"""
     finish();
   });
 """
+# ---- END: the test for protect-pdf ----
 
+# ---- START: the test for pdf-to-image ----
 T["pdf-to-image"] = r"""  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
   var RC4_PDF = "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMjAwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzOT4+CnN0cmVhbQqreggKebynsir3Iev6CDjCV/GAiArFJrs6yU+rUTJO595LoG2huMoKZW5kc3RyZWFtCmVuZG9iago1IDAgb2JqCjw8L1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhPj4KZW5kb2JqCjYgMCBvYmoKPDwvVGl0bGUgPDI4Yjc4MzU3M2M3NmEwNjgyNDNhOTE4ZT4+PgplbmRvYmoKNyAwIG9iago8PC9GaWx0ZXIgL1N0YW5kYXJkIC9WIDIgL1IgMyAvTGVuZ3RoIDEyOCAvUCAtNCAvTyA8OWY1NGRhNzRhYjZkOWI3YzkxZTVhY2ZiZmZmMmRiY2QxZDMzYTk3OTMxZTQyMThkZTY3NTIyZTRkMWZlNTcxMD4gL1UgPDgyNTJjMTBlMWVmZmE1ZGYwMjk3YjdmMmFjOGU3Nzc2MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA+Pj4KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDYyIDAwMDAwIG4gCjAwMDAwMDAxNDAgMDAwMDAgbiAKMDAwMDAwMDIzNiAwMDAwMCBuIAowMDAwMDAwMzIzIDAwMDAwIG4gCjAwMDAwMDAzOTEgMDAwMDAgbiAKMDAwMDAwMDQ0NCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvSW5mbyA2IDAgUiAvRW5jcnlwdCA3IDAgUiAvSUQgWzxmNTIxODRlNTc4YjZjM2M3NzE0YjEwMGEzZWRmMTk3ZD4gPGY1MjE4NGU1NzhiNmMzYzc3MTRiMTAwYTNlZGYxOTdkPl0+PgpzdGFydHhyZWYKNjQ5CiUlRU9GCg==";
   var AES_PDF = "JVBERi0xLjcKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUiAvRXh0ZW5zaW9ucyA8PC9BREJFIDw8L0Jhc2VWZXJzaW9uIC8xLjcgL0V4dGVuc2lvbkxldmVsIDg+Pj4+Pj4KZW5kb2JqCjIgMCBvYmoKPDwvVHlwZSAvUGFnZXMgL0tpZHMgWzMgMCBSXSAvQ291bnQgMT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCAyMDAgMTAwXSAvQ29udGVudHMgNCAwIFI+PgplbmRvYmoKNCAwIG9iago8PC9MZW5ndGggODA+PgpzdHJlYW0KZZ+sjVm9EBZygh0eIQhrv7fU2DAY+Idnvt3ADK36uGc8qpWWPropMgqllvn4u8gO4xtaDIkcKROdjYzJJGG6k4enyJa/ogBiAYU3WBVZDNAKZW5kc3RyZWFtCmVuZG9iago1IDAgb2JqCjw8L0ZpbHRlciAvU3RhbmRhcmQgL1YgNSAvUiA2IC9MZW5ndGggMjU2IC9DRiA8PC9TdGRDRiA8PC9UeXBlIC9DcnlwdEZpbHRlciAvQ0ZNIC9BRVNWMyAvQXV0aEV2ZW50IC9Eb2NPcGVuIC9MZW5ndGggMzI+Pj4+IC9TdG1GIC9TdGRDRiAvU3RyRiAvU3RkQ0YgL08gPEQ2Nzg3MkQ5QTZEMzc1OTEzQzY3RjE2MTlCQjE4Q0JCN0YwRTgxMEU1REVFNzg1QjNBQ0Y1OEE5NTg2REZEMzU4MTNBRDA1MjExRjRGQTQ2Q0ZFRDJDNUUzQUE1QTY2MD4gL1UgPDg0Qzg2OTVBNTU2RDhGREFFODdDMjExREIxRERBOTYyQkVGRENGRDBDOTA1REYyQTkwNjlEOTQ5QTMwOTUxN0RDMUJGMjdGN0M4MkE4RDU4N0RDNDU1RTYwOEYxRTg4Nz4gL09FIDw0RENBNzVDQjNFRDVEQUE4OEI5NDIyRUNFQTFDMEE3REI4NTUyQTI5OTVFMEQ0MzExMDM4OEMzRkFEREZCQ0U4PiAvVUUgPDExMDEzMjE1N0Y3OTgzOTFCMjE5MENBNUJCNDg5RkQxNENFNDJBNDgyMTY1M0E2QUUxRURCQTE1RUFBMTU5RTU+IC9QIC00IC9QZXJtcyA8N0Q3M0I4QTc5RTU5RkMzMTJDQzkzMTAxNzYxODE0NUI+IC9FbmNyeXB0TWV0YWRhdGEgdHJ1ZT4+CmVuZG9iagp4cmVmCjAgNgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMTUgMDAwMDAgbiAKMDAwMDAwMDEyNCAwMDAwMCBuIAowMDAwMDAwMTc5IDAwMDAwIG4gCjAwMDAwMDAyNjQgMDAwMDAgbiAKMDAwMDAwMDM5MiAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDYgL1Jvb3QgMSAwIFIgL0VuY3J5cHQgNSAwIFIgL0lEIFs8QzU1QjNBRjdGM0FGNzRDNzg4QzNENDgwMTlEMURGNTY+IDxDNTVCM0FGN0YzQUY3NEM3ODhDM0Q0ODAxOUQxREY1Nj5dID4+CnN0YXJ0eHJlZgo5NzQKJSVFT0YK";
@@ -11471,7 +11686,9 @@ T["pdf-to-image"] = r"""  var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago
     finish();
   });
 """
+# ---- END: the test for pdf-to-image ----
 
+# ---- START: the test for currency-converter ----
 T["currency-converter"] = r"""  /* ================= independent arithmetic and formatting =================
      Numbers are written here with toFixed and hand-made grouping, not with
      Intl as the page does, so a formatting slip on the page shows. */
@@ -11705,7 +11922,9 @@ T["currency-converter"] = r"""  /* ================= independent arithmetic and 
   window.EXCHANGE_RATES = REAL;
   finish();
 """
+# ---- END: the test for currency-converter ----
 
+# ---- START: the test for income-tax-calculator ----
 T["income-tax-calculator"] = r"""  /* Every expected figure below was worked out by hand from the official
      slab tables, and agrees with a separate Python implementation. */
   var R = String.fromCharCode(0x20B9), M = String.fromCharCode(0x2212) + " ", DASH = String.fromCharCode(0x2014);
@@ -11818,7 +12037,9 @@ T["income-tax-calculator"] = r"""  /* Every expected figure below was worked out
      "15,00,000||below60|" + R + "97,500");
   finish();
 """
+# ---- END: the test for income-tax-calculator ----
 
+# ---- START: the test for compress-pdf ----
 T["compress-pdf"] = r"""
   var TINY = {"objstm": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNDk+PgpzdHJlYW0KeJxFiTEKACAMxHInCC7+z/8/wkkr7WKWEGKSCBvokqv5DmBwLWDTqhcnvyY83nIHgAplbmRzdHJlYW0KZW5kb2JqCnN0YXJ0eHJlZgozNjUKJSVFT0YK", "hybrid": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmoKPDwvVHlwZSAvT2JqU3RtIC9OIDMgL0ZpcnN0IDE2IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggMTU5Pj4Kc3RyZWFtCnicVY3NCsIwEITvfYp5g036Ix7CHiqIIIJUb6WH2C5SkESaVPTtJe1BvOyw8+3s5FAosClQQZclMmPo+nkK6GzvEkDHcQhoCyg0HWjnZxehQScZRlv7N1oFBV0pbFXH/B9PcxIXkac4qJHg56mXAGNo711cVKNKmJk5FbgoLgaUq/d7uNzTZb7FZU2mBtU2yEoO8nhJHHvLnH0BxgM8CgplbmRzdHJlYW0KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvWFJlZiAvU2l6ZSA4IC9XIFsxIDQgMl0gL0xlbmd0aCA1Nj4+CnN0cmVhbQoAAAAAAAAAAAAAAAAAAAIAAAAGAAACAAAABgABAAAAAAAAAAIAAAAGAAIAAAAAAAAAAAAAAAAAAAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MiAwMDAwMCBuIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxNDIgMDAwMDAgbiAKMDAwMDAwMDQwMCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOCAvUm9vdCAxIDAgUiAvWFJlZlN0bSA0MDA+PgpzdGFydHhyZWYKNTM1CiUlRU9GCg==", "bad_offsets": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDIwIDAwMDAwIG4gCjAwMDAwMDAwNjcgMDAwMDAgbiAKMDAwMDAwMDE0NSAwMDAwMCBuIAowMDAwMDAwMjQxIDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "incremental": "JVBERi0xLjQKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDEzNCAwMDAwMCBuIAowMDAwMDAwMjMwIDAwMDAwIG4gCjAwMDAwMDAzMTAgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYgL1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzc4CiUlRU9GCjMgMCBvYmoKPDwvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwvRm9udCA8PC9GMSA1IDAgUj4+Pj4gL0NvbnRlbnRzIDQgMCBSIC9Sb3RhdGUgOTA+PgplbmRvYmoKeHJlZgowIDEKMDAwMDAwMDAwMCA2NTUzNSBmIAozIDEKMDAwMDAwMDU1OSAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNiAvUm9vdCAxIDAgUiAvUHJldiAzNzg+PgpzdGFydHhyZWYKNjY2CiUlRU9GCg==", "xref_notype": "JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgL01lZGlhQm94IFswIDAgMTUwIDgwXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvUmVzb3VyY2VzIDw8L0ZvbnQgPDwvRjEgNSAwIFI+Pj4+IC9Db250ZW50cyA0IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L0xlbmd0aCAzMj4+CnN0cmVhbQpCVCAvRjEgMjQgVGYgMjAgMzAgVGQgKFQxKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2E+PgplbmRvYmoKNiAwIG9iago8PC9UeXBlIC9YUmVmIC9TaXplIDcgL1cgWzAgNCAyXSAvSW5kZXggWzEgNl0gL1Jvb3QgMSAwIFIgL0xlbmd0aCAzNj4+CnN0cmVhbQoAAAAPAAAAAAA+AAAAAACMAAAAAADsAAAAAAE8AAAAAAGAAAAKZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMzg0CiUlRU9GCg==", "objstm_badindex": "JVBERi0xLjUKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggMzI+PgpzdHJlYW0KQlQgL0YxIDI0IFRmIDIwIDMwIFRkIChUMSkgVGogRVQKZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL09ialN0bSAvTiA0IC9GaXJzdCAyMSAvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDE3MT4+CnN0cmVhbQp4nF2OzQqDMBCE7z7FvMEmWvsDIQeFUiiFYnsTD6ldRJCkmFjaty+aQ8HLLjvf7sxKCKTIUmQ45Mghd1skStH9+2JQaYIZXAe6mo49UghUWv95lOncPz3qbKYNqHSTDZCgCz97U7gPagEBmQvsRbM+n+vINkRzUMXeTWPLHkrR0dmwdIk8Zms9B9jANnhs1v8s+3SbHmEZZ1GCCuM5khMPbw59a7ROfqL4RhYKZW5kc3RyZWFtCmVuZG9iago3IDAgb2JqCjw8L1R5cGUgL1hSZWYgL1NpemUgOCAvVyBbMSA0IDJdIC9Sb290IDEgMCBSIC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9EZWNvZGVQYXJtcyA8PC9QcmVkaWN0b3IgMTIgL0NvbHVtbnMgNz4+IC9MZW5ndGggNTE+PgpzdHJlYW0KeJw9ybENgDAQxdB3v0BKw37sP0Qqcigg4cayHJvuBEdVfPxuDCuFKW9f7v3r5AHeFwd9CmVuZHN0cmVhbQplbmRvYmoKc3RhcnR4cmVmCjM2NQolJUVPRgo="};
   window.__saved = [];
@@ -12396,6 +12617,7 @@ T["compress-pdf"] = r"""
     finish();
   });
 """
+# ---- END: the test for compress-pdf ----
 
 # ===== END: the test bodies ================================================
 

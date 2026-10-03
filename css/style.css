@@ -17,9 +17,7 @@
    RULE: if you need a new colour or size, add it to TOKENS first.
    ========================================================================== */
 
-/* --------------------------------------------------------------------------
-   1. TOKENS  —  change the site's whole look from right here
-   -------------------------------------------------------------------------- */
+/* ---- START: 1. the tokens: change the site's whole look from right here ---- */
 :root {
   /* Brand. One indigo for "you can click this", one cyan that only ever
      appears inside a gradient. Never use the accent on its own for text —
@@ -92,15 +90,17 @@
   color-scheme: light dark;
 }
 
+/* ---- START: an explicit theme choice also sets how the browser draws its own controls ---- */
 /* An explicit choice has to decide how the browser draws ITS OWN controls too
    (scrollbars, check boxes, selects). Left at "light dark" they follow the
    operating system, so a visitor on a dark-mode device who picks the light
    theme got a black scrollbar and black check boxes on a white page. */
 :root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"]  { color-scheme: dark; }
+/* ---- END: an explicit theme choice also sets how the browser draws its own controls ---- */
+/* ---- END: 1. the tokens: change the site's whole look from right here ---- */
 
-/* ==========================================================================
-   DARK THEME
+/* ---- START: the dark theme ----
    Only the tokens are redefined — no component rule is repeated.
 
    The background is a deep blue-black, not a neutral grey. A tiny amount of
@@ -109,8 +109,7 @@
 
    Two blocks, because the viewer's theme arrives two ways:
      1. the OS/browser preference (prefers-color-scheme)
-     2. an explicit choice stamped on the root element
-   ========================================================================== */
+     2. an explicit choice stamped on the root element */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --primary:       #8b85ff;   /* #5145e5 fails contrast on a dark surface */
@@ -186,10 +185,9 @@
   --sh2: 0 8px 24px -6px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);
   --sh3: 0 20px 48px -12px rgba(139,133,255,.3);
 }
+/* ---- END: the dark theme ---- */
 
-/* --------------------------------------------------------------------------
-   2. RESET
-   -------------------------------------------------------------------------- */
+/* ---- START: 2. the reset ---- */
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
@@ -203,6 +201,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ---- START: Headings are tightly tracked ---- */
 /* Headings are tightly tracked. At large sizes the default letter spacing
    looks loose and amateurish; -0.02em to -0.03em is what reads as "designed". */
 h1, h2, h3 { line-height: 1.2; margin: 0 0 var(--s3); letter-spacing: -.02em; }
@@ -215,14 +214,17 @@ a { color: var(--primary); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 img { max-width: 100%; height: auto; display: block; }
+/* ---- END: Headings are tightly tracked ---- */
 
-/* Accessibility: every focusable thing shows a ring. Do not remove. */
+/* ---- START: Accessibility: every focusable thing shows a ring ---- */
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
   border-radius: var(--r-sm);
 }
+/* ---- END: Accessibility: every focusable thing shows a ring ---- */
 
+/* ---- START: Anyone who has asked their system to reduce motion gets no movement ---- */
 /* Anyone who has asked their system to reduce motion gets no movement.
    One block, and every transition on the site respects it. */
 @media (prefers-reduced-motion: reduce) {
@@ -233,10 +235,10 @@ img { max-width: 100%; height: auto; display: block; }
     scroll-behavior: auto !important;
   }
 }
+/* ---- END: Anyone who has asked their system to reduce motion gets no movement ---- */
+/* ---- END: 2. the reset ---- */
 
-/* --------------------------------------------------------------------------
-   3. LAYOUT
-   -------------------------------------------------------------------------- */
+/* ---- START: 3. the layout ---- */
 .container {
   width: 100%;
   max-width: var(--max);
@@ -256,10 +258,9 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .section-head h2 { margin: 0; }
 .section-head a  { font-size: .9375rem; font-weight: 600; }
+/* ---- END: 3. the layout ---- */
 
-/* --------------------------------------------------------------------------
-   4. NAVBAR
-   -------------------------------------------------------------------------- */
+/* ---- START: 4. the navigation bar ---- */
 .nav {
   position: sticky;
   top: 0;
@@ -280,7 +281,7 @@ img { max-width: 100%; height: auto; display: block; }
   justify-content: space-between;
 }
 
-/* Logo is pure CSS — no image file to download */
+/* ---- START: Logo is pure CSS ---- */
 .logo {
   display: inline-flex;
   align-items: center;
@@ -322,8 +323,9 @@ img { max-width: 100%; height: auto; display: block; }
   background: var(--primary-soft);
   text-decoration: none;
 }
+/* ---- END: Logo is pure CSS ---- */
 
-/* Theme toggle + hamburger sit together on the right */
+/* ---- START: Theme toggle + hamburger sit together on the right ---- */
 .nav__actions {
   display: flex;
   align-items: center;
@@ -341,7 +343,9 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .theme-toggle:hover { background: var(--surface); color: var(--text); }
 .theme-toggle svg { width: 20px; height: 20px; }
+/* ---- END: Theme toggle + hamburger sit together on the right ---- */
 
+/* ---- START: Which icon shows is decided entirely in CSS ---- */
 /* Which icon shows is decided entirely in CSS.
    Light theme -> moon (click me for dark).  Dark theme -> sun.
    The :not([data-theme="light"]) guard means an explicit LIGHT choice still
@@ -368,8 +372,9 @@ img { max-width: 100%; height: auto; display: block; }
   cursor: pointer;
 }
 .nav__burger:hover { background: var(--surface); }
+/* ---- END: Which icon shows is decided entirely in CSS ---- */
 
-/* The panel that slides down on mobile */
+/* ---- START: The panel that slides down on mobile ---- */
 .nav__mobile {
   display: none;
   border-bottom: 1px solid var(--border);
@@ -391,16 +396,16 @@ img { max-width: 100%; height: auto; display: block; }
   .nav__burger { display: none; }   /* the theme toggle stays visible at all widths */
   .nav__mobile { display: none !important; }
 }
+/* ---- END: The panel that slides down on mobile ---- */
+/* ---- END: 4. the navigation bar ---- */
 
-/* --------------------------------------------------------------------------
-   5. HERO + SEARCH
+/* ---- START: 5. the hero and the search box ----
 
    The hero is three stacked layers, all pure CSS — no image to download:
      1. a soft indigo glow top-left
      2. a soft cyan glow top-right
      3. a faint dot grid over the whole thing
-   Together they give the page depth without costing a single request.
-   -------------------------------------------------------------------------- */
+   Together they give the page depth without costing a single request. */
 .hero {
   position: relative;
   isolation: isolate;          /* keeps the ::before layers behind the text */
@@ -411,7 +416,7 @@ img { max-width: 100%; height: auto; display: block; }
   text-align: center;
 }
 
-/* Layer 1 + 2: the two coloured glows */
+/* ---- START: Layer 1 + 2: the two coloured glows ---- */
 .hero::before {
   content: "";
   position: absolute;
@@ -422,8 +427,9 @@ img { max-width: 100%; height: auto; display: block; }
     radial-gradient(42% 52% at 22% 28%, color-mix(in srgb, var(--primary) 26%, transparent) 0%, transparent 70%),
     radial-gradient(38% 48% at 80% 22%, color-mix(in srgb, var(--accent)  22%, transparent) 0%, transparent 70%);
 }
+/* ---- END: Layer 1 + 2: the two coloured glows ---- */
 
-/* Layer 3: the dot grid, faded out towards the bottom */
+/* ---- START: Layer 3: the dot grid, faded out towards the bottom ---- */
 .hero::after {
   content: "";
   position: absolute;
@@ -435,7 +441,9 @@ img { max-width: 100%; height: auto; display: block; }
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
           mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
 }
+/* ---- END: Layer 3: the dot grid, faded out towards the bottom ---- */
 
+/* ---- START: The headline is filled with a gradient rather than a flat colour ---- */
 /* The headline is filled with a gradient rather than a flat colour.
    background-clip:text needs a transparent fill to show through, and the
    plain `color` above it is the fallback for anything that cannot do it. */
@@ -464,7 +472,9 @@ img { max-width: 100%; height: auto; display: block; }
   max-width: 36rem;
   margin: 0 auto;
 }
+/* ---- END: The headline is filled with a gradient rather than a flat colour ---- */
 
+/* ---- START: the magnifier sits inside the search box ---- */
 /* The magnifier sits INSIDE the input, so the input needs left padding wide
    enough to clear it. Icon spans 24px -> 44px; text starts at 64px. */
 .search__icon {
@@ -479,7 +489,9 @@ img { max-width: 100%; height: auto; display: block; }
   transition: color .15s;
   z-index: 1;
 }
+/* ---- END: the magnifier sits inside the search box ---- */
 
+/* ---- START: the search box's own input rule (read the specificity note) ---- */
 /* SPECIFICITY NOTE — do not simplify this to `.search input`.
    css/tool.css has a generic `input[type="text"] { padding: var(--s3) }` rule.
    `.search input` and `input[type="text"]` have the SAME specificity (0,1,1),
@@ -508,7 +520,8 @@ img { max-width: 100%; height: auto; display: block; }
   border-color: var(--primary);
   box-shadow: var(--sh3), 0 0 0 4px var(--primary-soft);
 }
-/* Tint the icon while the box is focused */
+/* ---- END: the search box's own input rule (read the specificity note) ---- */
+/* ---- START: Tint the icon while the box is focused ---- */
 .search:focus-within .search__icon { color: var(--primary); }
 
 .trust {
@@ -517,10 +530,10 @@ img { max-width: 100%; height: auto; display: block; }
   font-weight: 500;
   color: var(--text-soft);
 }
+/* ---- END: Tint the icon while the box is focused ---- */
+/* ---- END: 5. the hero and the search box ---- */
 
-/* --------------------------------------------------------------------------
-   6. CATEGORY CHIPS
-   -------------------------------------------------------------------------- */
+/* ---- START: 6. the category chips ---- */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -549,14 +562,13 @@ img { max-width: 100%; height: auto; display: block; }
   font-weight: 650;
   box-shadow: 0 4px 12px -3px rgba(81,69,229,.45);
 }
+/* ---- END: 6. the category chips ---- */
 
-/* --------------------------------------------------------------------------
-   7. TOOL CARDS + GRID
+/* ---- START: 7. the tool cards and their grid ----
 
    Each card carries data-cat="Text" (set by main.js). Everything coloured on
    the card reads from --cat, which the four blocks below point at the right
-   accent. One variable, four rules, no per-card classes.
-   -------------------------------------------------------------------------- */
+   accent. One variable, four rules, no per-card classes. */
 .grid {
   display: grid;
   /* One line handles every screen size. No media query needed. */
@@ -588,6 +600,7 @@ img { max-width: 100%; height: auto; display: block; }
 .card[data-cat="Calculator"] { --cat: var(--cat-calc);  --cat-soft: var(--cat-calc-soft); }
 .card[data-cat="Developer"]  { --cat: var(--cat-dev);   --cat-soft: var(--cat-dev-soft); }
 
+/* ---- START: A wash of the category colour that fades in on hover ---- */
 /* A wash of the category colour that fades in on hover. Sits behind the
    text because of z-index -1 plus the isolation above. */
 .card::before {
@@ -644,10 +657,10 @@ img { max-width: 100%; height: auto; display: block; }
   color: var(--text-soft);
   padding: var(--s8) var(--s4);
 }
+/* ---- END: A wash of the category colour that fades in on hover ---- */
+/* ---- END: 7. the tool cards and their grid ---- */
 
-/* --------------------------------------------------------------------------
-   8. BUTTONS
-   -------------------------------------------------------------------------- */
+/* ---- START: 8. the buttons ---- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -685,10 +698,9 @@ img { max-width: 100%; height: auto; display: block; }
 .btn--danger:hover:not(:disabled) { background: var(--danger-soft); border-color: var(--danger); }
 
 .btn-row { display: flex; flex-wrap: wrap; gap: var(--s2); }
+/* ---- END: 8. the buttons ---- */
 
-/* --------------------------------------------------------------------------
-   9. FOOTER
-   -------------------------------------------------------------------------- */
+/* ---- START: 9. the footer ---- */
 .footer {
   background: var(--surface);
   border-top: 1px solid var(--border);
@@ -729,10 +741,9 @@ img { max-width: 100%; height: auto; display: block; }
 @media (min-width: 1024px) {
   .footer__cols { grid-template-columns: 1.6fr 1fr 1fr 1fr; }
 }
+/* ---- END: 9. the footer ---- */
 
-/* --------------------------------------------------------------------------
-   10. HELPERS
-   -------------------------------------------------------------------------- */
+/* ---- START: 10. small helpers ---- */
 /* Small "Copied!" popup, shown by showToast() in tool-helpers.js */
 .toast {
   position: fixed;
@@ -770,3 +781,4 @@ img { max-width: 100%; height: auto; display: block; }
   border-radius: 6px;
   padding: 1px 5px;
 }
+/* ---- END: 10. small helpers ---- */

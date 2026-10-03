@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Compress PDF — Make a PDF Smaller in Your Browser</title>
   <meta name="description" content="Make a PDF smaller: pack its text tighter and save its photos again, at the level you choose, in your browser. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/compress-pdf.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,42 +154,52 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=pdf">PDF</a><span>&rsaquo;</span>
         <span>Compress PDF</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Compress PDF</h1>
         <p>Make a PDF smaller so it fits in an email or an upload form. Choose
            how far to go; text always stays sharp. It all happens in your
            browser, so the document never leaves your device.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "1. Choose a PDF" panel ---- -->
         <div class="panel">
           <span class="panel__label">1. Choose a PDF</span>
 
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#128476;&#65039;</span>
             <p><strong>Click to choose</strong> or drag a PDF here</p>
             <p style="margin-top:var(--s1)">One PDF, up to 300 MB</p>
             <input type="file" id="file" accept="application/pdf,.pdf">
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
         </div>
+        <!-- ---- END: the "1. Choose a PDF" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "2. How much smaller" panel ---- -->
         <div class="panel">
           <span class="panel__label">2. How much smaller</span>
 
+          <!-- ---- START: the "Level" choice ---- -->
           <div class="field">
             <label for="level">Level</label>
             <select id="level">
@@ -188,16 +209,22 @@
             </select>
             <p class="hint" id="levelHint"></p>
           </div>
+          <!-- ---- END: the "Level" choice ---- -->
 
+          <!-- ---- START: the buttons: Compress and download, Clear ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="dlBtn" disabled>Compress and download</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Clear</button>
           </div>
+          <!-- ---- END: the buttons: Compress and download, Clear ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "2. How much smaller" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -226,15 +253,18 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "Where the size of a PDF comes from" section ---- -->
         <h2>Where the size of a PDF comes from</h2>
         <p>In most large PDFs it is the pictures: scanned pages and photos,
            often saved at a quality and size far above what a screen or a
            printer needs. Text and drawings are small by comparison, but a
            file can also carry things it no longer uses, such as earlier
            versions of edited pages that an ordinary save keeps.</p>
+        <!-- ---- END: the "Where the size of a PDF comes from" section ---- -->
 
+        <!-- ---- START: the "What each level does" section ---- -->
         <h2>What each level does</h2>
         <p><strong>Lossless</strong> changes nothing you can see. The file is
            written again from its contents, so what it no longer uses is left
@@ -248,7 +278,9 @@
            searchable at every level. A picture is only replaced when the new
            one is smaller, and when the whole result is not smaller than the
            original, the page says so and saves nothing.</p>
+        <!-- ---- END: the "What each level does" section ---- -->
 
+        <!-- ---- START: the "Left as they are" section ---- -->
         <h2>Left as they are</h2>
         <p>Grey pictures, which are often scans of text or the soft edges
            of shadows, pictures in printing colours (CMYK) and pictures that
@@ -256,7 +288,9 @@
            could change how they look or print. A digitally signed PDF loses
            its signature when it is compressed, because the signature covers
            the file's exact bytes; the page tells you before you save.</p>
+        <!-- ---- END: the "Left as they are" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Will the text become blurry?</h3>
@@ -282,14 +316,19 @@
           <h3>Is my PDF uploaded?</h3>
           <p>No. The PDF is read, made smaller and written again by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -340,18 +379,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "compress-pdf";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fileInput = document.getElementById("file");
     var drop      = document.getElementById("drop");
     var levelSel  = document.getElementById("level");
@@ -375,6 +418,7 @@
     var busy = false;          /* reading a file */
     var working = false;       /* making it smaller */
     var problem = "";
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: writing a PDF file ----
        A PDF is a header, a list of numbered objects, and at the end a table
@@ -2269,8 +2313,11 @@
     });
     /* ---- END: wiring ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     refresh();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

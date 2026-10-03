@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Split PDF — Pull Out Pages or Cut a PDF into Parts</title>
   <meta name="description" content="Split a PDF into single pages, the page ranges you type, or equal parts, in your browser. Nothing is uploaded and every page is kept as it is.">
   <link rel="canonical" href="https://108toolbox.in/tools/split-pdf.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -114,9 +124,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -151,37 +162,46 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=pdf">PDF</a><span>&rsaquo;</span>
         <span>Split PDF</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Split PDF</h1>
         <p>Cut one PDF into several: every page on its own, the ranges you type,
            or parts of the same length. It all happens inside your browser, so
            the document never leaves your device.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "1. Choose a PDF" panel ---- -->
         <div class="panel">
           <span class="panel__label">1. Choose a PDF</span>
 
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#9986;&#65039;</span>
             <p><strong>Click to choose</strong> or drag a PDF here</p>
             <p style="margin-top:var(--s1)">One PDF, up to 500 MB</p>
             <input type="file" id="file" accept="application/pdf,.pdf">
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
 
+          <!-- ---- START: the "2. How to split it" choice ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="mode">2. How to split it</label>
             <select id="mode">
@@ -190,40 +210,55 @@
               <option value="every">Into parts of the same length</option>
             </select>
           </div>
+          <!-- ---- END: the "2. How to split it" choice ---- -->
 
+          <!-- ---- START: the "Page ranges, one file each" box ---- -->
           <div class="field" id="rangesField">
             <label for="ranges">Page ranges, one file each</label>
             <input type="text" id="ranges" placeholder="1-3, 4-8, 9-" autocomplete="off" spellcheck="false">
             <p class="hint">A comma between files. 9- means page 9 to the end; a single number is a single page.</p>
           </div>
+          <!-- ---- END: the "Page ranges, one file each" box ---- -->
 
+          <!-- ---- START: the "Pages in each part" box ---- -->
           <div class="field" id="everyField">
             <label for="every">Pages in each part</label>
             <input type="number" id="every" min="1" value="2">
           </div>
+          <!-- ---- END: the "Pages in each part" box ---- -->
         </div>
+        <!-- ---- END: the "1. Choose a PDF" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "3. The new files" panel ---- -->
         <div class="panel">
           <span class="panel__label">3. The new files</span>
 
+          <!-- ---- START: the figures: Files, Pages in them, The PDF ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sFiles">&mdash;</span><span class="stat__label">Files</span></div>
             <div class="stat"><span class="stat__num" id="sPages">&mdash;</span><span class="stat__label">Pages in them</span></div>
             <div class="stat"><span class="stat__num" id="sIn">&mdash;</span><span class="stat__label">The PDF</span></div>
           </div>
+          <!-- ---- END: the figures: Files, Pages in them, The PDF ---- -->
 
+          <!-- ---- START: the list of files it will make ---- -->
           <ol class="plan-list" id="planned" aria-label="The files that will be made"></ol>
+          <!-- ---- END: the list of files it will make ---- -->
 
+          <!-- ---- START: the buttons: Split and download, Clear ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="dlBtn" disabled>Split and download</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Clear</button>
           </div>
+          <!-- ---- END: the buttons: Split and download, Clear ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "3. The new files" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -252,8 +287,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "Three ways to split" section ---- -->
         <h2>Three ways to split</h2>
         <p><strong>Into the page ranges I type</strong> makes one file for
            each range: 1-3, 4-8, 9- gives three files, the last running from
@@ -264,7 +300,9 @@
            last part takes whatever is left. More than one file comes as a
            single ZIP, because browsers will not save dozens of downloads at
            once.</p>
+        <!-- ---- END: the "Three ways to split" section ---- -->
 
+        <!-- ---- START: the "Every file is complete, and nothing is redrawn" section ---- -->
         <h2>Every file is complete, and nothing is redrawn</h2>
         <p>The pages are copied exactly as they were: text stays text you
            can select, pictures are not compressed again. Each new file carries
@@ -273,14 +311,18 @@
            the original: each of them has its own copy of the fonts. A link
            from one page to another still works when both pages land in the
            same file, and does nothing when they do not.</p>
+        <!-- ---- END: the "Every file is complete, and nothing is redrawn" section ---- -->
 
+        <!-- ---- START: the "Why it matters that nothing is uploaded" section ---- -->
         <h2>Why it matters that nothing is uploaded</h2>
         <p>Splitting is often how people send one page of something private:
            a single month from a bank statement, one page of a contract, the
            page of a report that matters. This page does the cutting inside
            your browser and saves the files straight to your device; the
            document is never sent anywhere.</p>
+        <!-- ---- END: the "Why it matters that nothing is uploaded" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How do I take out just one or two pages?</h3>
@@ -310,14 +352,19 @@
           <h3>Is my PDF uploaded?</h3>
           <p>No. The PDF is read and split by JavaScript inside your own browser, and the files are saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -368,18 +415,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "split-pdf";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fileInput = document.getElementById("file");
     var drop      = document.getElementById("drop");
     var modeSel   = document.getElementById("mode");
@@ -399,6 +450,7 @@
     var generation = 0;
     var busy = false;
     var problem = "";          /* why the last chosen file could not be used */
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: writing a PDF file ----
        A PDF is a header, a list of numbered objects, and at the end a table
@@ -1914,8 +1966,11 @@
     });
     /* ---- END: wiring ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     refresh();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Image Splitter — Grid Tiles for Carousels</title>
   <meta name="description" content="Cut one picture into a grid of equal tiles for a carousel or a profile grid, and download them as a zip. Every pixel is kept, and nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/image-splitter.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,35 +154,44 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
         <span>Image Splitter</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Image Splitter</h1>
         <p>Cut one image into rows and columns of equal tiles. Every pixel of the
            original ends up in exactly one tile, and you can save them all in
            one zip.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the input panel ---- -->
         <div class="panel">
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#129513;</span>
             <p><strong>Click to choose</strong> or drag an image here</p>
             <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; nothing is uploaded</p>
             <input type="file" id="file" accept="image/*">
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
 
+          <!-- ---- START: the buttons: 3 across, 2 across, 3 down, 3 × 3 and 1 more ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label>Quick layouts</label>
             <div class="btn-row">
@@ -182,7 +202,9 @@
               <button class="btn btn--ghost" type="button" data-grid="2x2">2 &times; 2</button>
             </div>
           </div>
+          <!-- ---- END: the buttons: 3 across, 2 across, 3 down, 3 × 3 and 1 more ---- -->
 
+          <!-- ---- START: the boxes: Columns, Rows ---- -->
           <div class="field">
             <label>Columns and rows</label>
             <div class="btn-row">
@@ -192,7 +214,9 @@
               <span style="align-self:center">down</span>
             </div>
           </div>
+          <!-- ---- END: the boxes: Columns, Rows ---- -->
 
+          <!-- ---- START: the "Name the files by" choice ---- -->
           <div class="field">
             <label for="naming">Name the files by</label>
             <select id="naming">
@@ -200,7 +224,9 @@
               <option value="order">Posting order for a profile grid &mdash; 01 goes up first</option>
             </select>
           </div>
+          <!-- ---- END: the "Name the files by" choice ---- -->
 
+          <!-- ---- START: the "Save as" choice ---- -->
           <div class="field">
             <label for="fmt">Save as</label>
             <select id="fmt">
@@ -208,31 +234,44 @@
               <option value="image/jpeg">JPG &mdash; smaller</option>
             </select>
           </div>
+          <!-- ---- END: the "Save as" choice ---- -->
 
+          <!-- ---- START: the buttons: Download all (.zip), Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="zipBtn" disabled>Download all (.zip)</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: Download all (.zip), Reset ---- -->
         </div>
+        <!-- ---- END: the input panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Where the cuts fall" panel ---- -->
         <div class="panel">
           <span class="panel__label">Where the cuts fall</span>
+          <!-- ---- START: the preview ---- -->
           <div class="preview"><canvas id="stage" width="10" height="10" style="max-width:100%;height:auto;display:block"></canvas></div>
+          <!-- ---- END: the preview ---- -->
 
+          <!-- ---- START: the figures: Tiles, Each about, Original ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sTiles">&mdash;</span><span class="stat__label">Tiles</span></div>
             <div class="stat"><span class="stat__num" id="sEach">&mdash;</span><span class="stat__label">Each about</span></div>
             <div class="stat"><span class="stat__num" id="sOriginal">&mdash;</span><span class="stat__label">Original</span></div>
           </div>
+          <!-- ---- END: the figures: Tiles, Each about, Original ---- -->
 
+          <!-- ---- START: the pieces it cut, one tile each, under the heading "Save one tile" ---- -->
           <span class="panel__label" style="margin-top:var(--s3)">Save one tile</span>
           <div id="tileList" style="display:flex;flex-wrap:wrap;gap:var(--s2)"></div>
+          <!-- ---- END: the pieces it cut, one tile each, under the heading "Save one tile" ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "Where the cuts fall" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -261,8 +300,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Choose a picture and pick a layout, or type the number of columns
@@ -270,7 +310,9 @@
           <li>The preview shows where the cuts fall.</li>
           <li>Save one tile at a time, or take them all in a single zip.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Nothing is lost at the edges" section ---- -->
         <h2>Nothing is lost at the edges</h2>
         <p>Not every picture divides evenly. A 1000-pixel width cut into three
            is 333.33 pixels a tile, and there is no such thing as a third of a
@@ -281,13 +323,17 @@
            belongs, so the tiles differ from each other by at most one pixel and
            together they cover the picture exactly. Put them back side by side
            and you get the original, pixel for pixel.</p>
+        <!-- ---- END: the "Nothing is lost at the edges" section ---- -->
 
+        <!-- ---- START: the "For a carousel" section ---- -->
         <h2>For a carousel</h2>
         <p>Cut the picture into columns &mdash; three across, say &mdash; and
            post the tiles in order, left to right. Swiping through then pans
            across the original, which is why a panorama looks so good split this
            way. The layouts marked <em>across</em> are for exactly this.</p>
+        <!-- ---- END: the "For a carousel" section ---- -->
 
+        <!-- ---- START: the "For a profile grid, the order is backwards" section ---- -->
         <h2>For a profile grid, the order is backwards</h2>
         <p>A grid of posts shows the newest first, at the top left. So to make
            the finished grid read as one picture, the tile that belongs at the
@@ -298,14 +344,18 @@
         <p>What no page can tell you is how a given service crops each
            thumbnail in its grid, and services have changed that before. Post
            one tile and look at how it displays before you commit the rest.</p>
+        <!-- ---- END: the "For a profile grid, the order is backwards" section ---- -->
 
+        <!-- ---- START: the "Quality" section ---- -->
         <h2>Quality</h2>
         <p>Each tile is copied straight out of the original at full
            resolution &mdash; nothing is shrunk. Splitting a small picture into
            many tiles makes small tiles, and no tool can add detail that was not
            captured. If each tile has to be a certain size, work backwards: the
            original needs to be that size times the number of tiles.</p>
+        <!-- ---- END: the "Quality" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Are any pixels lost when it does not divide evenly?</h3>
@@ -331,14 +381,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -389,18 +444,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "image-splitter";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fileIn = document.getElementById("file");
     var drop   = document.getElementById("drop");
     var stage  = document.getElementById("stage");
@@ -418,6 +477,7 @@
     var MAX = 10;
     var img = null;
     var name = "photo";
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
@@ -670,5 +730,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

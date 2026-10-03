@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>PDF Metadata Editor — See and Remove Hidden Details</title>
   <meta name="description" content="See the hidden details a PDF carries, such as author, software and dates, then change or remove them, in your browser. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/pdf-metadata-editor.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,88 +154,122 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=pdf">PDF</a><span>&rsaquo;</span>
         <span>PDF Metadata Editor</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>PDF Metadata Editor</h1>
         <p>Every PDF carries details you do not see on the page: who wrote it,
            with what, and when. See them here, change them or remove them,
            inside your browser, so the document never leaves your device.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "1. Choose a PDF" panel ---- -->
         <div class="panel">
           <span class="panel__label">1. Choose a PDF</span>
 
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#128203;</span>
             <p><strong>Click to choose</strong> or drag a PDF here</p>
             <p style="margin-top:var(--s1)">One PDF, up to 500 MB</p>
             <input type="file" id="file" accept="application/pdf,.pdf">
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
 
+          <!-- ---- START: the note the script fills in (#dates) ---- -->
           <p class="hint" id="dates" style="margin-top:var(--s4)"></p>
+          <!-- ---- END: the note the script fills in (#dates) ---- -->
 
+          <!-- ---- START: the other details found in the file ---- -->
           <div id="othersField" style="display:none;margin-top:var(--s3)">
             <p class="hint">Other details in the file:</p>
             <ul class="plan-list" id="others" style="margin-top:var(--s2)"></ul>
           </div>
+          <!-- ---- END: the other details found in the file ---- -->
         </div>
+        <!-- ---- END: the "1. Choose a PDF" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "2. The details" panel ---- -->
         <div class="panel">
           <span class="panel__label">2. The details</span>
+          <!-- ---- START: the "Title" box ---- -->
           <div class="field">
             <label for="fTitle">Title</label>
             <input type="text" id="fTitle" autocomplete="off" spellcheck="false" disabled>
           </div>
+          <!-- ---- END: the "Title" box ---- -->
+          <!-- ---- START: the "Author" box ---- -->
           <div class="field">
             <label for="fAuthor">Author</label>
             <input type="text" id="fAuthor" autocomplete="off" spellcheck="false" disabled>
           </div>
+          <!-- ---- END: the "Author" box ---- -->
+          <!-- ---- START: the "Subject" box ---- -->
           <div class="field">
             <label for="fSubject">Subject</label>
             <input type="text" id="fSubject" autocomplete="off" spellcheck="false" disabled>
           </div>
+          <!-- ---- END: the "Subject" box ---- -->
+          <!-- ---- START: the "Keywords" box ---- -->
           <div class="field">
             <label for="fKeywords">Keywords</label>
             <input type="text" id="fKeywords" autocomplete="off" spellcheck="false" disabled>
           </div>
+          <!-- ---- END: the "Keywords" box ---- -->
+          <!-- ---- START: the "Made with" box ---- -->
           <div class="field">
             <label for="fCreator">Made with</label>
             <input type="text" id="fCreator" autocomplete="off" spellcheck="false" disabled>
             <p class="hint">The program the document was written in.</p>
           </div>
+          <!-- ---- END: the "Made with" box ---- -->
+          <!-- ---- START: the "Converted by" box ---- -->
           <div class="field">
             <label for="fProducer">Converted by</label>
             <input type="text" id="fProducer" autocomplete="off" spellcheck="false" disabled>
             <p class="hint">The program that turned it into a PDF.</p>
           </div>
+          <!-- ---- END: the "Converted by" box ---- -->
 
+          <!-- ---- START: the "Keep the dates it was created and last..." tick box ---- -->
           <label class="check"><input type="checkbox" id="keepDates" checked> Keep the dates it was created and last changed</label>
+          <!-- ---- END: the "Keep the dates it was created and last..." tick box ---- -->
+          <!-- ---- START: the "Keep the other details listed on the left" tick box ---- -->
           <label class="check"><input type="checkbox" id="keepOther" checked> Keep the other details listed on the left</label>
+          <!-- ---- END: the "Keep the other details listed on the left" tick box ---- -->
 
+          <!-- ---- START: the buttons: Save and download, Clear every detail, Clear ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="dlBtn" disabled>Save and download</button>
             <button class="btn btn--ghost"   type="button" id="clearAllBtn">Clear every detail</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Clear</button>
           </div>
+          <!-- ---- END: the buttons: Save and download, Clear every detail, Clear ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "2. The details" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -253,8 +298,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "What a PDF says about you" section ---- -->
         <h2>What a PDF says about you</h2>
         <p>Besides its pages, a PDF keeps a small set of details: a title, an
            author, a subject and keywords, the program it was written in and
@@ -263,7 +309,9 @@
            computer, without anyone asking, and the program names can show
            which software and version you use. Anyone who opens the file can
            read them in their PDF reader's document properties.</p>
+        <!-- ---- END: the "What a PDF says about you" section ---- -->
 
+        <!-- ---- START: the "Removed means removed" section ---- -->
         <h2>Removed means removed</h2>
         <p>An ordinary edit to a PDF adds the change to the end of the file and
            leaves the old version in place, where it can still be dug out. This
@@ -272,7 +320,9 @@
            second copy of the details in a format called XMP; it is removed
            too, so no reader is left showing the old ones. No date is added
            when you save: when you edited the file is nobody else's business.</p>
+        <!-- ---- END: the "Removed means removed" section ---- -->
 
+        <!-- ---- START: the "The rest of the document is not touched" section ---- -->
         <h2>The rest of the document is not touched</h2>
         <p>Pages, bookmarks, links and forms are copied exactly as they were;
            only the details change. Details kept inside pictures, such as a
@@ -283,7 +333,9 @@
            covers the file's exact bytes, so once anything in a signed PDF
            changes, the signature no longer checks out. The page tells you
            when a PDF is signed, before you save.</p>
+        <!-- ---- END: the "The rest of the document is not touched" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How do I remove my name from a PDF?</h3>
@@ -309,14 +361,19 @@
           <h3>Is my PDF uploaded?</h3>
           <p>No. The PDF is read and written again by JavaScript inside your own browser, and the result is saved straight to your device. Nothing is uploaded and nothing is stored - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -367,18 +424,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "pdf-metadata-editor";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fileInput = document.getElementById("file");
     var drop      = document.getElementById("drop");
     var keepDates = document.getElementById("keepDates");
@@ -395,6 +456,7 @@
     var generation = 0;
     var busy = false;
     var problem = "";
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: writing a PDF file ----
        A PDF is a header, a list of numbered objects, and at the end a table
@@ -2024,9 +2086,12 @@
     });
     /* ---- END: wiring ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     show();
     refresh();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

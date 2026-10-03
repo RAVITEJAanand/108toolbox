@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Rotate an Image Online — Turn and Flip, Free</title>
   <meta name="description" content="Rotate a photo left or right, turn it upside down, or flip it like a mirror. It happens in your browser, so the picture is never uploaded anywhere.">
   <link rel="canonical" href="https://108toolbox.in/tools/image-rotator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,71 +154,93 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
         <span>Image Rotator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Image Rotator &amp; Flipper</h1>
         <p>Turn a sideways photo the right way up, or flip it like a mirror.
            Every step happens in this page &mdash; the file never leaves your
            device.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "1. Choose an image" panel ---- -->
         <div class="panel">
           <span class="panel__label">1. Choose an image</span>
 
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#128260;</span>
             <p><strong>Click to choose</strong> or drag an image here</p>
             <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; nothing is uploaded</p>
             <input type="file" id="file" accept="image/*">
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
 
+          <!-- ---- START: the buttons: ↺ Left 90°, ↻ Right 90°, Upside down, under the heading "2. Turn it" ---- -->
           <span class="panel__label" style="margin-top:var(--s4)">2. Turn it</span>
           <div class="btn-row">
             <button class="btn btn--ghost" type="button" id="rotLeft">&#8634; Left 90&deg;</button>
             <button class="btn btn--ghost" type="button" id="rotRight">&#8635; Right 90&deg;</button>
             <button class="btn btn--ghost" type="button" id="rot180">Upside down</button>
           </div>
+          <!-- ---- END: the buttons: ↺ Left 90°, ↻ Right 90°, Upside down, under the heading "2. Turn it" ---- -->
 
+          <!-- ---- START: the buttons: Flip left to right, Flip top to bottom, under the heading "3. Or mirror it" ---- -->
           <span class="panel__label" style="margin-top:var(--s4)">3. Or mirror it</span>
           <div class="btn-row">
             <button class="btn btn--ghost" type="button" id="flipH">Flip left to right</button>
             <button class="btn btn--ghost" type="button" id="flipV">Flip top to bottom</button>
           </div>
+          <!-- ---- END: the buttons: Flip left to right, Flip top to bottom, under the heading "3. Or mirror it" ---- -->
 
+          <!-- ---- START: the buttons: Download, Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="dlBtn" disabled>Download</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: Download, Reset ---- -->
         </div>
+        <!-- ---- END: the "1. Choose an image" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Result" panel ---- -->
         <div class="panel">
           <span class="panel__label">Result</span>
+          <!-- ---- START: the preview ---- -->
           <div class="preview" id="preview"></div>
+          <!-- ---- END: the preview ---- -->
 
+          <!-- ---- START: the figures: Rotation, Mirror, Size ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sAngle">0&deg;</span><span class="stat__label">Rotation</span></div>
             <div class="stat"><span class="stat__num" id="sFlip">None</span><span class="stat__label">Mirror</span></div>
             <div class="stat"><span class="stat__num" id="sDims">&mdash;</span><span class="stat__label">Size</span></div>
           </div>
+          <!-- ---- END: the figures: Rotation, Mirror, Size ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "Result" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -236,8 +269,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Choose an image, or drag one onto the box.</li>
@@ -246,7 +280,9 @@
               have got to.</li>
           <li>Download when it looks right.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Rotating and mirroring are not the same thing" section ---- -->
         <h2>Rotating and mirroring are not the same thing</h2>
         <p>A rotation turns the whole picture about its centre; everything that
            was in it is still in it, just at a different angle. A mirror flip
@@ -257,7 +293,9 @@
            number plate or a shop sign is unreadable, and a flipped photo of a
            person often looks subtly wrong to anyone who knows them. If the
            picture merely came out sideways, you want a rotation.</p>
+        <!-- ---- END: the "Rotating and mirroring are not the same thing" section ---- -->
 
+        <!-- ---- START: the "Why a sideways photo happens at all" section ---- -->
         <h2>Why a sideways photo happens at all</h2>
         <p>Phone cameras almost always record the picture the same way round and
            add a small note to the file saying which way the phone was held. Most
@@ -266,7 +304,9 @@
            but because the note was ignored.</p>
         <p>Rotating it here writes the turn into the pixels themselves, so every
            program will show it the same way from then on.</p>
+        <!-- ---- END: the "Why a sideways photo happens at all" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Is my photo uploaded anywhere?</h3>
@@ -292,14 +332,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -350,18 +395,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "image-rotator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements and what the page remembers ---- */
     var fileInput = document.getElementById("file");
     var drop      = document.getElementById("drop");
     var preview   = document.getElementById("preview");
@@ -377,6 +426,7 @@
     var angle = 0;
     var flipX = false;
     var flipY = false;
+    /* ---- END: setting up: the page elements and what the page remembers ---- */
 
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
@@ -522,5 +572,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

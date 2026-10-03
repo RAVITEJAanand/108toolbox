@@ -5,7 +5,7 @@
    Rule of thumb: write a helper the second time you need it, not the first.
    ========================================================================== */
 
-/* Show a small dark popup at the bottom of the screen, e.g. "Copied!" */
+/* ---- START: the small popup at the bottom of the screen ("Copied!") ---- */
 function showToast(message) {
   let el = document.querySelector(".toast");
   if (!el) {
@@ -19,8 +19,9 @@ function showToast(message) {
   clearTimeout(el._timer);
   el._timer = setTimeout(function () { el.classList.remove("is-visible"); }, 1800);
 }
+/* ---- END: the small popup at the bottom of the screen ---- */
 
-/* Copy any string to the clipboard.
+/* ---- START: copying a string to the clipboard ----
    navigator.clipboard needs HTTPS (or localhost), so we keep a fallback. */
 function copyText(text) {
   if (!text) { showToast("Nothing to copy"); return; }
@@ -44,8 +45,9 @@ function copyText(text) {
   catch (e) { showToast("Copy failed"); }
   document.body.removeChild(temp);
 }
+/* ---- END: copying a string to the clipboard ---- */
 
-/* Trigger a download of a Blob (used by the image tools and JSON formatter) */
+/* ---- START: downloading a Blob as a file (the image tools, JSON formatter) ---- */
 function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -57,13 +59,15 @@ function downloadBlob(blob, filename) {
   /* Give the browser a moment, then release the memory */
   setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
 }
+/* ---- END: downloading a Blob as a file ---- */
 
-/* Download a plain string as a text file */
+/* ---- START: downloading a plain string as a text file ---- */
 function downloadText(text, filename, mime) {
   downloadBlob(new Blob([text], { type: mime || "text/plain" }), filename);
 }
+/* ---- END: downloading a plain string as a text file ---- */
 
-/* 1536000 -> "1.5 MB" */
+/* ---- START: a size in bytes, in words: 1536000 -> "1.5 MB" ---- */
 function formatBytes(bytes) {
   if (bytes === 0) return "0 B";
   const units = ["B", "KB", "MB", "GB"];
@@ -71,8 +75,10 @@ function formatBytes(bytes) {
   const value = bytes / Math.pow(1024, i);
   return (value >= 10 || i === 0 ? Math.round(value) : value.toFixed(1)) + " " + units[i];
 }
+/* ---- END: a size in bytes, in words ---- */
 
-/* 1234567.891 -> "12,34,567.89" in India, "1,234,567.89" elsewhere.
+/* ---- START: a number with the visitor's own commas ----
+   1234567.891 -> "12,34,567.89" in India, "1,234,567.89" elsewhere.
    Intl does the local formatting for us — no manual comma logic. */
 function formatNumber(value, decimals) {
   if (!isFinite(value)) return "—";
@@ -81,8 +87,9 @@ function formatNumber(value, decimals) {
     maximumFractionDigits: decimals === undefined ? 0 : decimals
   });
 }
+/* ---- END: a number with the visitor's own commas ---- */
 
-/* Make a string safe to put inside HTML.
+/* ---- START: making a string safe to put inside HTML ----
 
    Needed wherever a message is built as markup — because it carries a
    <strong> or a <br> — and part of that message came from the visitor.
@@ -102,6 +109,7 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
+/* ---- END: making a string safe to put inside HTML ---- */
 
 /* ---- START: building a ZIP file, with no library ----
    Two tools need to hand back many files at once - the favicon set and the

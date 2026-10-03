@@ -19,12 +19,15 @@
      popular   -> true shows it on the homepage "Popular tools" grid
    ========================================================================== */
 
-/* The plan, not the inventory. A category may sit here with nothing in it
+/* ---- START: the categories, in the order their chips appear ----
+   The plan, not the inventory. A category may sit here with nothing in it
    yet - main.js only draws a chip once at least one tool claims the category,
    so this list can run ahead of the build without showing an empty grid. */
 const CATEGORIES = ["Text", "Image", "Calculator", "Developer",
                     "Converter", "PDF", "Date & Time", "Random"];
+/* ---- END: the categories ---- */
 
+/* ---- START: the registry: one object per tool, A-Z by name ---- */
 const TOOLS = [
   {
     slug: "add-line-numbers",
@@ -999,3 +1002,4 @@ const TOOLS = [
     popular: false
   }
 ];
+/* ---- END: the registry ---- */

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Remove Duplicate Lines — Delete Repeated Lines Free</title>
   <meta name="description" content="Free online tool to remove duplicate lines from any list or text. Ignore case, trim spaces and keep the original order. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/remove-duplicate-lines.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,30 +131,39 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
         <span>Remove Duplicate Lines</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Remove Duplicate Lines</h1>
         <p>Paste a list and get it back with the repeats gone, in the same order.
            Works on email lists, keywords, log files and CSV rows — nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "Your list" panel ---- -->
         <div class="panel">
           <label class="panel__label" for="input">Your list</label>
+          <!-- ---- START: the "Your list" text box ---- -->
           <textarea id="input" placeholder="Paste one item per line&hellip;"></textarea>
+          <!-- ---- END: the "Your list" text box ---- -->
 
+          <!-- ---- START: the "What counts as a duplicate" choice ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="mode">What counts as a duplicate</label>
             <select id="mode">
@@ -153,35 +172,52 @@
               <option value="unique">Delete every line that repeats</option>
             </select>
           </div>
+          <!-- ---- END: the "What counts as a duplicate" choice ---- -->
 
+          <!-- ---- START: the "Ignore case (Apple = apple)" tick box ---- -->
           <div class="check"><input type="checkbox" id="optCase" checked><label for="optCase">Ignore case (Apple = apple)</label></div>
+          <!-- ---- END: the "Ignore case (Apple = apple)" tick box ---- -->
+          <!-- ---- START: the "Ignore spaces at the start and end" tick box ---- -->
           <div class="check"><input type="checkbox" id="optTrim" checked><label for="optTrim">Ignore spaces at the start and end</label></div>
+          <!-- ---- END: the "Ignore spaces at the start and end" tick box ---- -->
+          <!-- ---- START: the "Remove empty lines" tick box ---- -->
           <div class="check"><input type="checkbox" id="optEmpty"><label for="optEmpty">Remove empty lines</label></div>
+          <!-- ---- END: the "Remove empty lines" tick box ---- -->
 
+          <!-- ---- START: the "Clear" button ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
           </div>
+          <!-- ---- END: the "Clear" button ---- -->
         </div>
+        <!-- ---- END: the "Your list" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Result" panel ---- -->
         <div class="panel">
           <span class="panel__label">Result</span>
 
+          <!-- ---- START: the figures: Lines in, Lines kept, Removed ---- -->
           <div class="stats stats--3" id="counts" aria-live="polite">
             <div class="stat"><span class="stat__num" id="cIn">0</span><span class="stat__label">Lines in</span></div>
             <div class="stat"><span class="stat__num" id="cOut">0</span><span class="stat__label">Lines kept</span></div>
             <div class="stat"><span class="stat__num" id="cGone">0</span><span class="stat__label">Removed</span></div>
           </div>
+          <!-- ---- END: the figures: Lines in, Lines kept, Removed ---- -->
 
+          <!-- ---- START: the output ---- -->
           <pre class="out" id="output" style="margin-top:var(--s4)"></pre>
+          <!-- ---- END: the output ---- -->
 
+          <!-- ---- START: the buttons: Copy result, Download .txt ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
             <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
           </div>
+          <!-- ---- END: the buttons: Copy result, Download .txt ---- -->
         </div>
+        <!-- ---- END: the "Result" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -210,8 +246,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Paste your list into the box on the left, one item per line.</li>
@@ -219,7 +256,9 @@
           <li>Pick what counts as a duplicate. <strong>Keep the first copy</strong> is what most people want.</li>
           <li>Press <strong>Copy result</strong>, or download it as a <code>.txt</code> file.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "When you would use this" section ---- -->
         <h2>When you would use this</h2>
         <p>Deduplicating a list is one of those small jobs that appears constantly:
           cleaning an email or phone list before an import, tidying a keyword list
@@ -234,7 +273,9 @@
           inconsistent capitalisation, and without those two options switched on,
           <code>Apple</code>, <code>apple</code> and <code>apple&nbsp;</code> all
           survive as three separate entries — which is almost never what you meant.</p>
+        <!-- ---- END: the "When you would use this" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Does it keep the original order of my list?</h3>
@@ -252,14 +293,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. The comparison happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -310,18 +356,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "remove-duplicate-lines";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: the page elements this script reads and writes ---- */
     var input  = document.getElementById("input");
     var output = document.getElementById("output");
     var mode   = document.getElementById("mode");
@@ -332,6 +382,7 @@
     var cIn   = document.getElementById("cIn");
     var cOut  = document.getElementById("cOut");
     var cGone = document.getElementById("cGone");
+    /* ---- END: the page elements this script reads and writes ---- */
 
     /* ---- START: what makes two lines count as the same ---- */
     /* Two lines are "the same" when their keys match. The key is what the
@@ -396,6 +447,7 @@
     }
     /* ---- END: drawing the result ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     /* One listener covers typing, pasting, cutting and undo */
     input.addEventListener("input", run);
 
@@ -418,9 +470,13 @@
       if (!output.textContent) { showToast("Nothing to download"); return; }
       downloadText(output.textContent, "deduplicated.txt");
     });
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     run();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Roman Numeral Converter &mdash; Number to Roman and Back</title>
   <meta name="description" content="Convert a number to Roman numerals or read Roman numerals back as a number, from 1 to 3999, with the breakdown shown. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/roman-numeral-converter.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,60 +131,80 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=converter">Converter</a><span>&rsaquo;</span>
         <span>Roman Numeral Converter</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Roman Numeral Converter</h1>
         <p>Type a number or type Roman numerals &mdash; the page works out which you meant and converts it, showing the sum it used. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--wide">
 
-        <!-- ---------- the conversion ---------- -->
+        <!-- ---- START: the "Convert" panel - the conversion ---- -->
         <div class="panel">
           <span class="panel__label">Convert</span>
 
+          <!-- ---- START: the "A number (1–3999) or Roman numerals" box ---- -->
           <div class="field">
             <label for="input">A number (1&ndash;3999) or Roman numerals</label>
             <input type="text" id="input" value="1994" autocomplete="off" spellcheck="false">
           </div>
+          <!-- ---- END: the "A number (1–3999) or Roman numerals" box ---- -->
 
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result">
             <span class="result__num" id="headline">MCMXCIV</span>
             <span class="result__label" id="reading"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
 
+          <!-- ---- START: the figures: As a number, As Roman numerals ---- -->
           <div class="stats stats--2">
             <div class="stat"><span class="stat__num" id="asNumber">1,994</span><span class="stat__label">As a number</span></div>
             <div class="stat"><span class="stat__num" id="asRoman">MCMXCIV</span><span class="stat__label">As Roman numerals</span></div>
           </div>
+          <!-- ---- END: the figures: As a number, As Roman numerals ---- -->
 
+          <!-- ---- START: the note the script fills in (#breakdown) ---- -->
           <p class="hint" id="breakdown"></p>
+          <!-- ---- END: the note the script fills in (#breakdown) ---- -->
 
+          <!-- ---- START: the error message ---- -->
           <!-- Plain wrapper: .msg carries its own display, which would beat
                the browser rule for the hidden attribute. -->
           <div id="errWrap" hidden style="margin-top:var(--s3)">
             <p class="msg msg--bad" id="err"></p>
           </div>
+          <!-- ---- END: the error message ---- -->
 
+          <!-- ---- START: the buttons: Copy the numerals, This year ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--ghost" type="button" id="copyBtn">Copy the numerals</button>
             <button class="btn btn--ghost" type="button" id="yearBtn">This year</button>
           </div>
+          <!-- ---- END: the buttons: Copy the numerals, This year ---- -->
         </div>
+        <!-- ---- END: the "Convert" panel - the conversion ---- -->
 
-        <!-- ---------- the seven letters ---------- -->
+        <!-- ---- START: the "The seven letters, and the six pairs" panel - the seven letters ---- -->
         <div class="panel">
           <span class="panel__label">The seven letters, and the six pairs</span>
+          <!-- ---- START: the table: Symbol, Value, Note ---- -->
           <div class="table-wrap">
             <table class="data">
               <thead>
@@ -197,11 +227,15 @@
               </tbody>
             </table>
           </div>
+          <!-- ---- END: the table: Symbol, Value, Note ---- -->
+          <!-- ---- START: the hint "Only I, X and C are ever..." ---- -->
           <p class="hint">Only I, X and C are ever subtracted, and only from the
           next two values up. That is why 99 is XCIX and never IC.</p>
+          <!-- ---- END: the hint "Only I, X and C are ever..." ---- -->
         </div>
+        <!-- ---- END: the "The seven letters, and the six pairs" panel - the seven letters ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -230,8 +264,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Type a number, such as 2026, or Roman numerals, such as MMXXVI.</li>
@@ -239,7 +274,9 @@
           <li>The line under the tiles shows the sum, so you can check it rather
               than trust it.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "The rule that explains almost everything" section ---- -->
         <h2>The rule that explains almost everything</h2>
         <p>A Roman numeral is read left to right, adding as you go, with one
         exception: <strong>a smaller symbol in front of a larger one is
@@ -250,7 +287,9 @@
         put in front, and only in front of the next two values up. That gives
         exactly six legal pairs &mdash; IV, IX, XL, XC, CD, CM &mdash; and no
         others. IC for 99 looks sensible and is wrong; the answer is XCIX.</p>
+        <!-- ---- END: the "The rule that explains almost everything" section ---- -->
 
+        <!-- ---- START: the "Why it stops at 3999" section ---- -->
         <h2>Why it stops at 3999</h2>
         <p>M is the largest letter, and no letter may repeat more than three
         times, so MMM is 3000 and there is nothing left to add for 4000. The
@@ -259,7 +298,9 @@
         character of its own, so it does not survive being copied, pasted or
         typed into a form. Rather than invent a spelling nobody else uses, this
         converter stops where the letters stop and says so.</p>
+        <!-- ---- END: the "Why it stops at 3999" section ---- -->
 
+        <!-- ---- START: the "Where you still meet them" section ---- -->
         <h2>Where you still meet them</h2>
         <p>Copyright years at the end of films, chapter and appendix numbers,
         Super Bowls, monarchs and popes, the faces of expensive clocks, and the
@@ -269,7 +310,9 @@
         IIII rather than IV for four, because IIII balances the VIII directly
         opposite it and because it keeps the first four hours using only I. It
         is a design choice, not a spelling, and this page will flag it.</p>
+        <!-- ---- END: the "Where you still meet them" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Why is 4 written IV and not IIII?</h3>
@@ -300,15 +343,20 @@
           Nothing is uploaded and nothing is saved - close the tab and it is
           gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -359,21 +407,27 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "roman-numeral-converter";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: fixed values used below ---- */
     /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
     var EM_DASH = String.fromCharCode(0x2014);
 
     var MIN = 1;
     var MAX = 3999;
+    /* ---- END: fixed values used below ---- */
 
     /* ---- START: reaching the page ---- */
     function el(id) { return document.getElementById(id); }
@@ -576,5 +630,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

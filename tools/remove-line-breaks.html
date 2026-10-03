@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Remove Line Breaks — Fix Text Copied From a PDF</title>
   <meta name="description" content="Remove line breaks from text and repair paragraphs broken by copying out of a PDF. Join lines with a space or comma, or just delete blank lines. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/remove-line-breaks.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,30 +131,39 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
         <span>Remove Line Breaks</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Remove Line Breaks</h1>
         <p>Repair text that copied out of a PDF with a break after every line, or
            flatten a list into one comma separated row. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "Your text" panel ---- -->
         <div class="panel">
           <label class="panel__label" for="input">Your text</label>
+          <!-- ---- START: the "Your text" text box ---- -->
           <textarea id="input" placeholder="Paste the broken text here&hellip;"></textarea>
+          <!-- ---- END: the "Your text" text box ---- -->
 
+          <!-- ---- START: the "What to do" choice ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="mode">What to do</label>
             <select id="mode">
@@ -156,42 +175,61 @@
               <option value="collapse">Only collapse repeated blank lines</option>
             </select>
           </div>
+          <!-- ---- END: the "What to do" choice ---- -->
 
+          <!-- ---- START: the "Separator" box ---- -->
           <!-- Shown only when the mode above needs it -->
           <div class="field" id="sepField" hidden>
             <label for="sepBox">Separator</label>
             <input type="text" id="sepBox" value="; " autocomplete="off" spellcheck="false">
             <p class="hint">Type anything — a semicolon, a pipe, " and ". Spaces count.</p>
           </div>
+          <!-- ---- END: the "Separator" box ---- -->
 
+          <!-- ---- START: the "Keep paragraph breaks" tick box ---- -->
           <div class="check"><input type="checkbox" id="optParas" checked><label for="optParas">Keep paragraph breaks</label></div>
+          <!-- ---- END: the "Keep paragraph breaks" tick box ---- -->
+          <!-- ---- START: the "Trim spaces from each line" tick box ---- -->
           <div class="check"><input type="checkbox" id="optTrim" checked><label for="optTrim">Trim spaces from each line</label></div>
+          <!-- ---- END: the "Trim spaces from each line" tick box ---- -->
+          <!-- ---- START: the "Rejoin words split by a hyphen" tick box ---- -->
           <div class="check"><input type="checkbox" id="optHyphen"><label for="optHyphen">Rejoin words split by a hyphen</label></div>
+          <!-- ---- END: the "Rejoin words split by a hyphen" tick box ---- -->
 
+          <!-- ---- START: the "Clear" button ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
           </div>
+          <!-- ---- END: the "Clear" button ---- -->
         </div>
+        <!-- ---- END: the "Your text" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Result" panel ---- -->
         <div class="panel">
           <span class="panel__label">Result</span>
 
+          <!-- ---- START: the figures: Lines in, Lines out, Characters ---- -->
           <div class="stats stats--3" aria-live="polite">
             <div class="stat"><span class="stat__num" id="cIn">0</span><span class="stat__label">Lines in</span></div>
             <div class="stat"><span class="stat__num" id="cOut">0</span><span class="stat__label">Lines out</span></div>
             <div class="stat"><span class="stat__num" id="cChars">0</span><span class="stat__label">Characters</span></div>
           </div>
+          <!-- ---- END: the figures: Lines in, Lines out, Characters ---- -->
 
+          <!-- ---- START: the output ---- -->
           <pre class="out" id="output" style="margin-top:var(--s4)"></pre>
+          <!-- ---- END: the output ---- -->
 
+          <!-- ---- START: the buttons: Copy result, Download .txt ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
             <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
           </div>
+          <!-- ---- END: the buttons: Copy result, Download .txt ---- -->
         </div>
+        <!-- ---- END: the "Result" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -220,8 +258,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Paste the text with the unwanted breaks into the box on the left.</li>
@@ -229,7 +268,9 @@
           <li>The repaired text appears instantly — there is no button to press.</li>
           <li>Press <strong>Copy result</strong> and paste it wherever you needed it.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "The PDF problem, and why this fixes it" section ---- -->
         <h2>The PDF problem, and why this fixes it</h2>
         <p>A PDF does not store paragraphs. It stores the position of every visual
           line on the page, so when you select and copy a column of text, a real
@@ -248,7 +289,9 @@
         <p>The same tool flattens lists. A column of email addresses becomes one
           comma separated line ready for the To field, and a custom separator covers
           semicolons, pipes or anything else a particular form expects.</p>
+        <!-- ---- END: the "The PDF problem, and why this fixes it" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Why does text copied from a PDF break in the middle of sentences?</h3>
@@ -266,14 +309,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. The joining happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -324,18 +372,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "remove-line-breaks";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: the page elements this script reads and writes ---- */
     var input  = document.getElementById("input");
     var output = document.getElementById("output");
     var mode   = document.getElementById("mode");
@@ -348,6 +400,7 @@
     var cIn    = document.getElementById("cIn");
     var cOut   = document.getElementById("cOut");
     var cChars = document.getElementById("cChars");
+    /* ---- END: the page elements this script reads and writes ---- */
 
     /* ---- START: what goes between two joined lines ---- */
     /* Which separator goes between joined lines */
@@ -437,6 +490,7 @@
     }
     /* ---- END: showing the separator box only in custom mode ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     input.addEventListener("input", run);
     sepBox.addEventListener("input", run);
     mode.addEventListener("change", syncFields);
@@ -459,9 +513,13 @@
       if (!output.textContent) { showToast("Nothing to download"); return; }
       downloadText(output.textContent, "joined.txt");
     });
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     syncFields();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

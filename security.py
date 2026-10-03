@@ -42,6 +42,7 @@ import shutil
 import subprocess
 import sys
 
+# ---- START: the settings, and the report every part below writes to ----
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 
 # Every Chrome these scripts start is kept away from Google's ad servers.
@@ -67,6 +68,7 @@ def fail(msg):
 
 def ok(msg):
     print("  -  " + msg)
+# ---- END: the settings, and the report every part below writes to ----
 
 
 # ---- START: running one page in a real browser with a probe attached -------
@@ -474,6 +476,7 @@ def check_policy_present(pages):
 # ---- END: part 3, the static promises that keep the exits shut -------------
 
 
+# ---- START: running every part, in order, and the verdict ----
 if __name__ == "__main__":
     pages = sorted(ROOT.glob("*.html")) + sorted(
         p for p in (ROOT / "tools").glob("*.html") if not p.name.startswith("_"))
@@ -500,3 +503,4 @@ if __name__ == "__main__":
         sys.exit(1)
     print("SECURITY CLEAN - %d pages load silently, %d tools refuse to turn "
           "text into markup." % (len(pages), len(tools)))
+# ---- END: running every part, in order, and the verdict ----

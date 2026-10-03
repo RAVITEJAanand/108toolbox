@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Barcode Generator — Code 128, EAN-13, UPC-A, Code 39</title>
   <meta name="description" content="Make a barcode online in Code 128, EAN-13, UPC-A, EAN-8, Code 39 or ITF. Check digits are worked out for you, and you save a PNG or SVG. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/barcode-generator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -114,9 +124,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -151,28 +162,35 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=random">Random</a><span>&rsaquo;</span>
         <span>Barcode Generator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Barcode Generator</h1>
         <p>Pick a type, type what the barcode should say, and save it as a PNG or an
            SVG. For EAN and UPC the last digit is worked out for you. It is all
            drawn in your browser, so nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the input panel ---- -->
         <div class="panel">
+          <!-- ---- START: the "Barcode type" choice ---- -->
           <div class="field">
             <label for="format">Barcode type</label>
             <select id="format">
@@ -184,13 +202,17 @@
               <option value="itf">ITF &mdash; digits in pairs, for cartons</option>
             </select>
           </div>
+          <!-- ---- END: the "Barcode type" choice ---- -->
 
+          <!-- ---- START: the "What the barcode says" box ---- -->
           <div class="field">
             <label for="text">What the barcode says</label>
             <input type="text" id="text" value="108TOOLBOX" maxlength="80" autocomplete="off" spellcheck="false">
             <p class="msg" id="hint" style="margin-top:var(--s2)"></p>
           </div>
+          <!-- ---- END: the "What the barcode says" box ---- -->
 
+          <!-- ---- START: the "Bar width (pixels for the thinnest bar)" choice ---- -->
           <div class="field">
             <label for="scale">Bar width (pixels for the thinnest bar)</label>
             <select id="scale">
@@ -204,39 +226,56 @@
               <option value="10">10</option>
             </select>
           </div>
+          <!-- ---- END: the "Bar width (pixels for the thinnest bar)" choice ---- -->
 
+          <!-- ---- START: the "Bar height in pixels" box ---- -->
           <div class="field">
             <label for="height">Bar height in pixels</label>
             <input type="number" id="height" min="20" max="400" step="1" value="100">
           </div>
+          <!-- ---- END: the "Bar height in pixels" box ---- -->
 
+          <!-- ---- START: the "Print the text under the bars" tick box ---- -->
           <div class="check"><input type="checkbox" id="showText" checked><label for="showText">Print the text under the bars</label></div>
+          <!-- ---- END: the "Print the text under the bars" tick box ---- -->
 
+          <!-- ---- START: the buttons: Download PNG, Download SVG, Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="pngBtn">Download PNG</button>
             <button class="btn btn--ghost"   type="button" id="svgBtn">Download SVG</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: Download PNG, Download SVG, Reset ---- -->
         </div>
+        <!-- ---- END: the input panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Your barcode" panel ---- -->
         <div class="panel">
           <span class="panel__label">Your barcode</span>
+          <!-- ---- START: the preview ---- -->
           <div class="preview" id="preview">
             <canvas id="stage" width="10" height="10" style="max-width:100%;height:auto;display:block;margin:0 auto var(--s4);border-radius:var(--r-sm);border:1px solid var(--border);box-shadow:var(--sh1);background:#fff"></canvas>
           </div>
+          <!-- ---- END: the preview ---- -->
 
+          <!-- ---- START: the figures: Modules wide, Check digit, Image size (px) ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sMod">&mdash;</span><span class="stat__label">Modules wide</span></div>
             <div class="stat"><span class="stat__num" id="sCheck">&mdash;</span><span class="stat__label">Check digit</span></div>
             <div class="stat"><span class="stat__num" id="sSize">&mdash;</span><span class="stat__label">Image size (px)</span></div>
           </div>
+          <!-- ---- END: the figures: Modules wide, Check digit, Image size (px) ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
+          <!-- ---- START: the message line ---- -->
           <p class="msg" style="margin-top:var(--s2)">Scan a test print with a phone before you print many. This page draws whatever number you give it; it does not reserve one, and the numbers on goods sold in shops are issued by GS1, not by this site.</p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "Your barcode" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -265,8 +304,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to make a barcode" section ---- -->
         <h2>How to make a barcode</h2>
         <ol>
           <li>Pick the type. If you are not sure, leave it on <strong>Code 128</strong>, which holds any text you can type.</li>
@@ -274,7 +314,9 @@
           <li>Choose a bar width and a height. Wider bars scan more easily, and every edge is drawn on a whole pixel so it stays sharp.</li>
           <li>Save a <strong>PNG</strong> for a document or a screen, or an <strong>SVG</strong> to print at any size without blur.</li>
         </ol>
+        <!-- ---- END: the "How to make a barcode" section ---- -->
 
+        <!-- ---- START: the "Which type should I pick?" section ---- -->
         <h2>Which type should I pick?</h2>
         <ul>
           <li><strong>Code 128</strong> holds any letters, digits and symbols, and it is the smallest for a given text. Use it for shipping labels, stock, asset tags and anything with letters in it.</li>
@@ -284,7 +326,9 @@
           <li><strong>Code 39</strong> takes capitals, digits and a few symbols. It is older and wider than Code 128, and still common on badges and industrial labels.</li>
           <li><strong>ITF</strong> takes digits only, in pairs, and is used on cartons and cases.</li>
         </ul>
+        <!-- ---- END: the "Which type should I pick?" section ---- -->
 
+        <!-- ---- START: the "Printing it so it scans" section ---- -->
         <h2>Printing it so it scans</h2>
         <ul>
           <li>Keep the blank margin at both ends. It is part of the barcode, and this page adds the standard width.</li>
@@ -292,7 +336,9 @@
           <li>Never stretch it in one direction only. Scale the whole image together, or save the SVG.</li>
           <li>Print one, scan it with a phone, and only then print the rest.</li>
         </ul>
+        <!-- ---- END: the "Printing it so it scans" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Will an EAN-13 or UPC-A from this page work in a shop?</h3>
@@ -322,14 +368,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -380,18 +431,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "barcode-generator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var el = {
       format:   document.getElementById("format"),
       text:     document.getElementById("text"),
@@ -421,6 +476,7 @@
 
     var current = null;   /* the drawing plan on screen, or null */
     var previousFormat = el.format.value;
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: what each barcode type is and what it accepts ---- */
     var FORMATS = Object.create(null);
@@ -1032,9 +1088,14 @@
     });
     /* ---- END: wiring ---- */
 
+    /* ---- START: the hint for the first barcode type ---- */
     el.hint.textContent = FORMATS.code128.hint;
+    /* ---- END: the hint for the first barcode type ---- */
+    /* ---- START: the first run, when the page opens ---- */
     render();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

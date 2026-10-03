@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Lorem Ipsum Generator — Free Placeholder Text</title>
   <meta name="description" content="Generate lorem ipsum placeholder text by paragraphs, sentences or words. Free, instant, and runs entirely in your browser.">
   <link rel="canonical" href="https://108toolbox.in/tools/lorem-ipsum-generator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,8 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -88,9 +97,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -128,29 +138,36 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <!-- Breadcrumb: helps visitors AND shows as a path in Google results -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
         <span>Lorem Ipsum Generator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Lorem Ipsum Generator</h1>
         <p>Generate placeholder text by paragraphs, sentences or words — ready to paste into a mockup.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- CONTROLS ---------- -->
+        <!-- ---- START: the "Options" panel ---- -->
         <div class="panel">
           <span class="panel__label">Options</span>
 
+          <!-- ---- START: the "Generate" choice ---- -->
           <div class="field">
             <label for="unit">Generate</label>
             <select id="unit">
@@ -159,36 +176,49 @@
               <option value="words">Words</option>
             </select>
           </div>
+          <!-- ---- END: the "Generate" choice ---- -->
 
+          <!-- ---- START: the "How many" box ---- -->
           <div class="field">
             <label for="count">How many</label>
             <input type="number" id="count" value="3" min="1" max="200">
             <p class="hint">Between 1 and 200.</p>
           </div>
+          <!-- ---- END: the "How many" box ---- -->
 
+          <!-- ---- START: the "Start with “Lorem ipsum dolor sit amet”" tick box ---- -->
           <div class="field">
             <label class="check">
               <input type="checkbox" id="classic" checked>
               Start with &ldquo;Lorem ipsum dolor sit amet&rdquo;
             </label>
           </div>
+          <!-- ---- END: the "Start with “Lorem ipsum dolor sit amet”" tick box ---- -->
 
+          <!-- ---- START: the "Generate" button ---- -->
           <div class="btn-row">
             <button class="btn btn--primary" type="button" id="genBtn">Generate</button>
           </div>
+          <!-- ---- END: the "Generate" button ---- -->
         </div>
+        <!-- ---- END: the "Options" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Placeholder text" panel ---- -->
         <div class="panel">
           <span class="panel__label">Placeholder text</span>
+          <!-- ---- START: the output ---- -->
           <pre class="out" id="output" aria-live="polite"></pre>
+          <!-- ---- END: the output ---- -->
+          <!-- ---- START: the buttons: Copy, Download .txt ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--primary" type="button" id="copyBtn">Copy</button>
             <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
           </div>
+          <!-- ---- END: the buttons: Copy, Download .txt ---- -->
         </div>
+        <!-- ---- END: the "Placeholder text" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -217,15 +247,18 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Choose whether you want paragraphs, sentences or individual words.</li>
           <li>Set how many, and untick the classic opener if you want fully random text.</li>
           <li>Click <strong>Copy</strong>, or download it as a .txt file.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Where the words actually come from" section ---- -->
         <h2>Where the words actually come from</h2>
         <p>Lorem ipsum is not nonsense that somebody invented. It is mangled Latin,
           lifted from <em>De Finibus Bonorum et Malorum</em>, a treatise on ethics
@@ -238,7 +271,9 @@
           ever since. It survived into web design for the same reason it worked in
           print: it has the rhythm and letter distribution of real European
           language, so a page set in it looks like a real page.</p>
+        <!-- ---- END: the "Where the words actually come from" section ---- -->
 
+        <!-- ---- START: the "Why not just type real text" section ---- -->
         <h2>Why not just type real text</h2>
         <p>Because real text is read, and placeholder text is looked at. Put a real
           paragraph into a draft layout and everyone in the room starts editing the
@@ -253,7 +288,9 @@
         <p><strong>One warning.</strong> Placeholder text has a long history of
           reaching production, on printed menus, in app store listings and on live
           home pages. Search your project for <code>lorem</code> before you ship.</p>
+        <!-- ---- END: the "Why not just type real text" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Is lorem ipsum text copyrighted?</h3>
@@ -271,14 +308,19 @@
           <h3>Can I generate a specific character count?</h3>
           <p>Not directly. Generate by words and trim the tail — words are close to 6 characters each on average, including the space.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -329,19 +371,24 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "lorem-ipsum-generator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <!-- ===== This tool's own logic. The only part that differs per tool. =====
        Wrapped in (function(){ ... })() so its variables cannot clash with
        anything else on the page. -->
   <script data-tool>
   (function () {
     "use strict";
+  /* ---- START: fixed values used below ---- */
   /* A pool of classical-looking Latin words. Lorem ipsum is scrambled Latin
      from Cicero and has been public domain for two thousand years, so there
      is nothing to license here. */
@@ -354,6 +401,7 @@
     "a odio nullam varius turpis et commodo pharetra est eros suscipit").split(" ");
 
   var CLASSIC_OPENER = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+  /* ---- END: fixed values used below ---- */
 
   /* ---- START: picking at random ---- */
   function randomInt(min, max) {
@@ -431,6 +479,7 @@
   }
   /* ---- END: drawing the requested amount ---- */
 
+  /* ---- START: wiring: what each control does ---- */
   document.getElementById("genBtn").addEventListener("click", generate);
   document.getElementById("unit").addEventListener("change", generate);
   document.getElementById("count").addEventListener("input", generate);
@@ -442,9 +491,13 @@
   document.getElementById("dlBtn").addEventListener("click", function () {
     downloadText(document.getElementById("output").textContent, "lorem-ipsum.txt");
   });
+  /* ---- END: wiring: what each control does ---- */
 
+  /* ---- START: the first run, when the page opens ---- */
   generate();   /* something on screen straight away */
+  /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

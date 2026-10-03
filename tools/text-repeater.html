@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Text Repeater — Repeat Any Text or Line X Times</title>
   <meta name="description" content="Repeat a word, a sentence or a whole block of text as many times as you need, with the separator you choose and optional numbering. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/text-repeater.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,35 +131,46 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=text">Text</a><span>&rsaquo;</span>
         <span>Text Repeater</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Text Repeater</h1>
         <p>Type something once and get it back as many times as you need — on
            separate lines, side by side, or numbered. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "Text to repeat" panel ---- -->
         <div class="panel">
           <label class="panel__label" for="input">Text to repeat</label>
+          <!-- ---- START: the "Text to repeat" text box ---- -->
           <textarea id="input" placeholder="Type the text you want repeated&hellip;" style="min-height:140px"></textarea>
+          <!-- ---- END: the "Text to repeat" text box ---- -->
 
+          <!-- ---- START: the "How many copies" box ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="copies">How many copies</label>
             <input type="number" id="copies" value="10" min="1" max="100000" step="1">
           </div>
+          <!-- ---- END: the "How many copies" box ---- -->
 
+          <!-- ---- START: the "Between the copies" choice ---- -->
           <div class="field">
             <label for="sep">Between the copies</label>
             <select id="sep">
@@ -161,41 +182,60 @@
               <option value="custom">Something of my own&hellip;</option>
             </select>
           </div>
+          <!-- ---- END: the "Between the copies" choice ---- -->
 
+          <!-- ---- START: the "Your separator" box ---- -->
           <div class="field" id="customWrap" hidden>
             <label for="sepCustom">Your separator</label>
             <input type="text" id="sepCustom" placeholder="for example:  |  ">
             <p class="hint">Typed exactly as you enter it, spaces included.</p>
           </div>
+          <!-- ---- END: the "Your separator" box ---- -->
 
+          <!-- ---- START: the "Number each copy (1. 2. 3.)" tick box ---- -->
           <div class="check"><input type="checkbox" id="optNumber"><label for="optNumber">Number each copy (1. 2. 3.)</label></div>
+          <!-- ---- END: the "Number each copy (1. 2. 3.)" tick box ---- -->
+          <!-- ---- START: the "Separator after the last copy too" tick box ---- -->
           <div class="check"><input type="checkbox" id="optTrail"><label for="optTrail">Separator after the last copy too</label></div>
+          <!-- ---- END: the "Separator after the last copy too" tick box ---- -->
 
+          <!-- ---- START: the "Clear" button ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
           </div>
+          <!-- ---- END: the "Clear" button ---- -->
         </div>
+        <!-- ---- END: the "Text to repeat" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Result" panel ---- -->
         <div class="panel">
           <span class="panel__label">Result</span>
 
+          <!-- ---- START: the figures: Copies, Characters, Lines ---- -->
           <div class="stats stats--3" aria-live="polite">
             <div class="stat"><span class="stat__num" id="cCopies">0</span><span class="stat__label">Copies</span></div>
             <div class="stat"><span class="stat__num" id="cChars">0</span><span class="stat__label">Characters</span></div>
             <div class="stat"><span class="stat__num" id="cLines">0</span><span class="stat__label">Lines</span></div>
           </div>
+          <!-- ---- END: the figures: Copies, Characters, Lines ---- -->
 
+          <!-- ---- START: the output ---- -->
           <pre class="out" id="output" style="margin-top:var(--s4)"></pre>
+          <!-- ---- END: the output ---- -->
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg"></p>
+          <!-- ---- END: the message line ---- -->
 
+          <!-- ---- START: the buttons: Copy result, Download .txt ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--primary" type="button" id="copyBtn">Copy result</button>
             <button class="btn btn--ghost"   type="button" id="dlBtn">Download .txt</button>
           </div>
+          <!-- ---- END: the buttons: Copy result, Download .txt ---- -->
         </div>
+        <!-- ---- END: the "Result" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -224,8 +264,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Type or paste the text you want repeated into the top box.</li>
@@ -235,7 +276,9 @@
           <li>The result builds as you type. Press <strong>Copy result</strong>, or
               download it as a <code>.txt</code> file.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "What people actually use this for" section ---- -->
         <h2>What people actually use this for</h2>
         <p>The honest answer is test data. You need forty rows in a spreadsheet to
           see whether the layout holds, or a paragraph repeated until a page is long
@@ -249,7 +292,9 @@
           gives you a comma-separated list you can paste straight into code or a
           spreadsheet cell. <strong>A blank line</strong> keeps the copies readable
           when each one is a paragraph rather than a word.</p>
+        <!-- ---- END: the "What people actually use this for" section ---- -->
 
+        <!-- ---- START: the "The size limit, and why there is one" section ---- -->
         <h2>The size limit, and why there is one</h2>
         <p>Repeating is cheap for the computer but expensive for the page: everything
           the tool produces has to be held in memory and then drawn on screen. Past
@@ -257,7 +302,9 @@
           frozen tab, so the tool refuses instead and tells you how big the result
           would have been. Lower the count, or shorten the text, and it runs
           immediately.</p>
+        <!-- ---- END: the "The size limit, and why there is one" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How many copies can I make at once?</h3>
@@ -275,14 +322,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. The repeating happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved — close the tab and the text is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -333,18 +385,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "text-repeater";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool has its own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements and fixed values ---- */
     var input      = document.getElementById("input");
     var output     = document.getElementById("output");
     var copies     = document.getElementById("copies");
@@ -372,6 +428,7 @@
       "comma": ", ",
       "nl2":   "\n\n"
     };
+    /* ---- END: setting up: the page elements and fixed values ---- */
 
     /* ---- START: what goes between two copies ---- */
     function separator() {
@@ -453,6 +510,7 @@
     }
     /* ---- END: building the copies and drawing the result ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     input.addEventListener("input", run);
     copies.addEventListener("input", run);
     sepCustom.addEventListener("input", run);
@@ -475,9 +533,13 @@
       if (!output.textContent) { showToast("Nothing to download"); return; }
       downloadText(output.textContent, "repeated.txt");
     });
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     run();   /* run once so the panel is correct on load */
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

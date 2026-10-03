@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Meme Generator — Bring Your Own Picture</title>
   <meta name="description" content="Put top and bottom text on any picture in the classic white-on-black-outline style. Long lines wrap and shrink to fit. Your picture stays on your device.">
   <link rel="canonical" href="https://108toolbox.in/tools/meme-generator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,56 +154,75 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
         <span>Meme Generator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Meme Generator</h1>
         <p>Pick a picture, type the top and bottom lines, download it. Long
            captions wrap and shrink so they always fit &mdash; and the picture
            is always yours, never one we supply.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the input panel ---- -->
         <div class="panel">
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#128514;</span>
             <p><strong>Click to choose</strong> or drag an image here</p>
             <p style="margin-top:var(--s1)">JPG, PNG or WebP &middot; nothing is uploaded</p>
             <input type="file" id="file" accept="image/*">
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
 
+          <!-- ---- START: the "Top text" box ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="top">Top text</label>
             <input type="text" id="top" value="WHEN THE CODE WORKS" maxlength="120">
           </div>
+          <!-- ---- END: the "Top text" box ---- -->
+          <!-- ---- START: the "Bottom text" box ---- -->
           <div class="field">
             <label for="bottom">Bottom text</label>
             <input type="text" id="bottom" value="AND YOU DO NOT KNOW WHY" maxlength="120">
           </div>
+          <!-- ---- END: the "Bottom text" box ---- -->
 
+          <!-- ---- START: the "Text size — 9% of the height" slider ---- -->
           <div class="field">
             <label for="size">Text size &mdash; <span id="sizeOut">9</span>% of the height</label>
             <input type="range" id="size" min="4" max="20" step="1" value="9">
           </div>
+          <!-- ---- END: the "Text size — 9% of the height" slider ---- -->
 
+          <!-- ---- START: the "ALL CAPITALS" tick box ---- -->
           <label class="check"><input type="checkbox" id="caps" checked> ALL CAPITALS</label>
+          <!-- ---- END: the "ALL CAPITALS" tick box ---- -->
 
+          <!-- ---- START: the "Letter colour" colour picker ---- -->
           <div class="field" style="margin-top:var(--s3)">
             <label for="fill">Letter colour</label>
             <input type="color" id="fill" value="#ffffff" style="height:44px;padding:4px">
           </div>
+          <!-- ---- END: the "Letter colour" colour picker ---- -->
 
+          <!-- ---- START: the "Save as" choice ---- -->
           <div class="field">
             <label for="fmt">Save as</label>
             <select id="fmt">
@@ -200,28 +230,39 @@
               <option value="image/jpeg">JPG &mdash; smaller</option>
             </select>
           </div>
+          <!-- ---- END: the "Save as" choice ---- -->
 
+          <!-- ---- START: the buttons: Download, Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="dlBtn" disabled>Download</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: Download, Reset ---- -->
         </div>
+        <!-- ---- END: the input panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Preview" panel ---- -->
         <div class="panel">
           <span class="panel__label">Preview</span>
+          <!-- ---- START: the preview ---- -->
           <div class="preview"><canvas id="stage" width="10" height="10" style="max-width:100%;height:auto;display:block"></canvas></div>
+          <!-- ---- END: the preview ---- -->
 
+          <!-- ---- START: the figures: Picture size, Top lines, Bottom lines ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sSize">&mdash;</span><span class="stat__label">Picture size</span></div>
             <div class="stat"><span class="stat__num" id="sTop">&mdash;</span><span class="stat__label">Top lines</span></div>
             <div class="stat"><span class="stat__num" id="sBottom">&mdash;</span><span class="stat__label">Bottom lines</span></div>
           </div>
+          <!-- ---- END: the figures: Picture size, Top lines, Bottom lines ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "Preview" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -250,8 +291,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Choose a picture. It has to be one you provide &mdash; see below
@@ -260,7 +302,9 @@
               caption.</li>
           <li>Download the result.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Why there are no templates" section ---- -->
         <h2>Why there are no templates</h2>
         <p>Most meme pages hand you a library of famous pictures. Those
            pictures belong to somebody &mdash; a photographer, a film studio, a
@@ -271,7 +315,9 @@
            bring, so what you make is your responsibility and your choice,
            and nothing you upload here goes anywhere. If the picture is yours,
            or you have the right to use it, you are on solid ground.</p>
+        <!-- ---- END: the "Why there are no templates" section ---- -->
 
+        <!-- ---- START: the "The classic look, and why it works" section ---- -->
         <h2>The classic look, and why it works</h2>
         <p>White letters with a thick black outline, in capitals. It looks
            like a style choice and it is really a legibility trick: the outline
@@ -279,20 +325,26 @@
            dark or busy, because at least one of the two colours always
            contrasts with whatever is behind it. That is the reason the format
            has outlasted every trend since.</p>
+        <!-- ---- END: the "The classic look, and why it works" section ---- -->
 
+        <!-- ---- START: the "Long captions do not fall off the edge" section ---- -->
         <h2>Long captions do not fall off the edge</h2>
         <p>Text that is too wide is wrapped onto more lines. If it still will
            not fit in three lines the letters are shrunk until it does, and the
            tiles show how many lines each caption ended up on. What does not
            happen is the caption running off the side of the picture, which is
            the most common way this goes wrong on a phone.</p>
+        <!-- ---- END: the "Long captions do not fall off the edge" section ---- -->
 
+        <!-- ---- START: the "Text lives in the picture, not on it" section ---- -->
         <h2>Text lives in the picture, not on it</h2>
         <p>Once you download it the words are part of the image. They cannot be
            edited, searched, or read aloud by a screen reader &mdash; so if the
            joke matters to someone using one, say it in the text of the post as
            well as in the picture.</p>
+        <!-- ---- END: the "Text lives in the picture, not on it" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Why are there no meme templates?</h3>
@@ -318,14 +370,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -376,18 +433,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "meme-generator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fileIn = document.getElementById("file");
     var drop   = document.getElementById("drop");
     var stage  = document.getElementById("stage");
@@ -411,6 +472,7 @@
        back to, ending in a heavy sans-serif so the look survives. */
     var FAMILY = "Impact, 'Arial Black', 'Helvetica Neue', Arial, sans-serif";
     var MAX_LINES = 3;
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
@@ -627,5 +689,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

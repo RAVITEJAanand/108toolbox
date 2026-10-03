@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Average Calculator — Mean, Median, Mode and Range</title>
   <meta name="description" content="Paste any list of numbers and get the mean, median, mode, range, total and standard deviation at once. Commas, spaces or new lines all work. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/average-calculator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,32 +131,43 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
         <span>Average Calculator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Average Calculator</h1>
         <p>Paste a list of numbers and get the mean, the median, the mode and the
            rest at once. Separate them however you like. Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "Your numbers" panel ---- -->
         <div class="panel">
           <label class="panel__label" for="input">Your numbers</label>
+          <!-- ---- START: the "Your numbers" text box ---- -->
           <textarea id="input" placeholder="12, 7, 19, 3, 7&#10;or one per line&hellip;">12, 7, 19, 3, 7, 22, 15</textarea>
+          <!-- ---- END: the "Your numbers" text box ---- -->
+          <!-- ---- START: the hint "Commas, spaces, new lines, tabs or semicolons..." ---- -->
           <p class="hint">Commas, spaces, new lines, tabs or semicolons &mdash;
              all work, and you can mix them.</p>
+          <!-- ---- END: the hint "Commas, spaces, new lines, tabs or semicolons..." ---- -->
 
+          <!-- ---- START: the "Decimal places in the results" choice ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="places">Decimal places in the results</label>
             <select id="places">
@@ -157,53 +178,74 @@
               <option value="4">4</option>
             </select>
           </div>
+          <!-- ---- END: the "Decimal places in the results" choice ---- -->
 
+          <!-- ---- START: the "Clear" button ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--danger" type="button" id="clearBtn">Clear</button>
           </div>
+          <!-- ---- END: the "Clear" button ---- -->
         </div>
+        <!-- ---- END: the "Your numbers" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Results" panel ---- -->
         <div class="panel">
           <span class="panel__label">Results</span>
 
+          <!-- ---- START: the main answer ---- -->
           <div class="result">
             <span class="result__num" id="mean">&mdash;</span>
             <span class="result__label" id="meanFormula">the mean, or ordinary average</span>
           </div>
+          <!-- ---- END: the main answer ---- -->
 
+          <!-- ---- START: the figures: Median, Mode, Range ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="median">&mdash;</span><span class="stat__label">Median</span></div>
             <div class="stat"><span class="stat__num" id="mode">&mdash;</span><span class="stat__label">Mode</span></div>
             <div class="stat"><span class="stat__num" id="range">&mdash;</span><span class="stat__label">Range</span></div>
           </div>
+          <!-- ---- END: the figures: Median, Mode, Range ---- -->
 
+          <!-- ---- START: the figures: How many, Total ---- -->
           <div class="stats" style="margin-top:var(--s2)">
             <div class="stat"><span class="stat__num" id="count">0</span><span class="stat__label">How many</span></div>
             <div class="stat"><span class="stat__num" id="sum">&mdash;</span><span class="stat__label">Total</span></div>
           </div>
+          <!-- ---- END: the figures: How many, Total ---- -->
 
+          <!-- ---- START: the figures: Smallest, Largest ---- -->
           <div class="stats" style="margin-top:var(--s2)">
             <div class="stat"><span class="stat__num" id="min">&mdash;</span><span class="stat__label">Smallest</span></div>
             <div class="stat"><span class="stat__num" id="max">&mdash;</span><span class="stat__label">Largest</span></div>
           </div>
+          <!-- ---- END: the figures: Smallest, Largest ---- -->
 
+          <!-- ---- START: the figures: Std deviation, population (σ), Std deviation, sample (s) ---- -->
           <div class="stats" style="margin-top:var(--s2)">
             <div class="stat"><span class="stat__num" id="sd">&mdash;</span><span class="stat__label">Std deviation, population (&sigma;)</span></div>
             <div class="stat"><span class="stat__num" id="sdSample">&mdash;</span><span class="stat__label">Std deviation, sample (s)</span></div>
           </div>
+          <!-- ---- END: the figures: Std deviation, population (σ), Std deviation, sample (s) ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg"></p>
+          <!-- ---- END: the message line ---- -->
 
+          <!-- ---- START: the buttons: Copy results, Show sorted ---- -->
           <div class="btn-row" style="margin-top:var(--s3)">
             <button class="btn btn--primary" type="button" id="copyBtn">Copy results</button>
             <button class="btn btn--ghost" type="button" id="sortBtn">Show sorted</button>
           </div>
+          <!-- ---- END: the buttons: Copy results, Show sorted ---- -->
 
+          <!-- ---- START: the output ---- -->
           <pre class="out mono" id="sorted" hidden style="margin-top:var(--s3);min-height:0"></pre>
+          <!-- ---- END: the output ---- -->
         </div>
+        <!-- ---- END: the "Results" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -232,8 +274,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Paste or type your numbers on the left.</li>
@@ -242,7 +285,9 @@
           <li>Every result updates as you type. Press <strong>Copy results</strong>
               to take them all with you.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Mean, median and mode are three different questions" section ---- -->
         <h2>Mean, median and mode are three different questions</h2>
         <p>People say &ldquo;average&rdquo; and almost always mean the
           <strong>mean</strong>: add everything up, divide by how many there are.
@@ -263,7 +308,9 @@
         <p>A quick rule: <strong>if the mean and the median on this page are far
           apart, your list has outliers</strong>, and the median is probably the
           number you should quote.</p>
+        <!-- ---- END: the "Mean, median and mode are three different questions" section ---- -->
 
+        <!-- ---- START: the "Range and standard deviation" section ---- -->
         <h2>Range and standard deviation</h2>
         <p><strong>Range</strong> is simply the largest number minus the smallest.
           It tells you how spread out the list is, using only two values, which
@@ -283,7 +330,9 @@
           statistics coursework. The sample figure is never the smaller of the
           two, and with a single number it is left blank: one value cannot
           show how spread out a group is.</p>
+        <!-- ---- END: the "Range and standard deviation" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>What is the difference between mean, median and mode?</h3>
@@ -301,14 +350,19 @@
           <h3>Is my data sent anywhere?</h3>
           <p>No. The arithmetic happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved &mdash; close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -359,18 +413,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "average-calculator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool has its own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements and fixed values ---- */
     var input  = document.getElementById("input");
     var places = document.getElementById("places");
     var sorted = document.getElementById("sorted");
@@ -379,12 +437,15 @@
 
     var EM_DASH = String.fromCharCode(0x2014);
     var MINUS   = String.fromCharCode(0x2212);
+    /* ---- END: setting up: the page elements and fixed values ---- */
 
     /* ---- START: reaching the output elements ---- */
     function out(id) { return document.getElementById(id); }
     /* ---- END: reaching the output elements ---- */
 
+    /* ---- START: what the page remembers between actions ---- */
     var current = { values: [] };
+    /* ---- END: what the page remembers between actions ---- */
 
     /* ---- START: reading numbers out of whatever was pasted ----
        The list is cut into entries at spaces, commas, semicolons, tabs and
@@ -569,6 +630,7 @@
     }
     /* ---- END: drawing the answer ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     input.addEventListener("input", run);
     places.addEventListener("change", run);
 
@@ -599,9 +661,13 @@
       ];
       copyText(lines.join("\n"));
     });
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     run();   /* run once so the panel is correct on load */
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

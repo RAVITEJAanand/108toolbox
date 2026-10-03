@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>JWT Decoder — Read a Token In Your Browser</title>
   <meta name="description" content="Decode a JSON Web Token and read its header, payload and expiry time. Runs entirely in your browser, and is honest about not verifying the signature.">
   <link rel="canonical" href="https://108toolbox.in/tools/jwt-decoder.html">
@@ -14,17 +14,23 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead: nothing can be sent anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
   <meta name="referrer" content="no-referrer">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -38,7 +44,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -98,9 +106,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -135,58 +144,80 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=developer">Developer</a><span>&rsaquo;</span>
         <span>JWT Decoder</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>JWT Decoder</h1>
         <p>Paste a token and read what is inside it. Nothing is sent anywhere
            &mdash; which matters more for this tool than for most, because a
            token is often the key to somebody's account.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "Token" panel ---- -->
         <div class="panel">
           <label class="panel__label" for="input">Token</label>
+          <!-- ---- START: the "Token" text box ---- -->
           <textarea id="input" class="mono" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.&hellip;"></textarea>
+          <!-- ---- END: the "Token" text box ---- -->
 
+          <!-- ---- START: the buttons: Load an example, Copy payload, Clear ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="sampleBtn">Load an example</button>
             <button class="btn btn--ghost"   type="button" id="copyBtn">Copy payload</button>
             <button class="btn btn--danger"  type="button" id="clearBtn">Clear</button>
           </div>
+          <!-- ---- END: the buttons: Load an example, Copy payload, Clear ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "Token" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "Header" panel ---- -->
         <div class="panel">
           <span class="panel__label">Header</span>
+          <!-- ---- START: the output (#headerOut) ---- -->
           <pre class="out mono" id="headerOut" style="min-height:90px" aria-live="polite"></pre>
+          <!-- ---- END: the output (#headerOut) ---- -->
 
+          <!-- ---- START: the output (#payloadOut), under the heading "Payload" ---- -->
           <span class="panel__label" style="margin-top:var(--s4)">Payload</span>
           <pre class="out mono" id="payloadOut" aria-live="polite"></pre>
+          <!-- ---- END: the output (#payloadOut), under the heading "Payload" ---- -->
 
+          <!-- ---- START: the figures: Algorithm, Expiry, Parts ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="sAlg">&mdash;</span><span class="stat__label">Algorithm</span></div>
             <div class="stat"><span class="stat__num" id="sState">&mdash;</span><span class="stat__label">Expiry</span></div>
             <div class="stat"><span class="stat__num" id="sParts">&mdash;</span><span class="stat__label">Parts</span></div>
           </div>
+          <!-- ---- END: the figures: Algorithm, Expiry, Parts ---- -->
 
+          <!-- ---- START: the output (#timesOut) ---- -->
           <pre class="out mono" id="timesOut" style="min-height:70px" aria-live="polite"></pre>
+          <!-- ---- END: the output (#timesOut) ---- -->
         </div>
+        <!-- ---- END: the "Header" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -203,8 +234,9 @@
       </aside>
       <!-- ---- END: the check-the-result notice ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Paste the token. It is the long string with two full stops in
@@ -212,7 +244,9 @@
           <li>Read the header and payload. Any date-like claim is also printed
               in words underneath.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "A token is not encrypted. It is only encoded." section ---- -->
         <h2>A token is not encrypted. It is only encoded.</h2>
         <p>This surprises people, and it is the single most important thing to
            understand about JWTs. The middle section of a token is ordinary
@@ -225,7 +259,9 @@
            internal notes, no other people's details, no secrets. The signature
            stops the token being <em>altered</em>. It does nothing to stop it
            being <em>read</em>.</p>
+        <!-- ---- END: the "A token is not encrypted. It is only encoded." section ---- -->
 
+        <!-- ---- START: the "This page does not verify the signature, on purpose" section ---- -->
         <h2>This page does not verify the signature, on purpose</h2>
         <p>Verifying would mean you typing the server's secret key into a
            website. That is a worse idea than anything this page could tell
@@ -236,7 +272,9 @@
            they like, encode them, and this page will display them neatly.
            Only your server, holding the key, can say whether a token is
            real.</p>
+        <!-- ---- END: the "This page does not verify the signature, on purpose" section ---- -->
 
+        <!-- ---- START: the "Two things worth checking by eye" section ---- -->
         <h2>Two things worth checking by eye</h2>
         <p>If the header says <code>"alg": "none"</code>, be suspicious. It is
            a legitimate part of the specification and also the shape of a
@@ -247,14 +285,18 @@
            not milliseconds. Code that mixes the two is the most common JWT bug
            there is, and it fails in a memorable way: a token that expires in
            the year 56000, or one that expired before it was issued.</p>
+        <!-- ---- END: the "Two things worth checking by eye" section ---- -->
 
+        <!-- ---- START: the "Should you paste a real token anywhere?" section ---- -->
         <h2>Should you paste a real token anywhere?</h2>
         <p>Not as a habit. This page reads the token in your own browser and
            sends nothing, so it is safe here. But most decoders on the web look
            exactly like this one and you cannot tell from the outside which
            ones post your token to a server. A live token is usually enough to
            act as you. Use an expired one, or a test one, when you can.</p>
+        <!-- ---- END: the "Should you paste a real token anywhere?" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Is my token sent anywhere?</h3>
@@ -280,14 +322,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -338,18 +385,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "jwt-decoder";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var input      = document.getElementById("input");
     var headerOut  = document.getElementById("headerOut");
     var payloadOut = document.getElementById("payloadOut");
@@ -358,6 +409,7 @@
     var DASH       = String.fromCharCode(0x2014);
 
     var lastPayload = "";
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
@@ -532,8 +584,11 @@
     });
     /* ---- END: wiring ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     decode();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

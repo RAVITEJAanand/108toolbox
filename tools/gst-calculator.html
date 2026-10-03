@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>GST Calculator India — Add or Remove GST Online</title>
   <meta name="description" content="Add GST to a price or work backwards from a GST-inclusive total. Shows the CGST, SGST and IGST split for every Indian slab. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/gst-calculator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,35 +131,44 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
         <span>GST Calculator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>GST Calculator</h1>
         <p>Add GST to a price, or work backwards from a bill that already
            includes it. The CGST, SGST and IGST split is worked out for you.
            Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace">
 
-        <!-- ---------- the calculator itself ---------- -->
+        <!-- ---- START: the "Amount and rate" panel - the calculator itself ---- -->
         <div class="panel">
           <span class="panel__label">Amount and rate</span>
 
+          <!-- ---- START: the "Amount in rupees" box ---- -->
           <div class="field">
             <label for="amount">Amount in rupees</label>
             <input type="number" id="amount" value="1000" min="0" step="1">
           </div>
+          <!-- ---- END: the "Amount in rupees" box ---- -->
 
+          <!-- ---- START: the "This amount is" choice ---- -->
           <div class="field">
             <label for="mode">This amount is</label>
             <select id="mode">
@@ -157,7 +176,9 @@
               <option value="inclusive">After GST &mdash; work backwards to the base</option>
             </select>
           </div>
+          <!-- ---- END: the "This amount is" choice ---- -->
 
+          <!-- ---- START: the "GST rate" choice ---- -->
           <div class="field">
             <label for="rate">GST rate</label>
             <select id="rate">
@@ -170,28 +191,37 @@
               <option value="custom">Custom rate&hellip;</option>
             </select>
           </div>
+          <!-- ---- END: the "GST rate" choice ---- -->
 
+          <!-- ---- START: the "Custom rate in percent" box ---- -->
           <div class="field" id="customWrap" hidden>
             <label for="customRate">Custom rate in percent</label>
             <input type="number" id="customRate" value="18" min="0" max="100" step="0.01">
           </div>
+          <!-- ---- END: the "Custom rate in percent" box ---- -->
 
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result">
             <span class="result__num" id="total">&#8377;1,180</span>
             <span class="result__label" id="formula"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
 
+          <!-- ---- START: the figures: Base amount, GST, Invoice total ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="base">&#8377;1,000</span><span class="stat__label">Base amount</span></div>
             <div class="stat"><span class="stat__num" id="tax">&#8377;180</span><span class="stat__label">GST</span></div>
             <div class="stat"><span class="stat__num" id="grand">&#8377;1,180</span><span class="stat__label">Invoice total</span></div>
           </div>
+          <!-- ---- END: the figures: Base amount, GST, Invoice total ---- -->
         </div>
+        <!-- ---- END: the "Amount and rate" panel - the calculator itself ---- -->
 
-        <!-- ---------- how that tax is split on the invoice ---------- -->
+        <!-- ---- START: the "How the tax splits on the invoice" panel - how that tax is split on the invoice ---- -->
         <div class="panel">
           <span class="panel__label">How the tax splits on the invoice</span>
 
+          <!-- ---- START: the "Type of supply" choice ---- -->
           <div class="field">
             <label for="supply">Type of supply</label>
             <select id="supply">
@@ -199,7 +229,9 @@
               <option value="inter">Across state lines &mdash; IGST</option>
             </select>
           </div>
+          <!-- ---- END: the "Type of supply" choice ---- -->
 
+          <!-- ---- START: the figures: CGST, SGST ---- -->
           <!-- Plain wrappers, because .stats is display:grid and would win
                against the browser rule for the hidden attribute. -->
           <div id="intraWrap">
@@ -208,18 +240,24 @@
               <div class="stat"><span class="stat__num" id="sgst">&#8377;90</span><span class="stat__label" id="sgstLabel">SGST</span></div>
             </div>
           </div>
+          <!-- ---- END: the figures: CGST, SGST ---- -->
 
+          <!-- ---- START: the figures: IGST, Total GST ---- -->
           <div id="interWrap" hidden>
             <div class="stats">
               <div class="stat"><span class="stat__num" id="igst">&#8377;180</span><span class="stat__label" id="igstLabel">IGST</span></div>
               <div class="stat"><span class="stat__num" id="igstTotal">&#8377;180</span><span class="stat__label">Total GST</span></div>
             </div>
           </div>
+          <!-- ---- END: the figures: IGST, Total GST ---- -->
 
+          <!-- ---- START: the note the script fills in (#splitNote) ---- -->
           <p class="hint" id="splitNote"></p>
+          <!-- ---- END: the note the script fills in (#splitNote) ---- -->
         </div>
+        <!-- ---- END: the "How the tax splits on the invoice" panel - how that tax is split on the invoice ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -248,8 +286,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Type the amount you are working with.</li>
@@ -259,7 +298,9 @@
           <li>Pick the slab, then choose whether the sale stays inside one
               state or crosses a border, to see the split the invoice needs.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "Adding GST and removing GST are different sums" section ---- -->
         <h2>Adding GST and removing GST are different sums</h2>
         <p>Adding is the easy direction: 1,000 at 18% means 180 of tax and a
         total of 1,180. Going the other way trips people up. Given a bill of
@@ -269,14 +310,18 @@
         1.18 gives 1,000, and the tax is the 180 left over. The calculator
         shows the working under the big number so you can check it against a
         bill line by line.</p>
+        <!-- ---- END: the "Adding GST and removing GST are different sums" section ---- -->
 
+        <!-- ---- START: the "CGST, SGST and IGST" section ---- -->
         <h2>CGST, SGST and IGST</h2>
         <p>The rate never changes because of where the buyer is; only the way
         it is written on the invoice changes. Sell within your own state and
         18% appears as 9% CGST plus 9% SGST, one half to the centre and one
         half to the state. Sell to another state and the same 18% appears as a
         single IGST line. Either way the buyer pays the same amount.</p>
+        <!-- ---- END: the "CGST, SGST and IGST" section ---- -->
 
+        <!-- ---- START: the "Which slab applies to my product?" section ---- -->
         <h2>Which slab applies to my product?</h2>
         <p>The September 2025 revision simplified the structure: most goods and
         services now sit at <strong>5%</strong> or <strong>18%</strong>, with
@@ -289,7 +334,9 @@
         particular product attracts. Confirm the rate against the official CBIC
         rate finder or with your accountant before you put a number on a real
         invoice.</p>
+        <!-- ---- END: the "Which slab applies to my product?" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How do I remove GST from a total?</h3>
@@ -321,14 +368,19 @@
           Nothing is uploaded and nothing is saved - close the tab and it is
           gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -379,21 +431,27 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "gst-calculator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: fixed values used below ---- */
     /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
     var RUPEE  = String.fromCharCode(0x20B9);
     var TIMES  = String.fromCharCode(0x00D7);
     var DIVIDE = String.fromCharCode(0x00F7);
     var PLUS   = String.fromCharCode(0x002B);
+    /* ---- END: fixed values used below ---- */
 
     /* ---- START: reaching the page and printing money and percentages ---- */
     function el(id) { return document.getElementById(id); }
@@ -510,15 +568,20 @@
     }
     /* ---- END: the GST split and drawing the answer ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     ["amount", "customRate"].forEach(function (id) {
       el(id).addEventListener("input", run);
     });
     ["mode", "rate", "supply"].forEach(function (id) {
       el(id).addEventListener("change", run);
     });
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     run();   /* run once so the page is correct on load */
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

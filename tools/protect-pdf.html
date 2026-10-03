@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Protect PDF with a Password — AES-256, in Your Browser</title>
   <meta name="description" content="Lock a PDF with a password using AES-256 encryption, right in your browser. The file and the password never leave your device.">
   <link rel="canonical" href="https://108toolbox.in/tools/protect-pdf.html">
@@ -14,17 +14,23 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead: nothing can be sent anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
   <meta name="referrer" content="no-referrer">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -38,7 +44,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -98,9 +106,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -135,62 +144,82 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=pdf">PDF</a><span>&rsaquo;</span>
         <span>Protect PDF</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Protect PDF with a Password</h1>
         <p>Lock a PDF so that it opens only with your password. It is encrypted
            with AES-256 inside your browser: the file and the password never
            leave your device.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the "1. Choose a PDF" panel ---- -->
         <div class="panel">
           <span class="panel__label">1. Choose a PDF</span>
 
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#128272;</span>
             <p><strong>Click to choose</strong> or drag a PDF here</p>
             <p style="margin-top:var(--s1)">One PDF, up to 300 MB</p>
             <input type="file" id="file" accept="application/pdf,.pdf">
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
         </div>
+        <!-- ---- END: the "1. Choose a PDF" panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "2. Choose a password" panel ---- -->
         <div class="panel">
           <span class="panel__label">2. Choose a password</span>
 
+          <!-- ---- START: the "Password" box ---- -->
           <div class="field">
             <label for="pw">Password</label>
             <input type="password" id="pw" autocomplete="new-password" spellcheck="false">
             <p class="hint">Letters, digits and symbols from an English keyboard, up to 127 of them.</p>
           </div>
+          <!-- ---- END: the "Password" box ---- -->
+          <!-- ---- START: the "The same password again" box ---- -->
           <div class="field">
             <label for="pw2">The same password again</label>
             <input type="password" id="pw2" autocomplete="new-password" spellcheck="false">
           </div>
+          <!-- ---- END: the "The same password again" box ---- -->
+          <!-- ---- START: the "Show the password" tick box ---- -->
           <label class="check"><input type="checkbox" id="showPw"> Show the password</label>
+          <!-- ---- END: the "Show the password" tick box ---- -->
 
+          <!-- ---- START: the buttons: Protect and download, Clear ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="dlBtn" disabled>Protect and download</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Clear</button>
           </div>
+          <!-- ---- END: the buttons: Protect and download, Clear ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "2. Choose a password" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -207,8 +236,9 @@
       </aside>
       <!-- ---- END: the check-the-result notice ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How the lock works" section ---- -->
         <h2>How the lock works</h2>
         <p>The page makes a random 256-bit key and encrypts every page,
            picture and line of text in the PDF with it, using AES-256, the
@@ -217,7 +247,9 @@
            through a deliberately slow calculation first, so trying password
            after password takes a very long time. The document's details, such
            as its title and author, are encrypted too.</p>
+        <!-- ---- END: the "How the lock works" section ---- -->
 
+        <!-- ---- START: the "Choosing a password" section ---- -->
         <h2>Choosing a password</h2>
         <p>Length matters more than anything else. Twelve characters or more,
            or four or five unrelated words, is far harder to guess than a short
@@ -226,7 +258,9 @@
            different ways, and a file locked with one of them might not open
            everywhere. There is no way back without the password, so keep the
            original, unprotected copy somewhere safe if you might need it.</p>
+        <!-- ---- END: the "Choosing a password" section ---- -->
 
+        <!-- ---- START: the "Opening the protected file" section ---- -->
         <h2>Opening the protected file</h2>
         <p>Current web browsers and PDF readers, on computers and phones, ask
            for the password and open it. A few older programs cannot open
@@ -234,7 +268,9 @@
            some older Windows apps. Whoever has the password can read, print,
            copy and change the document, just as with the original: the
            password is the whole of the protection.</p>
+        <!-- ---- END: the "Opening the protected file" section ---- -->
 
+        <!-- ---- START: the "What it does not do" section ---- -->
         <h2>What it does not do</h2>
         <p>It does not offer "no printing" or "no copying" settings. Those are
            only requests written into the file, which a PDF reader is free to
@@ -242,7 +278,9 @@
            signed PDF loses its signature when it is protected, because the
            signature covers the file's exact bytes; the page tells you when a
            PDF is signed, before you protect it.</p>
+        <!-- ---- END: the "What it does not do" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>What if I forget the password?</h3>
@@ -268,14 +306,19 @@
           <h3>Is my PDF or my password uploaded?</h3>
           <p>No. The PDF is read and encrypted by JavaScript inside your own browser, with the browser&#x27;s built-in cryptography, and the protected file is saved straight to your device. Neither the file nor the password is sent anywhere or stored - close the tab and both are gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -326,18 +369,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "protect-pdf";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fileInput = document.getElementById("file");
     var drop      = document.getElementById("drop");
     var pw        = document.getElementById("pw");
@@ -355,6 +402,7 @@
     var busy = false;          /* reading a file */
     var working = false;       /* protecting it */
     var problem = "";
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: writing a PDF file ----
        A PDF is a header, a list of numbered objects, and at the end a table
@@ -2159,8 +2207,11 @@
     });
     /* ---- END: wiring ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     refresh();
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

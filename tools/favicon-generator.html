@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Favicon Generator — Every Size, Plus favicon.ico</title>
   <meta name="description" content="Turn one image into the full favicon set: favicon.ico, 16 and 32 pixel PNGs, the Apple touch icon and the 192 and 512 sizes, with the HTML to paste in.">
   <link rel="canonical" href="https://108toolbox.in/tools/favicon-generator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,17 +24,23 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
+  <!-- ---- START: the stylesheets ---- -->
   <!-- Two stylesheets: the shared system, then the tool-page extras -->
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <!-- Runs BEFORE the page paints, so a dark-mode visitor never sees a white
        flash. It only reads a saved choice; with none, the CSS follows the
        operating system on its own. -->
@@ -46,7 +54,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
+  <!-- ---- START: the structured data Google reads ---- -->
   <!-- ===== Structured data: helps Google show the FAQ under your result =====
        Generated from the same list as the FAQ section below, so the two
        cannot say different things. Google ignores them if they drift. -->
@@ -106,9 +116,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -143,34 +154,43 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=image">Image</a><span>&rsaquo;</span>
         <span>Favicon Generator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Favicon Generator</h1>
         <p>One image in, the whole set out: favicon.ico, the small PNGs, the
            phone home-screen icons, and the exact HTML that links them.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace workspace--split">
 
-        <!-- ---------- INPUT ---------- -->
+        <!-- ---- START: the input panel ---- -->
         <div class="panel">
+          <!-- ---- START: the drop zone for choosing files ---- -->
           <label class="drop" id="drop" for="file">
             <span class="drop__big" aria-hidden="true">&#127775;</span>
             <p><strong>Click to choose</strong> or drag an image here</p>
             <p style="margin-top:var(--s1)">Square works best &middot; nothing is uploaded</p>
             <input type="file" id="file" accept="image/*">
           </label>
+          <!-- ---- END: the drop zone for choosing files ---- -->
 
+          <!-- ---- START: the "If the image is not square" choice ---- -->
           <div class="field" style="margin-top:var(--s4)">
             <label for="fit">If the image is not square</label>
             <select id="fit">
@@ -178,39 +198,58 @@
               <option value="cover">Fill the square, cropping the edges</option>
             </select>
           </div>
+          <!-- ---- END: the "If the image is not square" choice ---- -->
 
+          <!-- ---- START: the "Fill the empty space with a colour" tick box ---- -->
           <label class="check"><input type="checkbox" id="useBg"> Fill the empty space with a colour</label>
+          <!-- ---- END: the "Fill the empty space with a colour" tick box ---- -->
+          <!-- ---- START: the "Background colour" colour picker ---- -->
           <div class="field">
             <label for="bg">Background colour</label>
             <input type="color" id="bg" value="#ffffff" style="height:44px;padding:4px">
           </div>
+          <!-- ---- END: the "Background colour" colour picker ---- -->
 
+          <!-- ---- START: the buttons: Download everything (.zip), favicon.ico only, Reset ---- -->
           <div class="btn-row" style="margin-top:var(--s4)">
             <button class="btn btn--primary" type="button" id="zipBtn" disabled>Download everything (.zip)</button>
             <button class="btn btn--ghost"   type="button" id="icoBtn" disabled>favicon.ico only</button>
             <button class="btn btn--danger"  type="button" id="resetBtn">Reset</button>
           </div>
+          <!-- ---- END: the buttons: Download everything (.zip), favicon.ico only, Reset ---- -->
         </div>
+        <!-- ---- END: the input panel ---- -->
 
-        <!-- ---------- OUTPUT ---------- -->
+        <!-- ---- START: the "What you get" panel ---- -->
         <div class="panel">
           <span class="panel__label">What you get</span>
+          <!-- ---- START: the icons it made, one tile each ---- -->
           <div id="grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:var(--s3)"></div>
+          <!-- ---- END: the icons it made, one tile each ---- -->
 
+          <!-- ---- START: the figures: Files, Your image, Total weight ---- -->
           <div class="stats stats--3" style="margin-top:var(--s3)">
             <div class="stat"><span class="stat__num" id="sFiles">&mdash;</span><span class="stat__label">Files</span></div>
             <div class="stat"><span class="stat__num" id="sSource">&mdash;</span><span class="stat__label">Your image</span></div>
             <div class="stat"><span class="stat__num" id="sTotal">&mdash;</span><span class="stat__label">Total weight</span></div>
           </div>
+          <!-- ---- END: the figures: Files, Your image, Total weight ---- -->
 
+          <!-- ---- START: the output, under the heading "Paste this into your page's head" ---- -->
           <span class="panel__label" style="margin-top:var(--s3)">Paste this into your page's head</span>
           <pre class="out mono" id="snippet" style="min-height:120px"></pre>
+          <!-- ---- END: the output, under the heading "Paste this into your page's head" ---- -->
+          <!-- ---- START: the "Copy the HTML" button ---- -->
           <div class="btn-row"><button class="btn btn--ghost" type="button" id="copyBtn">Copy the HTML</button></div>
+          <!-- ---- END: the "Copy the HTML" button ---- -->
 
+          <!-- ---- START: the message line ---- -->
           <p class="msg" id="msg" aria-live="polite"></p>
+          <!-- ---- END: the message line ---- -->
         </div>
+        <!-- ---- END: the "What you get" panel ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -239,8 +278,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google actually ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "What each file is for" section ---- -->
         <h2>What each file is for</h2>
         <ul>
           <li><strong>favicon.ico</strong> &mdash; the classic. Browsers still
@@ -257,7 +297,9 @@
           <li><strong>192 and 512</strong> &mdash; what Android and installable
               web apps use for the home screen and the loading screen.</li>
         </ul>
+        <!-- ---- END: the "What each file is for" section ---- -->
 
+        <!-- ---- START: the "Why the tiny ones look rough" section ---- -->
         <h2>Why the tiny ones look rough</h2>
         <p>A favicon is sixteen pixels across. That is two hundred and fifty-six
            dots in total, and no amount of clever shrinking makes a detailed
@@ -268,7 +310,9 @@
            from one giant step. It cannot decide what to leave out. The single
            most useful thing you can do is start from something simple &mdash;
            a bold letter or a plain shape &mdash; and let the fine print go.</p>
+        <!-- ---- END: the "Why the tiny ones look rough" section ---- -->
 
+        <!-- ---- START: the "Square or not" section ---- -->
         <h2>Square or not</h2>
         <p>Icons are square and most images are not. You choose what happens:
            keep the whole picture with space around it, or fill the square and
@@ -276,13 +320,17 @@
            colour, and transparent is usually right for a tab, where the
            browser draws its own background, and wrong for a home screen, where
            some phones fill it with black.</p>
+        <!-- ---- END: the "Square or not" section ---- -->
 
+        <!-- ---- START: the "One honest limit" section ---- -->
         <h2>One honest limit</h2>
         <p>A favicon that looks fine on a light tab can vanish on a dark one, and
            browsers now switch between the two automatically. Check the small
            previews against both backgrounds before you decide, especially if
            your icon is mostly dark.</p>
+        <!-- ---- END: the "One honest limit" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>Do I still need favicon.ico?</h3>
@@ -308,14 +356,19 @@
           <h3>Is my text sent anywhere?</h3>
           <p>No. Everything happens in JavaScript inside your own browser. Nothing is uploaded and nothing is saved - close the tab and it is gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -366,18 +419,22 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the shared scripts, in order ---- -->
   <!-- Shared scripts, in order -->
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "favicon-generator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
-  <!-- ===== This tool's own logic ===== -->
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: setting up: the page elements, fixed values and what the page remembers ---- */
     var fileIn = document.getElementById("file");
     var drop   = document.getElementById("drop");
     var fit    = document.getElementById("fit");
@@ -406,6 +463,7 @@
     var source = null;
     var built = [];              /* { spec, blob, bytes } once drawn */
     var pending = 0;
+    /* ---- END: setting up: the page elements, fixed values and what the page remembers ---- */
 
     /* ---- START: speaking to the visitor ---- */
     function setMessage(text, kind) {
@@ -710,5 +768,6 @@
     /* ---- END: wiring ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>

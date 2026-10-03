@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ===== SEO ===== -->
   <title>Fraction Calculator — Add, Subtract, Multiply, Divide</title>
   <meta name="description" content="Add, subtract, multiply or divide two fractions and get the answer in lowest terms, as a mixed number and as a decimal, with the working shown. Nothing is uploaded.">
   <link rel="canonical" href="https://108toolbox.in/tools/fraction-calculator.html">
@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
 
+  <!-- ---- START: the security policy ---- -->
   <!-- The policy travels in the page because GitHub Pages sets no headers.
        It cannot stop inline script - every tool's code is inline - so it
        takes away the exits instead. This page carries one advertisement, so
@@ -22,16 +24,22 @@
        code sends nothing anywhere. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google https://adservice.google.co.in">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ---- END: the security policy ---- -->
 
+  <!-- ---- START: the advertising script ---- -->
   <!-- Advertising: Google AdSense, the only third-party script on the site.
        It never runs on the pages where people type passwords or keys;
        check.py keeps that list. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468238593433239"
           crossorigin="anonymous"></script>
+  <!-- ---- END: the advertising script ---- -->
 
-  <link rel="stylesheet" href="../css/style.css?v=42">
-  <link rel="stylesheet" href="../css/tool.css?v=42">
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/tool.css?v=43">
+  <!-- ---- END: the stylesheets ---- -->
 
+  <!-- ---- START: dark mode, set before the page paints ---- -->
   <script>
     (function () {
       try {
@@ -42,8 +50,9 @@
       } catch (e) { /* private mode: ignore, the OS preference still applies */ }
     })();
   </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
 
-  <!-- ===== Structured data: helps Google show the FAQ under your result ===== -->
+  <!-- ---- START: the structured data Google reads ---- -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,9 +93,10 @@
     ]
   }
   </script>
+  <!-- ---- END: the structured data Google reads ---- -->
 </head>
 <body>
-  <!-- ===== NAVBAR (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
   <header class="nav">
     <div class="nav__inner">
       <a class="logo" href="../index.html">
@@ -121,30 +131,37 @@
       <a href="../about.html">About</a>
     </div>
   </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
 
+  <!-- ---- START: the page content ---- -->
   <main class="section">
     <div class="container">
 
+      <!-- ---- START: the breadcrumb ---- -->
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="../index.html">Home</a><span>&rsaquo;</span>
         <a href="../tools.html?q=calculator">Calculator</a><span>&rsaquo;</span>
         <span>Fraction Calculator</span>
       </nav>
+      <!-- ---- END: the breadcrumb ---- -->
 
+      <!-- ---- START: the tool's name and its one-line introduction ---- -->
       <header class="tool-head">
         <h1>Fraction Calculator</h1>
         <p>Two fractions in, one answer out &mdash; in lowest terms, as a mixed
            number and as a decimal, with every step of the working shown.
            Nothing is uploaded.</p>
       </header>
+      <!-- ---- END: the tool's name and its one-line introduction ---- -->
 
-      <!--TOOL:START-->
+      <!-- ---- START: the tool itself ---- -->
       <div class="workspace">
 
-        <!-- ---------- the two-fraction calculator ---------- -->
+        <!-- ---- START: the "Two fractions" panel - the two-fraction calculator ---- -->
         <div class="panel">
           <span class="panel__label">Two fractions</span>
 
+          <!-- ---- START: the boxes: First fraction, whole number, First fraction, numerator, First fraction, denominator, Operation... ---- -->
           <div class="btn-row" style="align-items:center;gap:var(--s2);flex-wrap:wrap">
             <input type="number" id="aw" value="0" step="1" style="max-width:80px" aria-label="First fraction, whole number">
             <input type="number" id="an" value="3" step="1" style="max-width:80px" aria-label="First fraction, numerator">
@@ -163,52 +180,71 @@
             <span>/</span>
             <input type="number" id="bd" value="6" step="1" style="max-width:80px" aria-label="Second fraction, denominator">
           </div>
+          <!-- ---- END: the boxes: First fraction, whole number, First fraction, numerator, First fraction, denominator, Operation... ---- -->
+          <!-- ---- START: the hint "The first box of each pair is..." ---- -->
           <p class="hint">The first box of each pair is the whole number of a
           mixed number. Leave it at zero for an ordinary fraction.</p>
+          <!-- ---- END: the hint "The first box of each pair is..." ---- -->
 
+          <!-- ---- START: the error message ---- -->
           <!-- Plain wrapper, because .msg may carry a display of its own and
                would then beat the browser rule for the hidden attribute. -->
           <div id="errWrap" hidden style="margin-top:var(--s3)">
             <p class="msg msg--bad" id="err"></p>
           </div>
+          <!-- ---- END: the error message ---- -->
 
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result" style="margin-top:var(--s4)">
             <span class="result__num" id="ansFrac">11/12</span>
             <span class="result__label" id="ansAlt"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
 
+          <!-- ---- START: the figures: Mixed number, Decimal, Percentage ---- -->
           <div class="stats stats--3">
             <div class="stat"><span class="stat__num" id="mixed">11/12</span><span class="stat__label">Mixed number</span></div>
             <div class="stat"><span class="stat__num" id="dec">0.9167</span><span class="stat__label">Decimal</span></div>
             <div class="stat"><span class="stat__num" id="perc">91.67%</span><span class="stat__label">Percentage</span></div>
           </div>
+          <!-- ---- END: the figures: Mixed number, Decimal, Percentage ---- -->
 
+          <!-- ---- START: the output, under the heading "Working" ---- -->
           <span class="panel__label" style="margin-top:var(--s4)">Working</span>
           <pre class="out" id="working" aria-live="polite"></pre>
+          <!-- ---- END: the output, under the heading "Working" ---- -->
         </div>
+        <!-- ---- END: the "Two fractions" panel - the two-fraction calculator ---- -->
 
-        <!-- ---------- simplify one fraction ---------- -->
+        <!-- ---- START: the "Simplify one fraction" panel - simplify one fraction ---- -->
         <div class="panel">
           <span class="panel__label">Simplify one fraction</span>
 
+          <!-- ---- START: the boxes: Numerator to simplify, Denominator to simplify ---- -->
           <div class="btn-row" style="align-items:center;gap:var(--s2)">
             <input type="number" id="sn" value="126" step="1" style="max-width:120px" aria-label="Numerator to simplify">
             <span>/</span>
             <input type="number" id="sd" value="294" step="1" style="max-width:120px" aria-label="Denominator to simplify">
           </div>
+          <!-- ---- END: the boxes: Numerator to simplify, Denominator to simplify ---- -->
 
+          <!-- ---- START: the main answer and the sum behind it ---- -->
           <div class="result" style="margin-top:var(--s4)">
             <span class="result__num" id="sAns">3/7</span>
             <span class="result__label" id="sHow"></span>
           </div>
+          <!-- ---- END: the main answer and the sum behind it ---- -->
 
+          <!-- ---- START: the figures: Greatest common divisor, Decimal ---- -->
           <div class="stats">
             <div class="stat"><span class="stat__num" id="sGcd">42</span><span class="stat__label">Greatest common divisor</span></div>
             <div class="stat"><span class="stat__num" id="sDec">0.4286</span><span class="stat__label">Decimal</span></div>
           </div>
+          <!-- ---- END: the figures: Greatest common divisor, Decimal ---- -->
         </div>
+        <!-- ---- END: the "Simplify one fraction" panel - simplify one fraction ---- -->
       </div>
-      <!--TOOL:END-->
+      <!-- ---- END: the tool itself ---- -->
       <!-- ---- START: the check-the-result notice ----
            Rule 10 in CLAUDE.md. It sits directly under the tool, where the
            answer appears, because that is the only place it will actually be
@@ -237,8 +273,9 @@
       </aside>
       <!-- ---- END: advertisement ---- -->
 
-      <!-- ===== Text below the tool. This is what Google ranks. ===== -->
+      <!-- ---- START: the text below the tool (what Google ranks) ---- -->
       <section class="tool-info prose">
+        <!-- ---- START: the "How to use it" section ---- -->
         <h2>How to use it</h2>
         <ol>
           <li>Type the two fractions. The first box in each group is the whole
@@ -247,7 +284,9 @@
           <li>Read the answer, then open the working box below it if you need
               to show your steps rather than just the result.</li>
         </ol>
+        <!-- ---- END: the "How to use it" section ---- -->
 
+        <!-- ---- START: the "How the sums work" section ---- -->
         <h2>How the sums work</h2>
         <p>Adding and subtracting need a common denominator, and the reliable
         way to get one is to multiply each fraction by the other one&rsquo;s
@@ -259,7 +298,9 @@
         which is why textbooks say <em>invert and multiply</em>. Every answer
         here is reduced to lowest terms afterwards by dividing both halves by
         their greatest common divisor.</p>
+        <!-- ---- END: the "How the sums work" section ---- -->
 
+        <!-- ---- START: the "Mixed numbers and improper fractions" section ---- -->
         <h2>Mixed numbers and improper fractions</h2>
         <p>A mixed number like 2&frac12; is converted to the improper fraction
         5/2 before anything else happens, because arithmetic on mixed numbers
@@ -269,7 +310,9 @@
         makes the whole quantity negative, so &minus;2&frac12; is &minus;5/2,
         not &minus;2 plus a half. If you want only the fraction to be negative,
         leave the whole box at zero and put the minus on the numerator.</p>
+        <!-- ---- END: the "Mixed numbers and improper fractions" section ---- -->
 
+        <!-- ---- START: the "Frequently asked questions" section ---- -->
         <h2>Frequently asked questions</h2>
         <div class="faq">
           <h3>How do you add fractions with different denominators?</h3>
@@ -301,14 +344,19 @@
           Nothing is uploaded and nothing is saved - close the tab and it is
           gone.</p>
         </div>
+        <!-- ---- END: the "Frequently asked questions" section ---- -->
 
+        <!-- ---- START: the "Related tools" section ---- -->
         <h2>Related tools</h2>
         <div class="grid" id="relatedGrid"></div>
+        <!-- ---- END: the "Related tools" section ---- -->
       </section>
+      <!-- ---- END: the text below the tool (what Google ranks) ---- -->
     </div>
   </main>
+  <!-- ---- END: the page content ---- -->
 
-  <!-- ===== FOOTER (identical on every page — never edit per tool) ===== -->
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
   <footer class="footer">
     <div class="container">
       <div class="footer__cols">
@@ -359,16 +407,21 @@
       </div>
     </div>
   </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
 
-  <script src="../js/tools-data.js?v=42"></script>
-  <script src="../js/tool-helpers.js?v=42"></script>
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=43"></script>
+  <script src="../js/tool-helpers.js?v=43"></script>
   <script>window.CURRENT_TOOL = "fraction-calculator";</script>
-  <script src="../js/main.js?v=42"></script>
+  <script src="../js/main.js?v=43"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
 
+  <!-- ---- START: this tool's own logic (the only part that differs per tool) ---- -->
   <script data-tool>
   (function () {
     "use strict";
 
+    /* ---- START: fixed values used below ---- */
     /* Built from code points, never typed as an escape - see CLAUDE.md rule 5 */
     var TIMES   = String.fromCharCode(0x00D7);
     var DIVIDE  = String.fromCharCode(0x00F7);
@@ -379,6 +432,7 @@
     var EM_DASH = String.fromCharCode(0x2014);   /* "no answer"; a minus sign looked like one */
 
     var SIGNS = { add: PLUS, sub: MINUS, mul: TIMES, div: DIVIDE };
+    /* ---- END: fixed values used below ---- */
 
     /* ---- START: reaching the page and reading whole numbers ---- */
     function el(id) { return document.getElementById(id); }
@@ -565,13 +619,18 @@
     function run() { runMain(); runSimplify(); }
     /* ---- END: drawing both answers ---- */
 
+    /* ---- START: wiring: what each control does ---- */
     ["aw", "an", "ad", "bw", "bn", "bd", "sn", "sd"].forEach(function (id) {
       el(id).addEventListener("input", run);
     });
     el("op").addEventListener("change", run);
+    /* ---- END: wiring: what each control does ---- */
 
+    /* ---- START: the first run, when the page opens ---- */
     run();   /* run once so the page is correct on load */
+    /* ---- END: the first run, when the page opens ---- */
   })();
   </script>
+  <!-- ---- END: this tool's own logic (the only part that differs per tool) ---- -->
 </body>
 </html>
