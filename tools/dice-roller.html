@@ -462,9 +462,24 @@
     /* ---- END: reading the boxes, and saying what is wrong ---- */
 
     /* ---- START: the roll itself ---- */
+    /* ---- START: emptying the roll ----
+       Used by Reset, and by a refused roll: the last roll's total left on
+       screen under "Roll at least one die" looked like the answer, and Copy
+       still handed it over. */
+    function clearRoll() {
+      lastText = "";
+      output.textContent = "";
+      document.getElementById("bigTotal").textContent = DASH;
+      document.getElementById("bigLabel").textContent = "Press Roll";
+      document.getElementById("sRange").textContent = DASH;
+      document.getElementById("sLikely").textContent = DASH;
+      document.getElementById("sKept").textContent = DASH;
+    }
+    /* ---- END: emptying the roll ---- */
+
     function rollAll() {
       var s = readSettings();
-      if (s.error) { setMessage(s.error, "bad"); return; }
+      if (s.error) { clearRoll(); setMessage(s.error, "bad"); return; }
 
       var dice = new Array(s.count);
       for (var i = 0; i < s.count; i++) { dice[i] = roll(s.faces); }
@@ -543,13 +558,7 @@
     document.getElementById("resetBtn").addEventListener("click", function () {
       count.value = 2; sides.value = 6; modifier.value = 0;
       dropLowest.checked = false;
-      lastText = "";
-      output.textContent = "";
-      document.getElementById("bigTotal").textContent = DASH;
-      document.getElementById("bigLabel").textContent = "Press Roll";
-      document.getElementById("sRange").textContent = DASH;
-      document.getElementById("sLikely").textContent = DASH;
-      document.getElementById("sKept").textContent = DASH;
+      clearRoll();
       setMessage("");
     });
 

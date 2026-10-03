@@ -472,20 +472,31 @@
       var body = readBody();
       var age = Number(document.getElementById("age").value);
 
-      if (!isFinite(body.kg) || !isFinite(body.cm) || !isFinite(age) ||
-          body.kg <= 0 || body.cm <= 0 || age <= 0) {
+      /* Every refusal empties the figures: the out-of-range one used to
+         leave the last answer standing beside its own warning. */
+      function refuse(message, kind) {
         ["bigTdee", "sBmr", "sRange", "sActivity"].forEach(function (id) {
           document.getElementById(id).textContent = DASH;
         });
         ladder.textContent = "";
         summary = "";
-        setMessage("Fill in weight, height and age.");
+        setMessage(message, kind);
+      }
+      if (!isFinite(body.kg) || !isFinite(body.cm) || !isFinite(age) ||
+          body.kg <= 0 || body.cm <= 0 || age <= 0) {
+        /* "Fill in" was said to someone who had typed an age of 0 or a
+           minus weight, which was filled in. */
+        var typedSomething = ["age", "kg", "cm", "lb", "ft"].some(function (id) {
+          var box = document.getElementById(id);
+          return box && box.value.trim() !== "" && Number(box.value) <= 0;
+        });
+        refuse(typedSomething ? "Weight, height and age all need to be above zero."
+                              : "Fill in weight, height and age.");
         return;
       }
       if (age < 15 || age > 100 || body.kg < 20 || body.cm < 80) {
-        setMessage("Those numbers are outside the range this formula was "
-                 + "built and tested on, so the answer would not mean much.",
-                   "bad");
+        refuse("Those numbers are outside the range this formula was "
+             + "built and tested on, so the answer would not mean much.", "bad");
         return;
       }
 

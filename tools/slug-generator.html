@@ -470,7 +470,10 @@
       output.textContent = slugs.join("\n");
 
       var longest = 0;
-      var duplicates = {};
+      /* Object.create(null), not {}: a plain object already answers to
+         "constructor", so a title that slugged to "constructor" was
+         reported as a duplicate of nothing. */
+      var duplicates = Object.create(null);
       var repeated = 0;
       slugs.forEach(function (s) {
         if (s.length > longest) longest = s.length;
@@ -483,15 +486,26 @@
 
       /* Two identical slugs mean two pages fighting for one address - worth
          saying out loud, because it is invisible in a long list. */
+      /* Letters outside A to Z are left out of a slug. A Telugu title
+         used to come back as just its numbers, or as nothing, without a
+         word about why. */
+      var lostLetters = lines.some(function (l) {
+        var plain = optAccents.checked ? stripAccents(l) : l;
+        return /\p{L}/u.test(plain.replace(/[A-Za-z]/g, ""));
+      });
+      var notes = [];
       if (repeated > 0) {
-        msg.textContent = repeated === 1
+        notes.push(repeated === 1
           ? "Two of these slugs are identical. Two pages cannot share one address."
-          : repeated + " slugs are repeated. Each page needs an address of its own.";
-        msg.className = "msg msg--bad";
-      } else {
-        msg.textContent = "";
-        msg.className = "msg";
+          : repeated + " slugs are repeated. Each page needs an address of its own.");
       }
+      if (lostLetters) {
+        notes.push("Letters outside A to Z, such as Telugu or Hindi, cannot go in "
+                 + "a plain web address, so they were left out. Write the title "
+                 + "in English letters for a slug that reads well.");
+      }
+      msg.textContent = notes.join(" ");
+      msg.className = notes.length ? "msg msg--bad" : "msg";
     }
     /* ---- END: drawing a slug for every line ---- */
 

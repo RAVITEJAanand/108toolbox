@@ -372,7 +372,8 @@
     }
 
     function money(value) {
-      return "₹" + formatNumber(Math.round(value));
+      var rupees = Math.round(value);
+      return (rupees < 0 ? String.fromCharCode(0x2212) : "") + "₹" + formatNumber(Math.abs(rupees));
     }
     /* ---- END: reading a number out of a box ---- */
 
@@ -438,9 +439,24 @@
         returnTrip: el("returnTrip").checked,
         mileage: num("mileage"),
         price: num("price"),
-        people: Math.max(1, num("people")),
+        people: num("people"),
         trips: num("trips")
       };
+
+      /* A minus distance used to print a trip costing "₹-233", and 0 people
+         was quietly turned into 1. */
+      var problem = j.distance < 0 || j.price < 0 || j.trips < 0
+        ? "Distance, fuel price and trips cannot be below zero."
+        : j.people < 1 ? "At least one person pays for the trip." : "";
+      if (problem) {
+        ["tripCost", "litres", "perKm", "perPerson"].forEach(function (id) {
+          el(id).textContent = String.fromCharCode(0x2014);
+        });
+        el("rows").textContent = "";
+        el("msg").textContent = problem;
+        el("msg").className = "msg msg--bad";
+        return;
+      }
 
       var c = cost(j);
 

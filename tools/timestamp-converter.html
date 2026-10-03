@@ -453,31 +453,41 @@
       }
 
       if (raw === "") { fail("Paste a timestamp to see the date."); return; }
-      if (!/^-?\d+$/.test(raw)) { fail("A timestamp is a whole number of seconds or milliseconds."); return; }
+      /* A fraction is allowed: Python's time.time() and many logs write
+         1700000000.123 seconds, and that used to be refused. */
+      if (!/^-?\d+(\.\d+)?$/.test(raw)) { fail("A timestamp is a number of seconds, milliseconds, microseconds or nanoseconds."); return; }
 
       var value = Number(raw);
       if (!isFinite(value)) { fail("That number is too large to be a timestamp."); return; }
 
       /* The size of the number decides the unit. Getting this backwards
-         throws the answer about fifty thousand years out, so it is said on
-         screen rather than assumed quietly. */
-      var isMilliseconds = Math.abs(value) >= MILLISECOND_THRESHOLD;
-      var ms = isMilliseconds ? value : value * 1000;
+         throws the answer thousands of years out, so it is said on screen
+         rather than assumed quietly. Microseconds (16 digits, from databases
+         and Python's time_ns() / 1000) used to be read as milliseconds and
+         land in the year 55840; nanoseconds (19 digits) were refused. Each
+         unit starts where the one before it would pass the year 5138. */
+      var size = Math.abs(value);
+      var unit = size < MILLISECOND_THRESHOLD ? "seconds"
+               : size < MILLISECOND_THRESHOLD * 1000 ? "milliseconds"
+               : size < MILLISECOND_THRESHOLD * 1000000 ? "microseconds" : "nanoseconds";
+      var ms = unit === "seconds" ? value * 1000
+             : unit === "milliseconds" ? value
+             : unit === "microseconds" ? value / 1000 : value / 1000000;
 
       var date = new Date(ms);
       if (isNaN(date.getTime())) { fail("That is outside the range of dates a browser can represent."); return; }
 
       el("errWrap").hidden = true;
-      el("detected").textContent = isMilliseconds
-        ? "Read as milliseconds - it has " + raw.replace("-", "").length + " digits."
-        : "Read as seconds - it has " + raw.replace("-", "").length + " digits.";
+      var digits = raw.replace("-", "").split(".")[0].length;
+      el("detected").textContent = "Read as " + unit + " - it has " + digits +
+        (raw.indexOf(".") > -1 ? " digits before the point." : " digits.");
 
       el("utcOut").textContent = utcText(date);
       el("relative").textContent = relativeText(ms);
       el("localOut").textContent = date.toLocaleString();
       el("isoOut").textContent = date.toISOString();
       el("secOut").textContent = String(Math.floor(ms / 1000));
-      el("msOut").textContent = String(ms);
+      el("msOut").textContent = String(Math.floor(ms));
     }
     /* ---- END: timestamp to date ---- */
 

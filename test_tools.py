@@ -587,6 +587,23 @@ T["character-frequency-counter"] = r"""
     var threw = "";
     try { document.getElementById("copyBtn").click(); } catch (e) { threw = String(e.message); }
     check("copy button does not throw", threw, "");
+        var TE = String.fromCharCode(0x0C24, 0x0C46, 0x0C32, 0x0C41, 0x0C17, 0x0C41);
+    var THUMB = String.fromCharCode(0xD83D, 0xDC4D, 0xD83C, 0xDFFD);
+    set("mode", "chars"); tick("optSpaces", true); tick("optCase", true);
+    tick("optPunct", false);
+    set("input", "a" + THUMB + "a");
+    eq("a thumb and its skin tone are one character", txt("cUnique"), "2");
+    /* Every Telugu letter used to count as punctuation, so this box
+       deleted Telugu text. */
+    tick("optPunct", true);
+    set("input", TE + "!");
+    eq("ignoring punctuation keeps Telugu", txt("cTotal"), "3");
+    has("a letter with its vowel sign is one row", txt("rows"), String.fromCharCode(0x0C24, 0x0C46));
+    set("mode", "words");
+    set("input", TE + ", " + TE + ".");
+    eq("and in words, a Telugu word survives its comma", txt("cUnique"), "1");
+    eq("twice", txt("cTotal"), "2");
+    tick("optPunct", false); set("mode", "chars");
     finish();
 """
 
@@ -724,6 +741,17 @@ T["emi-calculator"] = r"""
     ok("schedule has rows",
        document.querySelectorAll("#schedule tr").length > 1,
        "rows: " + document.querySelectorAll("#schedule tr").length);
+    var DASH = String.fromCharCode(0x2014);
+
+    /* A refused loan used to leave the last EMI, totals and schedule. */
+    set("amount", "1000000");
+    ok("a loan has an EMI", txt("emi") !== DASH, txt("emi"));
+    set("amount", "0");
+    eq("a refused loan leaves no EMI behind", txt("emi"), DASH);
+    eq("nor a total", txt("total"), DASH);
+    eq("nor a schedule", document.querySelectorAll("#schedule tbody tr").length, 0);
+    set("amount", "1000000");
+    ok("and a real loan works again", txt("emi") !== DASH, txt("emi"));
     finish();
 """
 
@@ -916,6 +944,23 @@ T["gst-calculator"] = r"""
 
   set("amount", "");
   near("empty amount does not crash", txt("total"), 0);
+    var DASH = String.fromCharCode(0x2014);
+
+    /* 5% of 101 is 5.05; its halves are 2.525 each. They were shown as
+       2.53 + 2.53 = 5.06 beside a total of 5.05. */
+    var R = String.fromCharCode(0x20B9);
+    set("rate", "5"); set("mode", "exclusive"); set("supply", "intra"); set("amount", "101");
+    eq("the GST", txt("tax"), R + "5.05");
+    eq("CGST is exactly half", txt("cgst"), R + "2.525");
+    eq("and so is SGST", txt("sgst"), R + "2.525");
+    has("with a word on invoices that round each half", txt("splitNote"), R + "2.53 twice");
+    set("amount", "100");
+    eq("an even number of paise halves cleanly", txt("cgst"), R + "2.50");
+    eq("with nothing more to say", txt("splitNote").indexOf("twice"), -1);
+    set("rate", "custom"); set("customRate", "-5");
+    eq("a minus rate is refused, not read as 0%", txt("total"), DASH);
+    has("with the reason", txt("formula"), "cannot be below zero");
+    set("rate", "18");
     finish();
 """
 
@@ -1187,6 +1232,9 @@ T["margin-markup-calculator"] = r"""
 
   set("c1", 100); set("c2", 0);
   eq("zero price gives no margin", txt("cMargin").charCodeAt(0), 8212);
+        set("c1", "150"); set("c2", "100");
+    eq("a loss reads minus first", txt("cOut"), String.fromCharCode(0x2212, 0x20B9) + "50");
+    set("c1", "100"); set("c2", "150");
     finish();
 """
 
@@ -1209,6 +1257,15 @@ T["password-generator"] = r"""
     tick("optLower", true);
     click("genBtn");
     ok("strength is reported", txt("strengthWord").length > 0);
+    var DASH = String.fromCharCode(0x2014);
+
+    /* With every box unticked the last batch stayed, rated "Very strong". */
+    ["optUpper", "optLower", "optDigit", "optSymbol"].forEach(function (id) { tick(id, false); });
+    eq("no character type, no passwords", document.querySelectorAll("#list button").length, 0);
+    eq("and no strength", txt("strengthWord"), DASH);
+    tick("optLower", true);
+    ok("one type ticked makes passwords again", document.querySelectorAll("#list button").length > 0);
+    ["optUpper", "optDigit", "optSymbol"].forEach(function (id) { tick(id, true); });
     finish();
 """
 
@@ -1334,6 +1391,18 @@ T["reverse-text"] = r"""
     document.getElementById("clearBtn").click();
     check("clear empties output", out(), "");
     check("clear resets counters", txt("cChars"), "0");
+        /* By what a reader sees as one character. */
+    var TE = String.fromCharCode(0x0C24, 0x0C46, 0x0C32, 0x0C41, 0x0C17, 0x0C41);
+    var TE_REV = String.fromCharCode(0x0C17, 0x0C41, 0x0C32, 0x0C41, 0x0C24, 0x0C46);
+    var THUMB = String.fromCharCode(0xD83D, 0xDC4D, 0xD83C, 0xDFFD);
+    var FAMILY = String.fromCharCode(0xD83D, 0xDC68, 0x200D, 0xD83D, 0xDC69, 0x200D, 0xD83D, 0xDC67);
+    set("mode", "all");
+    set("input", TE);
+    eq("Telugu letters keep their vowel signs", txt("output"), TE_REV);
+    eq("and count as three", txt("cChars"), "3");
+    set("input", "ab" + THUMB + FAMILY);
+    eq("a skin tone stays on its thumb, a family stays together", txt("output"), FAMILY + THUMB + "ba");
+    eq("four characters", txt("cChars"), "4");
     finish();
 """
 
@@ -1430,6 +1499,15 @@ T["slug-generator"] = r"""
 
     set("input", "  ");
     check("blank input gives nothing", out(), "");
+        var TE = String.fromCharCode(0x0C24, 0x0C46, 0x0C32, 0x0C41, 0x0C17, 0x0C41);
+    tick("optAccents", true); set("maxLen", "0");
+    set("input", TE + " 2026");
+    has("Telugu letters left out are explained", txt("msg"), "Letters outside A to Z");
+    set("input", "Caf" + String.fromCharCode(0xE9) + " Menu");
+    eq("an accent that becomes a plain letter draws no note", txt("msg"), "");
+    /* "constructor" used to be reported as a duplicate of nothing. */
+    set("input", "Constructor");
+    eq("a slug called constructor is not a duplicate", txt("msg"), "");
     finish();
 """
 
@@ -1450,6 +1528,11 @@ T["sort-text-lines"] = r"""
     set("order", "reverse");
     set("input", "1\n2\n3");
     check("just reverse", txt("output"), "3\n2\n1");
+        /* 1,000 and 1,00,000 used to be read as 1. */
+    set("order", "num-asc");
+    set("input", "10\n1,000\n9\n1,00,000\n2.5\n1,234.5");
+    eq("grouped numbers sort by their whole value", txt("output"), "2.5\n9\n10\n1,000\n1,234.5\n1,00,000");
+    set("order", "az");
     finish();
 """
 
@@ -1592,6 +1675,14 @@ T["word-counter"] = r"""
     set("input", "");
     check("empty resets", txt("cWords"), "0");
     ok("reading time exists", txt("cRead").length > 0);
+        /* A dash, "--" or "..." standing alone is not a word. */
+    set("input", "e-mail don't 3.14 U.S.A. " + String.fromCharCode(0x2014) + " dash -- x ... ok");
+    eq("only pieces with a letter or digit are words", txt("cWords"), "7");
+    set("input", "It costs 3.14 today. That is all.");
+    eq("the point in 3.14 does not end a sentence", txt("cSentences"), "2");
+    var TE = String.fromCharCode(0x0C24, 0x0C46, 0x0C32, 0x0C41, 0x0C17, 0x0C41);
+    set("input", TE + " " + TE + " " + String.fromCharCode(0x0C2D, 0x0C3E, 0x0C37, 0x0C32, 0x0C41));
+    has("a Telugu word can be the most used", txt("density"), TE + " " + String.fromCharCode(0x00D7) + "2");
     finish();
 """
 
@@ -1972,6 +2063,9 @@ T["unit-converter"] = r"""
 
     set("amount", "");
     near("an empty box does not crash it", txt("out"), 0);
+        set("kind", "length"); set("amount", "0.0000001");
+    has("a tiny amount is not shown as 0", txt("formula"), "0.0000001");
+    set("amount", "1");
     finish();
 """
 
@@ -2056,6 +2150,18 @@ T["timestamp-converter"] = r"""
 
     set("date", "");
     shown("a missing date is refused", "dateErrWrap");
+        /* Microseconds were read as milliseconds (the year 55840); nanoseconds
+       and fractions of a second were refused. */
+    set("stamp", "1700000000000000");
+    has("sixteen digits are microseconds", txt("detected"), "Read as microseconds - it has 16 digits.");
+    has("and the same moment", txt("utcOut"), "14 Nov 2023, 22:13:20");
+    set("stamp", "1700000000000000000");
+    has("nineteen are nanoseconds", txt("detected"), "nanoseconds");
+    has("the same moment again", txt("utcOut"), "14 Nov 2023, 22:13:20");
+    set("stamp", "1700000000.5");
+    has("a fraction of a second is fine", txt("detected"), "seconds - it has 10 digits before the point");
+    eq("and keeps its half second", txt("msOut"), "1700000000500");
+    set("stamp", "1700000000");
     finish();
 """
 
@@ -2098,7 +2204,18 @@ T["days-until-countdown"] = r"""
 
     set("target", "");
     shown("a missing date is refused", "errWrap");
-    finish();
+        /* "Today" above and "That moment has passed" below read as a
+       contradiction. */
+    var now = new Date();
+    function two(n) { return (n < 10 ? "0" : "") + n; }
+    set("target", now.getFullYear() + "-" + two(now.getMonth() + 1) + "-" + two(now.getDate()));
+    set("attime", "00:00");
+    waitFor("today at midnight has passed",
+      function () { return txt("note").indexOf("That is today") === 0; },
+      function () {
+        has("and the note says so plainly", txt("note"), "00:00 has already gone by");
+        finish();
+      }, 3000);
 """
 
 T["roman-numeral-converter"] = r"""
@@ -2243,6 +2360,12 @@ T["data-storage-converter"] = r"""
     set("value", "-5");
     shown("a negative is flagged", "errWrap");
     eq("but converted as the size that was obviously meant", txt("asGb"), "5 GB");
+        /* One bit was "≈ 1.2500e-1" bytes, "too large for exact arithmetic". */
+    set("from", "bit"); set("value", "1");
+    eq("one bit is an eighth of a byte", txt("asBytes"), "0.125");
+    has("and the note says why", txt("note"), "not a whole number of bytes");
+    eq("without calling it too large", txt("note").indexOf("too large"), -1);
+    set("from", "tb");
     finish();
 """
 
@@ -2571,6 +2694,15 @@ T["fuel-cost-calculator"] = r"""
 
   set("distance", "");
   near("an empty distance does not crash", txt("tripCost"), 0);
+    var DASH = String.fromCharCode(0x2014);
+
+    set("distance", "-20");
+    eq("a minus distance is refused", txt("tripCost"), DASH);
+    has("with the reason", txt("msg"), "cannot be below zero");
+    set("distance", "20"); set("people", "0");
+    has("nobody paying is refused too", txt("msg"), "At least one person");
+    set("people", "1");
+    near("and back", txt("tripCost"), 233, 1);
     finish();
 """
 
@@ -3075,6 +3207,11 @@ T["color-code-converter"] = r"""
 
   set("input", "");
   has("an empty box asks for a colour", txt("msg"), "Type a colour above");
+        set("input", "ff0000");
+    has("a hex colour without its # is read", txt("rows"), "#ff0000");
+    set("input", "0f0");
+    has("so is a short one", txt("rows"), "#00ff00");
+    set("input", "#3b82f6");
     finish();
 """
 
@@ -3439,7 +3576,59 @@ T["image-placeholder-generator"] = r"""
         function () { return txt("sDims") === "800" + X + "600"; },
         function () {
           eq("with the default colour back", val("bg"), "#e2e8f0");
-          finish();
+          var DASH = String.fromCharCode(0x2014);
+
+    /* A zero size left the last picture; 5000 was made at 4000 without a word. */
+    set("pw", "0");
+    eq("a zero width leaves no size", txt("sDims"), DASH);
+    eq("and no picture", document.querySelectorAll("#preview img").length, 0);
+    set("pw", "5000"); set("ph", "600");
+    waitFor("5000 wide is made at the limit",
+      function () { return txt("msg").indexOf("Made at") > -1; },
+      function () {
+        has("and the page says so", txt("msg"), "4000 pixels a side is the most");
+        eq("at 4000", txt("sDims"), "4000 " + String.fromCharCode(0x00D7) + " 600");
+        set("pw", "800");
+        waitFor("an ordinary size is just ready",
+          function () { return txt("msg").indexOf("Ready") === 0; },
+          function () {     /* canvas.toBlob answers later, so a draw overtaken by a newer one used to
+       land anyway - a picture the boxes no longer describe, and the one
+       Download would save. The test holds each encode and releases them in
+       the order that used to go wrong. */
+    var realToBlob = HTMLCanvasElement.prototype.toBlob;
+    var held = [];
+    HTMLCanvasElement.prototype.toBlob = function (cb, type, q) { held.push([this, cb, type, q]); };
+    function release(i, then) {
+      var h = held[i], done = false;
+      realToBlob.call(h[0], function (blob) { h[1](blob); done = true; }, h[2], h[3]);
+      waitFor("encode " + i + " answered", function () { return done; }, then, 5000);
+    }
+    function shown() {
+      var im = document.querySelector("#preview img");
+      return im && im.complete && im.naturalWidth ? im.naturalWidth + "x" + im.naturalHeight : "";
+    }
+    var NONE = String.fromCharCode(0x2014);
+    set("pw", "300");
+    set("pw", "0");
+    eq("one encode is held", held.length, 1);
+    release(0, function () {
+      eq("an overtaken draw puts no picture back", document.querySelectorAll("#preview img").length, 0);
+      eq("nor a size in bytes", txt("sBytes"), NONE);
+      has("and the zero-size message stays", txt("msg"), "above zero");
+      set("pw", "400");
+      set("pw", "200");
+      eq("two more encodes are held", held.length, 3);
+      release(2, function () {
+        release(1, function () {
+          HTMLCanvasElement.prototype.toBlob = realToBlob;
+          waitFor("the picture shown has loaded", function () { return shown() !== ""; }, function () {
+            eq("the newest draw is the one shown, not an older one answering late", shown(), "200x600");
+            finish();
+          });
+        });
+      });
+    }); });
+      });
         });
     });
 """
@@ -3655,7 +3844,22 @@ T["dice-roller"] = r"""
   eq("reset returns to two dice", val("count"), "2");
   eq("six sides", val("sides"), "6");
   eq("and no modifier", val("modifier"), "0");
-  finish();
+  var DASH = String.fromCharCode(0x2014);
+
+    /* A refused roll used to leave the last total, and Copy handed it over. */
+    set("count", "2"); set("sides", "6"); set("modifier", "0");
+    click("rollBtn");
+    ok("a roll has a total", txt("bigTotal") !== DASH, txt("bigTotal"));
+    set("count", "0");
+    click("rollBtn");
+    eq("a refused roll leaves no total", txt("bigTotal"), DASH);
+    eq("and no dice", txt("output"), "");
+    var copied = null, realCopy = window.copyText;
+    window.copyText = function (t) { copied = t; };
+    click("copyBtn");
+    window.copyText = realCopy;
+    eq("and Copy has nothing old to hand over", copied, null);
+    finish();
 """
 
 T["random-list-shuffler"] = r"""
@@ -3786,7 +3990,20 @@ T["random-picker"] = r"""
   set("input", "");
   click("pickBtn");
   has("an empty list asks for entries", txt("msg"), "Paste some entries");
-  finish();
+  var DASH = String.fromCharCode(0x2014);
+
+    /* A refused draw used to leave the last winner on screen. */
+    set("input", "a\nb\nc"); set("winners", "1"); set("seed", "");
+    click("pickBtn");
+    ok("a draw has a winner", txt("bigWinner") !== DASH, txt("bigWinner"));
+    set("winners", "0");
+    click("pickBtn");
+    eq("a refused draw leaves no winner", txt("bigWinner"), DASH);
+    eq("and no list", txt("output"), "");
+    set("winners", "1.5");
+    click("pickBtn");
+    has("half a winner is refused, not rounded", txt("msg"), "whole number of winners");
+    finish();
 """
 
 T["username-generator"] = r"""
@@ -3856,7 +4073,23 @@ T["username-generator"] = r"""
   eq("reset returns to the opening shape", val("shape"), "adjnoun");
   eq("with no digits", val("digits"), "0");
   eq("and twelve ideas again", ideas().length, 12);
-  finish();
+  var DASH = String.fromCharCode(0x2014);
+
+    /* A refused request used to leave the last list. */
+    set("maxLen", "20"); set("howMany", "5");
+    click("genBtn");
+    ok("five ideas", txt("output").split("\n").length === 5, txt("output"));
+    set("howMany", "0");
+    click("genBtn");
+    eq("a refused request leaves no list", txt("output"), "");
+    eq("and no count", txt("sMade"), DASH);
+    set("howMany", "5000");
+    click("genBtn");
+    has("too many is refused with the limit", txt("msg"), "Up to 1,000 ideas");
+    set("howMany", "12");
+    click("genBtn");
+    eq("and twelve works again", txt("output").split("\n").length, 12);
+    finish();
 """
 
 T["hash-generator"] = r"""
@@ -4150,7 +4383,10 @@ T["csv-to-json"] = r"""
 
   click("clearBtn");
   has("clearing asks for CSV", txt("msg"), "Paste some CSV");
-  finish();
+      tick("typed", false);
+    set("input", "a\n1");
+    eq("one row is a row", txt("msg").indexOf("1 row,"), 0);
+    finish();
 """
 
 T["cron-expression-parser"] = r"""
@@ -4543,7 +4779,24 @@ T["text-to-speech"] = r"""
   ok("pause and stop start out unavailable",
      document.getElementById("pauseBtn").disabled === true &&
      document.getElementById("stopBtn").disabled === true);
-  finish();
+      /* A voice reads only its own language. Telugu given to an English
+       voice used to draw "This voice runs entirely on your device". */
+    var TE = String.fromCharCode(0x0C24, 0x0C46, 0x0C32, 0x0C41, 0x0C17, 0x0C41);
+    var all = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+    if (all.length) {
+      var teVoices = all.filter(function (v) { return /^te([-_]|$)/i.test(v.lang); });
+      set("input", TE + " " + TE);
+      if (!teVoices.length) {
+        has("Telugu with no Telugu voice says so", txt("msg"), "no voice on this device reads it");
+      } else {
+        has("Telugu with a Telugu voice not chosen says choose one", txt("msg"), "Choose a Telugu voice");
+      }
+      set("input", "Hello there");
+      eq("English text draws no language note", txt("msg").indexOf("This text is in"), -1);
+    } else {
+      ok("this browser lists no voices, so the language note cannot be tested here", true);
+    }
+    finish();
 """
 
 T["working-days-calculator"] = r"""
@@ -4594,7 +4847,15 @@ T["working-days-calculator"] = r"""
 
   click("resetBtn");
   eq("reset puts the weekend back", num("sWeekend") >= 0, true);
-  finish();
+  var DASH = String.fromCharCode(0x2014);
+
+    /* "The second date is before the first" sat beside an old count. */
+    set("from", "2026-10-31"); set("to", "2026-10-01");
+    eq("a reversed range leaves no count", txt("bigWorking"), DASH);
+    has("and says why", txt("msg"), "before the first");
+    set("from", "2026-10-01"); set("to", "2026-10-31");
+    ok("and the right way round counts again", txt("bigWorking") !== DASH, txt("bigWorking"));
+    finish();
 """
 
 T["stopwatch-timer"] = r"""
@@ -4938,7 +5199,16 @@ T["calorie-calculator"] = r"""
 
   click("resetBtn");
   eq("reset returns to the example", num("sBmr"), 1618);
-  finish();
+  var DASH = String.fromCharCode(0x2014);
+
+    set("units", "metric"); set("kg", "70"); set("cm", "170"); set("age", "30");
+    ok("an answer", txt("bigTdee") !== DASH, txt("bigTdee"));
+    set("age", "150");
+    eq("out of range leaves no answer beside the warning", txt("bigTdee"), DASH);
+    set("age", "0");
+    has("a typed zero is not asked to be filled in", txt("msg"), "above zero");
+    set("age", "30");
+    finish();
 """
 
 T["image-color-picker"] = r"""
@@ -12233,6 +12503,8 @@ def run_one(slug):
     else:
         url = "file:///" + urllib.parse.quote(
             str(SITE).replace("\\", "/") + "/tools/" + target.name)
+    limit = max(90, budget_for(slug) // 200)
+    timed_out = False
     try:
         dom = subprocess.run(
             [CHROME, "--headless", "--disable-gpu", "--no-sandbox", NO_ADS_FLAG,
@@ -12240,9 +12512,12 @@ def run_one(slug):
              "--virtual-time-budget=%d" % (budget_for(slug) + 3000),
              "--dump-dom", url],
             capture_output=True, text=True, encoding="utf-8",
-            errors="replace", timeout=max(90, budget_for(slug) // 200)).stdout
+            errors="replace", timeout=limit).stdout
     except subprocess.TimeoutExpired:
+        # Not the same as a script that threw: Chrome itself ran out of time,
+        # usually because the machine was busy. Saying so saves a hunt.
         dom = ""
+        timed_out = True
     finally:
         # Always clean up. A leftover _test- file is harmless to check.py but
         # confusing to find in a diff a week later.
@@ -12252,6 +12527,9 @@ def run_one(slug):
             pass
 
     match = re.search(r'<pre id="RESULTS">(.*?)</pre>', dom or "", re.S)
+    if not match and timed_out:
+        return slug, ["FAIL  Chrome did not finish within %ds - a busy machine, "
+                      "or a page that hangs; run this tool alone to tell" % limit]
     if not match:
         return slug, ["FAIL  the page produced no result at all - its script "
                       "probably threw before the harness ran"]

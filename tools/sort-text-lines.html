@@ -352,9 +352,12 @@
     /* ---- START: sorting by the first number on each line ---- */
     /* Read the first number on a line: "12.5 kg" -> 12.5, "-3 C" -> -3.
        A line with no number returns NaN and gets pushed to the bottom. */
+    /* Commas that group digits are part of the number: 1,000 and the
+       Indian 1,00,000 used to be read as 1 and sorted among the ones. */
+    var NUMBER = /-?(?:\d{1,2}(?:,\d\d)+,\d{3}|\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?/;
     function firstNumber(line) {
-      var found = line.match(/-?\d+(\.\d+)?/);
-      return found ? parseFloat(found[0]) : NaN;
+      var found = line.match(NUMBER);
+      return found ? parseFloat(found[0].replace(/,/g, "")) : NaN;
     }
 
     function byNumber(a, b, descending) {

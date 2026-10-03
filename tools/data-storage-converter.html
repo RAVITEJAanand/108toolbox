@@ -568,11 +568,15 @@
       /* Past 2^53 a JavaScript number stops being able to hold every integer,
          so a byte count that large is rounded. Say so rather than printing a
          run of digits that look exact and are not. */
-      var exact = bytes <= Number.MAX_SAFE_INTEGER &&
-                  Math.floor(bytes) === bytes;
+      var whole = Math.floor(bytes) === bytes;
+      var tooBig = bytes > Number.MAX_SAFE_INTEGER;
+      var exact = whole && !tooBig;
+      /* A part of a byte is not "too large": one bit used to be shown as
+         "≈ 1.2500e-1" bytes, under a note saying the count was too large
+         for exact arithmetic. It is 0.125, and the note says why. */
       el("asBytes").textContent = exact
         ? bytes.toLocaleString()
-        : ALMOST + bytes.toExponential(4);
+        : tooBig ? ALMOST + bytes.toExponential(4) : pretty(bytes);
 
       el("asGb").textContent = withUnit(bytes / 1e9, "gb");
       el("asGib").textContent = withUnit(bytes / 1073741824, "gib");
@@ -580,9 +584,11 @@
       fillTable(bytes);
 
       var note = noteFor(unit, bytes);
-      if (!exact) {
+      if (tooBig) {
         note += " That byte count is too large for exact arithmetic, so it is " +
                 "rounded.";
+      } else if (!whole) {
+        note += " That is not a whole number of bytes: a byte is 8 bits.";
       }
       el("note").textContent = note;
     }

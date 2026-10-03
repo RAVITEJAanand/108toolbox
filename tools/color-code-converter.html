@@ -393,6 +393,10 @@
     function parse(text) {
       var value = String(text).trim();
       if (!value) { return null; }
+      /* ff0000 without its # is how design programs often copy a colour,
+         and it used to be refused. Three, four, six or eight hex digits on
+         their own are taken as a hex colour. */
+      if (/^([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(value)) { value = "#" + value; }
 
       probe.style.color = "";
       probe.style.color = SENTINEL;

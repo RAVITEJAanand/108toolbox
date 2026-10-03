@@ -421,12 +421,28 @@
     /* ---- END: the aspect ratio in its simplest whole numbers ---- */
 
     /* ---- START: drawing the placeholder ---- */
+    /* Every draw takes a number. canvas.toBlob answers later, so a slow large
+       draw could land after a newer one - putting back a picture the boxes no
+       longer describe, the one Download would then save. Only the newest draw
+       is shown. */
+    var drawing = 0;
     function render() {
+      var mine = ++drawing;
       var w = size(pw), h = size(ph);
       if (!w || !h) {
+        /* The last picture used to stay, with its size and Download, under
+           this message. */
+        resultBlob = null;
+        preview.innerHTML = "";
+        ["sDims", "sRatio", "sBytes"].forEach(function (id) {
+          document.getElementById(id).textContent = String.fromCharCode(0x2014);
+        });
         setMessage("Type a width and height above zero.", "bad");
         return;
       }
+      /* Past 4000 the size is brought down, as the questions below explain -
+         and now the page says so instead of only showing the smaller size. */
+      var capped = Number(pw.value) > 4000 || Number(ph.value) > 4000;
 
       var canvas = document.createElement("canvas");
       canvas.width = w;
@@ -460,6 +476,7 @@
       document.getElementById("sRatio").textContent = ratio(w, h);
 
       canvas.toBlob(function (blob) {
+        if (mine !== drawing) { return; }
         if (!blob) { setMessage("This browser could not produce the image.", "bad"); return; }
         resultBlob = blob;
 
@@ -470,7 +487,9 @@
         preview.appendChild(img);
 
         document.getElementById("sBytes").textContent = formatBytes(blob.size);
-        setMessage("Ready. Drawn in your browser - this image calls no one.", "ok");
+        setMessage(capped
+          ? "Made at " + w + " " + TIMES + " " + h + ": 4000 pixels a side is the most this page draws."
+          : "Ready. Drawn in your browser - this image calls no one.", "ok");
       }, fmt.value, 0.9);
     }
     /* ---- END: drawing the placeholder ---- */

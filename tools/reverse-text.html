@@ -362,12 +362,29 @@
       "line-order": "the last line comes first, nothing inside a line changes"
     };
 
+    /* ---- START: cutting text into the characters a reader sees ----
+       Array.from cuts by code point, which keeps a single emoji whole but
+       still split a thumbs-up from its skin tone, a family into separate
+       people, and a Telugu letter from its vowel sign. Intl.Segmenter cuts
+       where a reader sees one character end. A browser without it falls
+       back to code points. */
+    var SEGMENTER = typeof Intl !== "undefined" && Intl.Segmenter
+      ? new Intl.Segmenter(undefined, { granularity: "grapheme" }) : null;
+    function characters(text) {
+      if (!SEGMENTER) { return Array.from(text); }
+      return Array.from(SEGMENTER.segment(text), function (s) { return s.segment; });
+    }
+    /* ---- END: cutting text into the characters a reader sees ---- */
+
     /* ---- START: reversing characters without cutting an emoji in half ---- */
     /* Array.from walks the string by CHARACTER, not by UTF-16 code unit.
        That one choice is what keeps emoji whole: split("") would cut a
        two-unit emoji in half and then reverse the halves. */
     function reverseChars(text) {
-      return Array.from(text).reverse().join("");
+      /* By what a reader sees as one character: "తెలుగు" reversed used to be
+         ుగులెత, vowel signs with no letter to sit on, and a thumbs-up came
+         back with its skin tone in front of it. */
+      return characters(text).reverse().join("");
     }
     /* ---- END: reversing characters without cutting an emoji in half ---- */
 
@@ -407,7 +424,7 @@
       hint.textContent   = HINTS[mode.value];
 
       var words = text.trim() === "" ? [] : text.trim().split(/\s+/);
-      cChars.textContent = formatNumber(Array.from(text).length);
+      cChars.textContent = formatNumber(characters(text).length);
       cWords.textContent = formatNumber(words.length);
       cLines.textContent = formatNumber(text === "" ? 0 : text.split("\n").length);
     }

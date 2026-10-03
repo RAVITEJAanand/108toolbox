@@ -442,21 +442,27 @@
       var from = parse(fromEl.value);
       var to = parse(toEl.value);
 
-      if (!from || !to) {
+      /* Every refusal empties the figures. The two below used to leave the
+         last count on screen under the error, so "the second date is before
+         the first" sat beside a working-day count for some other range. */
+      function refuse(message, kind) {
         ["bigWorking", "sTotal", "sWeekend", "sHolidays", "sWeeks", "sHours"]
           .forEach(function (id) { document.getElementById(id).textContent = DASH; });
         summary = "";
-        setMessage("Choose both dates.");
+        setMessage(message, kind);
+      }
+      if (!from || !to) {
+        refuse("Choose both dates.");
         return;
       }
       if (to < from) {
-        setMessage("The second date is before the first. Swap them.", "bad");
+        refuse("The second date is before the first. Swap them.", "bad");
         return;
       }
 
       var total = Math.round((to - from) / 86400000) + 1;   /* both ends count */
       if (total > MAX_DAYS) {
-        setMessage("That range is over a century long.", "bad");
+        refuse("That range is over a century long.", "bad");
         return;
       }
 

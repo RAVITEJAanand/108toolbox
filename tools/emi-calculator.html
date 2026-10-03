@@ -407,6 +407,14 @@
 
     if (!isFinite(principal) || principal <= 0) {
       setMessage("Enter a loan amount greater than zero.", "bad");
+      /* The last loan's EMI, totals and schedule used to stay on screen
+         under this message, looking like the answer. */
+      ["emi", "principal", "interest", "total"].forEach(function (id) {
+        document.getElementById(id).textContent = String.fromCharCode(0x2014);
+      });
+      document.getElementById("barP").style.width = "0%";
+      document.getElementById("barI").style.width = "0%";
+      document.querySelector("#schedule tbody").textContent = "";
       return;
     }
     setMessage("");

@@ -400,10 +400,13 @@
       return isNaN(n) ? 0 : n;
     }
 
+    /* A loss reads "−₹50", minus first; it used to read "₹-50". */
     function money(value) {
       if (!isFinite(value)) return EM_DASH;
       var rounded = Math.round(value * 100) / 100;
-      return RUPEE + formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
+      var size = Math.abs(rounded);
+      return (rounded < 0 ? String.fromCharCode(0x2212) : "") + RUPEE +
+             formatNumber(size, size % 1 === 0 ? 0 : 2);
     }
 
     /* The decimal count is a CEILING, not a demand - a 2.5% margin should

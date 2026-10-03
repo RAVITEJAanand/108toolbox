@@ -550,17 +550,19 @@ Ravi,Chennai,09123456789,600001
         return row.length !== columnCount;
       }).length;
 
+      /* "1 row", never "1 rows". */
+      var rowWords = formatNumber(result.length, 0) + (result.length === 1 ? " row" : " rows");
       if (ragged) {
-        setMessage(result.length + " rows. " + ragged + " line"
+        setMessage(rowWords + ". " + ragged + " line"
                  + (ragged === 1 ? " does" : "s do") + " not have "
                  + columnCount + " fields - check for an unclosed quotation "
                  + "mark, which swallows everything after it.", "bad");
       } else if (typed.checked) {
-        setMessage(result.length + " rows. Numbers converted - anything with a "
+        setMessage(rowWords + ". Numbers converted - anything with a "
                  + "leading zero was left as text on purpose, so phone numbers "
                  + "and postcodes survive.", "ok");
       } else {
-        setMessage(result.length + " rows, every value kept as text. Tick the "
+        setMessage(rowWords + ", every value kept as text. Tick the "
                  + "box above if you want real numbers.", "ok");
       }
     }

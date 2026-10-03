@@ -411,6 +411,15 @@
       return RUPEE + formatNumber(rounded, rounded % 1 === 0 ? 0 : 2);
     }
 
+    /* Half of the GST, for the CGST and SGST lines. When the tax is an odd
+       number of paise its half ends in half a paisa: 5% of 101 is 5.05,
+       and each half is 2.525. Rounding both up showed 2.53 + 2.53 = 5.06
+       beside a total of 5.05. The half is shown exactly instead. */
+    function half(tax) {
+      var paise = Math.round(tax * 100);
+      return paise % 2 === 0 ? money(paise / 200) : RUPEE + formatNumber(paise / 200, 3);
+    }
+
     /* The decimal count is a CEILING, not a demand. Forcing two decimals the
        moment there is one turns the 2.5% half of a 5% slab into "2.50%",
        which no invoice ever writes. */
@@ -422,12 +431,12 @@
 
     /* ---- START: which slab is selected, including a custom rate ---- */
     /* The dropdown holds the slab; "custom" hands control to a second input.
-       Clamped at zero because a negative rate is not a discount, it is a bug
-       waiting to divide by something silly. */
+       A minus rate is not a discount; run() refuses it. It used to be
+       clamped to 0% without a word, under a sum that said "x 0%". */
     function currentRate() {
       var chosen = el("rate").value;
       var r = chosen === "custom" ? num("customRate") : parseFloat(chosen);
-      return Math.max(0, isNaN(r) ? 0 : r);
+      return isNaN(r) ? 0 : r;
     }
     /* ---- END: which slab is selected, including a custom rate ---- */
 
@@ -440,6 +449,17 @@
 
       /* The custom box only exists when it is needed */
       el("customWrap").hidden = el("rate").value !== "custom";
+
+      var problem = rate < 0 ? "A GST rate cannot be below zero." :
+                    amount < 0 ? "The amount cannot be below zero." : "";
+      if (problem) {
+        ["total", "base", "tax", "grand", "cgst", "sgst", "igst", "igstTotal"].forEach(function (id) {
+          el(id).textContent = String.fromCharCode(0x2014);
+        });
+        el("formula").textContent = problem;
+        el("splitNote").textContent = "";
+        return;
+      }
 
       var base, tax;
       if (inclusive) {
@@ -469,8 +489,8 @@
       el("intraWrap").hidden = interState;
       el("interWrap").hidden = !interState;
 
-      el("cgst").textContent = money(tax / 2);
-      el("sgst").textContent = money(tax / 2);
+      el("cgst").textContent = half(tax);
+      el("sgst").textContent = half(tax);
       el("cgstLabel").textContent = "CGST " + pct(rate / 2);
       el("sgstLabel").textContent = "SGST " + pct(rate / 2);
 
@@ -482,7 +502,11 @@
         ? "One IGST line at " + pct(rate) + ". The buyer pays the same " +
           money(tax) + " either way."
         : "Half to the centre, half to the state. Together they come to " +
-          money(tax) + ", the same as a single IGST line.";
+          money(tax) + ", the same as a single IGST line." +
+          (Math.round(tax * 100) % 2
+            ? " An invoice that rounds each half to the paisa shows " +
+              money(Math.ceil(Math.round(tax * 100) / 2) / 100) + " twice, a paisa more in all."
+            : "");
     }
     /* ---- END: the GST split and drawing the answer ---- */
 

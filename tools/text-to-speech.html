@@ -458,6 +458,36 @@
     }
     /* ---- END: what the buttons should be doing right now ---- */
 
+    /* ---- START: does any voice read the text's language? ----
+       A voice reads only its own language: an English voice given Telugu
+       skips it or spells it out letter by letter. The page used to say only
+       whether the voice was on this device. */
+    var SCRIPTS = [
+      ["Telugu", /\p{Script=Telugu}/u, ["te"]],
+      ["Hindi or Marathi", /\p{Script=Devanagari}/u, ["hi", "mr", "ne"]],
+      ["Tamil", /\p{Script=Tamil}/u, ["ta"]],
+      ["Kannada", /\p{Script=Kannada}/u, ["kn"]],
+      ["Malayalam", /\p{Script=Malayalam}/u, ["ml"]],
+      ["Bengali", /\p{Script=Bengali}/u, ["bn", "as"]],
+      ["Gujarati", /\p{Script=Gujarati}/u, ["gu"]],
+      ["Punjabi", /\p{Script=Gurmukhi}/u, ["pa"]],
+      ["Odia", /\p{Script=Oriya}/u, ["or"]],
+      ["Urdu or Arabic", /\p{Script=Arabic}/u, ["ur", "ar", "fa"]]
+    ];
+
+    function scriptOf(text) {
+      for (var i = 0; i < SCRIPTS.length; i++) {
+        if (SCRIPTS[i][1].test(text)) { return SCRIPTS[i]; }
+      }
+      return null;
+    }
+
+    function reads(v, codes) {
+      var lang = String((v && v.lang) || "").toLowerCase().replace("_", "-");
+      return codes.some(function (c) { return lang === c || lang.indexOf(c + "-") === 0; });
+    }
+    /* ---- END: does any voice read the text's language? ---- */
+
     /* ---- START: the tiles and the warning ---- */
     function update() {
       document.getElementById("sLength").textContent =
@@ -465,6 +495,7 @@
 
       var chosen = voices[Number(voice.value)] || null;
       document.getElementById("sWhere").textContent = whereWords(chosen);
+      var script = scriptOf(input.value);
 
       if (!supported) {
         setMessage("This browser has no speech engine, so there is nothing "
@@ -473,6 +504,15 @@
         setMessage("No voices are installed. They come from your device - add "
                  + "one in your system's language or accessibility settings "
                  + "and reload.", "bad");
+      } else if (script && !voices.some(function (v) { return reads(v, script[2]); })) {
+        setMessage("This text is in " + script[0] + ", and no voice on this device "
+                 + "reads it - the voice chosen would skip it or spell it out. "
+                 + "Add a " + script[0] + " voice in your system's language "
+                 + "settings and reload.", "bad");
+      } else if (script && !reads(chosen, script[2])) {
+        setMessage("This text is in " + script[0] + ", but the voice chosen reads "
+                 + (chosen ? chosen.lang : "another language") + ". Choose a "
+                 + script[0] + " voice from the list.", "bad");
       } else if (chosen && !isLocal(chosen)) {
         setMessage("This voice sends your text to the browser maker to be "
                  + "turned into audio. Choose one marked 'on this device' if "
@@ -481,7 +521,10 @@
         setMessage("This voice runs entirely on your device - the text goes "
                  + "nowhere.", "ok");
       }
-      setButtons(false, false);
+      /* Typing now runs this too, so the buttons follow what is really
+         happening rather than resetting in the middle of speech. */
+      setButtons(supported && window.speechSynthesis.speaking,
+                 supported && window.speechSynthesis.paused);
     }
     /* ---- END: the tiles and the warning ---- */
 
@@ -519,10 +562,7 @@
     /* ---- END: speaking ---- */
 
     /* ---- START: wiring ---- */
-    input.addEventListener("input", function () {
-      document.getElementById("sLength").textContent =
-        formatNumber(input.value.length, 0);
-    });
+    input.addEventListener("input", update);
     voice.addEventListener("change", update);
 
     rate.addEventListener("input", function () {

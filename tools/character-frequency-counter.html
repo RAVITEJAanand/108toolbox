@@ -406,9 +406,11 @@
     }
 
     function decidePunctuation(ch) {
-      /* Anything that is not a letter, a number or whitespace. Kept as a test
-         rather than a list, so it works for text in any language. */
-      return !/[a-zA-Z0-9]/.test(ch) && !/\s/.test(ch) && ch !== "";
+      /* Anything that is not a letter, a number or whitespace, in any
+         alphabet. The test was [a-zA-Z0-9], so every Telugu letter counted
+         as punctuation, and "Ignore punctuation" deleted Telugu text. A
+         character that is a letter and its vowel sign is not punctuation. */
+      return !/[\p{L}\p{M}\p{N}]/u.test(ch) && !/\s/.test(ch) && ch !== "";
     }
     /* ---- END: deciding once whether a character is punctuation ---- */
 
@@ -432,6 +434,20 @@
     }
     /* ---- END: counting, then sorting by how often ---- */
 
+    /* ---- START: cutting text into the characters a reader sees ----
+       Array.from cuts by code point, which keeps a single emoji whole but
+       still split a thumbs-up from its skin tone, a family into separate
+       people, and a Telugu letter from its vowel sign. Intl.Segmenter cuts
+       where a reader sees one character end. A browser without it falls
+       back to code points. */
+    var SEGMENTER = typeof Intl !== "undefined" && Intl.Segmenter
+      ? new Intl.Segmenter(undefined, { granularity: "grapheme" }) : null;
+    function characters(text) {
+      if (!SEGMENTER) { return Array.from(text); }
+      return Array.from(SEGMENTER.segment(text), function (s) { return s.segment; });
+    }
+    /* ---- END: cutting text into the characters a reader sees ---- */
+
     /* ---- START: splitting the text into the things being counted ---- */
     function collect(text) {
       if (mode.value === "words") {
@@ -440,7 +456,7 @@
           /* Strip punctuation from the EDGES only: "don't" stays one word,
              but "word," and "(word)" join the same row as "word". */
           words = words.map(function (w) {
-            return w.replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, "");
+            return w.replace(/^[^\p{L}\p{M}\p{N}]+|[^\p{L}\p{M}\p{N}]+$/gu, "");
           }).filter(function (w) { return w !== ""; });
         }
         if (optCase.checked) {
@@ -449,9 +465,9 @@
         return words;
       }
 
-      /* Array.from walks whole characters, so an emoji counts as one item
-         rather than as two broken halves. */
-      var chars = Array.from(text);
+      /* Whole characters, as a reader sees them: an emoji with its skin
+         tone, or a Telugu letter with its vowel sign, is one item. */
+      var chars = characters(text);
       if (optSpaces.checked) {
         chars = chars.filter(function (c) { return !/\s/.test(c); });
       }

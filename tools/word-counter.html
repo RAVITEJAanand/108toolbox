@@ -365,13 +365,19 @@
   function countWords(text) {
     var trimmed = text.trim();
     if (trimmed === "") return 0;
-    /* Split on any run of whitespace */
-    return trimmed.split(/\s+/).length;
+    /* Split on any run of whitespace, and count a piece only if it holds a
+       letter or a digit, in any alphabet. A dash standing alone, "--" or
+       "..." used to count as a word each. */
+    return trimmed.split(/\s+/).filter(function (piece) {
+      return /[\p{L}\p{N}]/u.test(piece);
+    }).length;
   }
 
   function countSentences(text) {
-    /* A sentence ends at . ! ? or a line break. Empty pieces do not count. */
-    var pieces = text.split(/[.!?]+|\n+/);
+    /* A sentence ends at . ! ? followed by a space or the end, or at a line
+       break. The point in 3.14 used to end a sentence. Empty pieces do not
+       count. */
+    var pieces = text.split(/[.!?]+(?=\s|$)|\n+/);
     var total = 0;
     for (var i = 0; i < pieces.length; i++) {
       if (pieces[i].trim() !== "") total++;
@@ -388,7 +394,9 @@
 
   /* ---- START: which words come up most often ---- */
   function topWords(text, howMany) {
-    var words = text.toLowerCase().match(/[a-z0-9']+/g);
+    /* Words in any alphabet, Telugu included: the list used to hold only
+       a to z, so a Telugu text never had a most-used word. */
+    var words = text.toLowerCase().match(/[\p{L}\p{M}\p{N}']+/gu);
     if (!words) return [];
 
     /* Skip the tiny connecting words; they are always the top five otherwise */

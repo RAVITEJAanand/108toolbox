@@ -549,13 +549,26 @@
       var limit = Math.round(Number(maxLen.value));
       var want = Math.round(Number(howMany.value));
 
+      /* A refused request takes the old list with it: the names from last
+         time stayed under "Ask for at least one idea", and Copy still
+         handed them over. */
+      function refuse(message) {
+        output.textContent = "";
+        lastText = "";
+        document.getElementById("sMade").textContent = DASH;
+        document.getElementById("sLongest").textContent = DASH;
+        setMessage(message, "bad");
+      }
       if (!isFinite(limit) || limit < 6) {
-        setMessage("Six characters is the shortest limit that leaves room for "
-                 + "a word.", "bad");
+        refuse("Six characters is the shortest limit that leaves room for a word.");
         return;
       }
       if (!isFinite(want) || want < 1) {
-        setMessage("Ask for at least one idea.", "bad");
+        refuse("Ask for at least one idea.");
+        return;
+      }
+      if (want > 1000) {
+        refuse("Up to 1,000 ideas at a time.");
         return;
       }
 

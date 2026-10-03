@@ -477,8 +477,15 @@
         target.getDate() + " " + MONTHS[target.getMonth()] + " " +
         target.getFullYear() + ", " + DAY_NAMES[target.getDay()];
 
+      /* "Today" above and "that moment has passed" here read as a
+         contradiction when the date is today and the time is not ahead. */
+      var now = new Date();
+      var today = now.getFullYear() === target.getFullYear() &&
+                  now.getMonth() === target.getMonth() && now.getDate() === target.getDate();
       el("note").textContent = future
         ? "Counting down to " + el("attime").value + " on that date, in your own time zone."
+        : today
+        ? "That is today, and " + el("attime").value + " has already gone by. The line above counts up from it."
         : "That moment has passed. The line above counts up from it.";
     }
     /* ---- END: the live ticker ---- */

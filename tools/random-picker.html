@@ -503,19 +503,42 @@ Harsha</textarea>
     /* ---- END: drawing the winners, without replacement ---- */
 
     /* ---- START: the draw itself ---- */
+    /* ---- START: emptying the result ----
+       Used by Reset, and by a draw that is refused: the last winner left on
+       screen under "Pick at least one winner" looked like a new result, and
+       Copy still handed it over. */
+    function clearDraw() {
+      lastText = "";
+      output.textContent = "";
+      document.getElementById("bigWinner").textContent = DASH;
+      document.getElementById("bigLabel").textContent = "Press Pick";
+      document.getElementById("sEntries").textContent = DASH;
+      document.getElementById("sWinners").textContent = DASH;
+      document.getElementById("sChance").textContent = DASH;
+    }
+    /* ---- END: emptying the result ---- */
+
     function pick() {
       var entries = readEntries();
-      var howMany = Math.round(Number(winners.value));
+      var howMany = Number(winners.value);
 
       if (!entries.length) {
+        clearDraw();
         setMessage("Paste some entries on the left, one per line.");
         return;
       }
       if (!isFinite(howMany) || howMany < 1) {
+        clearDraw();
         setMessage("Pick at least one winner.", "bad");
         return;
       }
+      if (Math.floor(howMany) !== howMany) {
+        clearDraw();
+        setMessage("Type a whole number of winners.", "bad");
+        return;
+      }
       if (howMany > entries.length) {
+        clearDraw();
         setMessage("There are only " + entries.length + " entries, so "
                  + howMany + " different winners cannot be drawn from them.",
                    "bad");
@@ -567,13 +590,7 @@ Harsha</textarea>
       dropDupes.checked = true;
       winners.value = 1;
       seed.value = "";
-      lastText = "";
-      output.textContent = "";
-      document.getElementById("bigWinner").textContent = DASH;
-      document.getElementById("bigLabel").textContent = "Press Pick";
-      document.getElementById("sEntries").textContent = DASH;
-      document.getElementById("sWinners").textContent = DASH;
-      document.getElementById("sChance").textContent = DASH;
+      clearDraw();
       setMessage("");
       input.focus();
     });
