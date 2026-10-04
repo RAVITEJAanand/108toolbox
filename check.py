@@ -729,6 +729,38 @@ if not unnamed:
     ok("every box, choice and tick box has a name a screen reader can read")
 # ---- END: 4l. Every box has a name a screen reader can read ----
 
+# ---- START: 4m. The homepage tells Google the site's name ----
+# A search for the site's own name, "108 toolbox", opened About instead of
+# the homepage (4 Oct 2026): the homepage carried no WebSite structured
+# data, so nothing told Google which page is the site, and About's heading
+# "About 108 ToolBox" matched the words best. The homepage must carry one
+# WebSite block whose name is the brand its title starts with and whose url
+# is its own canonical address.
+home = (ROOT / "index.html").read_text(encoding="utf-8")
+site_blocks = []
+for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', home, re.S):
+    try:
+        data = json.loads(block)
+    except Exception as e:
+        fail("index.html has invalid JSON-LD: %s" % e)
+        continue
+    if data.get("@type") == "WebSite":
+        site_blocks.append(data)
+home_title = re.search(r"<title>(.*?)</title>", home, re.S)
+home_canonical = re.search(r'<link rel="canonical" href="([^"]+)"', home)
+if len(site_blocks) != 1:
+    fail("index.html has %d WebSite structured data blocks - it needs exactly one, "
+         "or Google cannot tell which page is the site" % len(site_blocks))
+else:
+    site = site_blocks[0]
+    if not site.get("name") or not home_title or not html.unescape(home_title.group(1)).startswith(site["name"]):
+        fail("index.html: the WebSite name %r is not what the title starts with" % site.get("name"))
+    elif not home_canonical or site.get("url") != home_canonical.group(1):
+        fail("index.html: the WebSite url %r is not the page's canonical address" % site.get("url"))
+    else:
+        ok("the homepage tells Google the site is called %s" % site["name"])
+# ---- END: 4m. The homepage tells Google the site's name ----
+
 # ---- START: 4g. ROADMAP.md agrees with the registry ----
 # The same rot as the tool counts, one file further out. The "Built" column
 # said 45 while 51 tools were live, and the ticks had not moved in three

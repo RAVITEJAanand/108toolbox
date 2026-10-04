@@ -698,6 +698,18 @@ deliberately left out, because an error page must never be offered to an index.
 "Discovered pages: 0" straight after submitting is normal - Google has only
 accepted the sitemap, not yet read it.
 
+**The homepage tells Google the site's name.** On 4 Oct 2026 a search for
+"108 toolbox" on a phone opened `about.html`, not the homepage. The homepage
+was correct (canonical to itself, no noindex, first in the sitemap), but it
+carried no `WebSite` structured data, so nothing said which page *is* the
+site, and About's heading "About 108 ToolBox" matched the words best. It now
+has one `WebSite` block (name `108 ToolBox`, alternate names, url
+`https://108toolbox.in/`) and `og:site_name`, as Google's site-names guide
+asks; `check.py` 4m fails if the block goes, doubles, breaks, or stops
+matching the title or the canonical (six planted mistakes, all caught).
+Google still has to re-read the homepage: Search Console, URL Inspection on
+`https://108toolbox.in/`, then Request indexing.
+
 ---
 
 ## What is built, and what is next
