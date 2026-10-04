@@ -617,6 +617,14 @@ Domain  108toolbox.in — GoDaddy DNS, 4 A records to GitHub + www CNAME
 Push to `main` and it deploys in under a minute. Before pushing: run
 `check.py`, and open the changed pages in a browser.
 
+**Only the site is published.** Pages builds with Jekyll and `_config.yml`
+leaves out the working files (`*.md`, `*.py`, `assets.lock`); Jekyll also
+drops anything starting with `_` or `.`, which is why `tools/_template.html`
+is not on the domain. Until 4 Oct 2026 a `.nojekyll` file published the whole
+repository, ROADMAP.md included. A new working file in the top folder goes
+into the exclude list (`check.py` 4n fails until it does), and a site file
+must never start with `---` or have a name starting with `_` or `.`.
+
 **Pull before you push: a bot commits too.** `.github/workflows/rates.yml`
 runs on working days (15:40 and 19:40 UTC, after the European Central Bank
 publishes its reference rates around 16:00 CET), runs

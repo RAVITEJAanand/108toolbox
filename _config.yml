@@ -1,0 +1,21 @@
+# ---- START: what GitHub Pages publishes ----
+# Pages builds the site with Jekyll. Jekyll copies every file exactly as it
+# is - none of them starts with front matter, so nothing is rewritten - but
+# leaves out the files named below and anything whose name starts with "_"
+# or "." (tools/_template.html, .github). Until 4 Oct 2026 a .nojekyll file
+# switched Jekyll off, and the whole repository was served: ROADMAP.md,
+# CLAUDE.md, the test scripts and the template could all be opened on
+# 108toolbox.in. check.py 4n fails if a working file is missing from this
+# list, if .nojekyll comes back, or if anything the site needs is left out.
+exclude:
+  - CLAUDE.md
+  - DEPLOY.md
+  - README.md
+  - ROADMAP.md
+  - SEO.md
+  - assets.lock
+  - check.py
+  - security.py
+  - setup.py
+  - test_tools.py
+# ---- END: what GitHub Pages publishes ----

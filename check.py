@@ -761,6 +761,60 @@ else:
         ok("the homepage tells Google the site is called %s" % site["name"])
 # ---- END: 4m. The homepage tells Google the site's name ----
 
+# ---- START: 4n. GitHub Pages publishes the site and nothing else ----
+# Until 4 Oct 2026 a .nojekyll file made Pages serve the whole repository:
+# ROADMAP.md (which names other websites, rule 8), CLAUDE.md, the test
+# scripts and tools/_template.html, TODOs, ad code and all, answered 200 on
+# 108toolbox.in. Pages now runs Jekyll with _config.yml's exclude list. Three
+# things keep that true: every working file in the top folder (.md, .py,
+# .lock) is excluded; nothing the site serves is; and no site file could be
+# changed or dropped by Jekyll - none starts with front matter ("---"), and
+# none has a part of its path starting with "_" or "." except the template,
+# which is meant to stay off the domain.
+if (ROOT / ".nojekyll").exists():
+    fail(".nojekyll is back - Pages would serve the whole repository again; see 4n")
+config_lines = (ROOT / "_config.yml").read_text(encoding="utf-8").splitlines() if (ROOT / "_config.yml").exists() else []
+if not config_lines:
+    fail("_config.yml is missing - Pages needs its exclude list; see 4n")
+excluded = set()
+in_exclude = False
+for line in config_lines:
+    stripped = line.strip()
+    if stripped.startswith("#") or not stripped:
+        continue
+    if not line.startswith(" ") and not line.startswith("-"):
+        in_exclude = stripped == "exclude:"
+        continue
+    if in_exclude and stripped.startswith("- "):
+        excluded.add(stripped[2:].strip().strip("'\""))
+working = sorted(p.name for p in ROOT.iterdir()
+                 if p.is_file() and p.suffix in (".md", ".py", ".lock") and p.name[0] not in "_.")
+for name in working:
+    if name not in excluded:
+        fail("%s would be served on 108toolbox.in - add it to _config.yml's exclude list" % name)
+SITE_SUFFIXES = (".html", ".css", ".js", ".mjs", ".xml", ".txt", ".json", ".wasm")
+for name in sorted(excluded):
+    if name.endswith(SITE_SUFFIXES) or name in ("CNAME", "css", "js", "data", "tools"):
+        fail("_config.yml leaves out %s, which the site needs" % name)
+site_files = [p for p in ROOT.iterdir() if p.is_file() and (p.suffix in SITE_SUFFIXES or p.name == "CNAME")]
+for folder in ("css", "js", "data", "tools"):
+    site_files += [p for p in (ROOT / folder).rglob("*") if p.is_file()]
+dropped, processed = [], []
+for p in site_files:
+    rel = p.relative_to(ROOT).as_posix()
+    if any(part[0] in "_." for part in rel.split("/")) and rel != "tools/_template.html":
+        dropped.append(rel)
+    elif p.read_bytes()[:3] == b"---":
+        processed.append(rel)
+for rel in dropped:
+    fail("%s starts with _ or . - Jekyll would leave it off the site; rename it" % rel)
+for rel in processed:
+    fail("%s starts with front matter (---) - Jekyll would rewrite it" % rel)
+if (ROOT / "_config.yml").exists() and not (ROOT / ".nojekyll").exists() and not dropped and not processed \
+        and all(name in excluded for name in working):
+    ok("Pages publishes the site and none of the %d working files" % len(working))
+# ---- END: 4n. GitHub Pages publishes the site and nothing else ----
+
 # ---- START: 4g. ROADMAP.md agrees with the registry ----
 # The same rot as the tool counts, one file further out. The "Built" column
 # said 45 while 51 tools were live, and the ticks had not moved in three

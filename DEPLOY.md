@@ -98,7 +98,7 @@ these are uploaded too:
 | File | What it does if missing |
 |---|---|
 | `CNAME` | GitHub forgets your custom domain on every upload |
-| `.nojekyll` | Usually fine, but can break files starting with `_` |
+| `_config.yml` | Pages serves every file in the repository, ROADMAP.md and the test scripts included (it replaced `.nojekyll` on 4 Oct 2026) |
 | `robots.txt` | Crawlers get no sitemap pointer |
 
 On Windows, turn on **View → Show → Hidden items** in File Explorer first.

@@ -557,6 +557,16 @@ calculator has no news cycle. Three are not:
 
 Everything else: build it, verify it, move on.
 
+**Done, 4 Oct 2026: the domain serves the site and nothing else.** Pages
+used to publish the whole repository (`.nojekyll`), so
+`108toolbox.in/ROADMAP.md` (which names other websites, against rule 8),
+`CLAUDE.md`, the test scripts and `tools/_template.html` (TODOs and ad code
+included) all answered 200.
+`.nojekyll` is gone and `_config.yml` gives Jekyll an exclude list; Jekyll
+copies every other file untouched, because none starts with front matter.
+The deploy itself did not change (branch `main`, folder `/`), so the rates
+bot needs nothing new. `check.py` 4n keeps the list complete.
+
 ---
 
 ## A note on the India angle
