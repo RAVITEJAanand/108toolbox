@@ -761,6 +761,34 @@ else:
         ok("the homepage tells Google the site is called %s" % site["name"])
 # ---- END: 4m. The homepage tells Google the site's name ----
 
+# ---- START: 4o. tools.html links to every tool in plain HTML ----
+# The grids are drawn by main.js, so a crawler that has not run the script
+# sees no way into the tool pages. Search Console showed tool pages as
+# "Discovered - currently not indexed" with "Referring page: none detected"
+# (5 Oct 2026). tools.html therefore carries a plain A-Z list, and it must
+# name exactly the tools in the registry, in the registry's order.
+tools_page = (ROOT / "tools.html").read_text(encoding="utf-8")
+az_list = re.search(r'<section[^>]*aria-labelledby="everyTool".*?</section>', tools_page, re.S)
+if not az_list:
+    fail("tools.html has no plain list of every tool (the section labelled 'everyTool')")
+else:
+    listed = re.findall(r'<li><a href="tools/([a-z0-9-]+)\.html">(.*?)</a></li>', az_list.group(0))
+    wanted = re.findall(r'slug: "([^"]+)",\s*name: "([^"]+)"', registry)
+    listed_slugs = [s for s, _ in listed]
+    wanted_slugs = [s for s, _ in wanted]
+    if listed_slugs != wanted_slugs:
+        for missing in [s for s in wanted_slugs if s not in listed_slugs]:
+            fail("tools.html's plain list is missing the tool '%s'" % missing)
+        for extra in [s for s in listed_slugs if s not in wanted_slugs]:
+            fail("tools.html's plain list names '%s', which is not in the registry" % extra)
+        if sorted(listed_slugs) == sorted(wanted_slugs):
+            fail("tools.html's plain list is not in the registry's A-Z order")
+    elif [html.unescape(n) for _, n in listed] != [n for _, n in wanted]:
+        fail("tools.html's plain list shows a tool name that differs from the registry's")
+    else:
+        ok("tools.html links to all %d tools in plain HTML" % len(listed))
+# ---- END: 4o. tools.html links to every tool in plain HTML ----
+
 # ---- START: 4n. GitHub Pages publishes the site and nothing else ----
 # Until 4 Oct 2026 a .nojekyll file made Pages serve the whole repository:
 # ROADMAP.md (which names other websites, rule 8), CLAUDE.md, the test
