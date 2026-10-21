@@ -44,6 +44,11 @@ def tool_pages():
     """
     return sorted(p for p in (ROOT / "tools").glob("*.html")
                   if not p.name.startswith("_"))
+
+
+def guide_pages():
+    """Every guide: an article in guides/ that goes with a tool, not a tool itself."""
+    return sorted((ROOT / "guides").glob("*.html"))
 # ---- END: what every check below shares: the root, the report lists and the list of tool pages ----
 
 
@@ -139,7 +144,7 @@ if slugs and not missing_from_sitemap:
 # and four of them quietly shipped with a meta description less than half the
 # length Google wants — about.html was 75 characters. A page nobody validates
 # is a page that drifts.
-for path in tool_pages() + sorted(ROOT.glob("*.html")):
+for path in tool_pages() + guide_pages() + sorted(ROOT.glob("*.html")):
     text = path.read_text(encoding="utf-8")
     name = path.name
     is_tool = path.parent.name == "tools"
@@ -302,7 +307,7 @@ def asset_fingerprint():
 
 
 stamps = set()
-for page in list(ROOT.glob("*.html")) + sorted((ROOT / "tools").glob("*.html")):
+for page in list(ROOT.glob("*.html")) + sorted((ROOT / "tools").glob("*.html")) + guide_pages():
     stamps.update(re.findall(r'(?:href|src)="[^"]*\.(?:css|js)\?v=(\d+)"',
                              page.read_text(encoding="utf-8")))
     # A worker started from a script (regex-tester) carries the stamp too.
@@ -629,7 +634,7 @@ def content_box(node):
 # The template is checked too; the _test- copies test_tools.py builds for a
 # moment while it runs are not, and may vanish mid-read.
 html_pages = sorted(ROOT.glob("*.html")) + sorted(
-    p for p in (ROOT / "tools").glob("*.html") if not p.name.startswith("_test-"))
+    p for p in (ROOT / "tools").glob("*.html") if not p.name.startswith("_test-")) + guide_pages()
 for path in html_pages:
     builder = TreeBuilder()
     builder.feed(path.read_text(encoding="utf-8"))
@@ -789,6 +794,42 @@ else:
         ok("tools.html links to all %d tools in plain HTML" % len(listed))
 # ---- END: 4o. tools.html links to every tool in plain HTML ----
 
+# ---- START: 4p. The guides: listed, in the sitemap, and tied to a tool ----
+# A guide is an article that goes with a tool (guides/<slug>.html), written
+# because a site that is only tools reads to AdSense as "low value content"
+# (two reviews, 12 and 21 Oct 2026). A guide nobody can reach is wasted, so:
+# guides.html must list every guide in plain HTML, the sitemap must name the
+# guides and guides.html, each guide must link to a real tool page it goes
+# with, and no guide may name another website (rule 8).
+guides_found = guide_pages()
+guides_index = (ROOT / "guides.html").read_text(encoding="utf-8") if (ROOT / "guides.html").exists() else ""
+if not guides_index:
+    fail("guides.html is missing - the guides have no front page")
+elif guides_found:
+    listed_guides = set(re.findall(r'href="guides/([a-z0-9-]+)\.html"', guides_index))
+    for g in guides_found:
+        if g.stem not in listed_guides:
+            fail("guides.html does not list the guide '%s'" % g.stem)
+        if "guides/%s.html" % g.stem not in sitemap:
+            fail("sitemap.xml is missing guides/%s.html" % g.stem)
+        gtext = g.read_text(encoding="utf-8")
+        # Only the article's own text counts: the footer links to four tools on every page.
+        body = re.search(r'<section class="tool-info prose">(.*?)</section>', gtext, re.S)
+        tool_links = [s for s in re.findall(r'href="\.\./tools/([a-z0-9-]+)\.html"',
+                                            body.group(1) if body else "") if s in slugs]
+        if not tool_links:
+            fail("guide '%s' links to no tool it goes with" % g.stem)
+        if re.search(r'href="https?://(?!108toolbox\.in/)', gtext):
+            fail("guide '%s' links to another website - rule 8" % g.stem)
+    for stale in sorted(listed_guides - {g.stem for g in guides_found}):
+        fail("guides.html lists '%s', which is not a file in guides/" % stale)
+    if "guides.html" not in sitemap:
+        fail("sitemap.xml is missing guides.html")
+    if not any(p.startswith(("guides", "sitemap.xml is missing guides")) or "guide '" in p for p in problems):
+        ok("%d guide%s, listed on guides.html, in the sitemap, each tied to a tool"
+           % (len(guides_found), "" if len(guides_found) == 1 else "s"))
+# ---- END: 4p. The guides: listed, in the sitemap, and tied to a tool ----
+
 # ---- START: 4n. GitHub Pages publishes the site and nothing else ----
 # Until 4 Oct 2026 a .nojekyll file made Pages serve the whole repository:
 # ROADMAP.md (which names other websites, rule 8), CLAUDE.md, the test
@@ -822,10 +863,10 @@ for name in working:
         fail("%s would be served on 108toolbox.in - add it to _config.yml's exclude list" % name)
 SITE_SUFFIXES = (".html", ".css", ".js", ".mjs", ".xml", ".txt", ".json", ".wasm")
 for name in sorted(excluded):
-    if name.endswith(SITE_SUFFIXES) or name in ("CNAME", "css", "js", "data", "tools"):
+    if name.endswith(SITE_SUFFIXES) or name in ("CNAME", "css", "js", "data", "tools", "guides"):
         fail("_config.yml leaves out %s, which the site needs" % name)
 site_files = [p for p in ROOT.iterdir() if p.is_file() and (p.suffix in SITE_SUFFIXES or p.name == "CNAME")]
-for folder in ("css", "js", "data", "tools"):
+for folder in ("css", "js", "data", "tools", "guides"):
     site_files += [p for p in (ROOT / folder).rglob("*") if p.is_file()]
 dropped, processed = [], []
 for p in site_files:
@@ -947,7 +988,7 @@ if "google.com, %s, DIRECT" % AD_CLIENT[3:] not in (ROOT / "ads.txt").read_text(
     fail("ads.txt does not name the publisher id the ad code uses (%s)" % AD_CLIENT)
     ads_bad += 1
 with_ads = 0
-for path in sorted(ROOT.glob("*.html")) + sorted((ROOT / "tools").glob("*.html")):
+for path in sorted(ROOT.glob("*.html")) + sorted((ROOT / "tools").glob("*.html")) + guide_pages():
     text = path.read_text(encoding="utf-8")
     name = path.relative_to(ROOT).as_posix()
     if path.parent.name == "tools" and path.stem not in NO_ADS:      # the template too
@@ -980,7 +1021,7 @@ if not ads_bad:
 # ---- END: 4k. Advertising: where it is, and where it must never be ----
 
 # ---- START: 5. No dead internal links ----
-for path in list(ROOT.glob("*.html")) + tool_pages():
+for path in list(ROOT.glob("*.html")) + tool_pages() + guide_pages():
     text = path.read_text(encoding="utf-8")
     for href in re.findall(r'href="([^"#?:]+\.(?:html|css|js))(?:\?[^"]*)?"', text):
         if not (path.parent / href).resolve().exists():
