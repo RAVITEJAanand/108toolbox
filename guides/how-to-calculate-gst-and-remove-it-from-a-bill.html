@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>How to Calculate GST and Remove It From a Bill</title>
+  <meta name="description" content="How GST is added to a price and removed from a total, why taking 18% off is wrong, the CGST, SGST and IGST split, and a checklist to verify a bill.">
+  <link rel="canonical" href="https://108toolbox.in/guides/how-to-calculate-gst-and-remove-it-from-a-bill.html">
+
+  <meta property="og:title" content="How to Calculate GST and Remove It From a Bill">
+  <meta property="og:description" content="How GST is added to a price and removed from a total, why taking 18% off is wrong, the CGST, SGST and IGST split, and a checklist to verify a bill.">
+  <meta property="og:type" content="article">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
+
+  <!-- ---- START: the security policy ---- -->
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       A guide has no script of its own, so nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <!-- ---- END: the security policy ---- -->
+
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=46">
+  <link rel="stylesheet" href="../css/tool.css?v=46">
+  <!-- ---- END: the stylesheets ---- -->
+
+  <!-- ---- START: dark mode, set before the page paints ---- -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
+</head>
+<body>
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
+
+  <!-- ---- START: the page content ---- -->
+  <main class="section">
+    <div class="container">
+
+      <!-- ---- START: the breadcrumb ---- -->
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../guides.html">Guides</a><span>&rsaquo;</span>
+        <span>How to calculate GST</span>
+      </nav>
+      <!-- ---- END: the breadcrumb ---- -->
+
+      <!-- ---- START: the guide's title and its one-paragraph introduction ---- -->
+      <header class="tool-head">
+        <h1>How to calculate GST and remove it from a bill</h1>
+        <p>Adding GST to a price is easy. Taking it back out of a total is where
+           most mistakes happen, and a wrong method can leave your base amount
+           out by hundreds of rupees. This guide shows both directions with real
+           numbers, and how to check a bill. Updated 21 October 2026.</p>
+      </header>
+      <!-- ---- END: the guide's title and its one-paragraph introduction ---- -->
+
+      <!-- ---- START: the text of the guide ---- -->
+      <section class="tool-info prose">
+        <!-- ---- START: the "What GST is on a bill" section ---- -->
+        <h2>What GST is on a bill</h2>
+        <p>GST is charged as a percentage of the <strong>base amount</strong>, which
+        is the price of the goods or service before tax. The buyer pays the base
+        amount plus the tax, and the bill shows all three lines: the base, the
+        tax, and the total. Everything else about GST arithmetic follows from that
+        one fact, and nearly every mistake comes from forgetting it.</p>
+        <!-- ---- END: the "What GST is on a bill" section ---- -->
+
+        <!-- ---- START: the "Adding GST to a price" section ---- -->
+        <h2>Adding GST to a price</h2>
+        <p>Adding is the easy direction. With the base amount and the rate:</p>
+        <ul>
+          <li>GST = base &times; rate &divide; 100</li>
+          <li>Total = base + GST, which is the same as base &times; (1 + rate &divide; 100)</li>
+        </ul>
+        <p>The same &#8377;1,000 base gives a different bill at each rate:</p>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Rate</th><th>Base</th><th>GST</th><th>Total on the bill</th></tr></thead>
+            <tbody>
+              <tr><td>5%</td><td>&#8377;1,000</td><td>&#8377;50</td><td>&#8377;1,050</td></tr>
+              <tr><td>18%</td><td>&#8377;1,000</td><td>&#8377;180</td><td>&#8377;1,180</td></tr>
+              <tr><td>40%</td><td>&#8377;1,000</td><td>&#8377;400</td><td>&#8377;1,400</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>If a price is quoted &ldquo;plus GST&rdquo;, it is a base amount and
+        you add the tax on top. If it is quoted &ldquo;inclusive of GST&rdquo;,
+        the tax is already inside it, which is the case below.</p>
+        <!-- ---- END: the "Adding GST to a price" section ---- -->
+
+        <!-- ---- START: the "Removing GST from a total" section ---- -->
+        <h2>Removing GST from a total</h2>
+        <p>This is where people go wrong. Given a bill total, the base amount is
+        <strong>total &divide; (1 + rate &divide; 100)</strong>, and the GST is
+        whatever is left over. You divide. You do not subtract the percentage.</p>
+        <p>Take a bill of &#8377;2,360 that includes 18% GST:</p>
+        <ul>
+          <li>Correct: 2,360 &divide; 1.18 = <strong>&#8377;2,000</strong> base, so
+              the GST is &#8377;360.</li>
+          <li>Wrong: taking 18% off the total, 2,360 &times; 0.82 =
+              &#8377;1,935.20. That is &#8377;64.80 short of the true base.</li>
+        </ul>
+        <p>The subtraction fails because the 18% was charged on the base, not on
+        the total. The total is bigger than the base, so 18% of the total is more
+        than the tax that was actually charged. A quick check for any answer:
+        multiply your base by the rate, add it back, and you should land exactly
+        on the bill.</p>
+        <!-- ---- END: the "Removing GST from a total" section ---- -->
+
+        <!-- ---- START: the "How much of an inclusive bill is tax" section ---- -->
+        <h2>How much of an inclusive bill is tax</h2>
+        <p>Because the tax sits on top of the base, it is a smaller share of the
+        total than the headline rate suggests. On a GST-inclusive bill the tax
+        share is rate &divide; (100 + rate):</p>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Rate</th><th>Share of the total that is GST</th></tr></thead>
+            <tbody>
+              <tr><td>5%</td><td>4.76% (50 of 1,050)</td></tr>
+              <tr><td>18%</td><td>15.25% (180 of 1,180)</td></tr>
+              <tr><td>40%</td><td>28.57% (400 of 1,400)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>So &ldquo;the price includes 18% GST&rdquo; means a little over 15% of
+        what you pay is tax, not 18%.</p>
+        <!-- ---- END: the "How much of an inclusive bill is tax" section ---- -->
+
+        <!-- ---- START: the "CGST, SGST and IGST" section ---- -->
+        <h2>CGST, SGST and IGST</h2>
+        <p>The rate does not depend on where the buyer is. Only the way it is
+        written on the bill does. When the seller and the buyer are in the same
+        state, the tax is split in half: for 18% on a &#8377;1,000 base that is
+        &#8377;90 CGST and &#8377;90 SGST. When the sale crosses a state border
+        the whole &#8377;180 appears as one IGST line. The buyer pays the same
+        total either way.</p>
+        <!-- ---- END: the "CGST, SGST and IGST" section ---- -->
+
+        <!-- ---- START: the "Which rate applies" section ---- -->
+        <h2>Which rate applies</h2>
+        <p>After the September 2025 revision, most goods and services sit at 5%
+        or 18%, exempt items at 0%, and a short list of luxury and harmful goods
+        at 40%. The older 12% and 28% rates still appear on invoices raised before
+        the change.</p>
+        <p>The rate belongs to the item, through its HSN code for goods or its SAC
+        code for services, and rates are revised from time to time. This guide
+        explains the arithmetic. It cannot tell you which rate your product
+        attracts, so confirm that with the official rate finder or your
+        accountant before you put a figure on a real invoice.</p>
+        <!-- ---- END: the "Which rate applies" section ---- -->
+
+        <!-- ---- START: the "A checklist for checking a bill" section ---- -->
+        <h2>A checklist for checking a bill</h2>
+        <ol>
+          <li>For each line, multiply the taxable amount by the rate. It should
+              equal the tax shown on that line.</li>
+          <li>If the seller and buyer are in the same state, look for equal CGST
+              and SGST lines. If not, look for a single IGST line. Seeing both
+              kinds on one line is a red flag.</li>
+          <li>Add the lines up. The total should equal the base plus all the tax.
+              A difference of a few paise is normal, because tax is rounded on
+              each line.</li>
+          <li>If a discount is printed on the invoice, it reduces the base before
+              the tax is added, so the tax is charged on the smaller figure.</li>
+          <li>For a business purchase, make sure the bill carries the
+              seller&rsquo;s GSTIN, since you will need it to claim input tax
+              credit.</li>
+        </ol>
+        <p>A bill you are unsure about is worth a conversation with the seller or
+        your accountant. A guide can check the arithmetic, not the facts behind
+        the bill.</p>
+        <!-- ---- END: the "A checklist for checking a bill" section ---- -->
+
+        <!-- ---- START: the "Work it out on your own figures" section ---- -->
+        <h2>Work it out on your own figures</h2>
+        <p>The <a href="../tools/gst-calculator.html">GST Calculator</a> adds or
+        removes GST at any rate, shows the working under the answer, and splits
+        the tax into CGST and SGST or a single IGST line. It runs in your browser,
+        so nothing you type is uploaded.</p>
+        <!-- ---- END: the "Work it out on your own figures" section ---- -->
+      </section>
+      <!-- ---- END: the text of the guide ---- -->
+    </div>
+  </main>
+  <!-- ---- END: the page content ---- -->
+
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=pdf">PDF tools</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+            <li><a href="../tools.html?q=random">Random tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../guides.html">Guides</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
+
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=46"></script>
+  <script src="../js/main.js?v=46"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
+</body>
+</html>
