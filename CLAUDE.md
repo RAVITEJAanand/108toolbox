@@ -555,13 +555,50 @@ token added to one and forgotten in the other is always a bug, and it only
 shows for half the visitors. `--warn` shipped exactly that way for ten
 minutes: cream-on-cream, unreadable, for anyone using the toggle.
 
+### 12. Guides: articles that go with a tool (added 22 Oct 2026)
+
+AdSense refused the site ("Low value content") after a review was requested
+on 12 Oct 2026, and the same message was still showing on 21 Oct (the owner
+says a second review was sent and also came back), while Search Console showed
+104 pages indexed. A site that is only tools reads
+as thin, so the site now has a **Guides** section: `guides.html` (the list) and
+`guides/<slug>.html` (one article each, 800-1,200 words, real worked numbers).
+
+- **Every guide is tied to a tool.** It links to its tool in the article body
+  (`../tools/<slug>.html`) and the tool's text links back to it.
+- **Adding a guide is four steps:** copy an existing guide in `guides/` and
+  replace the title, description, canonical, og tags, breadcrumb, `<h1>` and the
+  `<section class="tool-info prose">` body; add its `<li>` to `guides.html`
+  (newest first); add its `<url>` to `sitemap.xml`; add a link to it from the
+  tool's own page; run `python check.py`.
+- **`check.py` 4p** fails if a guide is not listed on `guides.html`, not in the
+  sitemap, links to no tool in its body, or links to another website (rule 8).
+  The markers (rule 9), SEO basics, ad-free policy and dead-link checks cover
+  `guides/` too. Guides carry **no ad code** (strict policy) until AdSense
+  approves the site; then decide.
+- **Check every figure.** Work each number out by script, and say "as of" for
+  anything that can change (GST slabs). No personal financial advice: state
+  assumptions, say returns are not guaranteed, point to a registered adviser.
+- The footer of every page has a "Guides" link. No CSS or JS was touched, so no
+  `?v=` bump was needed.
+- **Written (3):** `guntha-cent-bigha-acre-explained` (area-converter),
+  `how-to-calculate-gst-and-remove-it-from-a-bill` (gst-calculator),
+  `sip-returns-explained-5000-a-month` (sip-calculator). **Still to write (5):**
+  EMI (how it is calculated, why interest is front-loaded; emi-calculator), take-home
+  salary (CTC vs gross vs in-hand; salary-calculator), numbers in words (cheques,
+  lakh/crore; number-to-words), PNG vs JPG vs WebP (image-converter), and how a
+  tool can work without uploading your files (the privacy page, the site's edge).
+
 ---
 
 ## Layout
 
 ```
 index.html         Homepage — hero, search, popular grid
-tools.html         All tools — search + category chips + grid
+tools.html         All tools — search + category chips + grid (plus a plain
+                   A-Z list of every tool, kept equal to the registry by check 4o)
+guides.html        All guides - the front page of the Guides section
+guides/*.html      One article per guide (rule 12)
 about / privacy / contact / 404.html
 css/style.css      Design system: TOKENS first, then components
 css/tool.css       Tool pages only: panels, stat tiles, drop zones, tables
@@ -804,6 +841,55 @@ cooking, average, percentage). Minus zero prints as 0 everywhere.
 **The India angle is the real SEO edge.** `gst-calculator`, `sip-calculator`,
 `salary-calculator`, `area-converter` and `number-to-words` (lakh/crore) have
 high volume and weak competition, unlike "word counter". See `SEO.md`.
+
+---
+
+## Where things stand (22 Oct 2026)
+
+**AdSense is not approved yet.** Site added, ownership verified, ad code is on
+the tool pages, but the status is "Needs attention - Low value content".
+A review was requested on 12 Oct and came back refused; the owner says a
+second one was sent and refused with the same text too (seen 21 Oct). Google gives no more detail than three conditions: real quality
+tools, ongoing curation, and genuine user interest.
+
+What the data said (Search Console, domain property `sc-domain:108toolbox.in`):
+indexed pages 27 (21 Sep) -> 65 (4 Oct) -> 104 (21 Oct); queries 91 -> 211; but
+only 10 clicks and 2.4K impressions in three months, most impressions from one
+query ("meme generator") the site ranks far down for. So the tools and their
+text are fine (80% of each page is unique; checked), the site is new and
+almost nobody visits it. Do **not** request another review in a hurry: wait
+until all eight guides are live and real visitors are arriving (aim: mid-
+November or later), and say so rather than promising approval.
+
+What was done on 5-22 Oct 2026: `tools.html` got a plain A-Z list of every
+tool (check 4o) because the grids are drawn by JavaScript and Google had
+"Discovered - currently not indexed" on 49 pages with "no referring page";
+`area-converter` got worked guntha/cent/bigha conversions; the Guides section
+(rule 12) was built with 3 of 8 articles.
+
+**Never do these for the owner:** click Request review, Request indexing,
+anything in Google Ads (a separate account that spends money; leave it
+alone), enter their
+Google password, or click an advert. The owner (or their family) must also
+never click the site's own ads. Reading Search Console in the built-in browser
+is fine once the owner has signed in there themselves.
+
+**On a new Windows computer** (what this project needs): Git, GitHub CLI and
+Python 3.12 (`winget install Git.Git`, `GitHub.cli`, `Python.Python.3.12`),
+then `gh auth login` (the owner does the login), then
+`git clone https://github.com/RAVITEJAanand/108toolbox.git`, then
+`git config user.name RAVITEJAanand` and `git config user.email <the owner's
+email>`, then `python check.py`. `test_tools.py` and `security.py`
+also need Chrome and Node, which have not been installed on the machines used
+so far, so only `check.py` has been run since 5 Oct (every change since then
+was text, markup or Python, none touched a tool's script, CSS or JS).
+
+Small traps met on the way: in PowerShell variable names are case-insensitive
+(`$L` and `$l` are one variable); `git pull --rebase` needs `user.email` set or
+it stops half way with the changes staged (finish with `git commit -C <hash>`
+then `git rebase --continue`); Git prints line-ending warnings (`LF will be
+replaced by CRLF`) that are harmless; the rates bot commits on weekdays, so
+always fetch before pushing.
 
 ---
 

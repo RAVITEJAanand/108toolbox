@@ -4,6 +4,36 @@ Live domain: **108toolbox.in** (already configured in every file)
 
 Plain HTML, CSS and JavaScript. No build step, no npm, no framework.
 
+## Set up on a new Windows computer
+
+1. Install the three tools (PowerShell, one line each):
+
+       winget install Git.Git
+       winget install GitHub.cli
+       winget install Python.Python.3.12
+
+   Close and reopen PowerShell afterwards so it finds them.
+2. Sign in to GitHub once (a browser window opens, you approve it):
+
+       gh auth login
+
+3. Get the site and tell Git who you are:
+
+       git clone https://github.com/RAVITEJAanand/108toolbox.git
+       cd 108toolbox
+       git config user.name RAVITEJAanand
+       git config user.email "your-email@example.com"   # use your own email
+
+4. Check it is healthy (should end with "Ready to deploy"):
+
+       python check.py
+
+5. After any change: `python check.py`, then `git add -A`, `git commit -m "what
+   changed"`, `git pull --rebase` (a bot also commits to this repo), `git push`.
+
+`CLAUDE.md` in this folder is read automatically by Claude Code, so a new Claude
+session opened here already knows the rules and where the work stands.
+
 ## Run it locally
 
 Open `index.html` in your browser — that is genuinely all it takes.
