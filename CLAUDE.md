@@ -597,8 +597,12 @@ as thin, so the site now has a **Guides** section: `guides.html` (the list) and
   checked against the live calculator in the browser, and it must be re-checked
   after every Union Budget, together with the calculator). BMI was skipped on
   purpose: the BMI page already explains the Asian-Indian cut-offs, so a guide
-  would only repeat it. Ideas for more: PDF compression (what shrinks and what
-  cannot), age and date arithmetic.
+  would only repeat it, and the same goes for PDF compression (compress-pdf's
+  own text already covers the levels and what is left alone). Write a guide
+  only where it adds something the tool page does not say.
+- **The homepage has a "Guides" section** (below Popular tools): three guides
+  as plain links in the card style, plus "See all guides". Change which three
+  by hand; the dead-link check covers them.
 
 ---
 
