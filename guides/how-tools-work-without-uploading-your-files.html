@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>How Our Tools Work Without Uploading Your Files</title>
+  <meta name="description" content="What happens to a file when you use a tool on this site, why it never leaves your device, how to check that yourself, and the honest limits of working this way.">
+  <link rel="canonical" href="https://108toolbox.in/guides/how-tools-work-without-uploading-your-files.html">
+
+  <meta property="og:title" content="How Our Tools Work Without Uploading Your Files">
+  <meta property="og:description" content="What happens to a file when you use a tool on this site, why it never leaves your device, how to check that yourself, and the honest limits of working this way.">
+  <meta property="og:type" content="article">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
+
+  <!-- ---- START: the security policy ---- -->
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       A guide has no script of its own, so nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <!-- ---- END: the security policy ---- -->
+
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=46">
+  <link rel="stylesheet" href="../css/tool.css?v=46">
+  <!-- ---- END: the stylesheets ---- -->
+
+  <!-- ---- START: dark mode, set before the page paints ---- -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
+</head>
+<body>
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
+
+  <!-- ---- START: the page content ---- -->
+  <main class="section">
+    <div class="container">
+
+      <!-- ---- START: the breadcrumb ---- -->
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../guides.html">Guides</a><span>&rsaquo;</span>
+        <span>Tools without uploading</span>
+      </nav>
+      <!-- ---- END: the breadcrumb ---- -->
+
+      <!-- ---- START: the guide's title and its one-paragraph introduction ---- -->
+      <header class="tool-head">
+        <h1>How our tools work without uploading your files</h1>
+        <p>Most online tools ask you to upload your file to their server. The tools on this site never do: your own browser does all the work. This guide explains how that works, how the pages are locked down, and two simple ways to check it for yourself. Updated 25 November 2026.</p>
+      </header>
+      <!-- ---- END: the guide's title and its one-paragraph introduction ---- -->
+
+      <!-- ---- START: the text of the guide ---- -->
+      <section class="tool-info prose">
+        <!-- ---- START: the "Two ways an online tool can work" section ---- -->
+        <h2>Two ways an online tool can work</h2>
+        <p>When you use a tool on a website, the work has to happen somewhere.
+        There are two places it can happen:</p>
+        <ul>
+          <li><strong>On a server.</strong> Your file is uploaded to someone
+              else&rsquo;s computer, processed there, and the result is sent
+              back. Your file has left your device, and what happens to it next
+              depends on that service&rsquo;s policies.</li>
+          <li><strong>In your browser.</strong> The page brings the tool&rsquo;s
+              code to you, and your own device does the work. Your file is read
+              from your disk into the browser&rsquo;s memory and never travels
+              anywhere.</li>
+        </ul>
+        <p>Every tool on 108 ToolBox works the second way.</p>
+        <!-- ---- END: the "Two ways an online tool can work" section ---- -->
+
+        <!-- ---- START: the "What happens when you pick a file" section ---- -->
+        <h2>What happens when you pick a file</h2>
+        <p>Take the <a href="../tools/image-compressor.html">Image Compressor</a>.
+        When you choose a photo, the browser reads it from your disk. The
+        page&rsquo;s own JavaScript draws it onto a hidden canvas, an area of
+        memory the browser provides for pictures, and saves it again at a
+        smaller size. The download button hands you that new file straight from
+        memory. At no step is the photo sent over the internet.</p>
+        <p>The other tools follow the same pattern. Calculators do arithmetic in
+        the page. The <a href="../tools/merge-pdf.html">Merge PDF</a> tool reads
+        and writes PDF files with code that runs in the page. The
+        <a href="../tools/hash-generator.html">Hash Generator</a> uses the
+        cryptography built into the browser itself. Close the tab and whatever
+        you typed or chose is gone.</p>
+        <!-- ---- END: the "What happens when you pick a file" section ---- -->
+
+        <!-- ---- START: the "How the pages are locked down" section ---- -->
+        <h2>How the pages are locked down</h2>
+        <p>Each page carries a set of rules for the browser, called a content
+        security policy, that says where the page is allowed to send anything.
+        On the pages without advertising the answer is <strong>nowhere</strong>:
+        the browser itself refuses any attempt by the page to send data out.</p>
+        <p>Most tool pages are set up to carry one Google advertisement below
+        the tool. On those pages the rules allow Google&rsquo;s advertising
+        servers and nothing else, and the tool&rsquo;s own code still sends
+        nothing. An advertising script runs inside the page, though, so the
+        tools where people type passwords or keys, the
+        <a href="../tools/password-generator.html">Password Generator</a>,
+        the Hash Generator, the JWT Decoder and Protect PDF, carry no
+        advertising at all. The <a href="../privacy.html">privacy policy</a>
+        explains what the advertising does.</p>
+        <!-- ---- END: the "How the pages are locked down" section ---- -->
+
+        <!-- ---- START: the "Check it yourself" section ---- -->
+        <h2>Check it yourself</h2>
+        <p>You do not have to take this on trust. Two simple tests:</p>
+        <ol>
+          <li><strong>Go offline.</strong> Open a tool and let the page finish
+              loading. Then turn off Wi-Fi and mobile data and use the tool.
+              It keeps working, because nothing it does needs the internet. (A
+              few tools, such as PDF to Image, fetch their own code from this
+              site the first time you use them, so try one file while you are
+              still online.)</li>
+          <li><strong>Watch the network.</strong> On a computer, open the
+              browser&rsquo;s developer tools (F12 in most browsers) and choose
+              the Network tab. Use the tool on a file. You will see no request
+              that carries your file anywhere.</li>
+        </ol>
+        <!-- ---- END: the "Check it yourself" section ---- -->
+
+        <!-- ---- START: the "The honest limits" section ---- -->
+        <h2>The honest limits</h2>
+        <ul>
+          <li><strong>Your device does the work.</strong> A very large PDF or a
+              batch of big photos can be slow on an older phone, because no
+              powerful server is helping.</li>
+          <li><strong>Nothing is saved for you.</strong> There is no account and
+              no history. Download your result before you close the tab.</li>
+          <li><strong>Tools can still be wrong.</strong> Working privately does
+              not make a calculation right. Every tool page says so, and asks you
+              to check results that matter.</li>
+        </ul>
+        <!-- ---- END: the "The honest limits" section ---- -->
+
+        <!-- ---- START: the "Why this site works this way" section ---- -->
+        <h2>Why this site works this way</h2>
+        <p>People use these tools on payslips, bank statements, identity
+        documents, contracts and family photos. None of those should have to
+        leave your device to have a page counted or a picture resized. Keeping
+        the work in your browser is the simplest way to make that promise, and
+        to keep it.</p>
+        <!-- ---- END: the "Why this site works this way" section ---- -->
+      </section>
+      <!-- ---- END: the text of the guide ---- -->
+    </div>
+  </main>
+  <!-- ---- END: the page content ---- -->
+
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=pdf">PDF tools</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+            <li><a href="../tools.html?q=random">Random tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../guides.html">Guides</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
+
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=46"></script>
+  <script src="../js/main.js?v=46"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
+</body>
+</html>

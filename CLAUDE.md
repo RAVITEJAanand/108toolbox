@@ -562,7 +562,7 @@ on 12 Oct 2026, and the same message was still showing on 21 Oct (the owner
 says a second review was sent and also came back), while Search Console showed
 104 pages indexed. A site that is only tools reads
 as thin, so the site now has a **Guides** section: `guides.html` (the list) and
-`guides/<slug>.html` (one article each, 800-1,200 words, real worked numbers).
+`guides/<slug>.html` (one article each, 600-900 words, real worked numbers).
 
 - **Every guide is tied to a tool.** It links to its tool in the article body
   (`../tools/<slug>.html`) and the tool's text links back to it.
@@ -581,13 +581,18 @@ as thin, so the site now has a **Guides** section: `guides.html` (the list) and
   assumptions, say returns are not guaranteed, point to a registered adviser.
 - The footer of every page has a "Guides" link. No CSS or JS was touched, so no
   `?v=` bump was needed.
-- **Written (3):** `guntha-cent-bigha-acre-explained` (area-converter),
+- **Written (8, all planned ones, by 25 Nov 2026):**
+  `guntha-cent-bigha-acre-explained` (area-converter),
   `how-to-calculate-gst-and-remove-it-from-a-bill` (gst-calculator),
-  `sip-returns-explained-5000-a-month` (sip-calculator). **Still to write (5):**
-  EMI (how it is calculated, why interest is front-loaded; emi-calculator), take-home
-  salary (CTC vs gross vs in-hand; salary-calculator), numbers in words (cheques,
-  lakh/crore; number-to-words), PNG vs JPG vs WebP (image-converter), and how a
-  tool can work without uploading your files (the privacy page, the site's edge).
+  `sip-returns-explained-5000-a-month` (sip-calculator),
+  `how-emi-works-formula-interest-split-and-savings` (emi-calculator),
+  `ctc-to-in-hand-salary-where-the-money-goes` (salary-calculator),
+  `numbers-in-words-lakh-crore-and-cheques` (number-to-words),
+  `png-jpg-webp-which-image-format-to-use` (image-converter),
+  `how-tools-work-without-uploading-your-files` (linked from privacy.html
+  section 2). Each tool page named here links back to its guide. Ideas for
+  more: income tax old vs new regime (needs re-checking after every Budget),
+  compound vs simple interest, BMI, PDF compression.
 
 ---
 
@@ -865,7 +870,9 @@ What was done on 5-22 Oct 2026: `tools.html` got a plain A-Z list of every
 tool (check 4o) because the grids are drawn by JavaScript and Google had
 "Discovered - currently not indexed" on 49 pages with "no referring page";
 `area-converter` got worked guntha/cent/bigha conversions; the Guides section
-(rule 12) was built with 3 of 8 articles.
+(rule 12) was built with 3 of 8 articles, and the other 5 followed on 25 Nov
+2026 (with a fix to number-to-words: fifteen digits is just under ten crore
+crore, not "ninety-nine thousand crore").
 
 **Never do these for the owner:** click Request review, Request indexing,
 anything in Google Ads (a separate account that spends money; leave it
