@@ -866,6 +866,18 @@ almost nobody visits it. Do **not** request another review in a hurry: wait
 until all eight guides are live and real visitors are arriving (aim: mid-
 November or later), and say so rather than promising approval.
 
+On 25 Nov 2026 (report dated 16 Nov): 112 indexed, 11 not indexed. Of those,
+2 are http/www redirects and 1 is `index.html` pointing at `/` (both correct,
+nothing to fix); 6 are "Crawled - currently not indexed" (the guntha guide,
+week-number-calculator, json-to-csv, url-encoder-decoder, shoe-size-converter,
+cooking-measurement-converter) and 2 "Discovered - currently not indexed"
+(calorie-calculator, number-to-words). All 8 were checked: canonical right, no
+noindex, in the sitemap, linked from tools.html, text not short (several are
+among the longest) and the guide shares only 5% of its wording with
+area-converter. Nothing on the site causes it; it is Google's choice for a
+new site. The remedy is Request indexing, which the owner clicks (Claude's
+click on it was refused by the safety check, so leave it to the owner).
+
 What was done on 5-22 Oct 2026: `tools.html` got a plain A-Z list of every
 tool (check 4o) because the grids are drawn by JavaScript and Google had
 "Discovered - currently not indexed" on 49 pages with "no referring page";
