@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>PNG, JPG or WebP: Which Image Format to Use and When</title>
+  <meta name="description" content="When to use JPG, PNG or WebP, what each does to quality, transparency and file size, and how to prepare a photo for an online form's KB limit, step by step.">
+  <link rel="canonical" href="https://108toolbox.in/guides/png-jpg-webp-which-image-format-to-use.html">
+
+  <meta property="og:title" content="PNG, JPG or WebP: Which Image Format to Use and When">
+  <meta property="og:description" content="When to use JPG, PNG or WebP, what each does to quality, transparency and file size, and how to prepare a photo for an online form's KB limit, step by step.">
+  <meta property="og:type" content="article">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
+
+  <!-- ---- START: the security policy ---- -->
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       A guide has no script of its own, so nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <!-- ---- END: the security policy ---- -->
+
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=46">
+  <link rel="stylesheet" href="../css/tool.css?v=46">
+  <!-- ---- END: the stylesheets ---- -->
+
+  <!-- ---- START: dark mode, set before the page paints ---- -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
+</head>
+<body>
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
+
+  <!-- ---- START: the page content ---- -->
+  <main class="section">
+    <div class="container">
+
+      <!-- ---- START: the breadcrumb ---- -->
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../guides.html">Guides</a><span>&rsaquo;</span>
+        <span>PNG, JPG or WebP</span>
+      </nav>
+      <!-- ---- END: the breadcrumb ---- -->
+
+      <!-- ---- START: the guide's title and its one-paragraph introduction ---- -->
+      <header class="tool-head">
+        <h1>PNG, JPG or WebP: which image format to use, and when</h1>
+        <p>Picking the wrong image format gives you a blurry screenshot, a lost transparent background, or a photo too large to upload. This guide explains what each format really does, what converting can and cannot fix, and how to get a photo under an online form's size limit. Updated 25 November 2026.</p>
+      </header>
+      <!-- ---- END: the guide's title and its one-paragraph introduction ---- -->
+
+      <!-- ---- START: the text of the guide ---- -->
+      <section class="tool-info prose">
+        <!-- ---- START: the "The short answer" section ---- -->
+        <h2>The short answer</h2>
+        <ul>
+          <li><strong>JPG</strong> for photographs.</li>
+          <li><strong>PNG</strong> for screenshots, logos, text, diagrams, and
+              anything that needs a transparent background.</li>
+          <li><strong>WebP</strong> for pictures on your own website, where a
+              smaller file means a faster page.</li>
+        </ul>
+        <p>The rest of this guide explains why, so you can decide the cases that
+        do not fit neatly.</p>
+        <!-- ---- END: the "The short answer" section ---- -->
+
+        <!-- ---- START: the "Lossy and lossless" section ---- -->
+        <h2>Lossy and lossless</h2>
+        <p>An image file is a grid of coloured dots, called pixels. A phone photo
+        of 4,000 &times; 3,000 pixels is 12 million of them, and storing three
+        bytes of colour for each would take about 36 MB. Every format shrinks that
+        in one of two ways:</p>
+        <ul>
+          <li><strong>Lossless</strong> (PNG) packs the pixels more tightly and
+              gives back exactly the same pixels when opened. Nothing is
+              lost.</li>
+          <li><strong>Lossy</strong> (JPG, and WebP in its usual mode) throws away
+              detail the eye is unlikely to notice. The file becomes much smaller,
+              and the lost detail never comes back.</li>
+        </ul>
+        <p>Lossy works well on photos, where colours blend softly. It works badly
+        on sharp edges such as text and lines, which is why a screenshot saved
+        as JPG often shows faint smudges around the letters.</p>
+        <!-- ---- END: the "Lossy and lossless" section ---- -->
+
+        <!-- ---- START: the "The three formats compared" section ---- -->
+        <h2>The three formats compared</h2>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th></th><th>JPG</th><th>PNG</th><th>WebP</th></tr></thead>
+            <tbody>
+              <tr><td>Compression</td><td>Lossy</td><td>Lossless</td><td>Lossy or lossless</td></tr>
+              <tr><td>Transparency</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+              <tr><td>Best for</td><td>Photos</td><td>Text, logos, screenshots</td><td>Images on a website</td></tr>
+              <tr><td>File size for a photo</td><td>Small</td><td>Large</td><td>Usually the smallest</td></tr>
+              <tr><td>Opens everywhere</td><td>Yes</td><td>Yes</td><td>In every current browser; some older programs and upload forms refuse it</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- ---- END: the "The three formats compared" section ---- -->
+
+        <!-- ---- START: the "What converting can and cannot do" section ---- -->
+        <h2>What converting can and cannot do</h2>
+        <ul>
+          <li><strong>Converting a JPG to PNG does not restore quality.</strong>
+              The detail the JPG threw away is gone. You get the same picture in
+              a bigger file.</li>
+          <li><strong>Converting a transparent PNG to JPG fills the transparent
+              parts with a colour</strong>, because JPG cannot store
+              transparency. Keep it as PNG or WebP if the background must stay
+              see-through.</li>
+          <li><strong>Saving a JPG again and again loses a little each
+              time.</strong> Always work from the original file, not from an
+              earlier copy.</li>
+        </ul>
+        <!-- ---- END: the "What converting can and cannot do" section ---- -->
+
+        <!-- ---- START: the "Size depends on pixels first" section ---- -->
+        <h2>Size depends on pixels first</h2>
+        <p>The biggest thing that sets a file&rsquo;s size is not the format but
+        the number of pixels. Halve the width and the height and you keep only a
+        quarter of the pixels. A picture shown 800 pixels wide on a web page
+        gains nothing from being 4,000 pixels wide, so resize first and choose a
+        format second.</p>
+        <!-- ---- END: the "Size depends on pixels first" section ---- -->
+
+        <!-- ---- START: the "Preparing a photo for an online form" section ---- -->
+        <h2>Preparing a photo for an online form</h2>
+        <p>Application forms for exams, jobs and government services often ask
+        for a photo or a signature in a fixed format, a fixed pixel size and a
+        file size inside a range, for example a JPG between 20 KB and 50 KB. A
+        phone photo of several megabytes is far over that. The order that
+        works:</p>
+        <ol>
+          <li>Read the form&rsquo;s rules carefully: format, width and height in
+              pixels, and the smallest and largest file size allowed.</li>
+          <li>Crop the photo to the shape asked for with the
+              <a href="../tools/image-cropper.html">Image Cropper</a>.</li>
+          <li>Resize it to the exact pixel size with the
+              <a href="../tools/image-resizer.html">Image Resizer</a>.</li>
+          <li>Save it as JPG with the
+              <a href="../tools/image-converter.html">Image Converter</a>, since
+              most forms accept only JPG.</li>
+          <li>If it is still above the limit, bring it down with the
+              <a href="../tools/image-compressor.html">Image Compressor</a>, and
+              check the result is not so small that the face or signature turns
+              blurry.</li>
+        </ol>
+        <p>A photo resized to a few hundred pixels on each side usually fits a
+        50 KB limit easily as a JPG. Every form sets its own rules, so treat the
+        form&rsquo;s instructions as the final word.</p>
+        <!-- ---- END: the "Preparing a photo for an online form" section ---- -->
+
+        <!-- ---- START: the "Convert your own image" section ---- -->
+        <h2>Convert your own image</h2>
+        <p>The <a href="../tools/image-converter.html">Image Converter</a> turns
+        PNG, JPG and WebP into each other, with a quality setting for JPG and
+        WebP and an optional resize. It works in your browser, so your pictures
+        are never uploaded anywhere.</p>
+        <!-- ---- END: the "Convert your own image" section ---- -->
+      </section>
+      <!-- ---- END: the text of the guide ---- -->
+    </div>
+  </main>
+  <!-- ---- END: the page content ---- -->
+
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=pdf">PDF tools</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+            <li><a href="../tools.html?q=random">Random tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../guides.html">Guides</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
+
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=46"></script>
+  <script src="../js/main.js?v=46"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
+</body>
+</html>
