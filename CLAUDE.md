@@ -590,9 +590,15 @@ as thin, so the site now has a **Guides** section: `guides.html` (the list) and
   `numbers-in-words-lakh-crore-and-cheques` (number-to-words),
   `png-jpg-webp-which-image-format-to-use` (image-converter),
   `how-tools-work-without-uploading-your-files` (linked from privacy.html
-  section 2). Each tool page named here links back to its guide. Ideas for
-  more: income tax old vs new regime (needs re-checking after every Budget),
-  compound vs simple interest, BMI, PDF compression.
+  section 2). Each tool page named here links back to its guide.
+- **Added the same day (2):** `simple-vs-compound-interest-how-an-fd-grows`
+  (compound- and simple-interest-calculator) and
+  `new-vs-old-tax-regime-fy-2026-27` (income-tax-calculator; its figures were
+  checked against the live calculator in the browser, and it must be re-checked
+  after every Union Budget, together with the calculator). BMI was skipped on
+  purpose: the BMI page already explains the Asian-Indian cut-offs, so a guide
+  would only repeat it. Ideas for more: PDF compression (what shrinks and what
+  cannot), age and date arithmetic.
 
 ---
 
