@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ---- START: the page's title, description and link preview ---- -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Simple vs Compound Interest: How an FD Really Grows</title>
+  <meta name="description" content="Simple and compound interest worked through on 1 lakh at 7 percent, why a quarterly FD beats its rate, cumulative versus payout, and what tax and inflation leave.">
+  <link rel="canonical" href="https://108toolbox.in/guides/simple-vs-compound-interest-how-an-fd-grows.html">
+
+  <meta property="og:title" content="Simple vs Compound Interest: How an FD Really Grows">
+  <meta property="og:description" content="Simple and compound interest worked through on 1 lakh at 7 percent, why a quarterly FD beats its rate, cumulative versus payout, and what tax and inflation leave.">
+  <meta property="og:type" content="article">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128295;</text></svg>">
+  <!-- ---- END: the page's title, description and link preview ---- -->
+
+  <!-- ---- START: the security policy ---- -->
+  <!-- The policy travels in the page because GitHub Pages sets no headers.
+       A guide has no script of its own, so nothing can be sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <!-- ---- END: the security policy ---- -->
+
+  <!-- ---- START: the stylesheets ---- -->
+  <link rel="stylesheet" href="../css/style.css?v=46">
+  <link rel="stylesheet" href="../css/tool.css?v=46">
+  <!-- ---- END: the stylesheets ---- -->
+
+  <!-- ---- START: dark mode, set before the page paints ---- -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) { /* private mode: ignore, the OS preference still applies */ }
+    })();
+  </script>
+  <!-- ---- END: dark mode, set before the page paints ---- -->
+</head>
+<body>
+  <!-- ---- START: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="logo" href="../index.html">
+        <span class="logo__mark">108</span>
+        <span>ToolBox</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="../index.html">Home</a>
+        <a href="../tools.html">All Tools</a>
+        <a href="../about.html">About</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Light / dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </button>
+        <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="nav__mobile">
+    <div class="container">
+      <a href="../index.html">Home</a>
+      <a href="../tools.html">All Tools</a>
+      <a href="../about.html">About</a>
+    </div>
+  </div>
+  <!-- ---- END: the navigation bar and its phone menu (identical on every page; never edit per tool) ---- -->
+
+  <!-- ---- START: the page content ---- -->
+  <main class="section">
+    <div class="container">
+
+      <!-- ---- START: the breadcrumb ---- -->
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span>&rsaquo;</span>
+        <a href="../guides.html">Guides</a><span>&rsaquo;</span>
+        <span>Simple vs compound interest</span>
+      </nav>
+      <!-- ---- END: the breadcrumb ---- -->
+
+      <!-- ---- START: the guide's title and its one-paragraph introduction ---- -->
+      <header class="tool-head">
+        <h1>Simple vs compound interest: how an FD really grows</h1>
+        <p>A fixed deposit's rate is only the start of the story. Whether interest compounds, how often, whether you take it out as you go, and what tax and rising prices take away all change what you end up with. This guide works it through on &#8377;1 lakh at 7%. Updated 25 November 2026.</p>
+      </header>
+      <!-- ---- END: the guide's title and its one-paragraph introduction ---- -->
+
+      <!-- ---- START: the text of the guide ---- -->
+      <section class="tool-info prose">
+        <!-- ---- START: the "Two ways interest can be counted" section ---- -->
+        <h2>Two ways interest can be counted</h2>
+        <p><strong>Simple interest</strong> is paid only on the amount you put
+        in. &#8377;1,00,000 at 7% earns &#8377;7,000 every year, no more and no
+        less, so after 5 years you have &#8377;1,35,000.</p>
+        <p><strong>Compound interest</strong> is also paid on interest you have
+        already earned. Each period&rsquo;s interest is added to the balance,
+        and the next period&rsquo;s interest is worked out on that larger
+        balance. The formula is <strong>A = P (1 + r &divide; n)<sup>n &times;
+        t</sup></strong>, where <em>r</em> is the yearly rate as a fraction,
+        <em>n</em> is how many times a year interest is added, and <em>t</em> is
+        the number of years.</p>
+        <!-- ---- END: the "Two ways interest can be counted" section ---- -->
+
+        <!-- ---- START: the "How &#8377;1 lakh grows at 7%" section ---- -->
+        <h2>How &#8377;1 lakh grows at 7%</h2>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Years</th><th>Simple interest</th><th>Compounded yearly</th><th>Compounded quarterly</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>&#8377;1,07,000</td><td>&#8377;1,07,000</td><td>&#8377;1,07,186</td></tr>
+              <tr><td>5</td><td>&#8377;1,35,000</td><td>&#8377;1,40,255</td><td>&#8377;1,41,478</td></tr>
+              <tr><td>10</td><td>&#8377;1,70,000</td><td>&#8377;1,96,715</td><td>&#8377;2,00,160</td></tr>
+              <tr><td>20</td><td>&#8377;2,40,000</td><td>&#8377;3,86,968</td><td>&#8377;4,00,639</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>For one year the difference is a few hundred rupees. Over 20 years
+        compounding gives about &#8377;1.6 lakh more than simple interest on the
+        same deposit. Compounding is slow at first and strong later, which is
+        why time matters more than anything else.</p>
+        <!-- ---- END: the "How &#8377;1 lakh grows at 7%" section ---- -->
+
+        <!-- ---- START: the "Why a 7% FD gives slightly more than 7%" section ---- -->
+        <h2>Why a 7% FD gives slightly more than 7%</h2>
+        <p>Most bank fixed deposits that add interest back to the deposit do it
+        every quarter. At 7% a year, that is 1.75% each quarter, and interest
+        earned in the first quarter starts earning in the second. Over a full
+        year &#8377;1,00,000 becomes &#8377;1,07,186, which is the same as
+        <strong>7.19%</strong> paid once a year. That figure is often called the
+        effective yield, and it is the fair way to compare two deposits that
+        compound differently.</p>
+        <p>The frequency matters less than people expect. Going from quarterly
+        to monthly compounding on the 10-year figure above adds only about
+        &#8377;800. The rate and the length of time do almost all the work.</p>
+        <!-- ---- END: the "Why a 7% FD gives slightly more than 7%" section ---- -->
+
+        <!-- ---- START: the "Cumulative or payout: the choice that decides it" section ---- -->
+        <h2>Cumulative or payout: the choice that decides it</h2>
+        <p>A fixed deposit usually comes in two forms:</p>
+        <ul>
+          <li><strong>Cumulative</strong>: interest is added to the deposit and
+              paid at the end. This is compound interest.</li>
+          <li><strong>Payout</strong> (monthly or quarterly income): interest is
+              paid into your account as it is earned. &#8377;1,00,000 at 7% pays
+              about &#8377;1,750 a quarter. Because that interest leaves the
+              deposit, it earns nothing more there, so the deposit itself grows
+              like simple interest.</li>
+        </ul>
+        <p>Payout suits someone who needs a regular income. If you do not need
+        the money until the end, cumulative grows more, unless you invest the
+        payouts yourself somewhere that earns as much.</p>
+        <!-- ---- END: the "Cumulative or payout: the choice that decides it" section ---- -->
+
+        <!-- ---- START: the "How long it takes to double" section ---- -->
+        <h2>How long it takes to double</h2>
+        <p>The rule of 72 gives a quick estimate: divide 72 by the yearly rate.
+        At 7% that is about 10.3 years. The exact figure for 7% compounded
+        quarterly is just under 10 years. With simple interest the same money
+        takes about 14.3 years to double, because the interest never grows.</p>
+        <!-- ---- END: the "How long it takes to double" section ---- -->
+
+        <!-- ---- START: the "What tax and rising prices do to the rate" section ---- -->
+        <h2>What tax and rising prices do to the rate</h2>
+        <p>Interest from a bank deposit is taxed as income, at your own slab
+        rate, and the bank may deduct tax at source once your interest crosses
+        a yearly limit. Prices also rise each year. Together they can shrink a
+        good-looking rate a lot:</p>
+        <ul>
+          <li>A 7% deposit with prices rising 6% a year leaves you about
+              <strong>0.9%</strong> better off in real terms.</li>
+          <li>If that interest is taxed at 30% (before cess), you keep 4.9%, and
+              with prices rising 6% you are about <strong>1% worse off</strong> in
+              real terms each year.</li>
+        </ul>
+        <p>This is not a reason to avoid deposits, which are safe and
+        predictable, but it is a reason to judge them by what is left after tax
+        and inflation, not by the headline rate. Tax rules and limits change, so
+        check the current ones before you rely on them. This guide is general
+        education, not advice for your situation.</p>
+        <!-- ---- END: the "What tax and rising prices do to the rate" section ---- -->
+
+        <!-- ---- START: the "Work out your own deposit" section ---- -->
+        <h2>Work out your own deposit</h2>
+        <p>The <a href="../tools/compound-interest-calculator.html">Compound
+        Interest Calculator</a> shows what a deposit grows to with yearly,
+        quarterly, monthly or daily compounding, next to simple interest. The
+        <a href="../tools/simple-interest-calculator.html">Simple Interest
+        Calculator</a> handles loans and deposits that do not compound. Both run
+        in your browser, so nothing you type is uploaded.</p>
+        <!-- ---- END: the "Work out your own deposit" section ---- -->
+      </section>
+      <!-- ---- END: the text of the guide ---- -->
+    </div>
+  </main>
+  <!-- ---- END: the page content ---- -->
+
+  <!-- ---- START: the footer (identical on every page; never edit per tool) ---- -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cols">
+        <div>
+          <a class="logo" href="../index.html">
+            <span class="logo__mark">108</span><span>ToolBox</span>
+          </a>
+          <p style="margin-top:var(--s3)">Free everyday tools that run inside your
+          browser. No sign-up, no file uploads.</p>
+        </div>
+        <div>
+          <h3>Categories</h3>
+          <ul>
+            <li><a href="../tools.html?q=text">Text tools</a></li>
+            <li><a href="../tools.html?q=image">Image tools</a></li>
+            <li><a href="../tools.html?q=calculator">Calculators</a></li>
+            <li><a href="../tools.html?q=developer">Developer tools</a></li>
+            <li><a href="../tools.html?q=converter">Converters</a></li>
+            <li><a href="../tools.html?q=pdf">PDF tools</a></li>
+            <li><a href="../tools.html?q=date">Date &amp; time</a></li>
+            <li><a href="../tools.html?q=random">Random tools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Popular</h3>
+          <ul>
+            <li><a href="../tools/word-counter.html">Word Counter</a></li>
+            <li><a href="../tools/image-compressor.html">Image Compressor</a></li>
+            <li><a href="../tools/percentage-calculator.html">Percentage Calculator</a></li>
+            <li><a href="../tools/json-formatter.html">JSON Formatter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../guides.html">Guides</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../privacy.html">Privacy</a></li>
+            <li><a href="../terms.html">Terms</a></li>
+            <li><a href="../disclaimer.html">Disclaimer</a></li>
+            <li><a href="../copyright.html">Copyright</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 108 ToolBox</span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </div>
+  </footer>
+  <!-- ---- END: the footer (identical on every page; never edit per tool) ---- -->
+
+  <!-- ---- START: the shared scripts, in order ---- -->
+  <script src="../js/tools-data.js?v=46"></script>
+  <script src="../js/main.js?v=46"></script>
+  <!-- ---- END: the shared scripts, in order ---- -->
+</body>
+</html>
