@@ -902,7 +902,12 @@ noindex, in the sitemap, linked from tools.html, text not short (several are
 among the longest) and the guide shares only 5% of its wording with
 area-converter. Nothing on the site causes it; it is Google's choice for a
 new site. The remedy is Request indexing, which the owner clicks (Claude's
-click on it was refused by the safety check, so leave it to the owner).
+click on it was refused by the safety check twice, in the built-in browser
+and through the browser extension, so leave it to the owner). The owner
+requested indexing for all 11 by 27 Nov 2026, plus guides.html and the new
+guides. One inspection showed "Sitemaps: Temporary processing error"; the
+live sitemap was valid (127 URLs, no duplicates), so that was Google's
+side. Next look: Pages and Performance in mid-December.
 
 What was done on 5-22 Oct 2026: `tools.html` got a plain A-Z list of every
 tool (check 4o) because the grids are drawn by JavaScript and Google had
