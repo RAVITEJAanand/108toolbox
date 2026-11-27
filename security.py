@@ -502,8 +502,11 @@ def check_policy_present(pages):
 
 # ---- START: running every part, in order, and the verdict ----
 if __name__ == "__main__":
+    # The guides (rule 12) carry no script of their own, but they are pages
+    # like any other: they must load silently and fit a phone too.
     pages = sorted(ROOT.glob("*.html")) + sorted(
-        p for p in (ROOT / "tools").glob("*.html") if not p.name.startswith("_"))
+        p for p in (ROOT / "tools").glob("*.html") if not p.name.startswith("_")) + sorted(
+        p for p in (ROOT / "guides").glob("*.html") if not p.name.startswith("_"))
     registry = (ROOT / "js" / "tools-data.js").read_text(encoding="utf-8")
     slugs = re.findall(r'slug: "([^"]+)"', registry)
     tools = [ROOT / "tools" / (s + ".html") for s in slugs]
@@ -518,7 +521,8 @@ if __name__ == "__main__":
     finally:
         shutil.rmtree(WORK, ignore_errors=True)
         for leftover in list(ROOT.glob("_sec_*.html")) + list(
-                (ROOT / "tools").glob("_sec_*.html")):
+                (ROOT / "tools").glob("_sec_*.html")) + list(
+                (ROOT / "guides").glob("_sec_*.html")):
             leftover.unlink(missing_ok=True)
 
     print("\n" + "=" * 62)

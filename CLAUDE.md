@@ -752,8 +752,9 @@ https://108toolbox.in/sitemap.xml
 ```
 
 A URL-prefix property would have accepted the bare filename. The sitemap holds
-33 URLs while the site has 34 pages, and that is correct: `404.html` is
-deliberately left out, because an error page must never be offered to an index.
+one URL fewer than the site has pages (127 against 128 on 27 Nov 2026: 10 top
+pages, 108 tools, 10 guides), and that is correct: `404.html` is deliberately
+left out, because an error page must never be offered to an index.
 
 "Discovered pages: 0" straight after submitting is normal - Google has only
 accepted the sitemap, not yet read it.
@@ -859,7 +860,7 @@ high volume and weak competition, unlike "word counter". See `SEO.md`.
 
 ---
 
-## Where things stand (22 Oct 2026)
+## Where things stand (last updated 27 Nov 2026)
 
 **AdSense is not approved yet.** Site added, ownership verified, ad code is on
 the tool pages, but the status is "Needs attention - Low value content".
@@ -872,9 +873,10 @@ indexed pages 27 (21 Sep) -> 65 (4 Oct) -> 104 (21 Oct); queries 91 -> 211; but
 only 10 clicks and 2.4K impressions in three months, most impressions from one
 query ("meme generator") the site ranks far down for. So the tools and their
 text are fine (80% of each page is unique; checked), the site is new and
-almost nobody visits it. Do **not** request another review in a hurry: wait
-until all eight guides are live and real visitors are arriving (aim: mid-
-November or later), and say so rather than promising approval.
+almost nobody visits it. Do **not** request another review in a hurry. All ten
+guides were live by 25 Nov 2026; give Google two or three weeks to read them
+and look for rising impressions and clicks before the owner asks again (aim:
+mid-December 2026 or later), and say so rather than promising approval.
 
 On 25 Nov 2026 (report dated 16 Nov): 112 indexed, 11 not indexed. Of those,
 2 are http/www redirects and 1 is `index.html` pointing at `/` (both correct,
@@ -908,10 +910,14 @@ Python 3.12 (`winget install Git.Git`, `GitHub.cli`, `Python.Python.3.12`),
 then `gh auth login` (the owner does the login), then
 `git clone https://github.com/RAVITEJAanand/108toolbox.git`, then
 `git config user.name RAVITEJAanand` and `git config user.email <the owner's
-email>`, then `python check.py`. `test_tools.py` and `security.py`
-also need Chrome and Node, which have not been installed on the machines used
-so far, so only `check.py` has been run since 5 Oct (every change since then
-was text, markup or Python, none touched a tool's script, CSS or JS).
+email>`, then `python check.py`. `test_tools.py` and `security.py` also need
+Chrome (`winget install Google.Chrome`, at its standard path; Edge will not
+do) and Node (`winget install OpenJS.NodeJS.LTS`). Both were installed on the
+owner's desktop on 26 Nov 2026 and the full suites run there: `test_tools.py`
+108 tools, 5,501 assertions, 0 failed; `security.py` clean on every page.
+`security.py` now opens the guides as well (they must load silently and fit a
+phone like every other page). Their output is buffered, so a log file stays
+empty until the run ends; run them in the background and wait.
 
 Small traps met on the way: in PowerShell variable names are case-insensitive
 (`$L` and `$l` are one variable); `git pull --rebase` needs `user.email` set or

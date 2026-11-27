@@ -1,2 +1,9 @@
 # Local dev tooling — not part of the site
 .claude/
+
+# Scratch output of the test scripts; they delete it themselves, but a run
+# that is cut off leaves it behind, and it must never be committed.
+_securitywork/
+_sec_*.html
+tools/_sec_*.html
+guides/_sec_*.html
