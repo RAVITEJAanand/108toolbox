@@ -600,6 +600,11 @@ as thin, so the site now has a **Guides** section: `guides.html` (the list) and
   would only repeat it, and the same goes for PDF compression (compress-pdf's
   own text already covers the levels and what is left alone). Write a guide
   only where it adds something the tool page does not say.
+- **Every guide ends with "More guides"** (added 27 Nov 2026): two or three
+  related guides by their own `<h1>` titles, then a link to every guide, in
+  a pair named `the "More guides" section`, so a reader who finishes one has
+  an obvious next page. A new guide gets this section too, and is added to
+  the "More guides" of two or three existing guides on the same subject.
 - **The homepage has a "Guides" section** (below Popular tools): three guides
   as plain links in the card style, plus "See all guides". Change which three
   by hand; the dead-link check covers them.
