@@ -821,6 +821,41 @@ elif guides_found:
             fail("guide '%s' links to no tool it goes with" % g.stem)
         if re.search(r'href="https?://(?!108toolbox\.in/)', gtext):
             fail("guide '%s' links to another website - rule 8" % g.stem)
+        # One Article block, made from the page itself, so it can never say
+        # something the page does not: the headline is the <h1>, the url the
+        # canonical, and dateModified the "Updated <date>" in the introduction.
+        articles = []
+        for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', gtext, re.S):
+            try:
+                data = json.loads(block)
+            except Exception as e:
+                fail("guide '%s' has invalid JSON-LD: %s" % (g.stem, e))
+                continue
+            if data.get("@type") == "Article":
+                articles.append(data)
+        g_h1 = re.search(r"<h1>(.*?)</h1>", gtext, re.S)
+        g_canon = re.search(r'<link rel="canonical" href="([^"]+)"', gtext)
+        g_updated = re.search(r"Updated (\d{1,2} [A-Z][a-z]+ \d{4})", gtext)
+        if len(articles) != 1:
+            fail("guide '%s' has %d Article blocks - it needs exactly one" % (g.stem, len(articles)))
+        else:
+            art = articles[0]
+            if not g_h1 or art.get("headline") != html.unescape(" ".join(g_h1.group(1).split())):
+                fail("guide '%s': the Article headline is not its <h1>" % g.stem)
+            if not g_canon or art.get("url") != g_canon.group(1) or art.get("mainEntityOfPage") != g_canon.group(1):
+                fail("guide '%s': the Article url is not its canonical address" % g.stem)
+            try:
+                published = datetime.date.fromisoformat(art.get("datePublished", ""))
+                modified = datetime.date.fromisoformat(art.get("dateModified", ""))
+            except ValueError:
+                fail("guide '%s': the Article dates are not YYYY-MM-DD" % g.stem)
+            else:
+                if published > modified:
+                    fail("guide '%s': the Article was modified before it was published" % g.stem)
+                if not g_updated or modified != datetime.datetime.strptime(
+                        g_updated.group(1), "%d %B %Y").date():
+                    fail("guide '%s': dateModified is not the 'Updated' date in its introduction"
+                         % g.stem)
     for stale in sorted(listed_guides - {g.stem for g in guides_found}):
         fail("guides.html lists '%s', which is not a file in guides/" % stale)
     if "guides.html" not in sitemap:

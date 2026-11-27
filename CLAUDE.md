@@ -605,6 +605,15 @@ as thin, so the site now has a **Guides** section: `guides.html` (the list) and
   a pair named `the "More guides" section`, so a reader who finishes one has
   an obvious next page. A new guide gets this section too, and is added to
   the "More guides" of two or three existing guides on the same subject.
+- **Every guide carries one `Article` block of structured data** (in the
+  `<head>`, pair `the structured data Google reads`), made from the page:
+  headline = the `<h1>`, description = the meta description, url and
+  mainEntityOfPage = the canonical, datePublished = the day it was first
+  committed, dateModified = the "Updated <date>" line in the introduction,
+  author and publisher = the organisation 108 ToolBox. **When you revise a
+  guide, change the "Updated" line and dateModified together**; check.py 4p
+  fails if they differ, if the headline or url drift from the page, or if
+  there is not exactly one block (four planted mistakes, all caught).
 - **The homepage has a "Guides" section** (below Popular tools): three guides
   as plain links in the card style, plus "See all guides". Change which three
   by hand; the dead-link check covers them.
